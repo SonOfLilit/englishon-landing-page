@@ -8354,7 +8354,7 @@ browserInfo = function () {
 
 function englishon() {
 
-  if (browserInfo.brower != 'chrome' || browserInfo.version != '52') {
+  if (browserInfo.brower != 'Chrome' || browserInfo.version != '52') {
     console.log('BROWSER NOT SUPPORTED.');
     return;
   }
