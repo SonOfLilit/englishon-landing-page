@@ -8182,6 +8182,7 @@ var toggler = function (cls, configEntry, toggle_func) {
   toggle_func(initial);
   $('body').toggleClass(cls, initial);
   return function (enabled) {
+    //CHECK WELL THIS LINE
     if (enabled == null || enabled == false) {
       enabled = !document.config[configEntry];
     }
@@ -8334,7 +8335,30 @@ if (IN_CHROME) {
   };
 }
 
+browserInfo = function () {
+  var ua = navigator.userAgent,
+      tem,
+      M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+  if (/trident/i.test(M[1])) {
+    tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+    return 'IE ' + (tem[1] || '');
+  }
+  if (M[1] === 'Chrome') {
+    tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
+    if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+  }
+  M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+  if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
+  return { 'browser': M[0], 'version': M[1] };
+}();
+
 function englishon() {
+
+  if (browserInfo.brower != 'chrome' || browserInfo.version != '52') {
+    console.log('BROWSER NOT SUPPORTED.');
+    return;
+  }
+  console.log('content script**** brower info: ' + browserInfo.brower + '' + browserInfo.version);
   //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
   var DEFAULT_BACKEND_URL = 'http://localhost:8080';
 
