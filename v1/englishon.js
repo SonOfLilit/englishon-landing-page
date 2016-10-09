@@ -8358,7 +8358,7 @@ function englishon() {
     console.log('BROWSER NOT SUPPORTED.');
     return;
   }
-  console.log('content script**** brower info: ' + browserInfo.brower + '' + browserInfo.version);
+  console.log('content script**** browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
   var DEFAULT_BACKEND_URL = 'http://localhost:8080';
 
@@ -8380,6 +8380,7 @@ function englishon() {
   // Store
   configStorage.get(defaults).then(function (config) {
     document.config = config;
+    document.config.isActive = localStorage.getItem('isActive');
     $('body').addClass('eo-language-' + config.targetLanguage);
     if (config.enableTutorial) {
       startTutorial();
