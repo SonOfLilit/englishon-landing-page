@@ -8385,11 +8385,11 @@ function englishon() {
     if (config.enableTutorial) {
       startTutorial();
     }
-    $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
+    // $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
 
-    var overlay = Scraper.scrape();
-    document.overlay = overlay;
-    overlay.showButtons();
+    // var overlay = Scraper.scrape();
+    // document.overlay = overlay;
+    // overlay.showButtons();
 
     //ASK HERE IF ACTIVE
     var auth = new Authenticator(config.backendUrl);
@@ -8412,20 +8412,20 @@ function englishon() {
 }
 
 function loadEnglishon() {
-  // $('body')
-  //   .addClass(location.host.replace(/\./g, '-'))
-  //   .addClass('eo-direction-' + I18N.DIRECTION);
+  $('body')
+    .addClass(location.host.replace(/\./g, '-'))
+    .addClass('eo-direction-' + I18N.DIRECTION);
 
-  //var overlay = Scraper.scrape();
+  var overlay = Scraper.scrape();
   var backend = document.englishonBackend;
-  //document.overlay=overlay;
+  document.overlay=overlay;
   //overlay.setReporter(new Reporter(backend));
   overlay.fetchLinkStates(backend).then(overlay.markLinks.bind(overlay));
   overlay.fetchQuestions(backend).then(function () {
     //if (window.sessionStorage.getItem('isActive')=='on') overlay.showQuestions();
     // Retrieve
     //if(localStorage.getItem('isActive')) overlay.showQuestions();
-    // overlay.showButtons();
+     overlay.showButtons();
 
   });
 
