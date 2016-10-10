@@ -8360,7 +8360,7 @@ function englishon() {
   }
   console.log('content script**** browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
-  var DEFAULT_BACKEND_URL = 'http://localhost:8080';
+  var DEFAULT_BACKEND_URL = 'https://englishon-staging.herokuapp.com';
 
   if (document.__englishon__) {
     console.log("EnglishOn already loaded");
