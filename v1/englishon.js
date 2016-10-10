@@ -8354,7 +8354,7 @@ browserInfo = function () {
 
 function englishon() {
   //Restrict none chrome browsers or chrome versions older than 49
-  if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) >= 47) {
+  if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) <= 46) {
     console.log('BROWSER NOT SUPPORTED.');
     return;
   }
