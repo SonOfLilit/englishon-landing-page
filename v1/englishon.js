@@ -8332,7 +8332,7 @@ if (IN_CHROME) {
   staticUrl = function (resource) {
     //return 'http://127.0.42.1:8080/static/ex/' + resource;
     //return 'http://localhost:8080/static/ex/' + resource;
-    return 'https://www.englishon.org/v1/' + resource;
+    return 'http://www.englishon.org/v1/' + resource;
   };
 }
 
