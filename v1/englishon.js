@@ -8364,7 +8364,7 @@ function englishon() {
     return;
   }
   //THIS LINE IS TEMP
-  if (window.location != 'http://shturem.net/index.php?section=news&id=91635') return;
+  if (window.location != 'http://shturem.net/index.php?section=news&id=91551') return;
   console.log('content script**** browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
   //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
