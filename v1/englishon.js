@@ -8239,7 +8239,7 @@ EnglishOnButton.registerHandlers = function (overlay) {
   Speaker.toggle(document.config.enableSound);
   EnglishOnMenu.addToggleButton('unmute.svg', document.config.enableSound, Speaker.toggle.bind(Speaker));
 
-  if (document.config.editor === true) {
+  if (document.config.editor===true || document.config.editor==="true") {
     EnglishOnMenu.addWidget(createSuperMenu(overlay));
   }
 
