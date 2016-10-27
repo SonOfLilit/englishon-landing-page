@@ -2471,31 +2471,31 @@ body .ui-tooltip {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  src: url("http://www.englishon.org/static/ex/fonts/Roboto-Regular.ttf");
+  src: url("http://www.englishon.org/v1/fonts/Roboto-Regular.ttf");
 }
 @font-face {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  src: url("http://www.englishon.org/static/ex/fonts/Roboto-Bold.ttf");
+  src: url("http://www.englishon.org/v1/fonts/Roboto-Bold.ttf");
 }
 @font-face {
   font-family: "Noto Sans";
   font-style: normal;
   font-weight: 400;
-  src: url("http://www.englishon.org/static/ex/fonts/NotoSans-Regular.ttf");
+  src: url("http://www.englishon.org/v1/fonts/NotoSans-Regular.ttf");
 }
 @font-face {
   font-family: "Noto Sans";
   font-style: normal;
   font-weight: 700;
-  src: url("http://www.englishon.org/static/ex/fonts/NotoSans-Bold.ttf");
+  src: url("http://www.englishon.org/v1/fonts/NotoSans-Bold.ttf");
 }
 @font-face {
   font-family: "Ubuntu";
   font-style: normal;
   font-weight: 700;
-  src: url("http://www.englishon.org/static/ex/fonts/Ubuntu-B.ttf");
+  src: url("http://www.englishon.org/v1/fonts/Ubuntu-B.ttf");
 }
 .eo-box, auto
 div.eo-question,
@@ -2611,7 +2611,7 @@ div.eo-question .eo-options > .eo-option.eo-correct_option::after {
   padding-right: 12px;
   visibility: hidden;
   content: "";
-  background-image: url(http://www.englishon.org/static/ex/img/correct.svg);
+  background-image: url(http://www.englishon.org/v1/img/correct.svg);
   background-size: 15px;
   background-repeat: no-repeat;
   background-position: center;
@@ -2719,16 +2719,16 @@ div.eo-question.eo-active > .eo-mute_button {
   background-size: 14px, 12px;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url(http://www.englishon.org/static/ex/img/question-sound-off.svg);
+  background-image: url(http://www.englishon.org/v1/img/question-sound-off.svg);
 }
 div.eo-question.eo-active > .eo-mute_button:hover {
-  background-image: url(http://www.englishon.org/static/ex/img/question-sound-off-hover.svg);
+  background-image: url(http://www.englishon.org/v1/img/question-sound-off-hover.svg);
 }
 .eo-speaker div.eo-question.eo-active > .eo-mute_button {
-  background-image: url(http://www.englishon.org/static/ex/img/question-sound-on.svg);
+  background-image: url(http://www.englishon.org/v1/img/question-sound-on.svg);
 }
 .eo-speaker div.eo-question.eo-active > .eo-mute_button:hover {
-  background-image: url(http://www.englishon.org/static/ex/img/question-sound-on-hover.svg);
+  background-image: url(http://www.englishon.org/v1/img/question-sound-on-hover.svg);
 }
 div.eo-question > .eo-options {
   position: absolute;
@@ -2886,15 +2886,15 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 
 /* Button */
 .eo-button.eo-button-loading {
-  background-image: url(http://www.englishon.org/static/ex/img/button-loading.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-loading.svg);
   background-size: 21px;
 }
 .eo-button.eo-button-unavailable {
-  background-image: url(http://www.englishon.org/static/ex/img/button-unavailable.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-unavailable.svg);
   background-size: 21px;
 }
 .eo-button.eo-button-off, .eo-button.eo-button-on {
-  background-image: url(http://www.englishon.org/static/ex/img/button-logo.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
   background-size: 21px;
 }
 
@@ -2971,8 +2971,8 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   margin-top: 17px;
   width: 82px;
   height: 21px;
-  background-image: url(http://www.englishon.org/static/ex/img/menu-logotype.svg);
-  /*background-image: url(http://www.englishon.org/static/ex/img/correct.svg);*/
+  background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
+  /*background-image: url(http://www.englishon.org/v1/img/correct.svg);*/
   background-size: contain;
 }
 .eo-menu #eo-header #eo-account > #eo-account-avatar {
@@ -2982,7 +2982,7 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   margin-right: 12px;
   width: 31px;
   height: 31px;
-  background-image: url(http://www.englishon.org/static/ex/img/menu-avatar.svg);
+  background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg);
   background-size: contain;
 }
 .eo-menu #eo-header #eo-account > #eo-account-avatar::after {
@@ -3027,16 +3027,16 @@ body.eo-active .eo-menu #eo-header #eo-toolbar > .eo-toolbar-toggle.eo-toolbar-t
   background-repeat: no-repeat;
 }
 .eo-menu #eo-header #eo-toolbar > .eo-toolbar-button.eo-toolbar-button-speaker {
-  background-image: url(http://www.englishon.org/static/ex/img/menu-sound-off.svg);
+  background-image: url(http://www.englishon.org/v1/img/menu-sound-off.svg);
 }
 .eo-menu #eo-header #eo-toolbar > .eo-toolbar-button.eo-toolbar-button-speaker:hover {
-  background-image: url(http://www.englishon.org/static/ex/img/menu-sound-off-hover.svg);
+  background-image: url(http://www.englishon.org/v1/img/menu-sound-off-hover.svg);
 }
 .eo-speaker .eo-menu #eo-header #eo-toolbar > .eo-toolbar-button.eo-toolbar-button-speaker {
-  background-image: url(http://www.englishon.org/static/ex/img/menu-sound-on.svg);
+  background-image: url(http://www.englishon.org/v1/img/menu-sound-on.svg);
 }
 .eo-speaker .eo-menu #eo-header #eo-toolbar > .eo-toolbar-button.eo-toolbar-button-speaker:hover {
-  background-image: url(http://www.englishon.org/static/ex/img/menu-sound-on-hover.svg);
+  background-image: url(http://www.englishon.org/v1/img/menu-sound-on-hover.svg);
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option {
   height: 32px;
@@ -3078,19 +3078,19 @@ body.eo-active .eo-menu > .eo-language_picker > .eo-language_picker-option {
   right: 25px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-en::before {
-  background-image: url(http://www.englishon.org/static/ex/img/button-on-en.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-on-en.svg);
   background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-es::before {
-  background-image: url(http://www.englishon.org/static/ex/img/button-on-es.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-on-es.svg);
   background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-fr::before {
-  background-image: url(http://www.englishon.org/static/ex/img/button-on-fr.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-on-fr.svg);
   background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-zh::before {
-  background-image: url(http://www.englishon.org/static/ex/img/button-on-zh.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-on-zh.svg);
   background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option:hover, body.eo-active.eo-language-en .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-en, body.eo-active.eo-language-es .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-es, body.eo-active.eo-language-fr .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-fr, body.eo-active.eo-language-zh .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-zh {
@@ -3111,7 +3111,7 @@ body.eo-tutorial.eo-tutorial-1 .eo-menu::after {
   position: absolute;
   top: 100px;
   left: 110%;
-  background-image: url(http://www.englishon.org/static/ex/img/tutorial-pick_language.png);
+  background-image: url(http://www.englishon.org/v1/img/tutorial-pick_language.png);
   height: 104px;
   width: 218px;
 }
@@ -3121,7 +3121,7 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   position: absolute;
   top: -146px;
   left: -33px;
-  background-image: url(http://www.englishon.org/static/ex/img/tutorial-translate.png);
+  background-image: url(http://www.englishon.org/v1/img/tutorial-translate.png);
   height: 119px;
   width: 232px;
 }
@@ -3202,21 +3202,21 @@ body.www-bloombergview-com .eo-button:hover {
   width: 50px !important;
 }
 body.www-bloombergview-com .eo-button.eo-button-loading {
-  background-image: url(http://www.englishon.org/static/ex/img/button-loading-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-loading-white.svg);
   background-size: 21px;
 }
 body.www-bloombergview-com .eo-button.eo-button-unavailable {
-  background-image: url(http://www.englishon.org/static/ex/img/button-unavailable-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-unavailable-white.svg);
   background-size: 21px;
 }
 body.www-bloombergview-com .eo-button.eo-button-off, body.www-bloombergview-com .eo-button.eo-button-on {
-  background-image: url(http://www.englishon.org/static/ex/img/button-logo-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo-white.svg);
   background-size: 21px;
 }
 body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-off::before, body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-on::before {
   width: 17px;
   height: 17px;
-  background-image: url(http://www.englishon.org/static/ex/img/notification.svg);
+  background-image: url(http://www.englishon.org/v1/img/notification.svg);
   margin-top: 8px;
   margin-left: 8px;
 }
