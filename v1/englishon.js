@@ -8335,7 +8335,7 @@ if (IN_CHROME) {
   staticUrl = chrome.extension.getURL;
 } else {
   staticUrl = function (resource) {
-    return '//www.englishon.org/' + resource;
+    return '//www.englishon.org/v1/' + resource;
   };
 }
 
