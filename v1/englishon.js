@@ -8225,21 +8225,16 @@ EnglishOnButton.registerHandlers = function (overlay) {
     }
   });
 
-  console.log('registerHandlers****stage 1');
   EnglishOnMenu.addToggleSwitch('eo-toolbar-toggle-active', togglePower);
-  console.log('registerHandlers****stage 2');
   EnglishOnMenu.addToggleButton('speaker', toggleSound);
-  console.log('registerHandlers****stage 3');
   EnglishOnMenu.addWidget(createLanguagePicker(overlay, togglePower));
-  console.log('registerHandlers****stage 4');
   EnglishOnMenu.addWidget(createLoginBtn());
-  console.log('registerHandlers****stage 5');
   //EnglishOnMenu.addWidget(createOnSwitch());
   //console.log ('registerHandlers****stage 6');
   Speaker.toggle(document.config.enableSound);
   EnglishOnMenu.addToggleButton('unmute.svg', document.config.enableSound, Speaker.toggle.bind(Speaker));
 
-  if (document.config.editor===true || document.config.editor==="true") {
+  if (document.config.editor === true || document.config.editor === "true") {
     EnglishOnMenu.addWidget(createSuperMenu(overlay));
   }
 
@@ -8263,6 +8258,7 @@ EnglishOnButton.registerHandlers = function (overlay) {
       document.config.token = null;
       auth.login(document.config.token).then(function (token) {
         $('#onSwitch').text('Start englishon now!');
+        $('body').toggleClass('eo-active', false);
         console.log("receiveMessage ******** token: " + token);
         $('#eo-account-avatar').css("background-image", "url(" + document.englishonBackend.base + "/static/ex/img/menu-avatar.svg)");
         configStorage.set({ token: token });
@@ -8276,6 +8272,7 @@ EnglishOnButton.registerHandlers = function (overlay) {
       document.englishonBackend.token = django_token;
       childWindow.postMessage(django_token, document.englishonBackend.base);
       $('#onSwitch').text('Pause englishon');
+      $('body').toggleClass('eo-active', true);
       localStorage.setItem("isActive", true);
       document.overlay.showQuestions();
       $('#eo-account-avatar').css("background-image", "url(" + img + ")");
@@ -8335,7 +8332,8 @@ if (IN_CHROME) {
   staticUrl = chrome.extension.getURL;
 } else {
   staticUrl = function (resource) {
-    return '//www.englishon.org/v1/' + resource;
+    //return 'http://localhost:8080/static/ex/' + resource;
+    return 'http://www.englishon.org/v1/' + resource;
   };
 }
 
@@ -8363,7 +8361,9 @@ function englishon() {
     return;
   }
   //THIS LINE IS TEMP
-  if (window.location != 'http://shturem.net/index.php?section=news&id=91551') return;
+  if (window.location != 'http://shturem.net/index.php?section=news&id=91551') {
+    return;
+  }
   console.log('content script**** browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
   //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
