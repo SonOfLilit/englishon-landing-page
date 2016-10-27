@@ -6470,9 +6470,9 @@ if (chrome && chrome.extension) {
     set: function (stuff) {
       $.each(stuff, function (k, v) {
         if (v !== null) {
-          window.sessionStorage.setItem(k, v);
+          window.localStorage.setItem(k, v);
         } else {
-          window.sessionStorage.removeItem(k);
+          window.localStorage.removeItem(k);
         }
       });
       $.extend(document.config, stuff);
@@ -6481,7 +6481,7 @@ if (chrome && chrome.extension) {
     get: function (stuff) {
       var r = {};
       $.each(stuff, function (k, v) {
-        r[k] = window.sessionStorage.getItem(k) || v;
+        r[k] = window.localStorage.getItem(k) || v;
       });
       return $.Deferred().resolve(r);
     }
@@ -6667,6 +6667,7 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
     dataType: 'json',
     beforeSend: function (xhr, settings) {
       xhr.setRequestHeader('Authorization', 'Token ' + token);
+      //xhr.setRequestHeader('Authorization', token);
     }
   };
   return $.ajax(requestData).then(null, function (xhr, type) {
@@ -7380,7 +7381,7 @@ AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesT
   // force repaint
   this.element.width();
   // explicitly set target width
-  if (future_point < parentoffset) console.log('edge question!!!');else this.element.css('width', finalWidth + 1);
+  if (future_point < parentoffset) console.log('edge question!');else this.element.css('width', finalWidth + 1);
 };
 
 AbstractQuestion.prototype.closeUnanswered = function () {
@@ -7615,10 +7616,17 @@ MultipleChoice.prototype.createElement = function () {
   var element = AbstractQuestion.prototype.createElement.call(this);
   element.addClass('eo-multiple_choice');
   this.options = $('<ul>').addClass('eo-options').append(answers.map(function (answer) {
-    var li = $('<li>').addClass('eo-option').append($('<span>').text(answer));
+    if (answer.includes('_')) {
+      var li = $('<li>').addClass('eo-option')
+      //replacing '_' with none breakable HTML CODE, so the word will not displayed in two lines
+      .append($('<span>' + answer.substring(0, answer.indexOf('_')) + '&#8209;' + answer.substring(answer.indexOf('_') + 1, answer.length) + '</span>'));
+    } else {
+      var li = $('<li>').addClass('eo-option').append($('<span>').text(answer));
+    }
     if (answer === this.correct[0]) {
       li.addClass('eo-correct_option');
     }
+
     return li;
   }.bind(this)));
   element.find('.eo-hint').after(this.options);
@@ -7791,11 +7799,12 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.markLinks = function (links) {};
 
   this.showButtons = function () {
+    //this.injector = new Injector(this.paragraphs);
     $('div#top_menu_block').append(EnglishOnButton.element);
     EnglishOnButton.registerHandlers(this);
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
-  };
+  }.bind(this);
 
   this.fetchQuestions = function (backend) {
     // TODO: these are questions for the subtitle.
@@ -7803,18 +7812,21 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     return backend.getArticle(this.url).then(function (questions) {
       this.questions = questions;
       console.log("Num questions: " + questions.length);
+      console.log('FETCH  FETCH  FETCH  QUESTIONS22222222!!!!');
       this.injector = new Injector(this.paragraphs);
       this.injector.setQuestions(questions);
+      document.overlay.injector.setQuestions(questions);
+      return questions;
     }.bind(this));
   };
 
   this.showQuestions = function () {
-    this.injector.on();
-  };
+    if (this.injector) this.injector.on();
+  }.bind(this);
 
   this.hideQuestions = function () {
-    this.injector.off();
-  };
+    if (this.injector) this.injector.off();
+  }.bind(this);
 };
 //
 Scraper = new function () {
@@ -7837,6 +7849,7 @@ Scraper = new function () {
 }();
 
 var ShturemArticleScraper = function () {
+
   this.scrape = function () {
     url = document.URL.replace(/#.*$/, '');
     var subtitle = $('span.artSubtitle')[0];
@@ -7848,6 +7861,7 @@ var ShturemArticleScraper = function () {
 };
 
 var ShturemFrontPageScraper = function () {
+  console.log('option 4');
   this.scrape = function () {
     var parts = {};
     $('td.mainpn_text').each(function (i, para) {
@@ -7975,14 +7989,7 @@ var EnglishOnMenu = new function () {
   };
 
   var header = $('<div>', { id: 'eo-header' });
-  var account = $('<div>', { id: 'eo-account' }).append($('<div>', { id: 'eo-account-avatar' }).click(function (e) {
-    e.preventDefault();
-    var auth = new Authenticator(document.config.backendUrl);
-    auth.getToken().then(function (token) {
-      configStorage.set({ token: token });
-      location.reload();
-    });
-  }));
+  var account = $('<div>', { id: 'eo-account' }).append($('<div>', { id: 'eo-account-avatar' }));
   header.append(account);
   var toolbar = $('<div>', { id: 'eo-toolbar' });
   header.append(toolbar);
@@ -8134,12 +8141,13 @@ function createSuperMenu(overlay) {
 function createLoginBtn() {
   //var token=encodeURIComponent(document.englishonBackend.token) + '/'
   var token = encodeURIComponent(document.englishonBackend.token);
-
-  var iframe_elem = '<iframe src=' + document.englishonBackend.base + '/tokens/login/?token=' + token + '" style="width:160px;height:60px" id="iframe"><p>Your browser does not support iframes.</p></iframe>';
+  if (document.config.isUser) var google_login_elem = '<iframe src=' + document.englishonBackend.base + '/tokens/login/?token=' + token + '" style="width:160px;height:60px" id="iframe"><p>Your browser does not support iframes.</p></iframe>';else var google_login_elem = $('<button>').text('Login by Google').addClass('eo-superuser-button').on('click', function () {
+    console.log('Login by google for non_user');
+  });
   var btn_login = $('<button>').text('Login by mail').addClass('eo-superuser-button').on('click', function () {
     console.log('Login by mail');
   });
-  var element = $('<div>').append($('<div>').append(btn_login)).append($('<div>').append(iframe_elem)).addClass('eo-superuser');
+  var element = $('<div>').append($('<div>').append(btn_login)).append($('<div>').append(google_login_elem)).addClass('eo-superuser');
 
   $('#djDebugToolbarHandle').css('display', 'none');
   return element;
@@ -8187,8 +8195,6 @@ var toggler = function (cls, configEntry, toggle_func) {
       enabled = !document.config[configEntry];
     }
     toggle_func(enabled);
-    //console.log('sidebar.toggle sound****'+enabled);
-    //console.log('sidebar.toggle sound****'+toggle_func);
     $('body').toggleClass(cls, enabled);
     var config = {};
     config[configEntry] = enabled;
@@ -8198,27 +8204,20 @@ var toggler = function (cls, configEntry, toggle_func) {
 
 EnglishOnButton.registerHandlers = function (overlay) {
   var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
-  // var togglePower =  function (target) {
-  //             if(localStorage.getItem('isActive')== 'off'){
-  //             console.log('Start englishon');
-  //             document.overlay.showQuestions();
-  //             localStorage.setItem("isActive", "on");
-  //             }
-  //             else { 
-  //               document.overlay.hideQuestions();
-  //                //target.text('Start englishon now!');
-  //               localStorage.setItem("isActive", "off");
-  //              }
-  //            // target.toggleClass('eo-toolbar-toggle-active')
-  // };
 
   var togglePower = toggler('eo-active', 'isActive', function (enable) {
     console.log('togglePower****' + enable);
+
     if (enable) {
       document.overlay.showQuestions();
 
       localStorage.setItem("isActive", true);
       document.config.isActive = true;
+      if (!document.config.isUser) {
+        console.log('a none user execute englishon for the first time...well done!');
+        configStorage.set({ 'isUser': true });
+        window.location.reload();
+      }
     } else {
       document.overlay.hideQuestions();
       localStorage.setItem("isActive", false);
@@ -8226,15 +8225,21 @@ EnglishOnButton.registerHandlers = function (overlay) {
     }
   });
 
+  console.log('registerHandlers****stage 1');
   EnglishOnMenu.addToggleSwitch('eo-toolbar-toggle-active', togglePower);
+  console.log('registerHandlers****stage 2');
   EnglishOnMenu.addToggleButton('speaker', toggleSound);
+  console.log('registerHandlers****stage 3');
   EnglishOnMenu.addWidget(createLanguagePicker(overlay, togglePower));
+  console.log('registerHandlers****stage 4');
   EnglishOnMenu.addWidget(createLoginBtn());
-  EnglishOnMenu.addWidget(createOnSwitch());
+  console.log('registerHandlers****stage 5');
+  //EnglishOnMenu.addWidget(createOnSwitch());
+  //console.log ('registerHandlers****stage 6');
   Speaker.toggle(document.config.enableSound);
   EnglishOnMenu.addToggleButton('unmute.svg', document.config.enableSound, Speaker.toggle.bind(Speaker));
 
-  if (document.config.editor) {
+  if (document.config.editor === true) {
     EnglishOnMenu.addWidget(createSuperMenu(overlay));
   }
 
@@ -8272,10 +8277,10 @@ EnglishOnButton.registerHandlers = function (overlay) {
       childWindow.postMessage(django_token, document.englishonBackend.base);
       $('#onSwitch').text('Pause englishon');
       localStorage.setItem("isActive", true);
+      document.overlay.showQuestions();
       $('#eo-account-avatar').css("background-image", "url(" + img + ")");
       //TODO:  this line does not working
       //$('#eo-account').before().css("background-image", "url(http://localhost:8080/static/ex/img/button-on-es.svg)") ;
-      $('#eo-account-avatar').css("background-image", "url(" + img + ")");
       if (localStorage.getItem('email') && localStorage.getItem('email') != email) {
         window.location.reload();
       }
@@ -8331,8 +8336,7 @@ if (IN_CHROME) {
 } else {
   staticUrl = function (resource) {
     //return 'http://127.0.42.1:8080/static/ex/' + resource;
-    //return 'http://localhost:8080/static/ex/' + resource;
-    return 'http://www.englishon.org/v1/' + resource;
+    return 'http://localhost:8080/static/ex/' + resource;
   };
 }
 
@@ -8359,8 +8363,11 @@ function englishon() {
     console.log('BROWSER NOT SUPPORTED.');
     return;
   }
+  //THIS LINE IS TEMP
+  if (window.location != 'http://shturem.net/index.php?section=news&id=91635') return;
   console.log('content script**** browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
+  //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
   var DEFAULT_BACKEND_URL = 'https://englishon-staging.herokuapp.com';
 
   if (document.__englishon__) {
@@ -8372,62 +8379,77 @@ function englishon() {
   var defaults = {
     'token': null,
     'backendUrl': DEFAULT_BACKEND_URL,
-    //'isActive': false,
+    'isActive': false,
     'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
     'enableSound': true,
     'enableTutorial': true,
-    'editor': false
+    'editor': false,
+    'isUser': false
   };
   // Store
   configStorage.get(defaults).then(function (config) {
     document.config = config;
-    document.config.isActive = localStorage.getItem('isActive');
+    //document.config.isActive=localStorage.getItem('isActive');
     $('body').addClass('eo-language-' + config.targetLanguage);
     if (config.enableTutorial) {
       startTutorial();
     }
-    // $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
+    $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
 
-    // var overlay = Scraper.scrape();
-    // document.overlay = overlay;
-    // overlay.showButtons();
+    var overlay = Scraper.scrape();
+    document.overlay = overlay;
 
-    //ASK HERE IF ACTIVE
-    var auth = new Authenticator(config.backendUrl);
-    console.log('content script ********config.token:  ' + config.token);
-    return auth.login(config.token).then(function (token) {
-      console.log("content script ******** token: " + token);
-      configStorage.set({ token: token });
-      return new HerokuBackend(config.backendUrl, token);
-    });
+    console.log('stage 1');
+    if (document.config.isUser) {
+      console.log('Englishon user arrived!!!!  YESH!!!! ');
+      var auth = new Authenticator(config.backendUrl);
+      return auth.login(config.token).then(function (token) {
+        configStorage.set({ token: token });
+        return new HerokuBackend(config.backendUrl, token);
+      });
+    } else {
+      console.log('none user arrived!!!!  YESH!!!! ');
+      return new HerokuBackend(config.backendUrl, 'NON_USER');
+    }
+
+    return backend;
   }).then(function (backend) {
-    //Aur bring here id
-    return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
-      document.internal_id = internal_id;
-      return backend;
-    });
-  }).then(function (backend) {
+    console.log('stage 2 before fetch questions');
     document.englishonBackend = backend;
-    loadEnglishon();
+    if (document.config.isUser) {
+      //loadEnglishon();
+      document.overlay.fetchLinkStates(backend).then(document.overlay.markLinks.bind(document.overlay));
+      document.overlay.fetchQuestions(backend).then(function (questions) {
+        //console.log('SHOW SHOW SHOW SHOW QUESTIONS.injector elements length: '+document.overlay.injector.elements.length);  
+        console.log('stage 3 after fetch questions.injector elements length: ' + document.overlay.injector.elements.length);
+        document.overlay.injector.on();
+        //document.overlay.showQuestions();
+      });
+
+      //console.log('FETCH  FETCH  FETCH  QUESTIONS11111111!!!!');              
+    }
+  }).then(function () {
+
+    if (document.config.editor) {
+      return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
+        console.log('Fetched internal id');
+        document.internal_id = internal_id;
+      });
+    }
+  }).then(function () {
+    console.log('stage 4 before show buttons');
+    document.overlay.showButtons();
   });
 }
 
 function loadEnglishon() {
-  $('body')
-    .addClass(location.host.replace(/\./g, '-'))
-    .addClass('eo-direction-' + I18N.DIRECTION);
 
-  var overlay = Scraper.scrape();
   var backend = document.englishonBackend;
-  document.overlay=overlay;
-  //overlay.setReporter(new Reporter(backend));
-  overlay.fetchLinkStates(backend).then(overlay.markLinks.bind(overlay));
-  overlay.fetchQuestions(backend).then(function () {
-    //if (window.sessionStorage.getItem('isActive')=='on') overlay.showQuestions();
-    // Retrieve
-    //if(localStorage.getItem('isActive')) overlay.showQuestions();
-     overlay.showButtons();
-
+  document.overlay.fetchLinkStates(backend).then(document.overlay.markLinks.bind(document.overlay));
+  document.overlay.fetchQuestions(backend).then(function (questions) {
+    console.log('SHOW SHOW SHOW SHOW QUESTIONS.injector elements length: ' + document.overlay.injector.elements.length);
+    document.overlay.injector.on();
+    //document.overlay.showQuestions();
   });
 
   console.log("i am here! loadEnglishon");
