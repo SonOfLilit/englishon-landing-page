@@ -8187,6 +8187,8 @@ function createOnSwitch() {
 var toggler = function (cls, configEntry, toggle_func) {
   // initialize
   var initial = !!document.config[configEntry];
+  console.log('document.config*****: ' + document.config.isActive);
+  console.log('initial*****: ' + initial);
   toggle_func(initial);
   $('body').toggleClass(cls, initial);
   return function (enabled) {
@@ -8201,6 +8203,7 @@ var toggler = function (cls, configEntry, toggle_func) {
     configStorage.set(config);
   };
 };
+//CAN I SEE THIS LINE HERE?
 
 EnglishOnButton.registerHandlers = function (overlay) {
   var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
@@ -8210,9 +8213,9 @@ EnglishOnButton.registerHandlers = function (overlay) {
 
     if (enable) {
       document.overlay.showQuestions();
-
-      localStorage.setItem("isActive", true);
-      document.config.isActive = true;
+      configStorage.set({ 'isActive': true });
+      // localStorage.setItem("isActive", true);
+      // document.config.isActive=true;
       if (!document.config.isUser) {
         console.log('a none user execute englishon for the first time...well done!');
         configStorage.set({ 'isUser': true });
@@ -8220,8 +8223,9 @@ EnglishOnButton.registerHandlers = function (overlay) {
       }
     } else {
       document.overlay.hideQuestions();
-      localStorage.setItem("isActive", false);
-      document.config.isActive = false;
+      configStorage.set({ 'isActive': false });
+      // localStorage.setItem("isActive", false);
+      // document.config.isActive = false;
     }
   });
 
@@ -8388,7 +8392,7 @@ function englishon() {
   // Store
   configStorage.get(defaults).then(function (config) {
     document.config = config;
-    //document.config.isActive=localStorage.getItem('isActive');
+    console.log('initial content script*****: ' + document.config.isActive);
     $('body').addClass('eo-language-' + config.targetLanguage);
     if (config.enableTutorial) {
       startTutorial();
@@ -8424,8 +8428,6 @@ function englishon() {
         document.overlay.injector.on();
         //document.overlay.showQuestions();
       });
-
-      //console.log('FETCH  FETCH  FETCH  QUESTIONS11111111!!!!');              
     }
   }).then(function () {
 
