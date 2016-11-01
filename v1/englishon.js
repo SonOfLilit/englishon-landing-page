@@ -8186,16 +8186,20 @@ function createOnSwitch() {
  */
 var toggler = function (cls, configEntry, toggle_func) {
   // initialize
-  var initial = !!document.config[configEntry];
-  console.log('document.config*****: ' + document.config.isActive);
-  console.log('initial*****: ' + initial);
+  //var initial = !!document.config[configEntry];
+  var initial = JSON.parse(document.config[configEntry]);
+  console.log('configEntry: ' + configEntry);
+  console.log('document.config[configEntry]*****: ' + document.config[configEntry]);
+  console.log('initial,sopposed to be the same*****: ' + initial);
   toggle_func(initial);
-  $('body').toggleClass(cls, initial);
   return function (enabled) {
     //CHECK WELL THIS LINE
-    if (enabled == null || enabled == false) {
+    if (enabled == null) {
       enabled = !document.config[configEntry];
     }
+    //if (enabled==='false') enabled=false;
+    //if (enabled==='true') enabled=true;
+    enabled = JSON.parse(enabled);
     toggle_func(enabled);
     $('body').toggleClass(cls, enabled);
     var config = {};
@@ -8203,29 +8207,30 @@ var toggler = function (cls, configEntry, toggle_func) {
     configStorage.set(config);
   };
 };
-//CAN I SEE THIS LINE HERE?
 
 EnglishOnButton.registerHandlers = function (overlay) {
   var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
-
+  //toggler is 
   var togglePower = toggler('eo-active', 'isActive', function (enable) {
-    console.log('togglePower****' + enable);
+    console.log('I am in initial.togglePower****' + enable);
 
-    if (enable) {
+    //if (enable==='true' || enable==true) {
+    if (JSON.parse(enable)) {
+      console.log('I am in initial. I saw isActive is true.really??????????');
       document.overlay.showQuestions();
       configStorage.set({ 'isActive': true });
-      // localStorage.setItem("isActive", true);
-      // document.config.isActive=true;
+      $('body').toggleClass('eo-active', true);
+
       if (!document.config.isUser) {
         console.log('a none user execute englishon for the first time...well done!');
         configStorage.set({ 'isUser': true });
         window.location.reload();
       }
     } else {
+      console.log('I am in initial. I saw isActive is false');
       document.overlay.hideQuestions();
       configStorage.set({ 'isActive': false });
-      // localStorage.setItem("isActive", false);
-      // document.config.isActive = false;
+      $('body').toggleClass('eo-active', false);
     }
   });
 
@@ -8329,14 +8334,16 @@ function createLogoutButton() {
 // **************
 // Initialization
 // **************
-
 var IN_CHROME = window.chrome && chrome.runtime && chrome.runtime.id;
+
 var staticUrl = undefined;
-if (IN_CHROME) {
-  staticUrl = chrome.extension.getURL;
+
+if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
+  staticUrl = function (resource) {
+    return 'http://localhost:8080/static/ex/' + resource;
+  };
 } else {
   staticUrl = function (resource) {
-    //return 'http://localhost:8080/static/ex/' + resource;
     return 'http://www.englishon.org/v1/' + resource;
   };
 }
@@ -8368,7 +8375,7 @@ function englishon() {
   if (window.location != 'http://shturem.net/index.php?section=news&id=91551') {
     return;
   }
-  console.log('content script**** browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
+  //console.log('content script**** browser info: '+browserInfo.browser+' '+browserInfo.version);  
   //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
   //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
@@ -8386,7 +8393,7 @@ function englishon() {
     'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
     'enableSound': true,
     'enableTutorial': true,
-    'editor': false,
+    'editor': true,
     'isUser': false
   };
   // Store
@@ -8402,16 +8409,13 @@ function englishon() {
     var overlay = Scraper.scrape();
     document.overlay = overlay;
 
-    console.log('stage 1');
     if (document.config.isUser) {
-      console.log('Englishon user arrived!!!!  YESH!!!! ');
       var auth = new Authenticator(config.backendUrl);
       return auth.login(config.token).then(function (token) {
         configStorage.set({ token: token });
         return new HerokuBackend(config.backendUrl, token);
       });
     } else {
-      console.log('none user arrived!!!!  YESH!!!! ');
       return new HerokuBackend(config.backendUrl, 'NON_USER');
     }
 
@@ -8423,8 +8427,6 @@ function englishon() {
       //loadEnglishon();
       document.overlay.fetchLinkStates(backend).then(document.overlay.markLinks.bind(document.overlay));
       document.overlay.fetchQuestions(backend).then(function (questions) {
-        //console.log('SHOW SHOW SHOW SHOW QUESTIONS.injector elements length: '+document.overlay.injector.elements.length);  
-        console.log('stage 3 after fetch questions.injector elements length: ' + document.overlay.injector.elements.length);
         document.overlay.injector.on();
         //document.overlay.showQuestions();
       });
@@ -8438,7 +8440,6 @@ function englishon() {
       });
     }
   }).then(function () {
-    console.log('stage 4 before show buttons');
     document.overlay.showButtons();
   });
 }
@@ -8448,7 +8449,6 @@ function loadEnglishon() {
   var backend = document.englishonBackend;
   document.overlay.fetchLinkStates(backend).then(document.overlay.markLinks.bind(document.overlay));
   document.overlay.fetchQuestions(backend).then(function (questions) {
-    console.log('SHOW SHOW SHOW SHOW QUESTIONS.injector elements length: ' + document.overlay.injector.elements.length);
     document.overlay.injector.on();
     //document.overlay.showQuestions();
   });
