@@ -7088,6 +7088,7 @@ Editor.prototype.highlight = function () {
   this.ps = [];
   this.paragraphs.each(function (i, p) {
     p = $(p);
+    $('.artText a').text('HERE IS A LINK!!!!!!');
     var text = p.text();
     this.ps.push(text);
     p.empty();
@@ -7327,9 +7328,11 @@ AbstractQuestion.prototype.replacement = function () {
 };
 
 AbstractQuestion.prototype.createElement = function () {
-  return $('<div style="margin-bottom:0">').addClass('eo-question').addClass(this.languageOrderClass()).append($('<span>').addClass('eo-correct').text(this.correct[0])).append($('<span>').addClass('eo-hint').text(this.data.hint)).append($('<span>').addClass('eo-mute_button').click(function () {
-    this.toggleSound();
-  }.bind(this))).append($('<span>').addClass('eo-progress').append($('<span>').addClass('eo-progress-inner')));
+  return $('<div style="margin-bottom:0">').addClass('eo-question').addClass(this.languageOrderClass()).append($('<span>').addClass('eo-correct').text(this.correct[0])).append($('<span>').addClass('eo-hint').text(this.data.hint))
+  // .append($('<span>')
+  //   .addClass('eo-mute_button')
+  //   .click(function () { this.toggleSound(); }.bind(this)))
+  .append($('<span>').addClass('eo-progress').append($('<span>').addClass('eo-progress-inner')));
 };
 
 AbstractQuestion.prototype.bindInput = function () {
