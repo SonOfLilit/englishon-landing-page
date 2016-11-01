@@ -8396,7 +8396,7 @@ function englishon() {
     'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
     'enableSound': true,
     'enableTutorial': true,
-    'editor': true,
+    'editor': false,
     'isUser': false
   };
   // Store
