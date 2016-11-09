@@ -3027,6 +3027,7 @@ body.eo-active .eo-menu #eo-header #eo-toolbar > .eo-toolbar-toggle.eo-toolbar-t
   background-repeat: no-repeat;
 }
 .eo-menu #eo-header #eo-toolbar > .eo-toolbar-button.eo-toolbar-button-speaker {
+  cursor: pointer;
   background-image: url(http://www.englishon.org/v1/img/menu-sound-off.svg);
 }
 .eo-menu #eo-header #eo-toolbar > .eo-toolbar-button.eo-toolbar-button-speaker:hover {
