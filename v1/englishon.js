@@ -8192,22 +8192,21 @@ var toggler = function (cls, configEntry, toggle_func) {
   //var initial = !!document.config[configEntry];
   var initial = JSON.parse(document.config[configEntry]);
   console.log('configEntry: ' + configEntry);
-  console.log('document.config[configEntry]*****: ' + document.config[configEntry]);
-  console.log('initial,sopposed to be the same*****: ' + initial);
+  console.log("side bar1.value of isActive: " + document.config.isActive);
   toggle_func(initial);
+  $('body').toggleClass(cls, initial);
   return function (enabled) {
     //CHECK WELL THIS LINE
     if (enabled == null) {
-      enabled = !document.config[configEntry];
+      enabled = !JSON.parse(document.config[configEntry]);
     }
-    //if (enabled==='false') enabled=false;
-    //if (enabled==='true') enabled=true;
-    enabled = JSON.parse(enabled);
-    toggle_func(enabled);
-    $('body').toggleClass(cls, enabled);
     var config = {};
     config[configEntry] = enabled;
     configStorage.set(config);
+    console.log('buttton pressed!!!!');
+    //enabled=JSON.parse(enabled);
+    toggle_func(enabled);
+    $('body').toggleClass(cls, enabled);
   };
 };
 
@@ -8219,10 +8218,9 @@ EnglishOnButton.registerHandlers = function (overlay) {
 
     //if (enable==='true' || enable==true) {
     if (JSON.parse(enable)) {
-      console.log('I am in initial. I saw isActive is true.really??????????');
       document.overlay.showQuestions();
-      configStorage.set({ 'isActive': true });
-      $('body').toggleClass('eo-active', true);
+      //configStorage.set({'isActive': true});
+      //$('body').toggleClass('eo-active', true);
 
       if (!document.config.isUser) {
         console.log('a none user execute englishon for the first time...well done!');
@@ -8230,21 +8228,20 @@ EnglishOnButton.registerHandlers = function (overlay) {
         window.location.reload();
       }
     } else {
-      console.log('I am in initial. I saw isActive is false');
       document.overlay.hideQuestions();
-      configStorage.set({ 'isActive': false });
-      $('body').toggleClass('eo-active', false);
+      //configStorage.set({'isActive': false});
+      //$('body').toggleClass('eo-active', false);
     }
   });
 
+  console.log("side bar2.value of isActive: " + document.config.isActive);
   EnglishOnMenu.addToggleSwitch('eo-toolbar-toggle-active', togglePower);
   EnglishOnMenu.addToggleButton('speaker', toggleSound);
   EnglishOnMenu.addWidget(createLanguagePicker(overlay, togglePower));
   EnglishOnMenu.addWidget(createLoginBtn());
-  //EnglishOnMenu.addWidget(createOnSwitch());
-  //console.log ('registerHandlers****stage 6');
   Speaker.toggle(document.config.enableSound);
   EnglishOnMenu.addToggleButton('unmute.svg', document.config.enableSound, Speaker.toggle.bind(Speaker));
+  console.log("side bar3.value of isActive: " + document.config.isActive);
 
   if (document.config.editor === true || document.config.editor === "true") {
     EnglishOnMenu.addWidget(createSuperMenu(overlay));
@@ -8269,7 +8266,6 @@ EnglishOnButton.registerHandlers = function (overlay) {
       var auth = new Authenticator(document.config.backendUrl);
       document.config.token = null;
       auth.login(document.config.token).then(function (token) {
-        $('#onSwitch').text('Start englishon now!');
         $('body').toggleClass('eo-active', false);
         console.log("receiveMessage ******** token: " + token);
         $('#eo-account-avatar').css("background-image", "url(" + document.englishonBackend.base + "/static/ex/img/menu-avatar.svg)");
@@ -8280,23 +8276,30 @@ EnglishOnButton.registerHandlers = function (overlay) {
       });
     } else {
       //user sign in!
-      configStorage.set({ token: django_token });
-      document.englishonBackend.token = django_token;
-      childWindow.postMessage(django_token, document.englishonBackend.base);
-      $('#onSwitch').text('Pause englishon');
-      $('body').toggleClass('eo-active', true);
-      localStorage.setItem("isActive", true);
-      document.overlay.showQuestions();
-      $('#eo-account-avatar').css("background-image", "url(" + img + ")");
-      //TODO:  this line does not working
-      //$('#eo-account').before().css("background-image", "url(http://localhost:8080/static/ex/img/button-on-es.svg)") ;
-      if (localStorage.getItem('email') && localStorage.getItem('email') != email) {
-        window.location.reload();
+
+      if (!localStorage.getItem('email')) {
+        console.log("THIS IS A REAL LOGIN");
+        configStorage.set({ token: django_token });
+        document.englishonBackend.token = django_token;
+        childWindow.postMessage(django_token, document.englishonBackend.base);
+        $('body').toggleClass('eo-active', true);
+        configStorage.set({ 'isActive': true });
+        document.overlay.showQuestions();
+        $('#eo-account-avatar').css("background-image", "url(" + img + ")");
+        localStorage.setItem('email', email);
+        //TODO:  this line does not working
+        //$('#eo-account').before().css("background-image", "url(http://localhost:8080/static/ex/img/button-on-es.svg)") ;
       }
 
-      localStorage.setItem('email', email);
+      //Situation of switching users
+      if (localStorage.getItem('email') && localStorage.getItem('email') != email) {
+        //to enable reply to the questions from begining
+        localStorage.setItem('email', email);
+        window.location.reload();
+      }
     }
   }
+  console.log("side bar4.value of isActive: " + document.config.isActive);
 };
 //
 // *********
