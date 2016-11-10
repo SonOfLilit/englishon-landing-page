@@ -7167,6 +7167,19 @@ Editor.prototype.highlight = function () {
   }.bind(this));
 };
 //
+jQuery.fn.extend({
+  toggleText: function (a, b) {
+    var that = this;
+    if (that.text() != a && that.text() != b) {
+      that.text(a);
+    } else if (that.text() == a) {
+      that.text(b);
+    } else if (that.text() == b) {
+      that.text(a);
+    }
+    return this;
+  }
+});
 Injector = function (paragraphs) {
   var interacted = false;
 
@@ -7491,6 +7504,7 @@ AbstractQuestion.prototype.markAnswered = function () {
   // change state
   this.element.removeClass('eo-active');
   this.element.addClass('eo-answered');
+
   // force repaint
   correct.width();
   // explicitly set target and width
@@ -7685,7 +7699,13 @@ MultipleChoice.prototype.closeAnswered = function () {
   correct.css('top', initialTop);
   // force repaint
   correct.width();
-
+  org = this.data.hint;
+  answer = this.data.correct_answers[0].answer;
+  this.element.on('click', function (e) {
+    var target = $(e.target);
+    target.toggleText(org, answer);
+    Speaker.speak(document.config.targetLanguage, target.text());
+  });
   AbstractQuestion.prototype.closeAnswered.call(this);
 
   correct.css('top', 0);
@@ -8276,6 +8296,7 @@ EnglishOnButton.registerHandlers = function (overlay) {
       });
     } else {
       //user sign in!
+      $('#eo-account-avatar').css("background-image", "url(" + img + ")");
 
       if (!localStorage.getItem('email')) {
         console.log("THIS IS A REAL LOGIN");
@@ -8285,7 +8306,6 @@ EnglishOnButton.registerHandlers = function (overlay) {
         $('body').toggleClass('eo-active', true);
         configStorage.set({ 'isActive': true });
         document.overlay.showQuestions();
-        $('#eo-account-avatar').css("background-image", "url(" + img + ")");
         localStorage.setItem('email', email);
         //TODO:  this line does not working
         //$('#eo-account').before().css("background-image", "url(http://localhost:8080/static/ex/img/button-on-es.svg)") ;
