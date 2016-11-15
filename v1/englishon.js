@@ -6725,10 +6725,10 @@ HerokuBackend.prototype.deleteQuestion = function (question) {
 HerokuBackend.prototype.createQuestion = function (question) {
   question.page = this.pageid;
   question.correct_answers = question.correct_answers.map(function (a) {
-    return { answer: a };
+    return { answer: a, translation: 'aaaa' };
   });
   question.wrong_answers = question.wrong_answers.map(function (a) {
-    return { answer: a };
+    return { answer: a.word, translation: a.translation };
   });
   var post = this.ajax('POST', '/quiz/editor/question/' + this.url, question);
   post.done(function (data) {
@@ -6835,9 +6835,12 @@ Editor.prototype.createAutoQuestion = function (event) {
   internal_id_keys = Object.keys(this.internal_id);
   while (wrong.length < 4) {
     // candidate=this.internal_id[internal_id_keys[Math.floor((Math.random() * internal_id_keys.length) + 0) ]][0];
-    arrayOfCandidate = this.internal_id[internal_id_keys[Math.floor(Math.random() * internal_id_keys.length + 0)]];
+    translation = internal_id_keys[Math.floor(Math.random() * internal_id_keys.length + 0)];
+    arrayOfCandidate = this.internal_id[translation];
     candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
-    if (wrong.indexOf(candidate) == -1 && candidate != correct) wrong.push(candidate);
+    if (wrong.indexOf(candidate) == -1 && candidate != correct)
+      //wrong.push(candidate);
+      wrong.push({ 'word': candidate, 'translation': translation });
   }
   var question = {
     'context': ctx,
@@ -7251,7 +7254,6 @@ Injector = function (paragraphs) {
     }
 
     var q = new Question(question, toggleSound);
-    console.log("add question:  " + target);
     this.elements.push({ qobj: q, original: target });
 
     if (!this.isBatch) {
@@ -7303,7 +7305,6 @@ Injector = function (paragraphs) {
           return frag;
         } });
     });
-    console.log("Found contains: " + found);
     return found;
   };
 };
@@ -7625,27 +7626,30 @@ MultipleChoice.prototype = Object.create(AbstractQuestion.prototype);
 MultipleChoice.prototype.constructor = MultipleChoice;
 
 MultipleChoice.prototype.createElement = function () {
-  var answers = this.data.wrong_answers.map(function (x) {
-    return x.answer.trim();
-  }).concat(this.correct);
+  // var answers = this.data.wrong_answers.map(function(x) {
+  //   return x.trim(); }).concat(this.correct);
+  // shuffle(answers);
+  var answers = this.data.wrong_answers;
   shuffle(answers);
-
-  var element = AbstractQuestion.prototype.createElement.call(this);
-  element.addClass('eo-multiple_choice');
-  this.options = $('<ul>').addClass('eo-options').append(answers.map(function (answer) {
-    if (answer.includes('_')) {
+  option_elements = answers.map(function (answer) {
+    if (answer.answer.includes('_')) {
       var li = $('<li>').addClass('eo-option')
       //replacing '_' with none breakable HTML CODE, so the word will not displayed in two lines
-      .append($('<span>' + answer.substring(0, answer.indexOf('_')) + '&#8209;' + answer.substring(answer.indexOf('_') + 1, answer.length) + '</span>'));
+      .append($('<span>' + answer.answer.substring(0, answer.answer.indexOf('_')) + '&#8209;' + answer.answer.substring(answer.answer.indexOf('_') + 1, answer.answer.length) + '</span>'));
     } else {
-      var li = $('<li>').addClass('eo-option').append($('<span>').text(answer));
+      var li = $('<li>').addClass('eo-option').append($('<span>').text(answer.answer)).on('click', function (e) {
+        var target = $(e.target);
+        target.toggleText(answer.answer, answer.translation);
+        Speaker.speak(document.config.targetLanguage, target.text());
+      });
     }
-    if (answer === this.correct[0]) {
-      li.addClass('eo-correct_option');
-    }
-
     return li;
-  }.bind(this)));
+  }.bind(this));
+  option_elements.push($('<li>').addClass('eo-option eo-correct_option').append($('<span>').text(this.correct[0])));
+  shuffle(option_elements);
+  var element = AbstractQuestion.prototype.createElement.call(this);
+  element.addClass('eo-multiple_choice');
+  this.options = $('<ul>').addClass('eo-options').append(option_elements);
   element.find('.eo-hint').after(this.options);
   return element;
 };
@@ -7701,6 +7705,9 @@ MultipleChoice.prototype.closeAnswered = function () {
   correct.width();
   org = this.data.hint;
   answer = this.data.correct_answers[0].answer;
+  // this.element.data('org',this.data.hint)
+  // this.element.data('answer',this.data.correct_answers[0].answer)
+  //window.localStorage.setItem('', );
   this.element.on('click', function (e) {
     var target = $(e.target);
     target.toggleText(org, answer);
@@ -8235,13 +8242,17 @@ EnglishOnButton.registerHandlers = function (overlay) {
   //toggler is 
   var togglePower = toggler('eo-active', 'isActive', function (enable) {
     console.log('I am in initial.togglePower****' + enable);
-
-    //if (enable==='true' || enable==true) {
     if (JSON.parse(enable)) {
       document.overlay.showQuestions();
-      //configStorage.set({'isActive': true});
-      //$('body').toggleClass('eo-active', true);
-
+      console.log('I am standing here. length of answers array: ' + $('.eo-answered').length);
+      $('.eo-answered').on('click', function (e) {
+        var target = $(e.target);
+        //answer=target.data.correct_answers[0].answer;
+        //org=target.data.hint;
+        //target.toggleText(org,answer);
+        target.toggleText('aaaa', 'bbbb');
+        Speaker.speak(document.config.targetLanguage, target.text());
+      });
       if (!document.config.isUser) {
         console.log('a none user execute englishon for the first time...well done!');
         configStorage.set({ 'isUser': true });
@@ -8249,8 +8260,6 @@ EnglishOnButton.registerHandlers = function (overlay) {
       }
     } else {
       document.overlay.hideQuestions();
-      //configStorage.set({'isActive': false});
-      //$('body').toggleClass('eo-active', false);
     }
   });
 
@@ -8263,7 +8272,7 @@ EnglishOnButton.registerHandlers = function (overlay) {
   EnglishOnMenu.addToggleButton('unmute.svg', document.config.enableSound, Speaker.toggle.bind(Speaker));
   console.log("side bar3.value of isActive: " + document.config.isActive);
 
-  if (document.config.editor === true || document.config.editor === "true") {
+  if (JSON.parse(document.config.editor) == true) {
     EnglishOnMenu.addWidget(createSuperMenu(overlay));
   }
 
@@ -8280,8 +8289,9 @@ EnglishOnButton.registerHandlers = function (overlay) {
     email = event.data.email;
     console.log('Google event***Is it a new google user? ' + event.data.is_new + '. Token: ' + django_token);
     if (django_token == 'Usersignedout') {
-      localStorage.setItem("isActive", false);
+      //localStorage.setItem("isActive", false);
       //sessionStorage.removeItem('token');
+      configStorage.set({ 'isActive': false });
       localStorage.removeItem('email');
       var auth = new Authenticator(document.config.backendUrl);
       document.config.token = null;
@@ -8300,11 +8310,10 @@ EnglishOnButton.registerHandlers = function (overlay) {
 
       if (!localStorage.getItem('email')) {
         console.log("THIS IS A REAL LOGIN");
-        configStorage.set({ token: django_token });
+        configStorage.set({ token: django_token, 'isActive': true });
         document.englishonBackend.token = django_token;
         childWindow.postMessage(django_token, document.englishonBackend.base);
         $('body').toggleClass('eo-active', true);
-        configStorage.set({ 'isActive': true });
         document.overlay.showQuestions();
         localStorage.setItem('email', email);
         //TODO:  this line does not working
@@ -8320,7 +8329,19 @@ EnglishOnButton.registerHandlers = function (overlay) {
     }
   }
   console.log("side bar4.value of isActive: " + document.config.isActive);
+  console.log('side bar4 length of array: ' + $('.eo-answered').length);
 };
+$(window).load(function () {
+  console.log('window loaded length of array: ' + $('.eo-answered').length);
+  $('.eo-answered').on('click', function (e) {
+    var target = $(e.target);
+    var answer = target.data('answer');
+    var org = target.data('org');
+    target.toggleText(org, answer);
+    //target.toggleText('aaaa','bbbb');
+    Speaker.speak(document.config.targetLanguage, target.text());
+  });
+});
 //
 // *********
 // Name List
@@ -8449,6 +8470,7 @@ function englishon() {
   }).then(function (backend) {
     console.log('stage 2 before fetch questions');
     document.englishonBackend = backend;
+    if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') $($('.newsHead')[1]).css('background-color', '#e6e6e6');
     if (document.config.isUser) {
       //loadEnglishon();
       document.overlay.fetchLinkStates(backend).then(document.overlay.markLinks.bind(document.overlay));
