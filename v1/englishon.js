@@ -8381,7 +8381,6 @@ function createLogoutButton() {
 // **************
 // Initialization
 // **************
-var IN_CHROME = window.chrome && chrome.runtime && chrome.runtime.id;
 
 var staticUrl = undefined;
 
@@ -8414,10 +8413,12 @@ browserInfo = function () {
 
 function englishon() {
   //Restrict none chrome browsers or chrome versions older than 49
-  // if (browserInfo.browser!='Chrome' || parseInt(browserInfo.version)<=46) {
-  //   console.log('BROWSER NOT SUPPORTED.');
-  //   return;
-  // }
+  if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) <= 46) {
+    console.log('BROWSER NOT SUPPORTED.');
+    //return;
+    var IN_CHROME = false;
+  }
+  var IN_CHROME = window.chrome && chrome.runtime && chrome.runtime.id;
   //THIS LINE IS TEMP
   if (window.location != 'http://shturem.net/index.php?section=news&id=91551') {
     return;
