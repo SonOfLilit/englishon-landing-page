@@ -8417,8 +8417,7 @@ function englishon() {
     console.log('BROWSER NOT SUPPORTED.');
     //return;
     var IN_CHROME = false;
-  }
-  var IN_CHROME = window.chrome && chrome.runtime && chrome.runtime.id;
+  } else var IN_CHROME = window.chrome && chrome.runtime && chrome.runtime.id;
   //THIS LINE IS TEMP
   if (window.location != 'http://shturem.net/index.php?section=news&id=91551') {
     return;
