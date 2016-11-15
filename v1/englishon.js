@@ -8383,6 +8383,8 @@ function createLogoutButton() {
 // **************
 
 var staticUrl = undefined;
+var IN_CHROME = false;
+console.log('TEST OT CONSOLE');
 
 if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
   staticUrl = function (resource) {
@@ -8416,8 +8418,7 @@ function englishon() {
   if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) <= 46) {
     console.log('BROWSER NOT SUPPORTED.');
     //return;
-    var IN_CHROME = false;
-  } else var IN_CHROME = window.chrome && chrome.runtime && chrome.runtime.id;
+  } else IN_CHROME = window.chrome && chrome.runtime && chrome.runtime.id;
   //THIS LINE IS TEMP
   if (window.location != 'http://shturem.net/index.php?section=news&id=91551') {
     return;
