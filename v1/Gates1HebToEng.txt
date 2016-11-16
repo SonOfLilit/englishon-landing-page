@@ -106,8 +106,8 @@
 להתנשף pant
 התנשמות pant
 התנפשות pant 
-טי_שירט t-shirt
-חולצת_טי t-shirt
+טי_שירט t_shirt
+חולצת_טי t_shirt
 מכנסיים_קצרים shorts
 לקצר short
 קצר short
