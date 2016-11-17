@@ -33,7 +33,7 @@
 שקיות bags
 תיקים bags
 תיק_גב backpack
-תרמיל_גב backpack 
+תרמיל_גב backpack
 לטייל_כתרמילאי backpack
 ילקוט backpack
 ילקוטים backpacks
@@ -47,7 +47,6 @@
 טלפון_נייד cellphone cellular_phone mobile_phone
 טלפון_סלולרי cellphone cellular_phone mobile_phone
 פלאפון cellphone cellular_phone mobile_phone
-טלפונים_ניידים
 פלאפונים cellphones
 מצלמה camera
 מצלמות cameras
@@ -84,7 +83,7 @@
 מצבים states
 מספר number
 לספור number
-מספרים numbers 
+מספרים numbers
 גיל age
 להזקין age
 מזדקן age
@@ -105,9 +104,9 @@
 מכנסיים pants trousers
 להתנשף pant
 התנשמות pant
-התנפשות pant 
-טי_שירט t-shirt
-חולצת_טי t-shirt
+התנפשות pant
+טי_שירט t_shirt
+חולצת_טי t_shirt
 מכנסיים_קצרים shorts
 לקצר short
 קצר short
@@ -135,6 +134,7 @@
 ילדים children
 שנה year
 כינוס Convention
+test test
 
 
 
