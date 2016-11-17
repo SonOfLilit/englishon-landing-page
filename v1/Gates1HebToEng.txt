@@ -19,7 +19,7 @@
 קרש board
 לעלות board
 להתאכסן board
-לוחות boards 
+לוחות boards
 קרשים boards
 ילקוט book_bag book_bag book_bag book_bag book_bag book_bag book_bag
 תיק_ספרים book_bag
@@ -31,7 +31,7 @@
 תרמיל bag
 שקים bags
 שקיות bags
-תיקים bags 
+תיקים bags
 תיק_גב backpack
 תרמיל_גב backpack 
 לטייל_כתרמילאי backpack
