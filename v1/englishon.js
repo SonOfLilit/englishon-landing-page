@@ -6410,83 +6410,29 @@ el.animate(animation,{queue:false,duration:o.duration,easing:o.easing,complete:f
 });
 //
 var configStorage;
-
-if (chrome && chrome.extension) {
-  // for some reason all chrome.storage.local API functions have signatures so similar that we can defer them with a single function:
-
-  configStorage = new function () {
-    function deferredChromeStorageAPI(api) {
-      return function (parameter) {
-        var deferred = $.Deferred();
-        var local = chrome.storage.local;
-        var f = local[api].bind(local);
-        f(parameter, function (result) {
-          if (chrome.runtime.lasterror) {
-            deferred.reject(chrome.runtime.lasterror.message);
-          } else {
-            deferred.resolve(result);
-          }
-        });
-        return deferred.promise();
-      };
-    }
-
-    var apis = ['get', 'set']; //, 'remove', 'clear', 'getBytesInUse'];
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-      for (var _iterator = apis[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var api = _step.value;
-        this[api] = deferredChromeStorageAPI(api);
-      } // when configStorage.set() is called, need to update document.config
-      // which is a cache of configuration that can be read synchronically
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
+// I clean i code for chrome extention here
+// in the real world we will store config on the server
+// and do some CORS voodoo to fetch it.
+configStorage = {
+  set: function (stuff) {
+    $.each(stuff, function (k, v) {
+      if (v !== null) {
+        window.localStorage.setItem(k, v);
+      } else {
+        window.localStorage.removeItem(k);
       }
-    }
-
-    var setApi = this['set'];
-    this['set'] = function (parameter) {
-      $.extend(document.config, parameter);return setApi(parameter);
-    };
-  }();
-} else {
-  // we're not a chrome extension - use session storage
-  // in the real world we will store config on the server
-  // and do some CORS voodoo to fetch it.
-  configStorage = {
-    set: function (stuff) {
-      $.each(stuff, function (k, v) {
-        if (v !== null) {
-          window.localStorage.setItem(k, v);
-        } else {
-          window.localStorage.removeItem(k);
-        }
-      });
-      $.extend(document.config, stuff);
-      return $.Deferred().resolve();
-    },
-    get: function (stuff) {
-      var r = {};
-      $.each(stuff, function (k, v) {
-        r[k] = window.localStorage.getItem(k) || v;
-      });
-      return $.Deferred().resolve(r);
-    }
-  };
-}
+    });
+    $.extend(document.config, stuff);
+    return $.Deferred().resolve();
+  },
+  get: function (stuff) {
+    var r = {};
+    $.each(stuff, function (k, v) {
+      r[k] = window.localStorage.getItem(k) || v;
+    });
+    return $.Deferred().resolve(r);
+  }
+};
 //
 var MESSAGES_EN = {
   LOGIN_BUTTON: "Enter Code",
@@ -6725,7 +6671,7 @@ HerokuBackend.prototype.deleteQuestion = function (question) {
 HerokuBackend.prototype.createQuestion = function (question) {
   question.page = this.pageid;
   question.correct_answers = question.correct_answers.map(function (a) {
-    return { answer: a, translation: 'aaaa' };
+    return { answer: a };
   });
   question.wrong_answers = question.wrong_answers.map(function (a) {
     return { answer: a.word, translation: a.translation };
@@ -6750,16 +6696,17 @@ HerokuBackend.prototype.report = function (msg, data) {
   data.timestamp = new Date().toJSON();
   data.page = this.pageid;
   var r = this.ajax('POST', '/quiz/report/' + msg + '/', data);
-  if (IN_CHROME) {
-    var mixdata = $.extend({}, data);
-    delete mixdata.timestamp; // mixpanel does it's own timestamping
-    // it sometimes crashes, we don't yet know why, and it's not business critical, so lets ignore errors
-    try {
-      chrome.runtime.sendMessage({ track: msg, data: mixdata });
-    } catch (err) {
-      console.log("Mixpanel error: ", err);
-    }
-  }
+  //Looks like it for chrome extention
+  // if (IN_CHROME) {
+  //   var mixdata = $.extend({}, data);
+  //   delete mixdata.timestamp; // mixpanel does it's own timestamping
+  //   // it sometimes crashes, we don't yet know why, and it's not business critical, so lets ignore errors
+  //   try {
+  //     chrome.runtime.sendMessage({track: msg, data: mixdata});
+  //   } catch (err) {
+  //     console.log("Mixpanel error: ", err);
+  //   }
+  // }
   return r;
 };
 
@@ -6840,7 +6787,7 @@ Editor.prototype.createAutoQuestion = function (event) {
     candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
     if (wrong.indexOf(candidate) == -1 && candidate != correct)
       //wrong.push(candidate);
-      wrong.push({ 'word': candidate, 'translation': translation });
+      wrong.push({ word: candidate, translation: translation });
   }
   var question = {
     'context': ctx,
@@ -6953,6 +6900,9 @@ Editor.prototype.h2eui = function (span) {
     //correct = correct.concat(additional);
     correct = additional;
     var wrong = parseCommaSeparated(div.find('input[name="wrong"]').val());
+    var wrong_answers = wrong.map(function (wrong) {
+      return { word: wrong };
+    });
     if (!replaced) {
       alert("Choose correct breakdown");
       return;
@@ -6965,7 +6915,7 @@ Editor.prototype.h2eui = function (span) {
       'replaced': replaced,
       'hint': replaced,
       'correct_answers': correct,
-      'wrong_answers': wrong,
+      'wrong_answers': wrong_answers,
       'hint_language': 'he',
       'answer_language': 'en'
     };
@@ -7009,7 +6959,9 @@ Editor.prototype.e2hui = function (span) {
     var additional = parseCommaSeparated(div.find('input[name="additional"]').val());
     correct = correct.concat(additional);
     var wrong = parseCommaSeparated(div.find('input[name="wrong"]').val());
-
+    var wrong_answers = wrong.map(function (wrong) {
+      return { word: wrong };
+    });
     if (!replaced || !hint) {
       alert("Choose correct breakdown");
       return;
@@ -7021,8 +6973,7 @@ Editor.prototype.e2hui = function (span) {
       'replaced': replaced,
       'hint': hint,
       'correct_answers': correct,
-      'wrong_answers': wrong,
-      'hint_language': 'en',
+      'wrong_answers': wrong_answers,
       'answer_language': 'he'
     };
 
@@ -7635,16 +7586,37 @@ MultipleChoice.prototype.createElement = function () {
     if (answer.answer.includes('_')) {
       var li = $('<li>').addClass('eo-option')
       //replacing '_' with none breakable HTML CODE, so the word will not displayed in two lines
-      .append($('<span>' + answer.answer.substring(0, answer.answer.indexOf('_')) + '&#8209;' + answer.answer.substring(answer.answer.indexOf('_') + 1, answer.answer.length) + '</span>'));
+      .append($('<span>' + answer.answer.substring(0, answer.answer.indexOf('_')) + '&#8209;' + answer.answer.substring(answer.answer.indexOf('_') + 1, answer.answer.length) + '</span>')).on('click', function (e) {
+        var target = $(e.target);
+        if (answer.translation) target.toggleText(answer.answer.replace('_', '-'), answer.translation.replace('_', '-'));
+        //Speaker.speak(document.config.targetLanguage, target.text());
+      });
     } else {
       var li = $('<li>').addClass('eo-option').append($('<span>').text(answer.answer)).on('click', function (e) {
         var target = $(e.target);
-        target.toggleText(answer.answer, answer.translation);
-        Speaker.speak(document.config.targetLanguage, target.text());
+        if (answer.translation) target.toggleText(answer.answer.replace('_', '-'), answer.translation.replace('_', '-'));
+        //Speaker.speak(document.config.targetLanguage, target.text());
       });
     }
     return li;
   }.bind(this));
+  //   option_elements=answers.map(function(answer) {
+  //   if (answer.answer.includes('_')){
+  //        //replacing '_' with none breakable HTML CODE, so the word will not displayed in two lines
+  //       var unbreakable_span=$('<span>'+answer.answer.substring(0,answer.answer.indexOf('_'))+ '&#8209;'+answer.answer.substring(answer.answer.indexOf('_')+1 , answer.answer.length)+'</span>')
+  //   } else{
+  //       var unbreakable_span=$('<span>'+answer.answer+'</span>')
+  //   }
+  //   var li = $('<li>')
+  //     .addClass('eo-option')
+  //     .append($(unbreakable_span))
+  //     .on('click',function(e){
+  //               var target=$(e.target);
+  //               target.toggleText(answer.answer, answer.translation.replace('_','-'));
+  //               Speaker.speak(document.config.targetLanguage, target.text());});
+
+  //   return li;
+  // }.bind(this))
   option_elements.push($('<li>').addClass('eo-option eo-correct_option').append($('<span>').text(this.correct[0])));
   shuffle(option_elements);
   var element = AbstractQuestion.prototype.createElement.call(this);
@@ -8383,8 +8355,7 @@ function createLogoutButton() {
 // **************
 
 var staticUrl = undefined;
-var IN_CHROME = false;
-console.log('TEST OT CONSOLE');
+console.log('CONSOLE TEST');
 
 if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
   staticUrl = function (resource) {
@@ -8418,12 +8389,12 @@ function englishon() {
   if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) <= 46) {
     console.log('BROWSER NOT SUPPORTED.');
     //return;
-  } else IN_CHROME = window.chrome && chrome.runtime && chrome.runtime.id;
+  }
   //THIS LINE IS TEMP
   if (window.location != 'http://shturem.net/index.php?section=news&id=91551') {
     return;
   }
-  //console.log('content script**** browser info: '+browserInfo.browser+' '+browserInfo.version);  
+  console.log('****Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
   //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
