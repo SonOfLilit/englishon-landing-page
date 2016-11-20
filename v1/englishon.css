@@ -2506,8 +2506,8 @@ div.eo-question > .eo-correct {
 }
 
 .eo-button, .eo-menu > .eo-language_picker > .eo-language_picker-option::before {
-  height: 19px;
-  width: 21px;
+  height: 28px;
+  width: 30px;
   background-repeat: no-repeat;
 }
 
@@ -2887,15 +2887,15 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 /* Button */
 .eo-button.eo-button-loading {
   background-image: url(http://www.englishon.org/v1/img/button-loading.svg);
-  background-size: 21px;
+  background-size: 30px;
 }
 .eo-button.eo-button-unavailable {
   background-image: url(http://www.englishon.org/v1/img/button-unavailable.svg);
-  background-size: 21px;
+  background-size: 30px;
 }
 .eo-button.eo-button-off, .eo-button.eo-button-on {
   background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
-  background-size: 21px;
+  background-size: 30px;
 }
 
 /* Menu */
@@ -3080,19 +3080,19 @@ body.eo-active .eo-menu > .eo-language_picker > .eo-language_picker-option {
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-en::before {
   background-image: url(http://www.englishon.org/v1/img/button-on-en.svg);
-  background-size: 21px;
+  background-size: 30px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-es::before {
   background-image: url(http://www.englishon.org/v1/img/button-on-es.svg);
-  background-size: 21px;
+  background-size: 30px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-fr::before {
   background-image: url(http://www.englishon.org/v1/img/button-on-fr.svg);
-  background-size: 21px;
+  background-size: 30px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-zh::before {
   background-image: url(http://www.englishon.org/v1/img/button-on-zh.svg);
-  background-size: 21px;
+  background-size: 30px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option:hover, body.eo-active.eo-language-en .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-en, body.eo-active.eo-language-es .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-es, body.eo-active.eo-language-fr .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-fr, body.eo-active.eo-language-zh .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-zh {
   background-color: #eceff1;
@@ -3182,6 +3182,22 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+#top_menu_block {
+  margin-top: 104px !important;
+}
+
+#top_menu_block > img {
+  padding-top: 5px;
+}
+
+#top_menu_block > a {
+  padding-top: 5px;
+}
+
+#date_block {
+  padding-top: 15px;
+}
+
 body.www-bhol-co-il .eo-layout-warning {
   top: -16ex;
 }
@@ -3204,15 +3220,15 @@ body.www-bloombergview-com .eo-button:hover {
 }
 body.www-bloombergview-com .eo-button.eo-button-loading {
   background-image: url(http://www.englishon.org/v1/img/button-loading-white.svg);
-  background-size: 21px;
+  background-size: 30px;
 }
 body.www-bloombergview-com .eo-button.eo-button-unavailable {
   background-image: url(http://www.englishon.org/v1/img/button-unavailable-white.svg);
-  background-size: 21px;
+  background-size: 30px;
 }
 body.www-bloombergview-com .eo-button.eo-button-off, body.www-bloombergview-com .eo-button.eo-button-on {
   background-image: url(http://www.englishon.org/v1/img/button-logo-white.svg);
-  background-size: 21px;
+  background-size: 30px;
 }
 body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-off::before, body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-on::before {
   width: 17px;

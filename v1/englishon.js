@@ -7952,7 +7952,7 @@ var Speaker = new function () {
 // ******
 
 var EnglishOnButton = new function () {
-  this.currentState = 'eo-button-loading';
+  this.currentState = 'eo-button-on';
   this.element = $('<div>').addClass('eo-button').addClass(this.currentState).on('click', function (e) {
     e.preventDefault();
     if (EnglishOnMenu.container.has(e.target).length === 0) {
