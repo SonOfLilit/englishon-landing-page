@@ -6789,9 +6789,6 @@ Editor.prototype.createAutoQuestion = function (event) {
       //wrong.push(candidate);
       wrong.push({ word: candidate, translation: translation });
   }
-  wrong.push({ word: 'mobile_phone', translation: '' });
-  wrong.push({ word: 'book_bag', translation: '' });
-  wrong.push({ word: 'he', translation: '' });
 
   var question = {
     'context': ctx,
@@ -8167,26 +8164,6 @@ function createLoginBtn() {
 function cleanToken() {
   console.log('cleanToken');
 }
-function createOnSwitch() {
-
-  if (localStorage.getItem('isActive')) text = 'Pause Englishon';else text = 'Start englishon now!';
-  var on_switch = $('<button>', { id: 'onSwitch' }).text(text).addClass('eo-superuser-button').on('click', function (e) {
-    var target = $(e.target);
-    if (localStorage.getItem('isActive') == false) {
-      console.log('Start englishon');
-      document.overlay.showQuestions();
-      target.text('Pause Englishon');
-      localStorage.setItem("isActive", true);
-    } else {
-      document.overlay.hideQuestions();
-      target.text('Start englishon now!');
-      localStorage.setItem("isActive", false);
-    }
-  });
-  var element = $('<div>').append($('<div>').append(on_switch)).addClass('eo-superuser');
-
-  return element;
-}
 
 // ***********************
 // Register Event Handlers
@@ -8200,8 +8177,6 @@ var toggler = function (cls, configEntry, toggle_func) {
   // initialize
   //var initial = !!document.config[configEntry];
   var initial = JSON.parse(document.config[configEntry]);
-  console.log('configEntry: ' + configEntry);
-  console.log("side bar1.value of isActive: " + document.config.isActive);
   toggle_func(initial);
   $('body').toggleClass(cls, initial);
   return function (enabled) {
@@ -8223,10 +8198,8 @@ EnglishOnButton.registerHandlers = function (overlay) {
   var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
   //toggler is 
   var togglePower = toggler('eo-active', 'isActive', function (enable) {
-    console.log('I am in initial.togglePower****' + enable);
     if (JSON.parse(enable)) {
       document.overlay.showQuestions();
-      console.log('I am standing here. length of answers array: ' + $('.eo-answered').length);
       $('.eo-answered').on('click', function (e) {
         var target = $(e.target);
         //answer=target.data.correct_answers[0].answer;
@@ -8245,14 +8218,12 @@ EnglishOnButton.registerHandlers = function (overlay) {
     }
   });
 
-  console.log("side bar2.value of isActive: " + document.config.isActive);
   EnglishOnMenu.addToggleSwitch('eo-toolbar-toggle-active', togglePower);
   EnglishOnMenu.addToggleButton('speaker', toggleSound);
   EnglishOnMenu.addWidget(createLanguagePicker(overlay, togglePower));
   EnglishOnMenu.addWidget(createLoginBtn());
   Speaker.toggle(document.config.enableSound);
   EnglishOnMenu.addToggleButton('unmute.svg', document.config.enableSound, Speaker.toggle.bind(Speaker));
-  console.log("side bar3.value of isActive: " + document.config.isActive);
 
   if (JSON.parse(document.config.editor) == true) {
     EnglishOnMenu.addWidget(createSuperMenu(overlay));
