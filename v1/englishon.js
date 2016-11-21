@@ -6780,7 +6780,7 @@ Editor.prototype.createAutoQuestion = function (event) {
   //Creating a list of 4 Distractions randomaly, using the word buffer of the internal id
   var wrong = [];
   internal_id_keys = Object.keys(this.internal_id);
-  while (wrong.length < 4) {
+  while (wrong.length < 3) {
     // candidate=this.internal_id[internal_id_keys[Math.floor((Math.random() * internal_id_keys.length) + 0) ]][0];
     translation = internal_id_keys[Math.floor(Math.random() * internal_id_keys.length + 0)];
     arrayOfCandidate = this.internal_id[translation];
@@ -6789,6 +6789,10 @@ Editor.prototype.createAutoQuestion = function (event) {
       //wrong.push(candidate);
       wrong.push({ word: candidate, translation: translation });
   }
+  wrong.push({ word: 'mobile_phone', translation: '' });
+  wrong.push({ word: 'book_bag', translation: '' });
+  wrong.push({ word: 'he', translation: '' });
+
   var question = {
     'context': ctx,
     'replaced': replaced,
@@ -7942,10 +7946,17 @@ var Speaker = new function () {
   this.playBuffer = function (audioBuffer) {
     var audioSourceNode = audioContext.createBufferSource();
     audioSourceNode.buffer = audioBuffer;
+    audioSourceNode.playbackRate.value = 0.9;
     audioSourceNode.connect(gainNode);
     audioSourceNode.start();
   };
 }();
+
+// var context = AudioContext();
+// source= context.createBufferSource();
+// context.nodes.push(source);
+// source.buffer = Audiobuffer;
+// source.playbackRate.value = 1.5;
 //
 // ******
 // Button
@@ -8057,6 +8068,7 @@ function createLanguagePicker(overlay, toggle) {
   var picker = $('<div>').addClass('eo-language_picker');
   function addLanguage(text, languageCode) {
     picker.append($('<div>').addClass('eo-language_picker-option').addClass('eo-language_picker-' + languageCode).text(" " + text)
+    //FOR NOW - DISABLED SWITCHING LANGUAGES
     // .click(function(e) {
     //   e.preventDefault();
     //   if (languageCode !== document.config.targetLanguage /* || !injector.isActive */) {
@@ -8143,13 +8155,11 @@ function createSuperMenu(overlay) {
 function createLoginBtn() {
   //var token=encodeURIComponent(document.englishonBackend.token) + '/'
   var token = encodeURIComponent(document.englishonBackend.token);
-  if (document.config.isUser) var google_login_elem = '<iframe src=' + document.englishonBackend.base + '/tokens/login/?token=' + token + '" style="width:160px;height:60px" id="iframe"><p>Your browser does not support iframes.</p></iframe>';else var google_login_elem = $('<button>').text('Login by Google').addClass('eo-superuser-button').on('click', function () {
+  if (document.config.isUser) var google_login_elem = '<iframe src=' + document.englishonBackend.base + '/tokens/login/?token=' + token + '" style="width:180px;height:75px;border-style:none;" scrolling="no" id="iframe"><p>Your browser does not support iframes.</p></iframe>';else var google_login_elem = $('<button>').text('Login by Google').addClass('eo-superuser-button').on('click', function () {
     console.log('Login by google for non_user');
   });
-  var btn_login = $('<button>').text('Login by mail').addClass('eo-superuser-button').on('click', function () {
-    console.log('Login by mail');
-  });
-  var element = $('<div>').append($('<div>').append(btn_login)).append($('<div>').append(google_login_elem)).addClass('eo-superuser');
+
+  var element = $('<div>').append($('<div>').append(google_login_elem)).addClass('eo-superuser');
 
   $('#djDebugToolbarHandle').css('display', 'none');
   return element;
@@ -8296,7 +8306,7 @@ EnglishOnButton.registerHandlers = function (overlay) {
       if (localStorage.getItem('email') && localStorage.getItem('email') != email) {
         //to enable reply to the questions from begining
         localStorage.setItem('email', email);
-        window.location.reload();
+        //window.location.reload();
       }
     }
   }
