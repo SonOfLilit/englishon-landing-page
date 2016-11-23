@@ -8205,8 +8205,8 @@ EnglishOnButton.registerHandlers = function (overlay) {
         //answer=target.data.correct_answers[0].answer;
         //org=target.data.hint;
         //target.toggleText(org,answer);
-        target.toggleText('aaaa', 'bbbb');
-        Speaker.speak(document.config.targetLanguage, target.text());
+        // target.toggleText('aaaa', 'bbbb');
+        // Speaker.speak(document.config.targetLanguage, target.text());
       });
       if (!document.config.isUser) {
         console.log('a none user execute englishon for the first time...well done!');
