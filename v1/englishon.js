@@ -6510,7 +6510,13 @@ var WEBSITE_I18N = {
     MESSAGES: MESSAGES_HE,
     DIRECTION: RTL,
     DEFAULT_TARGET_LANGUAGE: 'en'
-  }
+  },
+    'www.shturem.net': {
+    MESSAGES: MESSAGES_HE,
+    DIRECTION: RTL,
+    DEFAULT_TARGET_LANGUAGE: 'en'
+  },
+
 };
 var I18N = WEBSITE_I18N[location.hostname];
 var MESSAGES = I18N.MESSAGES;
