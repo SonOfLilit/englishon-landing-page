@@ -7840,7 +7840,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
 //
 Scraper = new function () {
   function dispatch(location) {
-    if (location.host === 'shturem.net') {
+    if (location.host === 'shturem.net'|| location.host === 'www.shturem.net') {
       if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
       if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
     }
