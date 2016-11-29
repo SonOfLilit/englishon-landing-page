@@ -8410,7 +8410,7 @@ function englishon() {
     if (config.enableTutorial) {
       startTutorial();
     }
-    $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
+    $('body').addClass('shturem-net').addClass('eo-direction-' + I18N.DIRECTION);
 
     var overlay = Scraper.scrape();
     document.overlay = overlay;
