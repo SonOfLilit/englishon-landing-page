@@ -8234,73 +8234,78 @@ EnglishOnButton.registerHandlers = function (overlay) {
   if (JSON.parse(document.config.editor) == true) {
     EnglishOnMenu.addWidget(createSuperMenu(overlay));
   }
+//paste here
 
-  var childWindow = document.getElementById('iframe').contentWindow;
-  childWindow.postMessage(document.englishonBackend.token, document.englishonBackend.base);
+// When the popup has fully loaded, if not blocked by a popup blocker:
 
-  window.addEventListener("message", receiveMessage, false);
-  function receiveMessage(event) {
-    var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
-    if (origin !== document.englishonBackend.base) return;
-    console.log('receiveMessage from child. origin is: ' + origin);
-    django_token = event.data.token;
-    img = event.data.image;
-    email = event.data.email;
-    console.log('Google event***Is it a new google user? ' + event.data.is_new + '. Token: ' + django_token);
-    if (django_token == 'Usersignedout') {
-      //localStorage.setItem("isActive", false);
-      //sessionStorage.removeItem('token');
-      configStorage.set({ 'isActive': false });
+
+// This will successfully queue a message to be sent to the popup, assuming
+// the window hasn't changed its location.
+$('#iframe').on('load', function(){
+  var popup = this.contentWindow;
+  popup.postMessage(document.englishonBackend.token, document.englishonBackend.base);
+});
+
+
+ function receiveMessage(event){
+  var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
+  if (origin !== document.englishonBackend.base)
+    return;
+  // event.source is popup
+  console.log('receiveMessage from englishon');
+  django_token = event.data.token;
+  img = event.data.image;
+  email=event.data.email
+  console.log('Google event***Is it a new google user? '+ event.data.is_new+'. Token: '+django_token)
+  if (django_token == 'Usersignedout'){ //User sign out
+      configStorage.set({'isActive':false})
       localStorage.removeItem('email');
-      var auth = new Authenticator(document.config.backendUrl);
-      document.config.token = null;
-      auth.login(document.config.token).then(function (token) {
+      var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
+      document.config.token=null; //Isn't it unneeded???
+      auth.login(document.config.token).then(function(token) {
         $('body').toggleClass('eo-active', false);
-        console.log("receiveMessage ******** token: " + token);
-        $('#eo-account-avatar').css("background-image", "url(" + document.englishonBackend.base + "/static/ex/img/menu-avatar.svg)");
-        configStorage.set({ token: token });
+        console.log("receiveMessage ******** token: "+token);
+        $('#eo-account-avatar').css("background-image", "url("+ document.englishonBackend.base +"/static/ex/img/menu-avatar.svg)"); 
+        configStorage.set({token: token});
         document.overlay.hideQuestions();
         document.englishonBackend.token = token;
-        childWindow.postMessage(token, document.englishonBackend.base);
+        //Give englishon the new guest token
+        event.source.postMessage(document.englishonBackend.token, document.englishonBackend.base);
       });
-    } else {
-      //user sign in!
-      $('#eo-account-avatar').css("background-image", "url(" + img + ")");
-
-      if (!localStorage.getItem('email')) {
-        console.log("THIS IS A REAL LOGIN");
-        configStorage.set({ token: django_token, 'isActive': true });
-        document.englishonBackend.token = django_token;
-        childWindow.postMessage(django_token, document.englishonBackend.base);
-        $('body').toggleClass('eo-active', true);
-        document.overlay.showQuestions();
-        localStorage.setItem('email', email);
-        //TODO:  this line does not working
-        //$('#eo-account').before().css("background-image", "url(http://localhost:8080/static/ex/img/button-on-es.svg)") ;
-      }
-
-      //Situation of switching users
-      if (localStorage.getItem('email') && localStorage.getItem('email') != email) {
-        //to enable reply to the questions from begining
-        localStorage.setItem('email', email);
-        //window.location.reload();
-      }
+    } 
+    else { //User sign in!   
+       $('#eo-account-avatar').css("background-image", "url("+img+")"); 
+       if (!localStorage.getItem('email')){
+       console.log("THIS IS A REAL LOGIN");
+       configStorage.set({token: django_token, 'isActive':true});
+       document.englishonBackend.token = django_token;
+       $('body').toggleClass('eo-active', true);
+       document.overlay.showQuestions(); 
+        localStorage.setItem('email',email);
+       //TODO:  this line does not working
+       //$('#eo-account').before().css("background-image", "url(http://localhost:8080/static/ex/img/button-on-es.svg)") ;
+       }
+      if (localStorage.getItem('email') && localStorage.getItem('email')!= email){ //Situation of switching users
+       localStorage.setItem('email',email);
+        window.location.reload();  //to enable reply again
+      } 
     }
   }
-  console.log("side bar4.value of isActive: " + document.config.isActive);
-  console.log('side bar4 length of array: ' + $('.eo-answered').length);
-};
-$(window).load(function () {
-  console.log('window loaded length of array: ' + $('.eo-answered').length);
-  $('.eo-answered').on('click', function (e) {
-    var target = $(e.target);
-    var answer = target.data('answer');
-    var org = target.data('org');
-    target.toggleText(org, answer);
-    //target.toggleText('aaaa','bbbb');
-    Speaker.speak(document.config.targetLanguage, target.text());
-  });
-});
+  //end of reciev message
+  window.addEventListener("message", receiveMessage, false); 
+
+}
+// $( window ).load(function() {
+//   console.log('window loaded length of array: '+$('.eo-answered').length);
+//   $('.eo-answered').on('click',function(e){
+//                 var target=$(e.target);
+//                 var answer=target.data('answer');
+//                 var org=target.data('org');
+//                 target.toggleText(org,answer);
+//                 //target.toggleText('aaaa','bbbb');
+//                 Speaker.speak(document.config.targetLanguage, target.text());})      
+// });
+
 //
 // *********
 // Name List
