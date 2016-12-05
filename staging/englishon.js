@@ -6510,6 +6510,11 @@ var WEBSITE_I18N = {
     MESSAGES: MESSAGES_HE,
     DIRECTION: RTL,
     DEFAULT_TARGET_LANGUAGE: 'en'
+  },
+  'www.shturem.net': {
+    MESSAGES: MESSAGES_HE,
+    DIRECTION: RTL,
+    DEFAULT_TARGET_LANGUAGE: 'en'
   }
 };
 var I18N = WEBSITE_I18N[location.hostname];
@@ -7676,12 +7681,13 @@ MultipleChoice.prototype.closeAnswered = function () {
   correct.css('top', initialTop);
   // force repaint
   correct.width();
-  org = this.data.hint;
-  answer = this.data.correct_answers[0].answer;
+  var org = this.data.hint;
+  var answer = this.data.correct_answers[0].answer;
   // this.element.data('org',this.data.hint)
   // this.element.data('answer',this.data.correct_answers[0].answer)
   //window.localStorage.setItem('', );
   this.element.on('click', function (e) {
+    e.preventDefault();
     var target = $(e.target);
     target.toggleText(org, answer);
     Speaker.speak(document.config.targetLanguage, target.text());
@@ -7804,25 +7810,11 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.showButtons = function () {
     //this.injector = new Injector(this.paragraphs);
     $('div#top_menu_block').append(EnglishOnButton.element);
-    EnglishOnButton.registerHandlers(this);
+    //EnglishOnButton.registerHandlers(this);
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
 
     //$("body").append($('<div>').addClass('Grid Grid--gutters Grid--full large-Grid--1of4 med-Grid--1of3 u-textCenter').html(html_string));   
-    account_img = "<div class='Grid-cell'><div class='header'><div class='Grid Grid--gutters u-textCenter'><div class='Grid-cell'> <div class='Demo'>im</div></div>";
-    account_button = "<div class='Grid-cell u-1of2'><div class='Demo'>sign in/up</div></div>";
-    account_arrow = "<div class='Grid-cell'><div class='Demo'>ar</div></div></div>";
-    on_switch = "<div class='Grid Grid--gutters u-textCenter'><div class='Grid-cell u-1of3'><div class='Demo'>on/off</div></div>";
-    sound_bottun = "<div class='Grid-cell'><div class='Demo'>sound</div></div></div>";
-    languages_picker = "<div class='Grid Grid--full u-textCenter'><div class='Grid-cell'><div class='languages_picker'><div class='Demo'>Pick a language</div></div></div>";
-    eng_option = "<div class='Grid-cell'><div class='Demo'>English</div></div>";
-    spanish_option = "<div class='Grid-cell'><div class='Demo'>Spanish</div></div>";
-    french_option = "<div class='Grid-cell'><div class='Demo'>French</div></div>";
-    chines_option = "<div class='Grid-cell'><div class='Demo'>Chines</div></div></div>";
-    menu_footer = "<div class='Grid Grid--full u-textCenter'><div class='Grid-cell'><div class='Demo'>englishon</div></div></div></div></div>";
-    html_string = account_img + account_button + account_arrow + on_switch + sound_bottun + languages_picker + eng_option + spanish_option + french_option + chines_option + menu_footer;
-    this.container = $('<div>').addClass('Grid Grid--gutters Grid--full large-Grid--1of4 med-Grid--1of3 u-textCenter').html(html_string);
-    $('body').append(this.container);
   }.bind(this);
 
   this.fetchQuestions = function (backend) {
@@ -7849,7 +7841,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
 //
 Scraper = new function () {
   function dispatch(location) {
-    if (location.host === 'shturem.net') {
+    if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
       if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
       if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
     }
@@ -7970,6 +7962,62 @@ var Speaker = new function () {
 // source.buffer = Audiobuffer;
 // source.playbackRate.value = 1.5;
 //
+document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of4 med-Grid--1of3' id='eo-menu'>\
+  <div class='Grid-cell'>\
+      <div class='header'>\
+            <div id='eo_account_area'>\
+        <div class='Grid u-textCenter'>\
+              <div class='Grid-cell'>\
+                <div id='eo_account_img'></div>\
+              </div>\
+              <div class='Grid-cell u-1of2'>\
+                <div class='Demo'>SIGN IN/UP</div>\
+              </div>\
+              <div class='Grid-cell'>\
+                <div class='Demo'>&#9662;</div>\
+              </div>\
+            </div>\
+        </div>\
+        <div class='Grid u-textCenter'>\
+          <div class='Grid-cell u-1of3'>\
+            <div id='eo-onoff'>\
+              <div id='eo-onoff-circle'></div>\
+            </div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div id='eo-speaker_res'></div>\
+          </div>\
+        </div>\
+      </div>\
+     <div class='languages_picker'>\
+       <div class='Grid Grid--full'>\
+        <div class='Grid-cell'>\
+          <div id='eo-language_header'>Pick a language</div>\
+        </div>\
+        <div class='Grid-cell'>\
+          <div class='eo-language-option-res'>English</div>\
+        </div>\
+        <div class='Grid-cell'>\
+          <div class='eo-language-option-res'>Spanish</div>\
+        </div>\
+        <div class='Grid-cell'>\
+          <div class='eo-language-option-res'>French</div>\
+        </div>\
+        <div class='Grid-cell'>\
+          <div class='eo-language-option-res'>Chines</div>\
+        </div>                \
+      </div>  \
+      <div class='Grid Grid--full u-textCenter'>\
+        <div class='Grid-cell'>\
+          <div id='eo-menu-footer'>englishon</div>\
+        </div>\
+\
+      </div>                                \
+    </div>\
+    </div>\
+\
+</div>";
+//
 // ******
 // Button
 // ******
@@ -8006,8 +8054,71 @@ var EnglishOnButton = new function () {
 // ****
 // Menu
 // ****
+window.onload = function () {
+  console.log('window onload1');
+  var EnglishOnMenu = new function () {
+    var toggler = function (cls, configEntry, toggle_func) {
+      // initialize
+      var initial = JSON.parse(document.config[configEntry]);
+      toggle_func(initial);
+      $('body').toggleClass(cls, initial);
+      return function () {
+        enabled = !JSON.parse(document.config[configEntry]);
+        var config = {};
+        config[configEntry] = enabled;
+        configStorage.set(config);
+        console.log('buttton pressed!!!!');
+        toggle_func(enabled);
+        $('body').toggleClass(cls, enabled);
+      };
+    };
+    var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
+    console.log('window onload2');
+    var togglePower = toggler('eo-active', 'isActive', function (enable) {
+      elem = $('#eo-onoff');
+      var children = elem.children();
+      elem.toggleText('ON', 'OFF');
+      elem.append(children);
+      if (JSON.parse(enable)) {
+        document.overlay.showQuestions();
+        console.log('I am standing here. length of answers array: ' + $('.eo-answered').length);
+        $('.eo-answered').on('click', function (e) {
+          var target = $(e.target);
+          //answer=target.data.correct_answers[0].answer;
+          //org=target.data.hint;
+          //target.toggleText(org,answer);
+          //target.toggleText('aaaa','bbbb');
+          //Speaker.speak(document.config.targetLanguage, target.text());
+        });
+        if (!document.config.isUser) {
+          console.log('a none user execute englishon for the first time...well done!');
+          configStorage.set({ 'isUser': true });
+          window.location.reload();
+        }
+      } else {
+        document.overlay.hideQuestions();
+      }
+    });
+    console.log('window onload3');
+    this.menu_string = document.MENU_HTML;
+    console.log('window on load4');
+    this.container = $(this.menu_string);
+    this.container.insertBefore($($('table')[0]));
+    computed_left_value = $('.eo-button').offset().left + parseInt($('.eo-button').css('width').slice(0, -2)) + 5;
+    $('.large-Grid--1of4 > .Grid-cell').css('left', computed_left_value + 'px');
+    $('#eo-onoff').on('click', togglePower);
+    //$('#eo-onoff').text((JSON.parse(document.config.isActive)? 'ON':'OFF'));
+    //$('#eo-onoff').html($('#eo-onoff').html().replace("     ", JSON.parse(document.config.isActive)? 'ON':'OFF'));
+    switch_text = JSON.parse(document.config.isActive) ? 'ON' : 'OFF';
+    elem = $('#eo-onoff');
+    var children = elem.children();
+    elem.text(switch_text);
+    elem.append(children);
+    $('#eo-speaker_res').on('click', toggleSound);
+    EnglishOnButton.registerHandlers(this);
+  }();
+};
 
-var EnglishOnMenu = new function () {}();
 // var EnglishOnMenu = new function() {
 //   this.container = $('<div>').addClass('eo-menu').addClass('eo-box');
 
@@ -8089,25 +8200,7 @@ var EnglishOnMenu = new function () {}();
 // ***************
 // Language Picker
 // ***************
-window.onload = function () {
-  console.log('window on load');
-  account_img = "<div class='Grid-cell'><div class='header'><div class='Grid Grid--gutters u-textCenter'><div class='Grid-cell'> <div class='Demo'>im</div></div>";
-  account_button = "<div class='Grid-cell u-1of2'><div class='Demo'>sign in/up</div></div>";
-  account_arrow = "<div class='Grid-cell'><div class='Demo'>ar</div></div></div>";
-  on_switch = "<div class='Grid Grid--gutters u-textCenter'><div class='Grid-cell u-1of3'><div class='Demo'>on/off</div></div>";
-  sound_bottun = "<div class='Grid-cell'><div class='Demo'>sound</div></div></div>";
-  languages_picker = "<div class='Grid Grid--full u-textCenter'><div class='Grid-cell'><div class='languages_picker'><div class='Demo'>Pick a language</div></div></div>";
-  eng_option = "<div class='Grid-cell'><div class='Demo'>English</div></div>";
-  spanish_option = "<div class='Grid-cell'><div class='Demo'>Spanish</div></div>";
-  french_option = "<div class='Grid-cell'><div class='Demo'>French</div></div>";
-  chines_option = "<div class='Grid-cell'><div class='Demo'>Chines</div></div></div>";
-  menu_footer = "<div class='Grid Grid--full u-textCenter'><div class='Grid-cell'><div class='Demo'>englishon</div></div></div></div></div>";
-  html_string = account_img + account_button + account_arrow + on_switch + sound_bottun + languages_picker + eng_option + spanish_option + french_option + chines_option + menu_footer;
-  this.container = $('<div>', { id: 'eo-menu' }).addClass('Grid Grid--gutters Grid--full large-Grid--1of4 med-Grid--1of3 u-textCenter').html(html_string);
-  $('body').append(this.container);
-  computed_left_value = $('.eo-button').offset().left + parseInt($('.eo-button').css('width').slice(0, -2)) + 5;
-  $('.large-Grid--1of4 > .Grid-cell').css('left', computed_left_value + 'px');
-};
+
 function createLanguagePicker(overlay, toggle) {
   var picker = $('<div>').addClass('eo-language_picker');
   function addLanguage(text, languageCode) {
@@ -8241,54 +8334,55 @@ function createOnSwitch() {
    and calls the given `toggle()` function, useful when you want
    your saved configuration to always match what's on screen
  */
-var toggler = function (cls, configEntry, toggle_func) {
-  // initialize
-  //var initial = !!document.config[configEntry];
-  var initial = JSON.parse(document.config[configEntry]);
-  console.log('configEntry: ' + configEntry);
-  console.log("side bar1.value of isActive: " + document.config.isActive);
-  toggle_func(initial);
-  $('body').toggleClass(cls, initial);
-  return function (enabled) {
-    //CHECK WELL THIS LINE
-    if (enabled == null) {
-      enabled = !JSON.parse(document.config[configEntry]);
-    }
-    var config = {};
-    config[configEntry] = enabled;
-    configStorage.set(config);
-    console.log('buttton pressed!!!!');
-    //enabled=JSON.parse(enabled);
-    toggle_func(enabled);
-    $('body').toggleClass(cls, enabled);
-  };
-};
+// var toggler = function(cls, configEntry, toggle_func) {
+//   // initialize
+//   //var initial = !!document.config[configEntry];
+//   var initial = JSON.parse(document.config[configEntry]);
+//   console.log('configEntry: '+configEntry);
+//   console.log("side bar1.value of isActive: "+document.config.isActive)
+//   toggle_func(initial);
+//   $('body').toggleClass(cls, initial);
+//   return function(enabled) {
+//     //CHECK WELL THIS LINE
+//     if (enabled == null ) {
+//       enabled = !JSON.parse(document.config[configEntry]);
+//     }
+//     var config = {};
+//     config[configEntry] = enabled;
+//     configStorage.set(config);
+//     console.log('buttton pressed!!!!');
+//     //enabled=JSON.parse(enabled);
+//     toggle_func(enabled);
+//     $('body').toggleClass(cls, enabled);
+//   };
+// };
 
 EnglishOnButton.registerHandlers = function (overlay) {
-  var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
+  //var toggleSound = toggler('eo-speaker', 'enableSound',Speaker.toggle.bind(Speaker));
   //toggler is 
-  var togglePower = toggler('eo-active', 'isActive', function (enable) {
-    console.log('I am in initial.togglePower****' + enable);
-    if (JSON.parse(enable)) {
-      document.overlay.showQuestions();
-      console.log('I am standing here. length of answers array: ' + $('.eo-answered').length);
-      $('.eo-answered').on('click', function (e) {
-        var target = $(e.target);
-        //answer=target.data.correct_answers[0].answer;
-        //org=target.data.hint;
-        //target.toggleText(org,answer);
-        //target.toggleText('aaaa','bbbb');
-        //Speaker.speak(document.config.targetLanguage, target.text());
-      });
-      if (!document.config.isUser) {
-        console.log('a none user execute englishon for the first time...well done!');
-        configStorage.set({ 'isUser': true });
-        window.location.reload();
-      }
-    } else {
-      document.overlay.hideQuestions();
-    }
-  });
+  // var togglePower = toggler('eo-active', 'isActive', function (enable) {
+  //     console.log ('I am in initial.togglePower****' + enable);
+  //     if (JSON.parse(enable)) {
+  //           document.overlay.showQuestions();
+  //           console.log('I am standing here. length of answers array: '+$('.eo-answered').length);
+  //           $('.eo-answered').on('click',function(e){
+  //                   var target=$(e.target);
+  //                   //answer=target.data.correct_answers[0].answer;
+  //                   //org=target.data.hint;
+  //                   //target.toggleText(org,answer);
+  //                   //target.toggleText('aaaa','bbbb');
+  //                   //Speaker.speak(document.config.targetLanguage, target.text());
+  //           })         
+  //           if (!document.config.isUser){
+  //             console.log('a none user execute englishon for the first time...well done!')
+  //             configStorage.set({'isUser': true});
+  //             window.location.reload();
+  //           }
+  //     } 
+  //     else {
+  //           document.overlay.hideQuestions();
+  //     }
+  // });
 
   console.log("side bar2.value of isActive: " + document.config.isActive);
   // EnglishOnMenu.addToggleSwitch('eo-toolbar-toggle-active', togglePower);
@@ -8299,29 +8393,36 @@ EnglishOnButton.registerHandlers = function (overlay) {
   // EnglishOnMenu.addToggleButton('unmute.svg', document.config.enableSound, Speaker.toggle.bind(Speaker));
   console.log("side bar3.value of isActive: " + document.config.isActive);
 
-  if (JSON.parse(document.config.editor) == true) {
-    //EnglishOnMenu.addWidget(createSuperMenu(overlay));
-  }
+  if (JSON.parse(document.config.editor) == true) {}
+  //EnglishOnMenu.addWidget(createSuperMenu(overlay));
 
-  var childWindow = document.getElementById('iframe').contentWindow;
-  childWindow.postMessage(document.englishonBackend.token, document.englishonBackend.base);
 
-  window.addEventListener("message", receiveMessage, false);
+  // When the popup has fully loaded, if not blocked by a popup blocker:
+  // This will successfully queue a message to be sent to the popup, assuming
+  // the window hasn't changed its location.
+  $('#iframe').on('load', function () {
+    var popup = this.contentWindow;
+    popup.postMessage(document.englishonBackend.token, document.englishonBackend.base);
+  });
+
   function receiveMessage(event) {
+    // Do we trust the sender of this message?  (might be
+    // different from what we originally opened, for example). 
     var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
-    if (origin !== document.englishonBackend.base) return;
-    console.log('receiveMessage from child. origin is: ' + origin);
+    if (origin !== "http://www.shturem.net" && origin !== "http://shturem.net") return;
+    // event.source is popup
+    console.log('receiveMessage from englishon');
+
     django_token = event.data.token;
     img = event.data.image;
     email = event.data.email;
     console.log('Google event***Is it a new google user? ' + event.data.is_new + '. Token: ' + django_token);
     if (django_token == 'Usersignedout') {
-      //localStorage.setItem("isActive", false);
-      //sessionStorage.removeItem('token');
+      //User sign out
       configStorage.set({ 'isActive': false });
       localStorage.removeItem('email');
-      var auth = new Authenticator(document.config.backendUrl);
-      document.config.token = null;
+      var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
+      document.config.token = null; //Isn't it unneeded???
       auth.login(document.config.token).then(function (token) {
         $('body').toggleClass('eo-active', false);
         console.log("receiveMessage ******** token: " + token);
@@ -8329,46 +8430,43 @@ EnglishOnButton.registerHandlers = function (overlay) {
         configStorage.set({ token: token });
         document.overlay.hideQuestions();
         document.englishonBackend.token = token;
-        childWindow.postMessage(token, document.englishonBackend.base);
+        //Give englishon the new guest token
+        event.source.postMessage(document.englishonBackend.token, document.englishonBackend.base);
       });
     } else {
-      //user sign in!
+      //User sign in!   
       $('#eo-account-avatar').css("background-image", "url(" + img + ")");
-
       if (!localStorage.getItem('email')) {
         console.log("THIS IS A REAL LOGIN");
         configStorage.set({ token: django_token, 'isActive': true });
         document.englishonBackend.token = django_token;
-        childWindow.postMessage(django_token, document.englishonBackend.base);
         $('body').toggleClass('eo-active', true);
         document.overlay.showQuestions();
         localStorage.setItem('email', email);
         //TODO:  this line does not working
         //$('#eo-account').before().css("background-image", "url(http://localhost:8080/static/ex/img/button-on-es.svg)") ;
       }
-
-      //Situation of switching users
       if (localStorage.getItem('email') && localStorage.getItem('email') != email) {
-        //to enable reply to the questions from begining
+        //Situation of switching users
         localStorage.setItem('email', email);
-        window.location.reload();
+        window.location.reload(); //to enable reply again
       }
     }
   }
-  console.log("side bar4.value of isActive: " + document.config.isActive);
-  console.log('side bar4 length of array: ' + $('.eo-answered').length);
+  //end of reciev message
+  window.addEventListener("message", receiveMessage, false);
 };
-$(window).load(function () {
-  console.log('window loaded length of array: ' + $('.eo-answered').length);
-  $('.eo-answered').on('click', function (e) {
-    var target = $(e.target);
-    var answer = target.data('answer');
-    var org = target.data('org');
-    target.toggleText(org, answer);
-    //target.toggleText('aaaa','bbbb');
-    Speaker.speak(document.config.targetLanguage, target.text());
-  });
-});
+
+// $( window ).load(function() {
+//   console.log('window loaded length of array: '+$('.eo-answered').length);
+//   $('.eo-answered').on('click',function(e){
+//                 var target=$(e.target);
+//                 var answer=target.data('answer');
+//                 var org=target.data('org');
+//                 target.toggleText(org,answer);
+//                 //target.toggleText('aaaa','bbbb');
+//                 Speaker.speak(document.config.targetLanguage, target.text());})      
+// });
 //
 // *********
 // Name List
@@ -8446,7 +8544,7 @@ function englishon() {
     //return;
   }
   //THIS LINE IS TEMP
-  if (window.location != 'http://shturem.net/index.php?section=news&id=91551') {
+  if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551') {
     return;
   }
   console.log('****Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
@@ -8512,6 +8610,7 @@ function englishon() {
       return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
         console.log('Fetched internal id');
         document.internal_id = internal_id;
+        $.get(staticUrl('responsive2.html'));
       });
     }
   }).then(function () {

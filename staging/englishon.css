@@ -2471,31 +2471,31 @@ body .ui-tooltip {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  src: url("http://localhost:8080/static/ex/fonts/Roboto-Regular.ttf");
+  src: url("http://www.englishon.org/v1/fonts/Roboto-Regular.ttf");
 }
 @font-face {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  src: url("http://localhost:8080/static/ex/fonts/Roboto-Bold.ttf");
+  src: url("http://www.englishon.org/v1/fonts/Roboto-Bold.ttf");
 }
 @font-face {
   font-family: "Noto Sans";
   font-style: normal;
   font-weight: 400;
-  src: url("http://localhost:8080/static/ex/fonts/NotoSans-Regular.ttf");
+  src: url("http://www.englishon.org/v1/fonts/NotoSans-Regular.ttf");
 }
 @font-face {
   font-family: "Noto Sans";
   font-style: normal;
   font-weight: 700;
-  src: url("http://localhost:8080/static/ex/fonts/NotoSans-Bold.ttf");
+  src: url("http://www.englishon.org/v1/fonts/NotoSans-Bold.ttf");
 }
 @font-face {
   font-family: "Ubuntu";
   font-style: normal;
   font-weight: 700;
-  src: url("http://localhost:8080/static/ex/fonts/Ubuntu-B.ttf");
+  src: url("http://www.englishon.org/v1/fonts/Ubuntu-B.ttf");
 }
 .eo-box, auto
 div.eo-question,
@@ -2617,7 +2617,7 @@ div.eo-question .eo-options > .eo-option.eo-correct_option::after {
   padding-right: 12px;
   visibility: hidden;
   content: "";
-  background-image: url(http://localhost:8080/static/ex/img/correct.svg);
+  background-image: url(http://www.englishon.org/v1/img/correct.svg);
   background-size: 15px;
   background-repeat: no-repeat;
   background-position: center;
@@ -2725,16 +2725,16 @@ div.eo-question.eo-active > .eo-mute_button {
   background-size: 14px, 12px;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url(http://localhost:8080/static/ex/img/question-sound-off.svg);
+  background-image: url(http://www.englishon.org/v1/img/question-sound-off.svg);
 }
 div.eo-question.eo-active > .eo-mute_button:hover {
-  background-image: url(http://localhost:8080/static/ex/img/question-sound-off-hover.svg);
+  background-image: url(http://www.englishon.org/v1/img/question-sound-off-hover.svg);
 }
 .eo-speaker div.eo-question.eo-active > .eo-mute_button {
-  background-image: url(http://localhost:8080/static/ex/img/question-sound-on.svg);
+  background-image: url(http://www.englishon.org/v1/img/question-sound-on.svg);
 }
 .eo-speaker div.eo-question.eo-active > .eo-mute_button:hover {
-  background-image: url(http://localhost:8080/static/ex/img/question-sound-on-hover.svg);
+  background-image: url(http://www.englishon.org/v1/img/question-sound-on-hover.svg);
 }
 div.eo-question > .eo-options {
   position: absolute;
@@ -2895,15 +2895,15 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   padding-right: 30px;
 }
 .eo-button.eo-button-loading {
-  background-image: url(http://localhost:8080/static/ex/img/button-loading.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-loading.svg);
   background-size: 34px;
 }
 .eo-button.eo-button-unavailable {
-  background-image: url(http://localhost:8080/static/ex/img/button-unavailable.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-unavailable.svg);
   background-size: 34px;
 }
 .eo-button.eo-button-off, .eo-button.eo-button-on {
-  background-image: url(http://localhost:8080/static/ex/img/button-logo.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
   background-size: 34px;
 }
 
@@ -2980,8 +2980,8 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   margin-top: 17px;
   width: 82px;
   height: 21px;
-  background-image: url(http://localhost:8080/static/ex/img/menu-logotype.svg);
-  /*background-image: url(http://localhost:8080/static/ex/img/correct.svg);*/
+  background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
+  /*background-image: url(http://www.englishon.org/v1/img/correct.svg);*/
   background-size: contain;
 }
 .eo-menu #eo-header #eo-account > #eo-account-avatar {
@@ -2991,7 +2991,7 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   margin-right: 12px;
   width: 31px;
   height: 31px;
-  background-image: url(http://localhost:8080/static/ex/img/menu-avatar.svg);
+  background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg);
   background-size: contain;
 }
 .eo-menu #eo-header #eo-account > #eo-account-avatar::after {
@@ -3037,16 +3037,16 @@ body.eo-active .eo-menu #eo-header #eo-toolbar > .eo-toolbar-toggle.eo-toolbar-t
 }
 .eo-menu #eo-header #eo-toolbar > .eo-toolbar-button.eo-toolbar-button-speaker {
   cursor: pointer;
-  background-image: url(http://localhost:8080/static/ex/img/menu-sound-off.svg);
+  background-image: url(http://www.englishon.org/v1/img/menu-sound-off.svg);
 }
 .eo-menu #eo-header #eo-toolbar > .eo-toolbar-button.eo-toolbar-button-speaker:hover {
-  background-image: url(http://localhost:8080/static/ex/img/menu-sound-off-hover.svg);
+  background-image: url(http://www.englishon.org/v1/img/menu-sound-off-hover.svg);
 }
 .eo-speaker .eo-menu #eo-header #eo-toolbar > .eo-toolbar-button.eo-toolbar-button-speaker {
-  background-image: url(http://localhost:8080/static/ex/img/menu-sound-on.svg);
+  background-image: url(http://www.englishon.org/v1/img/menu-sound-on.svg);
 }
 .eo-speaker .eo-menu #eo-header #eo-toolbar > .eo-toolbar-button.eo-toolbar-button-speaker:hover {
-  background-image: url(http://localhost:8080/static/ex/img/menu-sound-on-hover.svg);
+  background-image: url(http://www.englishon.org/v1/img/menu-sound-on-hover.svg);
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option {
   height: 32px;
@@ -3088,19 +3088,19 @@ body.eo-active .eo-menu > .eo-language_picker > .eo-language_picker-option {
   right: 25px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-en::before {
-  background-image: url(http://localhost:8080/static/ex/img/button-on-en.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-on-en.svg);
   background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-es::before {
-  background-image: url(http://localhost:8080/static/ex/img/button-on-es.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-on-es.svg);
   background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-fr::before {
-  background-image: url(http://localhost:8080/static/ex/img/button-on-fr.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-on-fr.svg);
   background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-zh::before {
-  background-image: url(http://localhost:8080/static/ex/img/button-on-zh.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-on-zh.svg);
   background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option:hover, body.eo-active.eo-language-en .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-en, body.eo-active.eo-language-es .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-es, body.eo-active.eo-language-fr .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-fr, body.eo-active.eo-language-zh .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-zh {
@@ -3121,7 +3121,7 @@ body.eo-tutorial.eo-tutorial-1 .eo-menu::after {
   position: absolute;
   top: 100px;
   left: 110%;
-  background-image: url(http://localhost:8080/static/ex/img/tutorial-pick_language.png);
+  background-image: url(http://www.englishon.org/v1/img/tutorial-pick_language.png);
   height: 104px;
   width: 218px;
 }
@@ -3131,7 +3131,7 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   position: absolute;
   top: -146px;
   left: -33px;
-  background-image: url(http://localhost:8080/static/ex/img/tutorial-translate.png);
+  background-image: url(http://www.englishon.org/v1/img/tutorial-translate.png);
   height: 119px;
   width: 232px;
 }
@@ -3224,21 +3224,21 @@ body.www-bloombergview-com .eo-button:hover {
   width: 50px !important;
 }
 body.www-bloombergview-com .eo-button.eo-button-loading {
-  background-image: url(http://localhost:8080/static/ex/img/button-loading-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-loading-white.svg);
   background-size: 34px;
 }
 body.www-bloombergview-com .eo-button.eo-button-unavailable {
-  background-image: url(http://localhost:8080/static/ex/img/button-unavailable-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-unavailable-white.svg);
   background-size: 34px;
 }
 body.www-bloombergview-com .eo-button.eo-button-off, body.www-bloombergview-com .eo-button.eo-button-on {
-  background-image: url(http://localhost:8080/static/ex/img/button-logo-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo-white.svg);
   background-size: 34px;
 }
 body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-off::before, body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-on::before {
   width: 17px;
   height: 17px;
-  background-image: url(http://localhost:8080/static/ex/img/notification.svg);
+  background-image: url(http://www.englishon.org/v1/img/notification.svg);
   margin-top: 8px;
   margin-left: 8px;
 }
@@ -3257,10 +3257,13 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   list-style: none;
   margin: 0;
   padding: 0;
+  direction: ltr;
 }
 
 .Grid-cell {
   flex: 1;
+  z-index: 3;
+  height: 45px;
 }
 
 .Grid--flexCells > .Grid-cell {
@@ -3340,7 +3343,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
     flex: 0 0 25%;
   }
 }
-@media (min-width: 960px) {
+@media (min-width: 1050px) {
   .med-Grid--fit > .Grid-cell {
     flex: 1;
   }
@@ -3361,7 +3364,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
     flex: 0 0 25%;
   }
 }
-@media (min-width: 960px) {
+@media (min-width: 1050px) {
   .large-Grid--fit > .Grid-cell {
     flex: 1;
   }
@@ -3383,6 +3386,8 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
     top: 100px;
     left: 100px;
     flex: 0 0 25%;
+    height: 381px;
+    width: 212px;
   }
 }
 .Grid--gutters {
@@ -3434,7 +3439,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
     padding: 2em 0 0 2em;
   }
 }
-@media (min-width: 960px) {
+@media (min-width: 1050px) {
   .med-Grid--gutters {
     margin: -1em 0 1em -1em;
   }
@@ -3459,7 +3464,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
     padding: 2em 0 0 2em;
   }
 }
-@media (min-width: 960px) {
+@media (min-width: 1050px) {
   .large-Grid--gutters {
     margin: -1em 0 1em -1em;
   }
@@ -3494,12 +3499,19 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 .header {
-  height: 560px;
   background-color: #4b5a66;
+  font-family: Ubuntu;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  text-align: left;
+  letter-spacing: 0.05em;
+  line-height: 20px;
 }
 
 .languages_picker {
   background-color: #eceff1;
+  languages_picker: left;
 }
 
 .u-1of2, .u-full {
@@ -3526,4 +3538,108 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 
 .hidden {
   display: none;
+}
+
+#eo_account_area {
+  border-bottom: 1px solid;
+  border-color: #3d4c58;
+}
+
+#eo_account_img {
+  background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg);
+  background-repeat: no-repeat;
+  height: 40px;
+  padding-left: 10px;
+  background-position: center;
+}
+
+#eo-onoff {
+  cursor: pointer;
+  padding-right: 6px;
+  background-color: #0e161d;
+  height: 20px;
+  width: 50px;
+  border-radius: 10px;
+  margin-left: 13px;
+  font-family: Ubuntu;
+  font-size: 11px;
+  font-weight: 500;
+  color: white;
+  letter-spacing: 0.03em;
+  line-height: 20px;
+  position: relative;
+  margin-top: 15px;
+  text-align: right;
+}
+
+.eo-active #eo-onoff {
+  background-color: #2cc6a8;
+  text-align: left;
+  padding-left: 4px;
+  padding-right: 0px;
+}
+.eo-active #eo-onoff-circle {
+  border: 1px solid #2cc6a8;
+  left: 30px;
+  transition: border-color 0.3s ease-in 0s, right 0.3s ease-in 0s;
+}
+
+#eo-onoff-circle {
+  background-color: white;
+  border-radius: 22px;
+  height: 22px;
+  width: 22px;
+  position: absolute;
+  top: -3px;
+}
+
+#eo-speaker_res {
+  background-image: url(http://www.englishon.org/v1/img/menu-sound-off.svg);
+  background-repeat: no-repeat;
+  padding-left: 10px;
+  background-position: center;
+  background-size: 19px;
+  height: 45px;
+}
+#eo-speaker_res:hover {
+  background-size: 24px;
+}
+
+.eo-speaker #eo-speaker_res {
+  background-image: url(http://www.englishon.org/v1/img/question-sound-on.svg);
+}
+.eo-speaker #eo-speaker_res:hover {
+  background-size: 24px;
+}
+
+#eo-language_header {
+  font-family: Ubuntu;
+  font-size: 14px;
+  font-weight: 500;
+  color: #3d4c58;
+  letter-spacing: 0.03em;
+  line-height: 20px;
+  height: 40px;
+  padding-top: 13px;
+  padding-left: 5px;
+  border-bottom: 1px solid #d7dee3;
+  text-align: left;
+}
+
+.eo-language-option-res {
+  font-family: Ubuntu;
+  font-size: 14px;
+  font-weight: bold;
+  color: #3d4c58;
+  letter-spacing: 0.05em;
+  line-height: 20px;
+  padding-top: 13px;
+  padding-left: 5px;
+  height: 30px;
+  text-align: left;
+}
+
+#eo-menu-footer {
+  border-top: 1px solid #d7dee3;
+  height: 40px;
 }
