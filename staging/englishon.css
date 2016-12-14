@@ -3574,7 +3574,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   display: none;
 }
 
-#eo_account_area {
+.eo_account_area {
   border-bottom: 1px solid;
   border-color: #3d4c58;
 }
@@ -3779,4 +3779,12 @@ eo-signout-layout .signout {
   font-size: 14px;
   font-weight: bold;
   color: #eceff1;
+}
+
+.locate_menu {
+  opacity: 0;
+}
+
+#eo-dlg-login > .Grid-cell, #eo-menu > .Grid-cell, #eo-dlg-signout > .Grid-cell {
+  height: 0px;
 }

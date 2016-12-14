@@ -8014,8 +8014,14 @@ var Speaker = new function () {
 //
 document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-menu'>\
     <div class='Grid-cell large-Grid--offset-1of5'>\
+    <div class='Grid Grid--full'>\
+      <div class='Grid-cell locate_menu'></div>\
+      <div class='Grid-cell locate_menu'></div>\
+      <div class='Grid-cell locate_menu'></div>\
+      <div class='Grid-cell locate_menu'></div>\
+    </div>\
         <div class='header'>\
-            <div id='eo_account_area'>\
+            <div class='eo_account_area'>\
                 <div class='Grid u-textCenter'>\
                     <div class='Grid-cell'>\
                         <div id='eo_account_img'></div>\
@@ -8057,7 +8063,7 @@ document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5
             <div class='Grid Grid--full' id='coming_soon'>\
                 <div class='Grid-cell'>\
                     <div class='Grid'>\
-                    <span class='tooltip'>Coming soon</span>\
+                        <span class='tooltip'>Coming soon</span>\
                         <div class='Grid-cell u-1of6'>flag\
                         </div>\
                         <div class='Grid-cell vertical-container'>\
@@ -8067,7 +8073,7 @@ document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5
                 </div>\
                 <div class='Grid-cell'>\
                     <div class='Grid'>\
-                    <span class='tooltip'>Coming soon</span>\
+                        <span class='tooltip'>Coming soon</span>\
                         <div class='Grid-cell u-1of6'>flag\
                         </div>\
                         <div class='Grid-cell vertical-container'>\
@@ -8077,7 +8083,7 @@ document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5
                 </div>\
                 <div class='Grid-cell'>\
                     <div class='Grid'>\
-                    <span class='tooltip'>Coming soon</span>\
+                        <span class='tooltip'>Coming soon</span>\
                         <div class='Grid-cell u-1of6'>flag\
                         </div>\
                         <div class='Grid-cell vertical-container'>\
@@ -8085,7 +8091,6 @@ document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5
                         </div>\
                     </div>\
                 </div>\
-\
             </div>\
             <div class='Grid Grid--full u-textCenter' id='picker_footer'>\
                 <div class='Grid-cell'>\
@@ -8099,6 +8104,13 @@ document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5
 //
 document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3 hidden' id='eo-dlg-login'>\
     <div class='Grid-cell large-Grid--offset u-textCenter'>\
+    <div class='Grid Grid--full'>\
+      <div class='Grid-cell locate_menu'></div>\
+      <div class='Grid-cell locate_menu'></div>\
+      <div class='Grid-cell locate_menu'></div>\
+      <div class='Grid-cell locate_menu'></div>\
+      <div class='Grid-cell locate_menu eo_account_area'></div>\
+    </div>\
         <div id='eo-dlg-inner'>\
             <div class='Grid Grid--full Grid--gutters'>\
                 <div class='Grid-cell'>\
@@ -8146,6 +8158,12 @@ document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
 document.SIGNOUT_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3 hidden' id='eo-dlg-signout'>\
     <div class='Grid-cell large-Grid--offset u-textCenter'>\
     <div class='Grid Grid--full'>\
+      <div class='Grid-cell locate_menu'></div>\
+      <div class='Grid-cell locate_menu'></div>\
+      <div class='Grid-cell locate_menu'></div>\
+      <div class='Grid-cell locate_menu'></div>\
+      <div class='Grid-cell locate_menu eo_account_area'></div>\
+    </div>    <div class='Grid Grid--full'>\
     	<div class='Grid-cell'></div>\
     	<div class='Grid-cell'>sign out</div>\
     	<div class='Grid-cell'></div>\
@@ -8194,6 +8212,7 @@ var EnglishOnButton = new function () {
 // Menu
 // ****
 window.onload = function () {
+  if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
   console.log('window onload');
   var EnglishOnMenu = new function () {
     /* returns a toggler function that both updates `configEntry`
@@ -8226,14 +8245,14 @@ window.onload = function () {
           configStorage.set({ token: res.token });
           if (res.status == 'CREATED') {
             message_element = $('#eo-login-msg');
-            message_element.text('Thank you for registering! A confirmation message sent to the given email.');
-            message_element.parent().removeClass('hidden').addClass('ui-state-highlight');
-            message_element.parent().css('height', '55px');
-            $('#eo_account_area').off('click', open_login_dialog);
-            $('#eo_account_area').on('click', open_signout_dialog);
+            message_element.text('Thank you for registering! A confirmation message sent to the given email.').addClass('ui-state-highlight');
+            message_element.parent().removeClass('hidden').css('height', '55px');
+            $('.eo_account_area').off('click', open_login_dialog);
+            $('.eo_account_area').on('click', open_signout_dialog);
             setTimeout(function () {
               message_element.removeClass("ui-state-highlight", 1500);
-            }, 500);
+              $('#eo-dlg-login').addClass('hidden');
+            }, 1500);
           }
         });
       }
@@ -8269,6 +8288,7 @@ window.onload = function () {
     };
 
     var open_signout_dialog = function () {
+      console.log('event event');
       $("#eo-dlg-signout").toggleClass('hidden');
     };
 
@@ -8286,7 +8306,7 @@ window.onload = function () {
     elem.text(switch_text);
     elem.append(children);
     $('#eo-speaker_res').on('click', toggleSound);
-    if (!localStorage.getItem('email')) $('#eo_account_area').on('click', open_login_dialog);else $('#eo_account_area').on('click', open_signout_dialog);
+    if (!localStorage.getItem('email')) $('.eo_account_area').on('click', open_login_dialog);else $('.eo_account_area').on('click', open_signout_dialog);
 
     //TODO: add the editor button
     var token = encodeURIComponent(document.englishonBackend.token);
