@@ -2505,9 +2505,15 @@ div.eo-question > .eo-correct {
   font-family: "Roboto", "Noto Sans", sans-serif;
 }
 
-.eo-button, .eo-menu > .eo-language_picker > .eo-language_picker-option::before {
+.eo-button {
   height: 31px;
   width: 30px;
+  background-repeat: no-repeat;
+}
+
+.eo-menu > .eo-language_picker > .eo-language_picker-option::before {
+  height: 19px;
+  width: 21px;
   background-repeat: no-repeat;
 }
 
@@ -3083,19 +3089,19 @@ body.eo-active .eo-menu > .eo-language_picker > .eo-language_picker-option {
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-en::before {
   background-image: url(http://www.englishon.org/v1/img/button-on-en.svg);
-  background-size: 34px;
+  background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-es::before {
   background-image: url(http://www.englishon.org/v1/img/button-on-es.svg);
-  background-size: 34px;
+  background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-fr::before {
   background-image: url(http://www.englishon.org/v1/img/button-on-fr.svg);
-  background-size: 34px;
+  background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-zh::before {
   background-image: url(http://www.englishon.org/v1/img/button-on-zh.svg);
-  background-size: 34px;
+  background-size: 21px;
 }
 .eo-menu > .eo-language_picker > .eo-language_picker-option:hover, body.eo-active.eo-language-en .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-en, body.eo-active.eo-language-es .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-es, body.eo-active.eo-language-fr .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-fr, body.eo-active.eo-language-zh .eo-menu > .eo-language_picker > .eo-language_picker-option.eo-language_picker-zh {
   background-color: #eceff1;
@@ -3186,19 +3192,15 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 
 /* Site specific */
 #top_menu_block {
-  margin-top: 104px !important;
+  margin-top: 102px !important;
 }
 
 #top_menu_block > img {
-  padding-top: 5px;
-}
-
-#top_menu_block > a {
-  padding-top: 5px;
+  padding-bottom: 3px;
 }
 
 #date_block {
-  padding-top: 15px;
+  padding-top: 19px;
 }
 
 body.www-bhol-co-il .eo-layout-warning {
@@ -3247,4 +3249,552 @@ body.www-bloombergview-com .eo-menu {
 }
 body.www-bloombergview-com .eo-menu > .eo-superuser p {
   color: #000 !important;
+}
+/* responsive.scss */
+.Grid {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  direction: ltr;
+}
+
+.Grid-cell {
+  flex: 1;
+  z-index: 3;
+  height: 45px;
+}
+
+.Grid--flexCells > .Grid-cell {
+  display: flex;
+}
+
+.Grid--top {
+  align-items: flex-start;
+}
+
+.Grid--bottom {
+  align-items: flex-end;
+}
+
+.Grid--center {
+  align-items: center;
+}
+
+.Grid--justifyCenter {
+  justify-content: center;
+}
+
+.Grid-cell--top {
+  align-self: flex-start;
+}
+
+.Grid-cell--bottom {
+  align-self: flex-end;
+}
+
+.Grid-cell--center {
+  align-self: center;
+}
+
+.Grid-cell--autoSize {
+  flex: none;
+}
+
+.Grid--fit > .Grid-cell {
+  flex: 1;
+}
+
+.Grid--full > .Grid-cell {
+  flex: 0 0 100%;
+}
+
+.Grid--1of2 > .Grid-cell {
+  flex: 0 0 50%;
+}
+
+.Grid--1of3 > .Grid-cell {
+  flex: 0 0 33.3333%;
+}
+
+.Grid--1of4 > .Grid-cell {
+  flex: 0 0 25%;
+}
+
+@media (--break-sm) {
+  .small-Grid--fit > .Grid-cell {
+    flex: 1;
+  }
+
+  .small-Grid--full > .Grid-cell {
+    flex: 0 0 100%;
+  }
+
+  .small-Grid--1of2 > .Grid-cell {
+    flex: 0 0 50%;
+  }
+
+  .small-Grid--1of3 > .Grid-cell {
+    flex: 0 0 33.3333%;
+  }
+
+  .small-Grid--1of4 > .Grid-cell {
+    flex: 0 0 25%;
+  }
+}
+@media (min-width: 750px) {
+  .med-Grid--fit > .Grid-cell {
+    flex: 1;
+  }
+
+  .med-Grid--full > .Grid-cell {
+    flex: 0 0 100%;
+  }
+
+  .med-Grid--1of2 > .Grid-cell {
+    flex: 0 0 50%;
+  }
+
+  .med-Grid--1of3 > .Grid-cell {
+    flex: 0 0 33.3333%;
+  }
+
+  .med-Grid--1of4 > .Grid-cell {
+    flex: 0 0 25%;
+  }
+}
+@media (min-width: 1050px) {
+  .large-Grid--fit > .Grid-cell {
+    flex: 1;
+  }
+
+  .large-Grid--full > .Grid-cell {
+    flex: 0 0 100%;
+  }
+
+  .large-Grid--1of2 > .Grid-cell {
+    flex: 0 0 50%;
+  }
+
+  .large-Grid--1of3 > .Grid-cell {
+    flex: 0 0 33.3333%;
+  }
+
+  .large-Grid--1of4 > .Grid-cell {
+    flex: 0 0 25%;
+  }
+
+  .large-Grid--1of5 > .Grid-cell {
+    flex: 0 0 20%;
+  }
+
+  #eo-menu > .large-Grid--offset-1of5 {
+    margin-left: 20%;
+  }
+
+  #eo-dlg-login > .large-Grid--offset {
+    margin-left: 30%;
+  }
+
+  #eo-dlg-signout > .large-Grid--offset {
+    margin-left: 20%;
+  }
+}
+#eo-dlg-inner {
+  z-index: 4;
+  background-color: white;
+}
+
+#google_btn {
+  height: 38px;
+  width: 140px;
+  background-color: #dc4e41;
+  border-radius: 5px;
+}
+
+.Grid--gutters {
+  margin: -1em 0 1em 0;
+}
+
+.Grid--gutters > .Grid-cell {
+  padding: 1em 0 0 0;
+}
+
+.Grid--guttersLg {
+  margin: -1.5em 0 1.5em -1.5em;
+}
+
+.Grid--guttersLg > .Grid-cell {
+  padding: 1.5em 0 0 1.5em;
+}
+
+.Grid--guttersXl {
+  margin: -2em 0 2em -2em;
+}
+
+.Grid--guttersXl > .Grid-cell {
+  padding: 2em 0 0 2em;
+}
+
+@media (--break-sm) {
+  .small-Grid--gutters {
+    margin: -1em 0 1em -1em;
+  }
+
+  .small-Grid--gutters > .Grid-cell {
+    padding: 1em 0 0 1em;
+  }
+
+  .small-Grid--guttersLg {
+    margin: -1.5em 0 1.5em -1.5em;
+  }
+
+  .small-Grid--guttersLg > .Grid-cell {
+    padding: 1.5em 0 0 1.5em;
+  }
+
+  .small-Grid--guttersXl {
+    margin: -2em 0 2em -2em;
+  }
+
+  .small-Grid--guttersXl > .Grid-cell {
+    padding: 2em 0 0 2em;
+  }
+}
+@media (min-width: 750px) {
+  .med-Grid--gutters {
+    margin: -1em 0 1em -1em;
+  }
+
+  .med-Grid--gutters > .Grid-cell {
+    padding: 1em 0 0 1em;
+  }
+
+  .med-Grid--guttersLg {
+    margin: -1.5em 0 1.5em -1.5em;
+  }
+
+  .med-Grid--guttersLg > .Grid-cell {
+    padding: 1.5em 0 0 1.5em;
+  }
+
+  .med-Grid--guttersXl {
+    margin: -2em 0 2em -2em;
+  }
+
+  .med-Grid--guttersXl > .Grid-cell {
+    padding: 2em 0 0 2em;
+  }
+}
+@media (min-width: 1050px) {
+  .large-Grid--gutters {
+    margin: -1em 0 1em -1em;
+  }
+
+  .large-Grid--gutters > .Grid-cell {
+    padding: 1em 0 0 1em;
+  }
+
+  .large-Grid--guttersLg {
+    margin: -1.5em 0 1.5em -1.5em;
+  }
+
+  .large-Grid--guttersLg > .Grid-cell {
+    padding: 1.5em 0 0 1.5em;
+  }
+
+  .large-Grid--guttersXl {
+    margin: -2em 0 2em -2em;
+  }
+
+  .large-Grid--guttersXl > .Grid-cell {
+    padding: 2em 0 0 2em;
+  }
+}
+.Demo {
+  height: 40px;
+  padding: .8em .1em 0;
+}
+
+.u-textCenter {
+  text-align: center !important;
+}
+
+.header {
+  background-color: #4b5a66;
+  font-family: Ubuntu;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  text-align: left;
+  letter-spacing: 0.05em;
+  line-height: 20px;
+}
+
+.cell--centered {
+  margin-left: 50%;
+}
+
+.languages_picker {
+  background-color: #eceff1;
+  text-align: left;
+}
+
+.u-1of2,
+.u-full {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+}
+
+.u-1of2 {
+  width: 50% !important;
+}
+
+.u-1of3 {
+  width: 33.3333% !important;
+}
+
+.u-1of6 {
+  width: 15% !important;
+}
+
+.u-1of3,
+.u-2of3,
+.u-1of6 {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+}
+
+.hidden {
+  display: none;
+}
+
+#eo-account-area {
+  border-bottom: 1px solid;
+  border-color: #3d4c58;
+}
+
+.eo-account-event-area {
+  border-bottom: 1px solid;
+  border-color: #3d4c58;
+}
+
+#eo-dlg-icon {
+  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-repeat: no-repeat;
+  height: 40px;
+  background-position: center;
+  background-size: 33px;
+}
+
+#wide_cell {
+  height: 80px;
+}
+
+#eo-account-img {
+  background-repeat: no-repeat;
+  height: 40px;
+  padding-left: 10px;
+  background-position: center;
+}
+
+.guest #eo-account-img {
+  background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg) !important;
+}
+
+#eo-iframe {
+  width: 160px;
+  height: 60px;
+  border: none;
+}
+
+#eo-onoff {
+  cursor: pointer;
+  padding-right: 6px;
+  background-color: #0e161d;
+  height: 20px;
+  width: 50px;
+  border-radius: 10px;
+  margin-left: 13px;
+  font-family: Ubuntu;
+  font-size: 11px;
+  font-weight: 500;
+  color: white;
+  letter-spacing: 0.03em;
+  line-height: 20px;
+  position: relative;
+  margin-top: 15px;
+  text-align: right;
+}
+
+.eo-active #eo-onoff {
+  background-color: #2cc6a8;
+  text-align: left;
+  padding-left: 4px;
+  padding-right: 0px;
+}
+.eo-active #eo-onoff-circle {
+  border: 1px solid #2cc6a8;
+  left: 30px;
+  transition: border-color 0.3s ease-in 0s, right 0.3s ease-in 0s;
+}
+
+.dlg_header {
+  font-family: Ubuntu;
+  font-size: 24px;
+  color: #3d4c58;
+  letter-spacing: 0.03em;
+  line-height: 20px;
+}
+
+#eo-onoff-circle {
+  background-color: white;
+  border-radius: 22px;
+  height: 22px;
+  width: 22px;
+  position: absolute;
+  top: -3px;
+}
+
+#eo-speaker_res {
+  background-image: url(http://www.englishon.org/v1/img/menu-sound-off.svg);
+  background-repeat: no-repeat;
+  padding-left: 10px;
+  background-position: center;
+  background-size: 19px;
+  height: 45px;
+}
+#eo-speaker_res:hover {
+  background-size: 24px;
+}
+
+.eo-speaker #eo-speaker_res {
+  background-image: url(http://www.englishon.org/v1/img/question-sound-on.svg);
+}
+.eo-speaker #eo-speaker_res:hover {
+  background-size: 24px;
+}
+
+#eo-language_header {
+  font-family: Ubuntu;
+  font-size: 14px;
+  font-weight: 500;
+  color: #3d4c58;
+  letter-spacing: 0.03em;
+  line-height: 20px;
+}
+
+#picker_tittle {
+  border-bottom: 1px solid #d7dee3;
+}
+
+.eo-language-option-res {
+  font-family: Ubuntu;
+  font-size: 14px;
+  font-weight: bold;
+  color: #3d4c58;
+  letter-spacing: 0.05em;
+  line-height: 20px;
+  padding-left: 10px;
+}
+
+#eo-menu-footer {
+  border-top: 1px solid #d7dee3;
+}
+
+#eo-dlg-login .eo-input {
+  height: 40px;
+  width: 200px;
+  background-color: #c7d1d7;
+  border: 1px solid #c7d1d7;
+  border-radius: 5px;
+}
+
+#eo-mail_login_btn {
+  height: 50px;
+  width: 150px;
+  background-color: #4b5a66;
+  border-radius: 25px;
+  font-family: Ubuntu;
+  font-size: 15px;
+  font-weight: 500;
+  color: white;
+  letter-spacing: 0.03em;
+  line-height: 25px;
+}
+
+.vertical-container {
+  display: flex;
+  align-items: center;
+}
+
+#coming_soon .Grid:hover {
+  background-color: #af32ff;
+}
+
+#coming_soon .Grid-cell .Grid .tooltip,
+eo-signout-layout .signout {
+  visibility: hidden;
+  position: absolute;
+  text-align: center;
+  font-size: 15px;
+  padding-top: 10px;
+  padding-left: 63px;
+}
+
+#coming_soon .Grid-cell:hover .tooltip {
+  visibility: visible;
+}
+
+#coming_soon .Grid,
+#eo-signout-layout .Grid {
+  position: relative;
+}
+
+#eo-dlg-login .eo-input.ui-state-error {
+  border: 1px solid #f1a899;
+  background: #fddfdf;
+  color: #5f3f3f;
+}
+
+.ui-state-highlight {
+  border: 1px solid #dad55e;
+  background: #fffa90;
+  color: #777620;
+}
+
+#eo-login-msg {
+  font-size: 15px;
+}
+
+.eo-delimiter {
+  height: 20%;
+}
+.eo-delimiter > .Grid-cell.line {
+  border-bottom-style: dotted;
+  height: 100%;
+  flex: 0 0 42%;
+}
+
+#eo-dlg-signout .Grid-cell {
+  background-color: #88b4e9;
+  font-family: Ubuntu;
+  font-size: 14px;
+  font-weight: bold;
+  color: #eceff1;
+}
+
+.locate_menu {
+  opacity: 0;
+}
+
+#eo-dlg-login > .Grid-cell,
+#eo-menu > .Grid-cell,
+#eo-dlg-signout > .Grid-cell {
+  height: 0px;
 }
