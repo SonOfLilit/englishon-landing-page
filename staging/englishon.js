@@ -8021,16 +8021,16 @@ document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5
       <div class='Grid-cell locate_menu'></div>\
     </div>\
         <div class='header'>\
-            <div class='eo_account_area'>\
+            <div id='eo-account-area' class='eo-account-event-area'>\
                 <div class='Grid u-textCenter'>\
                     <div class='Grid-cell'>\
-                        <div id='eo_account_img'></div>\
+                        <div id='eo-account-img'></div>\
                     </div>\
                     <div class='Grid-cell u-1of2'>\
-                        <div class='Demo'>SIGN IN/UP</div>\
+                        <div id='eo-account-name'>SIGN IN/UP</div>\
                     </div>\
                     <div class='Grid-cell'>\
-                        <div class='Demo'>&#9662;</div>\
+                        <div>&#9662;</div>\
                     </div>\
                 </div>\
             </div>\
@@ -8109,7 +8109,7 @@ document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
       <div class='Grid-cell locate_menu'></div>\
       <div class='Grid-cell locate_menu'></div>\
       <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu eo_account_area'></div>\
+      <div class='Grid-cell locate_menu eo-account-event-area'></div>\
     </div>\
         <div id='eo-dlg-inner'>\
             <div class='Grid Grid--full Grid--gutters'>\
@@ -8157,169 +8157,193 @@ document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
 //
 document.SIGNOUT_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3 hidden' id='eo-dlg-signout'>\
     <div class='Grid-cell large-Grid--offset u-textCenter'>\
-    <div class='Grid Grid--full'>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu eo_account_area'></div>\
-    </div>    <div class='Grid Grid--full'>\
-    	<div class='Grid-cell'></div>\
-    	<div class='Grid-cell'>sign out</div>\
-    	<div class='Grid-cell'></div>\
-    	<div class='Grid-cell'></div>\
-    	<div class='Grid-cell'></div>\
-    	<div class='Grid-cell'></div>\
-    	<div class='Grid-cell'></div>\
+        <div class='Grid Grid--full'>\
+            <div class='Grid-cell locate_menu'></div>\
+            <div class='Grid-cell locate_menu'></div>\
+            <div class='Grid-cell locate_menu'></div>\
+            <div class='Grid-cell locate_menu'></div>\
+            <div class='Grid-cell locate_menu eo-account-event-area'></div>\
+        </div>\
+        <div class='Grid Grid--full'>\
+            <div class='Grid-cell'></div>\
+            <div class='Grid-cell'>\
+                <div id='signout_btn'>sign out</div>\
+            </div>\
+            <div class='Grid-cell'></div>\
+            <div class='Grid-cell'></div>\
+            <div class='Grid-cell'></div>\
+            <div class='Grid-cell'></div>\
+            <div class='Grid-cell'></div>\
+        </div>\
     </div>\
-    </div>\
-    </div>";
+</div>\
+";
 //
 // ******
 // Button
 // ******
 
 var EnglishOnButton = new function () {
-  this.currentState = 'eo-button-on';
-  this.element = $('<div>').addClass('eo-button').addClass(this.currentState).on('click', function (e) {
-    e.preventDefault();
-    $('#eo-menu').toggleClass('hidden');
-    // if (EnglishOnMenu.container.has(e.target).length === 0) {
-    //   //EnglishOnMenu.toggle();
-    // }
-  });
+    this.currentState = 'eo-button-on';
+    this.element = $('<div>').addClass('eo-button').addClass(this.currentState).on('click', function (e) {
+        e.preventDefault();
+        $('#eo-menu').toggleClass('hidden');
+        // if (EnglishOnMenu.container.has(e.target).length === 0) {
+        //   //EnglishOnMenu.toggle();
+        // }
+    });
 
-  this.changeState = function (state) {
-    this.element.removeClass(this.currentState);
-    this.currentState = state;
-    this.element.addClass(this.currentState);
-  };
+    this.changeState = function (state) {
+        this.element.removeClass(this.currentState);
+        this.currentState = state;
+        this.element.addClass(this.currentState);
+    };
 
-  this.on = function () {
-    this.changeState('eo-button-on');
-  };
+    this.on = function () {
+        this.changeState('eo-button-on');
+    };
 
-  this.unavailable = function () {
-    this.changeState('eo-button-unavailable');
-  };
+    this.unavailable = function () {
+        this.changeState('eo-button-unavailable');
+    };
 
-  this.off = function () {
-    this.changeState('eo-button-off');
-  };
+    this.off = function () {
+        this.changeState('eo-button-off');
+    };
 }();
 
 // ****
 // Menu
 // ****
 window.onload = function () {
-  if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
-  console.log('window onload');
-  var EnglishOnMenu = new function () {
-    /* returns a toggler function that both updates `configEntry`
-       and calls the given `toggle()` function, useful when you want
-       your saved configuration to always match what's on screen
-     */
-    var toggler = function (cls, configEntry, toggle_func) {
-      // initialize
-      var initial = JSON.parse(document.config[configEntry]);
-      toggle_func(initial);
-      $('body').toggleClass(cls, initial);
-      return function () {
-        enabled = !JSON.parse(document.config[configEntry]);
-        var config = {};
-        config[configEntry] = enabled;
-        configStorage.set(config);
-        console.log('buttton pressed!!!!');
-        toggle_func(enabled);
-        $('body').toggleClass(cls, enabled);
-      };
-    };
-    var login_with_mail = function () {
-      var email = $('#eo-login-email');
-      var password = $('#eo-login-password');
-      var auth = new Authenticator(document.config.backendUrl);
+    if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
+    console.log('window onload');
+    var EnglishOnMenu = new function () {
+        /* returns a toggler function that both updates `configEntry`
+           and calls the given `toggle()` function, useful when you want
+           your saved configuration to always match what's on screen
+         */
+        var toggler = function (cls, configEntry, toggle_func) {
+            // initialize
+            var initial = JSON.parse(document.config[configEntry]);
+            toggle_func(initial);
+            $('body').toggleClass(cls, initial);
+            return function () {
+                enabled = !JSON.parse(document.config[configEntry]);
+                var config = {};
+                config[configEntry] = enabled;
+                configStorage.set(config);
+                console.log('buttton pressed!!!!');
+                toggle_func(enabled);
+                $('body').toggleClass(cls, enabled);
+            };
+        };
+        var login_with_mail = function () {
+            var email = $('#eo-login-email');
+            var password = $('#eo-login-password');
+            var auth = new Authenticator(document.config.backendUrl);
 
-      if (auth.validate({ email: email, password: password })) {
-        auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
-          configStorage.set({ email: res.email });
-          configStorage.set({ token: res.token });
-          if (res.status == 'CREATED') {
-            message_element = $('#eo-login-msg');
-            message_element.text('Thank you for registering! A confirmation message sent to the given email.').addClass('ui-state-highlight');
-            message_element.parent().removeClass('hidden').css('height', '55px');
-            $('.eo_account_area').off('click', open_login_dialog);
-            $('.eo_account_area').on('click', open_signout_dialog);
-            setTimeout(function () {
-              message_element.removeClass("ui-state-highlight", 1500);
-              $('#eo-dlg-login').addClass('hidden');
-            }, 1500);
-          }
+            if (auth.validate({ email: email, password: password })) {
+                auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
+                    configStorage.set({ email: res.email, token: res.token });
+                    if (res.status == 'CREATED') {
+                        message_element = $('#eo-login-msg');
+                        message_element.text('Thank you for registering! A confirmation message sent to the given email.').addClass('ui-state-highlight');
+                        message_element.parent().removeClass('hidden').css('height', '55px');
+                        $('.eo-account-event-area').off('click', toggle_login_dialog).on('click', toggle_signout_dialog);
+                        setTimeout(function () {
+                            $('#eo-dlg-login').addClass('hidden');
+                        }, 1500);
+                    }
+                });
+            }
+        };
+        var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
+        var togglePower = toggler('eo-active', 'isActive', function (enable) {
+            elem = $('#eo-onoff');
+            var children = elem.children();
+            elem.toggleText('ON', 'OFF');
+            elem.append(children);
+            if (JSON.parse(enable)) {
+                document.overlay.showQuestions();
+                console.log('I am standing here. length of answers array: ' + $('.eo-answered').length);
+                $('.eo-answered').on('click', function (e) {
+                    var target = $(e.target);
+                    //answer=target.data.correct_answers[0].answer;
+                    //org=target.data.hint;
+                    //target.toggleText(org,answer);
+                    //target.toggleText('aaaa','bbbb');
+                    //Speaker.speak(document.config.targetLanguage, target.text());
+                });
+                if (!document.config.isUser) {
+                    console.log('a none user execute englishon for the first time...well done!');
+                    configStorage.set({ 'isUser': true });
+                    window.location.reload();
+                }
+            } else {
+                document.overlay.hideQuestions();
+            }
         });
-      }
-    };
-    var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
-    var togglePower = toggler('eo-active', 'isActive', function (enable) {
-      elem = $('#eo-onoff');
-      var children = elem.children();
-      elem.toggleText('ON', 'OFF');
-      elem.append(children);
-      if (JSON.parse(enable)) {
-        document.overlay.showQuestions();
-        console.log('I am standing here. length of answers array: ' + $('.eo-answered').length);
-        $('.eo-answered').on('click', function (e) {
-          var target = $(e.target);
-          //answer=target.data.correct_answers[0].answer;
-          //org=target.data.hint;
-          //target.toggleText(org,answer);
-          //target.toggleText('aaaa','bbbb');
-          //Speaker.speak(document.config.targetLanguage, target.text());
+        var toggle_login_dialog = function () {
+            $("#eo-dlg-login").toggleClass('hidden');
+        };
+
+        var toggle_signout_dialog = function () {
+            console.log('event event');
+            $("#eo-dlg-signout").toggleClass('hidden');
+        };
+        var signout = function () {
+            var popup = $('#eo-iframe')[0].contentWindow;
+            popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
+            configStorage.set({ 'isActive': false });
+            localStorage.removeItem('email');
+            var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
+            document.config.token = null; //Isn't it unneeded???
+            auth.login(document.config.token).then(function (token) {
+                console.log("receiveMessage ******** token: " + token);
+                configStorage.set({ token: token });
+                document.overlay.hideQuestions();
+                document.englishonBackend.token = token; //Isn't it unneeded???
+                //Give englishon the new guest token
+                popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+                $('body').toggleClass('eo-active', false);
+                $('#eo-account-area').addClass('guest');
+                $('#eo-account-name').text('sign in');
+                $('.eo-account-event-area').off('click').on('click', toggle_login_dialog);
+                $('#eo-dlg-signout').addClass('hidden');
+            });
+        };
+
+        this.menu_string = document.MENU_HTML;
+        this.container = $(this.menu_string);
+        this.login_dlg = $(document.LOGIN_DLG);
+        this.signout_dlg = $(document.SIGNOUT_DLG);
+        this.container.insertBefore($($('table')[0]));
+        this.login_dlg.insertBefore($($('table')[0]));
+        this.signout_dlg.insertBefore($($('table')[0]));
+        $('#eo-onoff').on('click', togglePower);
+        switch_text = JSON.parse(document.config.isActive) ? 'ON' : 'OFF';
+        elem = $('#eo-onoff');
+        var children = elem.children();
+        elem.text(switch_text);
+        elem.append(children);
+        $('#eo-speaker_res').on('click', toggleSound);
+        $('#signout_btn').on('click', signout);
+        if (!localStorage.getItem('email')) {
+            $('#eo-account-area').addClass('guest');
+            $('.eo-account-event-area').on('click', toggle_login_dialog);
+        } else $('.eo-account-event-area').on('click', toggle_signout_dialog);
+
+        //TODO: add the editor button
+        var token = encodeURIComponent(document.englishonBackend.token);
+        if (document.config.isUser) var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
+        $('#google_iframe').append(google_login);
+        $('#eo-iframe').on('load', function () {
+            var popup = this.contentWindow;
+            popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
         });
-        if (!document.config.isUser) {
-          console.log('a none user execute englishon for the first time...well done!');
-          configStorage.set({ 'isUser': true });
-          window.location.reload();
-        }
-      } else {
-        document.overlay.hideQuestions();
-      }
-    });
-    var open_login_dialog = function () {
-      $("#eo-dlg-login").toggleClass('hidden');
-    };
-
-    var open_signout_dialog = function () {
-      console.log('event event');
-      $("#eo-dlg-signout").toggleClass('hidden');
-    };
-
-    this.menu_string = document.MENU_HTML;
-    this.container = $(this.menu_string);
-    this.login_dlg = $(document.LOGIN_DLG);
-    this.signout_dlg = $(document.SIGNOUT_DLG);
-    this.container.insertBefore($($('table')[0]));
-    this.login_dlg.insertBefore($($('table')[0]));
-    this.signout_dlg.insertBefore($($('table')[0]));
-    $('#eo-onoff').on('click', togglePower);
-    switch_text = JSON.parse(document.config.isActive) ? 'ON' : 'OFF';
-    elem = $('#eo-onoff');
-    var children = elem.children();
-    elem.text(switch_text);
-    elem.append(children);
-    $('#eo-speaker_res').on('click', toggleSound);
-    if (!localStorage.getItem('email')) $('.eo_account_area').on('click', open_login_dialog);else $('.eo_account_area').on('click', open_signout_dialog);
-
-    //TODO: add the editor button
-    var token = encodeURIComponent(document.englishonBackend.token);
-    if (document.config.isUser) var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
-    var postmessage_iframe = '<iframe src="http://www.w3schools.com" id="eo-iframe2"></iframe>';
-    $('#google_iframe').append(google_login);
-    $('#unneeded_iframe').append(postmessage_iframe);
-    $('#eo-iframe').on('load', function () {
-      var popup = this.contentWindow;
-      popup.postMessage(document.englishonBackend.token, document.englishonBackend.base);
-    });
-    $('#eo-mail_login_btn').on('click', login_with_mail);
-  }();
+        $('#eo-mail_login_btn').on('click', login_with_mail);
+    }();
 };
 
 // ***************
@@ -8327,31 +8351,32 @@ window.onload = function () {
 // ***************
 
 function createLanguagePicker(overlay, toggle) {
-  var picker = $('<div>').addClass('eo-language_picker');
-  function addLanguage(text, languageCode) {
-    picker.append($('<div>').addClass('eo-language_picker-option').addClass('eo-language_picker-' + languageCode).text(" " + text)
-    // .click(function(e) {
-    //   e.preventDefault();
-    //   if (languageCode !== document.config.targetLanguage /* || !injector.isActive */) {
-    //     configStorage.set({targetLanguage: languageCode})
-    //       .done(function() {
-    //         if (/* injector.isActive */ true) {
-    //           // we switched language, this requires getArticle() again etc' etc'...
-    //           // for now lets just reload
-    //           location.reload();
-    //         } else {
-    //           toggle();
-    //         }
-    //       });
-    //   }
-    // })
-    );
-  }
-  addLanguage(MESSAGES.EN, 'en');
-  addLanguage(MESSAGES.ES, 'es');
-  addLanguage(MESSAGES.FR, 'fr');
-  addLanguage(MESSAGES.ZH, 'zh');
-  return picker;
+    var picker = $('<div>').addClass('eo-language_picker');
+
+    function addLanguage(text, languageCode) {
+        picker.append($('<div>').addClass('eo-language_picker-option').addClass('eo-language_picker-' + languageCode).text(" " + text)
+        // .click(function(e) {
+        //   e.preventDefault();
+        //   if (languageCode !== document.config.targetLanguage /* || !injector.isActive */) {
+        //     configStorage.set({targetLanguage: languageCode})
+        //       .done(function() {
+        //         if (/* injector.isActive */ true) {
+        //           // we switched language, this requires getArticle() again etc' etc'...
+        //           // for now lets just reload
+        //           location.reload();
+        //         } else {
+        //           toggle();
+        //         }
+        //       });
+        //   }
+        // })
+        );
+    }
+    addLanguage(MESSAGES.EN, 'en');
+    addLanguage(MESSAGES.ES, 'es');
+    addLanguage(MESSAGES.FR, 'fr');
+    addLanguage(MESSAGES.ZH, 'zh');
+    return picker;
 }
 
 // **************
@@ -8359,85 +8384,88 @@ function createLanguagePicker(overlay, toggle) {
 // **************
 
 function createSuperMenu(overlay) {
-  var _editor = new Editor(overlay);
-  var create_btn = $('<button>').text("Create all questions").on('click', function (event) {
-    _editor.createAll();
-  });
-
-  var editor = $('<button>').text(" Edit questions").on('click', function (event) {
-    console.log("Editor enters");
-    overlay.hideQuestions();
-
-    event.preventDefault();
-    EnglishOnButton.off();
-    // after you've loaded the editor, there's no going back.
-    // (for now. this should be fixed.)
-    EnglishOnButton.element.off('click');
-
-    editor.off('click');
-    _editor.fetchQuestions().then(function () {
-      _editor.highlight();
+    var _editor = new Editor(overlay);
+    var create_btn = $('<button>').text("Create all questions").on('click', function (event) {
+        _editor.createAll();
     });
-  });
 
-  var token = $('<button>').text(" Reset Token").on('click', function (event) {
-    event.preventDefault();
-    configStorage.set({ token: null }).then(function () {
-      location.reload();
+    var editor = $('<button>').text(" Edit questions").on('click', function (event) {
+        console.log("Editor enters");
+        overlay.hideQuestions();
+
+        event.preventDefault();
+        EnglishOnButton.off();
+        // after you've loaded the editor, there's no going back.
+        // (for now. this should be fixed.)
+        EnglishOnButton.element.off('click');
+
+        editor.off('click');
+        _editor.fetchQuestions().then(function () {
+            _editor.highlight();
+        });
     });
-  });
 
-  var reset = $('<button>').text(" Reset User").on('click', function (event) {
-    event.preventDefault();
-    document.englishonBackend.resetUser().then(function () {
-      location.reload();
+    var token = $('<button>').text(" Reset Token").on('click', function (event) {
+        event.preventDefault();
+        configStorage.set({ token: null }).then(function () {
+            location.reload();
+        });
     });
-  });
 
-  var backendUrl = $('<button>').text(" Backend").on('click', function (event) {
-    event.preventDefault();
-    var url = prompt("Enter new URL", "https://englishon.herokuapp.com");
-    if (url !== null) {
-      configStorage.set({ backendUrl: url }).then(function () {
-        location.reload();
-      });
-    }
-  });
+    var reset = $('<button>').text(" Reset User").on('click', function (event) {
+        event.preventDefault();
+        document.englishonBackend.resetUser().then(function () {
+            location.reload();
+        });
+    });
 
-  var url = document.config.backendUrl;
-  url = /:\/\/([^/]*)/.exec(url)[1];
-  var menu = $('<div>').addClass('eo-superuser').append($('<button>').addClass('eo-superuser-button').text('Admin').click(function () {
-    $('.eo-superuser-menu').show();$('.eo-superuser-button').hide();
-  })).append($('<div>').addClass('eo-superuser-menu').hide().append($('<h2>').text("Superuser")).append($('<p>').css('width', '10em').text(url)).append($('<div>').append(editor)).append($('<div>').append(token)).append($('<div>').append(reset)).append($('<div>').append(backendUrl)).append($('<div>').append(create_btn)));
+    var backendUrl = $('<button>').text(" Backend").on('click', function (event) {
+        event.preventDefault();
+        var url = prompt("Enter new URL", "https://englishon.herokuapp.com");
+        if (url !== null) {
+            configStorage.set({ backendUrl: url }).then(function () {
+                location.reload();
+            });
+        }
+    });
 
-  return menu;
+    var url = document.config.backendUrl;
+    url = /:\/\/([^/]*)/.exec(url)[1];
+    var menu = $('<div>').addClass('eo-superuser').append($('<button>').addClass('eo-superuser-button').text('Admin').click(function () {
+        $('.eo-superuser-menu').show();
+        $('.eo-superuser-button').hide();
+    })).append($('<div>').addClass('eo-superuser-menu').hide().append($('<h2>').text("Superuser")).append($('<p>').css('width', '10em').text(url)).append($('<div>').append(editor)).append($('<div>').append(token)).append($('<div>').append(reset)).append($('<div>').append(backendUrl)).append($('<div>').append(create_btn)));
+
+    return menu;
 }
 
 function createLoginBtn() {
-  //var token=encodeURIComponent(document.englishonBackend.token) + '/'
+    //var token=encodeURIComponent(document.englishonBackend.token) + '/'
 }
+
 function cleanToken() {
-  console.log('cleanToken');
+    console.log('cleanToken');
 }
+
 function createOnSwitch() {
 
-  if (localStorage.getItem('isActive')) text = 'Pause Englishon';else text = 'Start englishon now!';
-  var on_switch = $('<button>', { id: 'onSwitch' }).text(text).addClass('eo-superuser-button').on('click', function (e) {
-    var target = $(e.target);
-    if (localStorage.getItem('isActive') == false) {
-      console.log('Start englishon');
-      document.overlay.showQuestions();
-      target.text('Pause Englishon');
-      localStorage.setItem("isActive", true);
-    } else {
-      document.overlay.hideQuestions();
-      target.text('Start englishon now!');
-      localStorage.setItem("isActive", false);
-    }
-  });
-  var element = $('<div>').append($('<div>').append(on_switch)).addClass('eo-superuser');
+    if (localStorage.getItem('isActive')) text = 'Pause Englishon';else text = 'Start englishon now!';
+    var on_switch = $('<button>', { id: 'onSwitch' }).text(text).addClass('eo-superuser-button').on('click', function (e) {
+        var target = $(e.target);
+        if (localStorage.getItem('isActive') == false) {
+            console.log('Start englishon');
+            document.overlay.showQuestions();
+            target.text('Pause Englishon');
+            localStorage.setItem("isActive", true);
+        } else {
+            document.overlay.hideQuestions();
+            target.text('Start englishon now!');
+            localStorage.setItem("isActive", false);
+        }
+    });
+    var element = $('<div>').append($('<div>').append(on_switch)).addClass('eo-superuser');
 
-  return element;
+    return element;
 }
 
 // ***********************
@@ -8445,66 +8473,43 @@ function createOnSwitch() {
 // ***********************
 
 function receiveMessage(event) {
-  // Do we trust the sender of this message?  (might be
-  // different from what we originally opened, for example). 
-  var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
-  if (document.englishonBackend == undefined || origin !== document.englishonBackend.base) return;
-  // event.source is popup
-  console.log('receiveMessage from englishon');
+    // Do we trust the sender of this message?  (might be
+    // different from what we originally opened, for example). 
+    var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
+    if (document.englishonBackend == undefined || origin !== document.englishonBackend.base) return;
+    // event.source is popup
+    console.log('receiveMessage from englishon');
+    //DUPLICATE CODE< FIX IT
+    var toggle_login_dialog = function () {
+        $("#eo-dlg-login").toggleClass('hidden');
+    };
 
-  django_token = event.data.token;
-  img = event.data.image;
-  email = event.data.email;
-  console.log('Google event***Is it a new google user? ' + event.data.is_new + '. Token: ' + django_token);
-  if (django_token == 'Usersignedout') {
-    //User sign out
-    configStorage.set({ 'isActive': false });
-    localStorage.removeItem('email');
-    var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
-    document.config.token = null; //Isn't it unneeded???
-    auth.login(document.config.token).then(function (token) {
-      $('body').toggleClass('eo-active', false);
-      console.log("receiveMessage ******** token: " + token);
-      $('#eo-account-avatar').css("background-image", "url(" + document.englishonBackend.base + "/static/ex/img/menu-avatar.svg)");
-      configStorage.set({ token: token });
-      document.overlay.hideQuestions();
-      document.englishonBackend.token = token;
-      //Give englishon the new guest token
-      event.source.postMessage(document.englishonBackend.token, document.englishonBackend.base);
-    });
-  } else {
-    //User sign in!   
-    $('#eo-account-avatar').css("background-image", "url(" + img + ")");
+    var toggle_signout_dialog = function () {
+        console.log('event event');
+        $("#eo-dlg-signout").toggleClass('hidden');
+    };
+    var django_token = event.data.token;
+    var img = event.data.image;
+    var email = event.data.email;
+    var user_name = event.data.name;
+    console.log('Google event***Is it a new google user? ' + event.data.is_new + '. Token: ' + django_token);
+    $('#eo-account-img').css("background-image", "url(" + img + ")");
+    $('#eo-account-name').text(user_name);
+    $('#eo-account-area').removeClass('guest');
+    $('#eo-dlg-login').addClass('hidden');
     if (!localStorage.getItem('email')) {
-      console.log("THIS IS A REAL LOGIN");
-      configStorage.set({ token: django_token, 'isActive': true });
-      document.englishonBackend.token = django_token;
-      $('body').toggleClass('eo-active', true);
-      document.overlay.showQuestions();
-      localStorage.setItem('email', email);
-      //TODO:  this line does not working
-      //$('#eo-account').before().css("background-image", "url(http://localhost:8080/static/ex/img/button-on-es.svg)") ;
+        console.log("THIS IS A REAL LOGIN");
+        configStorage.set({ token: django_token, 'isActive': true });
+        document.englishonBackend.token = django_token;
+        $('body').toggleClass('eo-active', true);
+        document.overlay.showQuestions();
+        localStorage.setItem('email', email);
+        $('.eo-account-event-area').off('click');
+        $('.eo-account-event-area').on('click', toggle_signout_dialog);
     }
-    if (localStorage.getItem('email') && localStorage.getItem('email') != email) {
-      //Situation of switching users
-      localStorage.setItem('email', email);
-      window.location.reload(); //to enable reply again
-    }
-  }
 }
-//end of reciev message
+//end of recieve message
 window.addEventListener("message", receiveMessage, false);
-
-// $( window ).load(function() {
-//   console.log('window loaded length of array: '+$('.eo-answered').length);
-//   $('.eo-answered').on('click',function(e){
-//                 var target=$(e.target);
-//                 var answer=target.data('answer');
-//                 var org=target.data('org');
-//                 target.toggleText(org,answer);
-//                 //target.toggleText('aaaa','bbbb');
-//                 Speaker.speak(document.config.targetLanguage, target.text());})      
-// });
 //
 // *********
 // Name List

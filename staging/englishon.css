@@ -3574,7 +3574,12 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   display: none;
 }
 
-.eo_account_area {
+#eo-account-area {
+  border-bottom: 1px solid;
+  border-color: #3d4c58;
+}
+
+.eo-account-event-area {
   border-bottom: 1px solid;
   border-color: #3d4c58;
 }
@@ -3591,12 +3596,15 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   height: 80px;
 }
 
-#eo_account_img {
-  background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg);
+#eo-account-img {
   background-repeat: no-repeat;
   height: 40px;
   padding-left: 10px;
   background-position: center;
+}
+
+.guest #eo-account-img {
+  background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg) !important;
 }
 
 #eo-iframe {
@@ -3785,6 +3793,8 @@ eo-signout-layout .signout {
   opacity: 0;
 }
 
-#eo-dlg-login > .Grid-cell, #eo-menu > .Grid-cell, #eo-dlg-signout > .Grid-cell {
+#eo-dlg-login > .Grid-cell,
+#eo-menu > .Grid-cell,
+#eo-dlg-signout > .Grid-cell {
   height: 0px;
 }
