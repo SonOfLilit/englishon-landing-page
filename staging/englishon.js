@@ -8027,7 +8027,7 @@ document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5
                         <div id='eo-account-img'></div>\
                     </div>\
                     <div class='Grid-cell u-1of2'>\
-                        <div id='eo-account-name'>SIGN IN/UP</div>\
+                        <div id='eo-account-name'></div>\
                     </div>\
                     <div class='Grid-cell'>\
                         <div>&#9662;</div>\
@@ -8141,7 +8141,7 @@ document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                     <input type='text' placeholder='email address' id='eo-login-email' class='eo-input' />\
                 </div>\
                 <div class='Grid-cell'>\
-                    <input type='text' placeholder='password' id='eo-login-password' class='eo-input' />\
+                    <input type='password' placeholder='password' id='eo-login-password' class='eo-input' />\
                 </div>\
                 <div class='Grid-cell'>\
                     <button id='eo-mail_login_btn'>sign in</button>\
@@ -8242,10 +8242,10 @@ window.onload = function () {
             var email = $('#eo-login-email');
             var password = $('#eo-login-password');
             var auth = new Authenticator(document.config.backendUrl);
-
             if (auth.validate({ email: email, password: password })) {
                 auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
-                    configStorage.set({ email: res.email, token: res.token });
+                    configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
+                    $('#eo-account-name').text(email.val());
                     if (res.status == 'CREATED') {
                         message_element = $('#eo-login-msg');
                         message_element.text('Thank you for registering! A confirmation message sent to the given email.').addClass('ui-state-highlight');
@@ -8297,6 +8297,7 @@ window.onload = function () {
             popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
             configStorage.set({ 'isActive': false });
             localStorage.removeItem('email');
+            localStorage.removeItem('eo-user-name');
             var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
             document.config.token = null; //Isn't it unneeded???
             auth.login(document.config.token).then(function (token) {
@@ -8332,7 +8333,12 @@ window.onload = function () {
         if (!localStorage.getItem('email')) {
             $('#eo-account-area').addClass('guest');
             $('.eo-account-event-area').on('click', toggle_login_dialog);
-        } else $('.eo-account-event-area').on('click', toggle_signout_dialog);
+            $('#eo-account-name').text('sign in');
+        } else {
+            $('.eo-account-event-area').on('click', toggle_signout_dialog);
+            $('#eo-account-name').text('sign in');
+            $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
+        }
 
         //TODO: add the editor button
         var token = encodeURIComponent(document.englishonBackend.token);
@@ -8447,27 +8453,6 @@ function cleanToken() {
     console.log('cleanToken');
 }
 
-function createOnSwitch() {
-
-    if (localStorage.getItem('isActive')) text = 'Pause Englishon';else text = 'Start englishon now!';
-    var on_switch = $('<button>', { id: 'onSwitch' }).text(text).addClass('eo-superuser-button').on('click', function (e) {
-        var target = $(e.target);
-        if (localStorage.getItem('isActive') == false) {
-            console.log('Start englishon');
-            document.overlay.showQuestions();
-            target.text('Pause Englishon');
-            localStorage.setItem("isActive", true);
-        } else {
-            document.overlay.hideQuestions();
-            target.text('Start englishon now!');
-            localStorage.setItem("isActive", false);
-        }
-    });
-    var element = $('<div>').append($('<div>').append(on_switch)).addClass('eo-superuser');
-
-    return element;
-}
-
 // ***********************
 // Register Event Handlers
 // ***********************
@@ -8499,7 +8484,7 @@ function receiveMessage(event) {
     $('#eo-dlg-login').addClass('hidden');
     if (!localStorage.getItem('email')) {
         console.log("THIS IS A REAL LOGIN");
-        configStorage.set({ token: django_token, 'isActive': true });
+        configStorage.set({ token: django_token, 'isActive': true, 'eo-user-name': user_name });
         document.englishonBackend.token = django_token;
         $('body').toggleClass('eo-active', true);
         document.overlay.showQuestions();
