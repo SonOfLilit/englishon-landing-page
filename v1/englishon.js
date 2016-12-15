@@ -8087,7 +8087,7 @@ document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5
                         <div class='Grid-cell u-1of6'>flag\
                         </div>\
                         <div class='Grid-cell vertical-container'>\
-                            <div class='eo-language-option-res'>Chines</div>\
+                            <div class='eo-language-option-res'>Cheines</div>\
                         </div>\
                     </div>\
                 </div>\
@@ -8246,14 +8246,14 @@ window.onload = function () {
                 auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
                     configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
                     $('#eo-account-name').text(email.val());
+                    $('.eo-account-event-area').off('click', toggle_login_dialog).on('click', toggle_signout_dialog);
+                    setTimeout(function () {
+                        $('#eo-dlg-login').addClass('hidden');
+                    }, 1500);
                     if (res.status == 'CREATED') {
                         message_element = $('#eo-login-msg');
                         message_element.text('Thank you for registering! A confirmation message sent to the given email.').addClass('ui-state-highlight');
                         message_element.parent().removeClass('hidden').css('height', '55px');
-                        $('.eo-account-event-area').off('click', toggle_login_dialog).on('click', toggle_signout_dialog);
-                        setTimeout(function () {
-                            $('#eo-dlg-login').addClass('hidden');
-                        }, 1500);
                     }
                 });
             }
@@ -8286,10 +8286,10 @@ window.onload = function () {
         });
         var toggle_login_dialog = function () {
             $("#eo-dlg-login").toggleClass('hidden');
+            $('#eo-login-msg').text('').removeClass('ui-state-highlight');
         };
 
         var toggle_signout_dialog = function () {
-            console.log('event event');
             $("#eo-dlg-signout").toggleClass('hidden');
         };
         var signout = function () {
@@ -8309,7 +8309,7 @@ window.onload = function () {
                 popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
                 $('body').toggleClass('eo-active', false);
                 $('#eo-account-area').addClass('guest');
-                $('#eo-account-name').text('sign in');
+                $('#eo-account-name').text('sign in/up');
                 $('.eo-account-event-area').off('click').on('click', toggle_login_dialog);
                 $('#eo-dlg-signout').addClass('hidden');
             });
@@ -8333,10 +8333,9 @@ window.onload = function () {
         if (!localStorage.getItem('email')) {
             $('#eo-account-area').addClass('guest');
             $('.eo-account-event-area').on('click', toggle_login_dialog);
-            $('#eo-account-name').text('sign in');
+            $('#eo-account-name').text('sign in/up');
         } else {
             $('.eo-account-event-area').on('click', toggle_signout_dialog);
-            $('#eo-account-name').text('sign in');
             $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
         }
 

@@ -1,298 +1,56 @@
-<!DOCTYPE html><html lang=en>
-<head>
-<meta charset=utf-8>
-<style>
-/* responsive.scss */
-.Grid {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
+menu_string=
+<div class='Grid Grid--gutters Grid--full large-Grid--1of4 med-Grid--1of3' id='eo-menu'>
+  <div class='Grid-cell'>
+      <div class='header'>
+            <div id='eo_account_area'>
+        <div class='Grid u-textCenter'>
+              <div class='Grid-cell'>
+                <div id='eo_account_img'></div>
+              </div>
+              <div class='Grid-cell u-1of2'>
+                <div class="Demo">sign in/up</div>
+              </div>
+              <div class='Grid-cell'>
+                <div class="Demo">&#9662;</div>
+              </div>
+            </div>
+        </div>
+        <div class='Grid u-textCenter'>
+          <div class='Grid-cell u-1of3'>
+            <div id='eo-onoff'>on
+            <div id='eo-onoff-circle'></div>
+            </div>
+          </div>
+          <div class='Grid-cell'>
+            <div id='eo-speaker_res'></div>
+          </div>
+        </div>
+      </div>
+     <div class='languages_picker'>
+       <div class='Grid Grid--full'>
+        <div class='Grid-cell'>
+          <div id='eo-language_header'>Pick a language</div>
+        </div>
+        <div class='Grid-cell'>
+          <div class="eo-language-option-res">English</div>
+        </div>
+        <div class='Grid-cell'>
+          <div class="eo-language-option-res">Spanish</div>
+        </div>
+        <div class='Grid-cell'>
+          <div class="eo-language-option-res">French</div>
+        </div>
+        <div class='Grid-cell'>
+          <div class="eo-language-option-res">Chines</div>
+        </div>                
+      </div>  
+      <div class='Grid Grid--full u-textCenter'>
+        <div class='Grid-cell'>
+          <div id="eo-menu-footer">englishon</div>
+        </div>
 
-.Grid-cell {
-  flex: 1;
-}
+      </div>                                
+    </div>
+    </div>
 
-.Grid--flexCells > .Grid-cell {
-  display: flex;
-}
-
-.Grid--top {
-  align-items: flex-start;
-}
-
-.Grid--bottom {
-  align-items: flex-end;
-}
-
-.Grid--center {
-  align-items: center;
-}
-
-.Grid--justifyCenter {
-  justify-content: center;
-}
-
-.Grid-cell--top {
-  align-self: flex-start;
-}
-
-.Grid-cell--bottom {
-  align-self: flex-end;
-}
-
-.Grid-cell--center {
-  align-self: center;
-}
-
-.Grid-cell--autoSize {
-  flex: none;
-}
-
-.Grid--fit > .Grid-cell {
-  flex: 1;
-}
-
-.Grid--full > .Grid-cell {
-  flex: 0 0 100%;
-}
-
-.Grid--1of2 > .Grid-cell {
-  flex: 0 0 50%;
-}
-
-.Grid--1of3 > .Grid-cell {
-  flex: 0 0 33.3333%;
-}
-
-.Grid--1of4 > .Grid-cell {
-  flex: 0 0 25%;
-}
-
-@media (--break-sm) {
-  .small-Grid--fit > .Grid-cell {
-    flex: 1;
-  }
-  .small-Grid--full > .Grid-cell {
-    flex: 0 0 100%;
-  }
-  .small-Grid--1of2 > .Grid-cell {
-    flex: 0 0 50%;
-  }
-  .small-Grid--1of3 > .Grid-cell {
-    flex: 0 0 33.3333%;
-  }
-  .small-Grid--1of4 > .Grid-cell {
-    flex: 0 0 25%;
-  }
-}
-
-@media (min-width: 44em) {
-  .med-Grid--fit > .Grid-cell {
-    flex: 1;
-  }
-  .med-Grid--full > .Grid-cell {
-    flex: 0 0 100%;
-  }
-  .med-Grid--1of2 > .Grid-cell {
-    flex: 0 0 50%;
-  }
-  .med-Grid--1of3 > .Grid-cell {
-    flex: 0 0 33.3333%;
-  }
-  .med-Grid--1of4 > .Grid-cell {
-    flex: 0 0 25%;
-  }
-}
-
-@media (min-width: 58em) {
-  .large-Grid--fit > .Grid-cell {
-    flex: 1;
-  }
-  .large-Grid--full > .Grid-cell {
-    flex: 0 0 100%;
-  }
-  .large-Grid--1of2 > .Grid-cell {
-    flex: 0 0 50%;
-  }
-  .large-Grid--1of3 > .Grid-cell {
-    flex: 0 0 33.3333%;
-  }
-  .large-Grid--1of4 > .Grid-cell {
-  	position:absolute;
-  	top:100px;
-  	left:100px;
-    flex: 0 0 25%;
-  }
-}
-
-.Grid--gutters {
-  margin: -1em 0 1em -1em;
-}
-.Grid--gutters > .Grid-cell {
-  padding: 1em 0 0 1em;
-}
-
-.Grid--guttersLg {
-  margin: -1.5em 0 1.5em -1.5em;
-}
-.Grid--guttersLg > .Grid-cell {
-  padding: 1.5em 0 0 1.5em;
-}
-
-.Grid--guttersXl {
-  margin: -2em 0 2em -2em;
-}
-.Grid--guttersXl > .Grid-cell {
-  padding: 2em 0 0 2em;
-}
-
-@media (--break-sm) {
-  .small-Grid--gutters {
-    margin: -1em 0 1em -1em;
-  }
-  .small-Grid--gutters > .Grid-cell {
-    padding: 1em 0 0 1em;
-  }
-  .small-Grid--guttersLg {
-    margin: -1.5em 0 1.5em -1.5em;
-  }
-  .small-Grid--guttersLg > .Grid-cell {
-    padding: 1.5em 0 0 1.5em;
-  }
-  .small-Grid--guttersXl {
-    margin: -2em 0 2em -2em;
-  }
-  .small-Grid--guttersXl > .Grid-cell {
-    padding: 2em 0 0 2em;
-  }
-}
-
-@media (min-width: 44em) {
-  .med-Grid--gutters {
-    margin: -1em 0 1em -1em;
-  }
-  .med-Grid--gutters > .Grid-cell {
-    padding: 1em 0 0 1em;
-  }
-  .med-Grid--guttersLg {
-    margin: -1.5em 0 1.5em -1.5em;
-  }
-  .med-Grid--guttersLg > .Grid-cell {
-    padding: 1.5em 0 0 1.5em;
-  }
-  .med-Grid--guttersXl {
-    margin: -2em 0 2em -2em;
-  }
-  .med-Grid--guttersXl > .Grid-cell {
-    padding: 2em 0 0 2em;
-  }
-}
-
-@media (min-width: 58em) {
-  .large-Grid--gutters {
-    margin: -1em 0 1em -1em;
-  }
-  .large-Grid--gutters > .Grid-cell {
-    padding: 1em 0 0 1em;
-  }
-  .large-Grid--guttersLg {
-    margin: -1.5em 0 1.5em -1.5em;
-  }
-  .large-Grid--guttersLg > .Grid-cell {
-    padding: 1.5em 0 0 1.5em;
-  }
-  .large-Grid--guttersXl {
-    margin: -2em 0 2em -2em;
-  }
-  .large-Grid--guttersXl > .Grid-cell {
-    padding: 2em 0 0 2em;
-  }
-}
-.Demo{
-	background-color: hsla(31,15%,50%,.1);
-	height:40px;
-	padding: .8em .1em 0;
-}
-.u-textCenter{
-	text-align: center !important;	
-}
-.menu{
-	height:560px;
-	background-color: hsla(31,15%,50%,.1);
-}
-.u-1of2,.u-full{
-	-webkit-box-flex:0!important;
-	-webkit-flex:none!important;
-	-ms-flex:none!important;
-	flex:none!important
-}
-.u-1of2{
-	width:50%!important
-}
-.u-1of3{
-	width:33.3333%!important
-}
-.u-1of3,.u-2of3{
-	-webkit-box-flex:0!important;
-	-webkit-flex:none!important;
-	-ms-flex:none!important;
-	flex:none!important
-}
-.hidden{
-	display:none;	
-}
-table{
-  width:100%;
-}
-
-td{
-  width:33%;
-
-}
-
-</style>
-<script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="></script>
-
-<script>
-window.onload = function() {
-html_string="<div class='Grid-cell'><div class='menu'><div class='Grid Grid--gutters u-textCenter'><div class='Grid-cell'> <div class='Demo'>im</div></div><div class='Grid-cell u-1of2'><div class='Demo'>sign in/up</div></div><div class='Grid-cell'><div class='Demo'>ar</div></div></div><div class='Grid Grid--gutters u-textCenter'><div class='Grid-cell u-1of3'><div class='Demo'>on/off</div></div><div class='Grid-cell'><div class='Demo'>sound</div></div></div><div class='Grid Grid--full u-textCenter'><div class='Grid-cell'><div class='Demo'>Pick a language</div></div><div class='Grid-cell'><div class='Demo'>English</div></div><div class='Grid-cell'><div class='Demo'>Spanish</div></div><div class='Grid-cell'><div class='Demo'>French</div></div><div class='Grid-cell'><div class='Demo'>Chines</div></div></div><div class='Grid Grid--full u-textCenter'><div class='Grid-cell'><div class='Demo'>englishon</div></div></div></div></div>"
-console.log('sfdthtyhjdtyj');
-  $("body").append($('<div>').addClass('Grid Grid--gutters Grid--full large-Grid--1of4 med-Grid--1of3 u-textCenter').html(html_string));   
-}
-function show_menu(){
-  console.log('show menu');
-  $('.Grid').toggleClass('hidden');
-  
-};
-</script>
-</head>
-<body>
-<table>
-  <tr>
-    <td>td1<div class='eng_button' onclick="show_menu()">englishon</div></td>
-    <td>td2</td>
-    <td>td3</td>
-  </tr>
-  <tr>
-    <td>td1</td>
-    <td>td2</td>
-    <td>td3</td>
-  </tr>
-  <tr>
-    <td>td1</td>
-    <td>td2</td>
-    <td>td3</td>
-  </tr>
-  <tr>
-    <td>td1</td>
-    <td>td2</td>
-    <td>td3</td>
-  </tr>
-</table>
-
-<div class='eng_button2'>englishon2</div>
-</body>
-</html>
+</div>
