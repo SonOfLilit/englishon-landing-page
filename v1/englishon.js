@@ -8230,7 +8230,7 @@ $(document).mouseup(function (e) {
 // ****
 window.onload = function () {
 
-    if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
+    //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
     console.log('window onload');
     var EnglishOnMenu = new function () {
         /* returns a toggler function that both updates `configEntry`
@@ -8471,14 +8471,6 @@ function createSuperMenu(overlay) {
     return menu;
 }
 
-function createLoginBtn() {
-    //var token=encodeURIComponent(document.englishonBackend.token) + '/'
-}
-
-function cleanToken() {
-    console.log('cleanToken');
-}
-
 // ***********************
 // Register Event Handlers
 // ***********************
@@ -8644,8 +8636,7 @@ function englishon() {
     } else {
       return new HerokuBackend(config.backendUrl, 'NON_USER');
     }
-    //check this location
-    //document.englishonBackend = backend;
+
     return backend;
   }).then(function (backend) {
     document.englishonBackend = backend;
