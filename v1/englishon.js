@@ -8270,10 +8270,11 @@ window.onload = function () {
                         display_message(res.message, $('#eo-login-msg'));
                         return;
                     }
+                    configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
+                    $('#eo-account-name').text(email.val());
+                    $('.eo-account-area').off('click').on('click', toggle_signout_dialog);
+
                     if (res.status == 'logged_in') {
-                        configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
-                        $('#eo-account-name').text(email.val());
-                        $('.eo-account-area').off('click').on('click', toggle_signout_dialog);
                         display_message(res.message, $('#eo-login-msg'));
                         hide_dialogs(1000);
                     } else if (res.status == 'registered') {
