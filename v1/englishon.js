@@ -6595,8 +6595,7 @@ Authenticator.prototype.getToken = function () {
 
 Authenticator.prototype.register = function (user) {
   console.log('register by mail)');
-  var res = $.post(this.base + '/tokens/register/', user, function (res, status, request) {
-    res.status = request.statusText;
+  var res = $.post(this.base + '/tokens/register/', user, function (res) {
     return res;
   });
   return res;
@@ -8255,30 +8254,33 @@ window.onload = function () {
                 $('body').toggleClass(cls, enabled);
             };
         };
+        var hide_dialogs = function (milisec) {
+            setTimeout(function () {
+                $('#eo-dlg-login').addClass('hidden');
+                $('#eo-menu').addClass('hidden');
+            }, milisec);
+        };
         var login_with_mail = function () {
             var email = $('#eo-login-email');
             var password = $('#eo-login-password');
             var auth = new Authenticator(document.config.backendUrl);
             if (auth.validate({ email: email, password: password })) {
                 auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
-                    if (res.message) {
+                    if (res.status == 'error') {
                         display_message(res.message, $('#eo-login-msg'));
                         return;
                     }
-                    configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
-                    $('#eo-account-name').text(email.val());
-                    $('.eo-account-area').off('click').on('click', toggle_signout_dialog);
-                    $('#eo-dlg-login').addClass('hidden');
-                    $('#eo-menu').addClass('hidden');
-
-                    if (res.status == 'CREATED') {
+                    if (res.status == 'logged_in') {
+                        configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
+                        $('#eo-account-name').text(email.val());
+                        $('.eo-account-area').off('click').on('click', toggle_signout_dialog);
+                        display_message(res.message, $('#eo-login-msg'));
+                        hide_dialogs(1000);
+                    } else if (res.status == 'registered') {
                         message = 'Thank you for registering! A confirmation message sent to the given email.';
                         display_message(message, $('#eo-login-msg'));
                         $('#eo-login-msg').parent().css('height', '55px');
-                        setTimeout(function () {
-                            $('#eo-dlg-login').addClass('hidden', 1500);
-                            $('#eo-menu').addClass('hidden', 1500);
-                        }, 3500);
+                        hide_dialogs(3500);
                     }
                 });
             }
