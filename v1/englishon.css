@@ -3578,9 +3578,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   border-bottom: 1px solid;
   border-color: #3d4c58;
   cursor: pointer;
-}
-
-.eo-account-event-area {
   border-bottom: 1px solid;
   border-color: #3d4c58;
 }
@@ -3771,7 +3768,9 @@ eo-signout-layout .signout {
   color: #777620;
 }
 
-#eo-login-msg {
+#eo-login-msg,
+#eo-google-msg,
+#eo-signout-msg {
   font-size: 15px;
 }
 
@@ -3801,4 +3800,8 @@ eo-signout-layout .signout {
 #eo-menu-grid > .Grid-cell,
 #eo-dlg-signout-grid > .Grid-cell {
   height: 0px;
+}
+
+#signout_btn {
+  cursor: pointer;
 }

@@ -8020,7 +8020,7 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
       <div class='Grid-cell locate_menu'></div>\
     </div>\
         <div class='header'>\
-            <div id='eo-account-area' class='eo-account-area'>\
+            <div id='eo-account-area'>\
                 <div class='Grid u-textCenter'>\
                     <div class='Grid-cell'>\
                         <div id='eo-account-img'></div>\
@@ -8102,13 +8102,13 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
 ";
 //
 document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-dlg-login-grid'>\
-    <div class='Grid-cell large-Grid--offset u-textCenter hidden'  id='eo-dlg-login'>\
-    <div class='Grid Grid--full'>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-    </div>\
+    <div class='Grid-cell large-Grid--offset u-textCenter hidden' id='eo-dlg-login'>\
+        <div class='Grid Grid--full'>\
+            <div class='Grid-cell locate_menu'></div>\
+            <div class='Grid-cell locate_menu'></div>\
+            <div class='Grid-cell locate_menu'></div>\
+            <div class='Grid-cell locate_menu'></div>\
+        </div>\
         <div id='eo-dlg-inner'>\
             <div class='Grid Grid--full Grid--gutters'>\
                 <div class='Grid-cell'>\
@@ -8117,11 +8117,11 @@ document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                 <div class='Grid-cell'>\
                     <div class='dlg_header'>Sign in/up</div>\
                 </div>\
-                <div class='Grid-cell'>\
-                    <button id='google_btn'>google</button>\
-                </div>\
                 <div class='Grid-cell' id='wide_cell'>\
                     <div id='google_iframe'></div>\
+                </div>\
+                <div class='Grid-cell hidden'>\
+                    <div id='eo-google-msg'></div>\
                 </div>\
                 <div class='Grid-cell'>\
                     <div class='Grid eo-delimiter'>\
@@ -8160,13 +8160,16 @@ document.SIGNOUT_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1
             <div class='Grid-cell locate_menu'></div>\
             <div class='Grid-cell locate_menu'></div>\
             <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
+            <div class='Grid-cell locate_menu' id='signout-event-area'></div>\
         </div>\
         <div id='signout-inner'>\
             <div class='Grid Grid--full'>\
                 <div class='Grid-cell'></div>\
                 <div class='Grid-cell'>\
                     <div id='signout_btn'>sign out</div>\
+                </div>\
+                <div class='Grid-cell'>\
+                    <div id='eo-signout-msg'></div>\
                 </div>\
                 <div class='Grid-cell'></div>\
                 <div class='Grid-cell'></div>\
@@ -8216,7 +8219,7 @@ $(document).mouseup(function (e) {
     var button = $('#eo-button');
     var login_dlg = $('#eo-dlg-login');
     var signout_dlg = $('#eo-dlg-signout');
-    if (!menu.is(e.target) // if the target of the click isn't the button...
+    if (!menu.is(e.target) // if the target of the click isn't the menu..
     && menu.has(e.target).length === 0 // ... nor a descendant of the menu
     && !button.is(e.target) && !login_dlg.is(e.target) && login_dlg.has(e.target).length === 0 && !signout_dlg.is(e.target) && signout_dlg.has(e.target).length === 0) {
         menu.addClass('hidden');
@@ -8224,6 +8227,27 @@ $(document).mouseup(function (e) {
         signout_dlg.addClass('hidden');
     }
 });
+
+var toggle_login_dialog = function () {
+    $("#eo-dlg-login").toggleClass('hidden');
+    $('#eo-login-msg').text('').removeClass('ui-state-highlight');
+};
+
+var toggle_signout_dialog = function () {
+    $("#eo-dlg-signout").removeAttr('style').toggleClass('hidden');
+};
+var display_message = function (msg, element) {
+    element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
+};
+var hide_dialogs = function (milisec) {
+    setTimeout(function () {
+        $('#eo-dlg-login').addClass('hidden');
+        $('#eo-menu').addClass('hidden');
+        $('#eo-signout-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+        $('#eo-login-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+        $('#eo-google-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+    }, milisec);
+};
 // ****
 // Menu
 // ****
@@ -8236,9 +8260,7 @@ window.onload = function () {
            and calls the given `toggle()` function, useful when you want
            your saved configuration to always match what's on screen
          */
-        function display_message(msg, element) {
-            element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
-        }
+
         var toggler = function (cls, configEntry, toggle_func) {
             // initialize
             var initial = JSON.parse(document.config[configEntry]);
@@ -8254,12 +8276,7 @@ window.onload = function () {
                 $('body').toggleClass(cls, enabled);
             };
         };
-        var hide_dialogs = function (milisec) {
-            setTimeout(function () {
-                $('#eo-dlg-login').addClass('hidden');
-                $('#eo-menu').addClass('hidden');
-            }, milisec);
-        };
+
         var login_with_mail = function () {
             var email = $('#eo-login-email');
             var password = $('#eo-login-password');
@@ -8272,7 +8289,7 @@ window.onload = function () {
                     }
                     configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
                     $('#eo-account-name').text(email.val());
-                    $('.eo-account-area').off('click').on('click', toggle_signout_dialog);
+                    $('#eo-account-area').off('click').on('click', toggle_signout_dialog);
 
                     if (res.status == 'logged_in') {
                         display_message(res.message, $('#eo-login-msg'));
@@ -8312,14 +8329,7 @@ window.onload = function () {
                 document.overlay.hideQuestions();
             }
         });
-        var toggle_login_dialog = function () {
-            $("#eo-dlg-login").toggleClass('hidden');
-            $('#eo-login-msg').text('').removeClass('ui-state-highlight');
-        };
 
-        var toggle_signout_dialog = function () {
-            $("#eo-dlg-signout").removeAttr('style').toggleClass('hidden');
-        };
         var signout = function () {
             var popup = $('#eo-iframe')[0].contentWindow;
             popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
@@ -8329,7 +8339,6 @@ window.onload = function () {
             var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
             document.config.token = null; //Isn't it unneeded???
             auth.login(document.config.token).then(function (token) {
-                console.log("receiveMessage ******** token: " + token);
                 configStorage.set({ token: token });
                 document.overlay.hideQuestions();
                 document.englishonBackend.token = token; //Isn't it unneeded???
@@ -8337,10 +8346,14 @@ window.onload = function () {
                 popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
                 $('body').toggleClass('eo-active', false);
                 $('#eo-account-area').addClass('guest');
-                $('#eo-account-name').text('sign in/up');
-                $('.eo-account-area').off('click').on('click', toggle_login_dialog);
+                $('#eo-account-name').text('Sign in/up');
+                $('#eo-account-area').off('click').on('click', toggle_login_dialog);
+                message = 'You logged out';
+                display_message(message, $('#eo-signout-msg'));
                 $('#eo-menu').addClass('hidden');
-                $("#eo-dlg-signout").fadeOut(1600, "linear");
+                $("#eo-dlg-signout").fadeOut(1600, "linear", function () {
+                    $("#eo-dlg-signout").removeAttr('style').addClass('hidden');
+                });
             });
         };
 
@@ -8361,14 +8374,14 @@ window.onload = function () {
         $('#signout_btn').on('click', signout);
         if (!localStorage.getItem('email')) {
             $('#eo-account-area').addClass('guest');
-            $('.eo-account-area').on('click', toggle_login_dialog);
+            $('#eo-account-area').on('click', toggle_login_dialog);
             $('#eo-account-name').text('sign in/up');
         } else {
-            $('.eo-account-area').on('click', toggle_signout_dialog);
+            $('#eo-account-area').on('click', toggle_signout_dialog);
             $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
             $('#eo-account-img').addClass('no-image');
         }
-
+        $('#signout-event-area').on('click', toggle_signout_dialog);
         //TODO: add the editor button
         var token = encodeURIComponent(document.englishonBackend.token);
         if (document.config.isUser) var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
@@ -8482,18 +8495,10 @@ function receiveMessage(event) {
     // Do we trust the sender of this message?  (might be
     // different from what we originally opened, for example). 
     var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
-    if (document.englishonBackend == undefined || origin !== document.englishonBackend.base) return;
+    if (origin !== document.englishonBackend.base) return;
     // event.source is popup
     console.log('receiveMessage from englishon');
-    //DUPLICATE CODE< FIX IT
-    var toggle_login_dialog = function () {
-        $("#eo-dlg-login").toggleClass('hidden');
-    };
 
-    var toggle_signout_dialog = function () {
-        console.log('event event');
-        $("#eo-dlg-signout").toggleClass('hidden');
-    };
     var django_token = event.data.token;
     var img = event.data.image;
     var email = event.data.email;
@@ -8502,7 +8507,6 @@ function receiveMessage(event) {
     $('#eo-account-img').css("background-image", "url(" + img + ")");
     $('#eo-account-name').text(user_name);
     $('#eo-account-area').removeClass('guest');
-    $('#eo-dlg-login').addClass('hidden');
     if (!localStorage.getItem('email')) {
         console.log("THIS IS A REAL LOGIN");
         configStorage.set({ token: django_token, 'isActive': true, 'eo-user-name': user_name });
@@ -8510,8 +8514,10 @@ function receiveMessage(event) {
         $('body').toggleClass('eo-active', true);
         document.overlay.showQuestions();
         localStorage.setItem('email', email);
-        $('.eo-account-area').off('click');
-        $('.eo-account-area').on('click', toggle_signout_dialog);
+        $('#eo-account-area').off('click').on('click', toggle_signout_dialog);
+        message = 'You logged in';
+        display_message(message, $('#eo-google-msg'));
+        hide_dialogs(1000);
     }
 }
 //end of recieve message
