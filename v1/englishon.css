@@ -3343,7 +3343,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
     flex: 0 0 25%;
   }
 }
-@media (min-width: 750px) {
+@media (min-width: 1050px) {
   .med-Grid--fit > .Grid-cell {
     flex: 1;
   }
@@ -3389,15 +3389,15 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
     flex: 0 0 20%;
   }
 
-  #eo-menu > .large-Grid--offset-1of5 {
+  #eo-menu-grid > .large-Grid--offset-1of5 {
     margin-left: 20%;
   }
 
-  #eo-dlg-login > .large-Grid--offset {
-    margin-left: 30%;
+  #eo-dlg-login-grid > .large-Grid--offset {
+    margin-left: 20%;
   }
 
-  #eo-dlg-signout > .large-Grid--offset {
+  #eo-dlg-signout-grid > .large-Grid--offset {
     margin-left: 20%;
   }
 }
@@ -3462,7 +3462,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
     padding: 2em 0 0 2em;
   }
 }
-@media (min-width: 750px) {
+@media (min-width: 1050px) {
   .med-Grid--gutters {
     margin: -1em 0 1em -1em;
   }
@@ -3577,6 +3577,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 #eo-account-area {
   border-bottom: 1px solid;
   border-color: #3d4c58;
+  cursor: pointer;
 }
 
 .eo-account-event-area {
@@ -3603,7 +3604,8 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   background-position: center;
 }
 
-.guest #eo-account-img {
+.guest #eo-account-img,
+.no-image {
   background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg) !important;
 }
 
@@ -3668,6 +3670,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   background-position: center;
   background-size: 19px;
   height: 45px;
+  cursor: pointer;
 }
 #eo-speaker_res:hover {
   background-size: 24px;
@@ -3781,20 +3784,21 @@ eo-signout-layout .signout {
   flex: 0 0 42%;
 }
 
-#eo-dlg-signout .Grid-cell {
+#signout-inner .Grid-cell {
   background-color: #88b4e9;
   font-family: Ubuntu;
   font-size: 14px;
   font-weight: bold;
   color: #eceff1;
+  opacity: .9;
 }
 
 .locate_menu {
   opacity: 0;
 }
 
-#eo-dlg-login > .Grid-cell,
-#eo-menu > .Grid-cell,
-#eo-dlg-signout > .Grid-cell {
+#eo-dlg-login-grid > .Grid-cell,
+#eo-menu-grid > .Grid-cell,
+#eo-dlg-signout-grid > .Grid-cell {
   height: 0px;
 }

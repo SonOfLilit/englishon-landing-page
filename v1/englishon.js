@@ -8012,8 +8012,8 @@ var Speaker = new function () {
 // source.buffer = Audiobuffer;
 // source.playbackRate.value = 1.5;
 //
-document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-menu'>\
-    <div class='Grid-cell large-Grid--offset-1of5'>\
+document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-menu-grid'>\
+    <div class='Grid-cell large-Grid--offset-1of5 hidden' id='eo-menu'>\
     <div class='Grid Grid--full'>\
       <div class='Grid-cell locate_menu'></div>\
       <div class='Grid-cell locate_menu'></div>\
@@ -8021,7 +8021,7 @@ document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5
       <div class='Grid-cell locate_menu'></div>\
     </div>\
         <div class='header'>\
-            <div id='eo-account-area' class='eo-account-event-area'>\
+            <div id='eo-account-area' class='eo-account-area'>\
                 <div class='Grid u-textCenter'>\
                     <div class='Grid-cell'>\
                         <div id='eo-account-img'></div>\
@@ -8087,7 +8087,7 @@ document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5
                         <div class='Grid-cell u-1of6'>flag\
                         </div>\
                         <div class='Grid-cell vertical-container'>\
-                            <div class='eo-language-option-res'>Cheines</div>\
+                            <div class='eo-language-option-res'>Chinese</div>\
                         </div>\
                     </div>\
                 </div>\
@@ -8102,14 +8102,13 @@ document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5
 </div>\
 ";
 //
-document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3 hidden' id='eo-dlg-login'>\
-    <div class='Grid-cell large-Grid--offset u-textCenter'>\
+document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-dlg-login-grid'>\
+    <div class='Grid-cell large-Grid--offset u-textCenter hidden'  id='eo-dlg-login'>\
     <div class='Grid Grid--full'>\
       <div class='Grid-cell locate_menu'></div>\
       <div class='Grid-cell locate_menu'></div>\
       <div class='Grid-cell locate_menu'></div>\
       <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu eo-account-event-area'></div>\
     </div>\
         <div id='eo-dlg-inner'>\
             <div class='Grid Grid--full Grid--gutters'>\
@@ -8155,25 +8154,27 @@ document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
 </div>\
 ";
 //
-document.SIGNOUT_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3 hidden' id='eo-dlg-signout'>\
-    <div class='Grid-cell large-Grid--offset u-textCenter'>\
+document.SIGNOUT_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-dlg-signout-grid'>\
+    <div class='Grid-cell large-Grid--offset u-textCenter hidden' id='eo-dlg-signout'>\
         <div class='Grid Grid--full'>\
             <div class='Grid-cell locate_menu'></div>\
             <div class='Grid-cell locate_menu'></div>\
             <div class='Grid-cell locate_menu'></div>\
             <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu eo-account-event-area'></div>\
+            <div class='Grid-cell locate_menu'></div>\
         </div>\
-        <div class='Grid Grid--full'>\
-            <div class='Grid-cell'></div>\
-            <div class='Grid-cell'>\
-                <div id='signout_btn'>sign out</div>\
+        <div id='signout-inner'>\
+            <div class='Grid Grid--full'>\
+                <div class='Grid-cell'></div>\
+                <div class='Grid-cell'>\
+                    <div id='signout_btn'>sign out</div>\
+                </div>\
+                <div class='Grid-cell'></div>\
+                <div class='Grid-cell'></div>\
+                <div class='Grid-cell'></div>\
+                <div class='Grid-cell'></div>\
+                <div class='Grid-cell'></div>\
             </div>\
-            <div class='Grid-cell'></div>\
-            <div class='Grid-cell'></div>\
-            <div class='Grid-cell'></div>\
-            <div class='Grid-cell'></div>\
-            <div class='Grid-cell'></div>\
         </div>\
     </div>\
 </div>\
@@ -8211,18 +8212,34 @@ var EnglishOnButton = new function () {
         this.changeState('eo-button-off');
     };
 }();
-
+$(document).mouseup(function (e) {
+    var menu = $('#eo-menu');
+    var button = $('#eo-button');
+    var login_dlg = $('#eo-dlg-login');
+    var signout_dlg = $('#eo-dlg-signout');
+    if (!menu.is(e.target) // if the target of the click isn't the button...
+    && menu.has(e.target).length === 0 // ... nor a descendant of the menu
+    && !button.is(e.target) && !login_dlg.is(e.target) && login_dlg.has(e.target).length === 0 && !signout_dlg.is(e.target) && signout_dlg.has(e.target).length === 0) {
+        menu.addClass('hidden');
+        login_dlg.addClass('hidden');
+        signout_dlg.addClass('hidden');
+    }
+});
 // ****
 // Menu
 // ****
 window.onload = function () {
-    // if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
+
+    if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
     console.log('window onload');
     var EnglishOnMenu = new function () {
         /* returns a toggler function that both updates `configEntry`
            and calls the given `toggle()` function, useful when you want
            your saved configuration to always match what's on screen
          */
+        function display_message(msg, element) {
+            element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
+        }
         var toggler = function (cls, configEntry, toggle_func) {
             // initialize
             var initial = JSON.parse(document.config[configEntry]);
@@ -8244,16 +8261,24 @@ window.onload = function () {
             var auth = new Authenticator(document.config.backendUrl);
             if (auth.validate({ email: email, password: password })) {
                 auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
+                    if (res.message) {
+                        display_message(res.message, $('#eo-login-msg'));
+                        return;
+                    }
                     configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
                     $('#eo-account-name').text(email.val());
-                    $('.eo-account-event-area').off('click', toggle_login_dialog).on('click', toggle_signout_dialog);
-                    setTimeout(function () {
-                        $('#eo-dlg-login').addClass('hidden');
-                    }, 1500);
+                    $('.eo-account-area').off('click').on('click', toggle_signout_dialog);
+                    $('#eo-dlg-login').addClass('hidden');
+                    $('#eo-menu').addClass('hidden');
+
                     if (res.status == 'CREATED') {
-                        message_element = $('#eo-login-msg');
-                        message_element.text('Thank you for registering! A confirmation message sent to the given email.').addClass('ui-state-highlight');
-                        message_element.parent().removeClass('hidden').css('height', '55px');
+                        message = 'Thank you for registering! A confirmation message sent to the given email.';
+                        display_message(message, $('#eo-login-msg'));
+                        $('#eo-login-msg').parent().css('height', '55px');
+                        setTimeout(function () {
+                            $('#eo-dlg-login').addClass('hidden', 1500);
+                            $('#eo-menu').addClass('hidden', 1500);
+                        }, 3500);
                     }
                 });
             }
@@ -8290,7 +8315,7 @@ window.onload = function () {
         };
 
         var toggle_signout_dialog = function () {
-            $("#eo-dlg-signout").toggleClass('hidden');
+            $("#eo-dlg-signout").removeAttr('style').toggleClass('hidden');
         };
         var signout = function () {
             var popup = $('#eo-iframe')[0].contentWindow;
@@ -8310,8 +8335,9 @@ window.onload = function () {
                 $('body').toggleClass('eo-active', false);
                 $('#eo-account-area').addClass('guest');
                 $('#eo-account-name').text('sign in/up');
-                $('.eo-account-event-area').off('click').on('click', toggle_login_dialog);
-                $('#eo-dlg-signout').addClass('hidden');
+                $('.eo-account-area').off('click').on('click', toggle_login_dialog);
+                $('#eo-menu').addClass('hidden');
+                $("#eo-dlg-signout").fadeOut(1600, "linear");
             });
         };
 
@@ -8332,11 +8358,12 @@ window.onload = function () {
         $('#signout_btn').on('click', signout);
         if (!localStorage.getItem('email')) {
             $('#eo-account-area').addClass('guest');
-            $('.eo-account-event-area').on('click', toggle_login_dialog);
+            $('.eo-account-area').on('click', toggle_login_dialog);
             $('#eo-account-name').text('sign in/up');
         } else {
-            $('.eo-account-event-area').on('click', toggle_signout_dialog);
+            $('.eo-account-area').on('click', toggle_signout_dialog);
             $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
+            $('#eo-account-img').addClass('no-image');
         }
 
         //TODO: add the editor button
@@ -8488,8 +8515,8 @@ function receiveMessage(event) {
         $('body').toggleClass('eo-active', true);
         document.overlay.showQuestions();
         localStorage.setItem('email', email);
-        $('.eo-account-event-area').off('click');
-        $('.eo-account-event-area').on('click', toggle_signout_dialog);
+        $('.eo-account-area').off('click');
+        $('.eo-account-area').on('click', toggle_signout_dialog);
     }
 }
 //end of recieve message
