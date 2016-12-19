@@ -8265,7 +8265,7 @@ var hide_dialogs = function (milisec) {
 window.onload = function () {
 
     //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
-    console.log('window onload');
+    console.log('********************window onload');
     var EnglishOnMenu = new function () {
         /* returns a toggler function that both updates `configEntry`
            and calls the given `toggle()` function, useful when you want
@@ -8627,7 +8627,7 @@ function englishon() {
   if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551') {
     //return;
   }
-  console.log('****Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
+  console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
   //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
@@ -8674,7 +8674,7 @@ function englishon() {
     return backend;
   }).then(function (backend) {
     document.englishonBackend = backend;
-    console.log('document.englishonBackend set');
+    console.log('********************document.englishonBackend set');
     if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') $($('.newsHead')[1]).css('background-color', '#e6e6e6');
     if (document.config.isUser) {
       //loadEnglishon();
@@ -8688,7 +8688,7 @@ function englishon() {
 
     if (document.config.editor) {
       return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
-        console.log('Fetched internal id');
+        console.log('**********************Fetched internal id');
         document.internal_id = internal_id;
       });
     }
