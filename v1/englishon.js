@@ -7812,7 +7812,7 @@ ShturemFrontpageOverlay = function (parts) {
 
   this.showButtons = function () {
     $('div#top_menu_block').append(EnglishOnButton.element);
-    EnglishOnButton.registerHandlers(this);
+    //EnglishOnButton.registerHandlers(this);
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
   };
@@ -7837,6 +7837,11 @@ ShturemFrontpageOverlay = function (parts) {
   this.showQuestions = function () {
     $.each(this.parts, function (url, part) {
       if (part.injector) part.injector.on();
+    });
+  };
+  this.hideQuestions = function () {
+    $.each(this.parts, function (url, part) {
+      if (part.injector) part.injector.off();
     });
   };
 };
@@ -8411,6 +8416,7 @@ window.onload = function () {
         });
         $('#eo-mail_login_btn').on('click', login_with_mail);
     }();
+    window.addEventListener("message", receiveMessage, false);
 };
 
 // ***************
@@ -8541,7 +8547,6 @@ function receiveMessage(event) {
     }
 }
 //end of recieve message
-window.addEventListener("message", receiveMessage, false);
 //
 // *********
 // Name List
@@ -8620,7 +8625,7 @@ function englishon() {
   }
   //THIS LINE IS TEMP
   if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551') {
-    return;
+    //return;
   }
   console.log('****Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
@@ -8675,8 +8680,8 @@ function englishon() {
       //loadEnglishon();
       document.overlay.fetchLinkStates(backend).then(document.overlay.markLinks.bind(document.overlay));
       document.overlay.fetchQuestions(backend).then(function (questions) {
-        document.overlay.injector.on();
-        //document.overlay.showQuestions();
+        //document.overlay.injector.on();
+        document.overlay.showQuestions();
       });
     }
   }).then(function () {
