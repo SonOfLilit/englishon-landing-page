@@ -3612,7 +3612,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   border: none;
 }
 
-#eo-onoff {
+#eo-power-switch {
   cursor: pointer;
   padding-right: 6px;
   background-color: #0e161d;
@@ -3631,13 +3631,13 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   text-align: right;
 }
 
-.eo-active #eo-onoff {
+.eo-active #eo-power-switch {
   background-color: #2cc6a8;
   text-align: left;
   padding-left: 4px;
   padding-right: 0px;
 }
-.eo-active #eo-onoff-circle {
+.eo-active #eo-power-switch-circle {
   border: 1px solid #2cc6a8;
   left: 30px;
   transition: border-color 0.3s ease-in 0s, right 0.3s ease-in 0s;
@@ -3651,7 +3651,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   line-height: 20px;
 }
 
-#eo-onoff-circle {
+#eo-power-switch-circle {
   background-color: white;
   border-radius: 22px;
   height: 22px;
@@ -3803,5 +3803,9 @@ eo-signout-layout .signout {
 }
 
 #signout_btn {
+  cursor: pointer;
+}
+
+#eo-editor-btn {
   cursor: pointer;
 }
