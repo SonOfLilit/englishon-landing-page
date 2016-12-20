@@ -8284,20 +8284,22 @@ window.onload = function () {
     console.log('********************window onload');
     document.resources_promise.then(function (res) {
         console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********' + res);
+        $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
+
+        var overlay = Scraper.scrape();
+        document.overlay = overlay;
+        document.overlay.showButtons();
+        if (document.config.isUser) {
+            document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
+            document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
+                document.overlay.injector.on();
+                //???????
+                document.overlay.showQuestions();
+            });
+        }
         EnglishOnMenu();
     });
-    $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
 
-    var overlay = Scraper.scrape();
-    document.overlay = overlay;
-    document.overlay.showButtons();
-    if (document.config.isUser) {
-        document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
-        document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
-            //document.overlay.injector.on();
-            // document.overlay.showQuestions();
-        });
-    }
     var EnglishOnMenu = function () {
         /* returns a toggler function that both updates `configEntry`
            and calls the given `toggle()` function, useful when you want
@@ -8353,7 +8355,6 @@ window.onload = function () {
             elem.toggleText('ON', 'OFF');
             if (JSON.parse(enable)) {
                 document.overlay.showQuestions();
-                console.log('I am standing here. length of answers array: ' + $('.eo-answered').length);
                 $('.eo-answered').on('click', function (e) {
                     var target = $(e.target);
                     //answer=target.data.correct_answers[0].answer;
