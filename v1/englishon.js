@@ -8333,9 +8333,11 @@ window.onload = function () {
                     }
                     configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val(), 'isActive': true });
                     $('#eo-power-switch-text').text('ON');
+                    //refracting: replace it with togglepower
                     $('body').toggleClass('eo-active', true);
                     $('#eo-account-name').text(email.val());
                     $('#eo-account-area').off('click').on('click', toggle_signout_dialog);
+                    document.overlay.showQuestions();
 
                     if (res.status == 'logged_in') {
                         display_message(res.message, $('#eo-login-msg'));
