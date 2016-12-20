@@ -8035,10 +8035,7 @@ var Speaker = new function () {
 document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-menu-grid'>\
     <div class='Grid-cell large-Grid--offset-1of5 hidden' id='eo-menu'>\
         <div class='Grid Grid--full'>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
+            <div class='Grid-cell locate-menu'></div>\
         </div>\
         <div class='header'>\
             <div id='eo-account-area'>\
@@ -8410,6 +8407,8 @@ window.onload = function () {
         this.container.insertBefore($($('table')[0]));
         this.login_dlg.insertBefore($($('table')[0]));
         this.signout_dlg.insertBefore($($('table')[0]));
+        var offset = $('#top_menu_block').offset().top;
+        $('.locate-menu').css('height', offset - 45 + 'px');
         $('#eo-power-switch').on('click', togglePower);
         switch_text = JSON.parse(document.config.isActive) ? 'ON' : 'OFF';
         $('#eo-power-switch-text').text(switch_text);
