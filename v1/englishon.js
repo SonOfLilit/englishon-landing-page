@@ -6410,7 +6410,6 @@ el.animate(animation,{queue:false,duration:o.duration,easing:o.easing,complete:f
 });
 //
 var configStorage;
-// I clean i code for chrome extention here
 // in the real world we will store config on the server
 // and do some CORS voodoo to fetch it.
 configStorage = {
@@ -7893,49 +7892,66 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   }.bind(this);
 };
 //
+var BHOL_ROOT_URL = 'http://www.bhol.co.il/';
+
+function normalizeBholLink(path) {
+    var linicom = path.match(/http:\/\/linicom.*&a=(http%3A[^&]*)&/);
+    if (linicom) {
+        path = unescape(linicom[1]);
+    }
+    if (!path.startsWith('http://') && !path.startsWith('https://')) {
+        path = BHOL_ROOT_URL + (path.startsWith('/') ? path.substr(1) : path);
+    }
+    var res = path.match(/^(https?:\/\/www.bhol.co.il)\/(?:|column|or_)article(?:|_old).aspx\?(?:|.*&)id=(\d+)/i);
+    if (res) {
+        path = res[1].toLowerCase() + '$' + res[2];
+    }
+    return path;
+}
+
 Scraper = new function () {
-  function dispatch(location) {
-    if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
-      if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
-      if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
-    }
-  }
-
-  this.scrape = function () {
-    var scraper = dispatch(location);
-    if (!scraper) {
-      console.log("EnglishOn: unknown website");
-      return;
+    function dispatch(location) {
+        if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
+            if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
+            if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
+        }
     }
 
-    return scraper.scrape();
-  };
+    this.scrape = function () {
+        var scraper = dispatch(location);
+        if (!scraper) {
+            console.log("EnglishOn: unknown website");
+            return;
+        }
+
+        return scraper.scrape();
+    };
 }();
 
 var ShturemArticleScraper = function () {
 
-  this.scrape = function () {
-    url = document.URL.replace(/#.*$/, '');
-    var subtitle = $('span.artSubtitle')[0];
-    var bodytext = $('div.artText')[0];
-    // Shturem article bodies are not divided internally to <p>s.
-    // they're just blobs of text with the occasional double <br>.
-    return new ShturemArticleOverlay(url, subtitle, bodytext);
-  };
+    this.scrape = function () {
+        url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
+        var subtitle = $('span.artSubtitle')[0];
+        var bodytext = $('div.artText')[0];
+        // Shturem article bodies are not divided internally to <p>s.
+        // they're just blobs of text with the occasional double <br>.
+        return new ShturemArticleOverlay(url, subtitle, bodytext);
+    };
 };
 
 var ShturemFrontPageScraper = function () {
-  console.log('option 4');
-  this.scrape = function () {
-    var parts = {};
-    $('td.mainpn_text').each(function (i, para) {
-      var url = $(para).closest('table').find('td.mainpn_bottom a')[0].href;
-      parts[url] = para;
-      // hack to make answers visible
-      $(para).attr('style', 'overflow: visible;');
-    });
-    return new ShturemFrontpageOverlay(parts);
-  };
+    console.log('option 4');
+    this.scrape = function () {
+        var parts = {};
+        $('td.mainpn_text').each(function (i, para) {
+            var url = $(para).closest('table').find('td.mainpn_bottom a')[0].href;
+            parts[url] = para;
+            // hack to make answers visible
+            $(para).attr('style', 'overflow: visible;');
+        });
+        return new ShturemFrontpageOverlay(parts);
+    };
 };
 //
 /* Speaks target-language phrases aloud.
@@ -8266,7 +8282,23 @@ window.onload = function () {
 
     //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
     console.log('********************window onload');
-    var EnglishOnMenu = new function () {
+    document.resources_promise.then(function (res) {
+        console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********' + res);
+        EnglishOnMenu();
+    });
+    $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
+
+    var overlay = Scraper.scrape();
+    document.overlay = overlay;
+    document.overlay.showButtons();
+    if (document.config.isUser) {
+        document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
+        document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
+            //document.overlay.injector.on();
+            // document.overlay.showQuestions();
+        });
+    }
+    var EnglishOnMenu = function () {
         /* returns a toggler function that both updates `configEntry`
            and calls the given `toggle()` function, useful when you want
            your saved configuration to always match what's on screen
@@ -8415,7 +8447,7 @@ window.onload = function () {
             popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
         });
         $('#eo-mail_login_btn').on('click', login_with_mail);
-    }();
+    };
     window.addEventListener("message", receiveMessage, false);
 };
 
@@ -8587,150 +8619,131 @@ function createLogoutButton() {
 // Initialization
 // **************
 
-var staticUrl = undefined;
+
 console.log('CONSOLE TEST');
-
-if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
-  staticUrl = function (resource) {
-    return 'http://localhost:8080/static/ex/' + resource;
-  };
-} else {
-  staticUrl = function (resource) {
-    return 'http://www.englishon.org/v1/' + resource;
-  };
-}
-
-browserInfo = function () {
-  var ua = navigator.userAgent,
-      tem,
-      M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-  if (/trident/i.test(M[1])) {
-    tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-    return 'IE ' + (tem[1] || '');
-  }
-  if (M[1] === 'Chrome') {
-    tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
-    if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
-  }
-  M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
-  if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
-  return { 'browser': M[0], 'version': M[1] };
-}();
+document.resources_promise = new Promise(function (resolve, reject) {
+    englishon();
+    resolve('resources loaded');
+});
 
 function englishon() {
-  //Restrict none chrome browsers or chrome versions older than 49
-  if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) <= 46) {
-    console.log('BROWSER NOT SUPPORTED.');
-    //return;
-  }
-  //THIS LINE IS TEMP
-  if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551') {
-    //return;
-  }
-  console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
-  //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
-  //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
-  var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
+    var staticUrl = undefined;
 
-  if (document.__englishon__) {
-    console.log("EnglishOn already loaded");
-    return;
-  }
-  document.__englishon__ = true;
-
-  var defaults = {
-    'token': null,
-    'backendUrl': DEFAULT_BACKEND_URL,
-    'isActive': false,
-    'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
-    'enableSound': true,
-    'enableTutorial': true,
-    'editor': false,
-    'isUser': false
-  };
-  // Store
-  configStorage.get(defaults).then(function (config) {
-    document.config = config;
-    console.log('initial content script*****: ' + document.config.isActive);
-    $('body').addClass('eo-language-' + config.targetLanguage);
-    if (config.enableTutorial) {
-      startTutorial();
-    }
-    $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
-
-    var overlay = Scraper.scrape();
-    document.overlay = overlay;
-
-    if (document.config.isUser) {
-      var auth = new Authenticator(config.backendUrl);
-      return auth.login(config.token).then(function (token) {
-        configStorage.set({ token: token });
-        return new HerokuBackend(config.backendUrl, token);
-      });
+    if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
+        staticUrl = function (resource) {
+            return 'http://localhost:8080/static/ex/' + resource;
+        };
     } else {
-      return new HerokuBackend(config.backendUrl, 'NON_USER');
+        staticUrl = function (resource) {
+            return 'http://www.englishon.org/v1/' + resource;
+        };
     }
-
-    return backend;
-  }).then(function (backend) {
-    document.englishonBackend = backend;
-    console.log('********************document.englishonBackend set');
-    if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') $($('.newsHead')[1]).css('background-color', '#e6e6e6');
-    if (document.config.isUser) {
-      //loadEnglishon();
-      document.overlay.fetchLinkStates(backend).then(document.overlay.markLinks.bind(document.overlay));
-      document.overlay.fetchQuestions(backend).then(function (questions) {
-        //document.overlay.injector.on();
-        document.overlay.showQuestions();
-      });
+    browserInfo = function () {
+        var ua = navigator.userAgent,
+            tem,
+            M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+        if (/trident/i.test(M[1])) {
+            tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+            return 'IE ' + (tem[1] || '');
+        }
+        if (M[1] === 'Chrome') {
+            tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
+            if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+        }
+        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+        if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
+        return { 'browser': M[0], 'version': M[1] };
+    }();
+    //Restrict none chrome browsers or chrome versions older than 49
+    if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) <= 46) {
+        console.log('BROWSER NOT SUPPORTED.');
+        //return;
     }
-  }).then(function () {
-
-    if (document.config.editor) {
-      return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
-        console.log('**********************Fetched internal id');
-        document.internal_id = internal_id;
-      });
+    //THIS LINE IS TEMP
+    if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551') {
+        //return;
     }
-  }).then(function () {
-    document.overlay.showButtons();
-  });
-}
+    console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
+    //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
+    //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
+    var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
 
-function loadEnglishon() {
+    if (document.__englishon__) {
+        console.log("EnglishOn already loaded");
+        return;
+    }
+    document.__englishon__ = true;
 
-  var backend = document.englishonBackend;
-  document.overlay.fetchLinkStates(backend).then(document.overlay.markLinks.bind(document.overlay));
-  document.overlay.fetchQuestions(backend).then(function (questions) {
-    document.overlay.injector.on();
-    //document.overlay.showQuestions();
-  });
+    var defaults = {
+        'token': null,
+        'backendUrl': DEFAULT_BACKEND_URL,
+        'isActive': false,
+        'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
+        'enableSound': true,
+        'enableTutorial': true,
+        'editor': false,
+        'isUser': false
+    };
+    // Store
+    configStorage.get(defaults).then(function (config) {
+        document.config = config;
+        console.log('initial content script*****: ' + document.config.isActive);
+        $('body').addClass('eo-language-' + config.targetLanguage);
+        if (config.enableTutorial) {
+            //startTutorial();
+        }
 
-  console.log("i am here! loadEnglishon");
+        if (document.config.isUser) {
+            var auth = new Authenticator(config.backendUrl);
+            return auth.login(config.token).then(function (token) {
+                configStorage.set({ token: token });
+                return new HerokuBackend(config.backendUrl, token);
+            });
+        } else {
+            return new HerokuBackend(config.backendUrl, 'NON_USER');
+        }
+
+        return backend;
+    }).then(function (backend) {
+        document.englishonBackend = backend;
+        console.log('********************document.englishonBackend set');
+        if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') $($('.newsHead')[1]).css('background-color', '#e6e6e6');
+    }).then(function () {
+
+        if (document.config.editor) {
+            return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
+                console.log('**********************Fetched internal id');
+                document.internal_id = internal_id;
+            });
+        }
+    }).then(function () {
+        // document.overlay.showButtons();
+
+    });
 }
 
 var startTutorial = function () {
-  $('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
-  var onPickLanguage = function () {
-    $('.eo-language_picker-option').off('click', onPickLanguage);
-    $('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
+    $('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
+    var onPickLanguage = function () {
+        $('.eo-language_picker-option').off('click', onPickLanguage);
+        $('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
 
-    // in case questions are still hidden, keep trying
-    var timer = setInterval(function () {
-      var questions = $('.eo-question');
-      if (questions.length > 0) {
-        questions.first().addClass('eo-first_question');
-        var onOpenQuestion = function () {
-          $('.eo-hint').off('click', onOpenQuestion);
-          $('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
-          configStorage.set({ enableTutorial: false });
-        };
-        $('.eo-hint').click(onOpenQuestion);
-        clearInterval(timer);
-      }
-    }, 100);
-  };
-  $('.eo-language_picker-option').click(onPickLanguage);
+        // in case questions are still hidden, keep trying
+        var timer = setInterval(function () {
+            var questions = $('.eo-question');
+            if (questions.length > 0) {
+                questions.first().addClass('eo-first_question');
+                var onOpenQuestion = function () {
+                    $('.eo-hint').off('click', onOpenQuestion);
+                    $('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
+                    configStorage.set({ enableTutorial: false });
+                };
+                $('.eo-hint').click(onOpenQuestion);
+                clearInterval(timer);
+            }
+        }, 100);
+    };
+    $('.eo-language_picker-option').click(onPickLanguage);
 };
 
 // **********
@@ -8738,43 +8751,43 @@ var startTutorial = function () {
 // **********
 
 function languageOf(char) {
-  if (typeof char == 'string') {
-    char = char.charCodeAt(0);
-  }
-  if (char >= 65 && char <= 90) return 'en';
-  if (char >= 97 && char <= 122) return 'en';
-  if (char >= 1488 && char <= 1514) return 'he';
+    if (typeof char == 'string') {
+        char = char.charCodeAt(0);
+    }
+    if (char >= 65 && char <= 90) return 'en';
+    if (char >= 97 && char <= 122) return 'en';
+    if (char >= 1488 && char <= 1514) return 'he';
 }
 
 function parseDictionary(data) {
-  var dict = buckets.MultiDictionary();
-  var lines = data.split('\r\n');
-  $(lines).each(function (ix, line) {
-    var parts = line.split(' ').map(function (part) {
-      return part.trim().replace('_', ' ');
+    var dict = buckets.MultiDictionary();
+    var lines = data.split('\r\n');
+    $(lines).each(function (ix, line) {
+        var parts = line.split(' ').map(function (part) {
+            return part.trim().replace('_', ' ');
+        });
+        var heb = [];
+        var eng = [];
+        $(parts).each(function (ix, part) {
+            if (part === '') {
+                // do nothing, there was a bunch of adjacent whitespace chars.
+            } else {
+                var lang = languageOf(part.charCodeAt(0));
+                if (lang === 'en') eng.push(part);
+                if (lang === 'he') heb.push(part);
+            }
+        });
+        $(heb).each(function (ix, h) {
+            $(eng).each(function (jx, e) {
+                dict.set(h, e);
+                dict.set(e, h);
+            });
+        });
     });
-    var heb = [];
-    var eng = [];
-    $(parts).each(function (ix, part) {
-      if (part === '') {
-        // do nothing, there was a bunch of adjacent whitespace chars.
-      } else {
-        var lang = languageOf(part.charCodeAt(0));
-        if (lang === 'en') eng.push(part);
-        if (lang === 'he') heb.push(part);
-      }
-    });
-    $(heb).each(function (ix, h) {
-      $(eng).each(function (jx, e) {
-        dict.set(h, e);
-        dict.set(e, h);
-      });
-    });
-  });
-  return dict;
+    return dict;
 }
 
 // this line must be last!
-$(englishon);
+//$(englishon);
 //
 //# sourceMappingURL=englishon.map
