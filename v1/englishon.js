@@ -8569,22 +8569,24 @@ document.EnglishOnMenu = function () {
         $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
         $('#eo-account-img').addClass('no-image');
     }
-    var _editor = new Editor(document.overlay);
-    $('#eo-editor-btn').on('click', function (event) {
-        console.log("Editor enters");
-        document.overlay.hideQuestions();
+    if (JSON.parse(document.config.editor)) {
+        $('#eo-editor-btn').parent().removeClass('hidden');
+        var _editor = new Editor(document.overlay);
+        $('#eo-editor-btn').on('click', function (event) {
+            console.log("Editor enters");
+            document.overlay.hideQuestions();
 
-        event.preventDefault();
-        // after you've loaded the editor, there's no going back.
-        // (for now. this should be fixed.)
-        EnglishOnButton.element.off('click');
-        $('#eo-editor-btn').off('click');
-        _editor.fetchQuestions().then(function () {
-            _editor.highlight();
+            event.preventDefault();
+            // after you've loaded the editor, there's no going back.
+            // (for now. this should be fixed.)
+            EnglishOnButton.element.off('click');
+            $('#eo-editor-btn').off('click');
+            _editor.fetchQuestions().then(function () {
+                _editor.highlight();
+            });
         });
-    });
+    }
 
-    if (localStorage.getItem('editor')) $('#eo-editor-btn').parent().removeClass('hidden');
     $('#signout-event-area').on('click', toggle_signout_dialog);
     //TODO: add the editor button
     var token = encodeURIComponent(document.englishonBackend.token);
@@ -8615,9 +8617,7 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     if (document.config.isUser) {
         document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
         document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
-            document.overlay.injector.on();
-            //???????unneeded
-            document.overlay.showQuestions();
+            //document.overlay.injector.on();
         });
     }
     document.EnglishOnMenu();
