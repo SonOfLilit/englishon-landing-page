@@ -8200,6 +8200,181 @@ document.SIGNOUT_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1
 </div>\
 ";
 //
+// **************
+// Initialization
+// **************
+
+
+console.log('CONSOLE TEST');
+
+document.resources_promise = $.Deferred();
+document.loaded_promise = $.Deferred();
+
+function englishon() {
+    var staticUrl = undefined;
+
+    if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
+        staticUrl = function (resource) {
+            return 'http://localhost:8080/static/ex/' + resource;
+        };
+    } else {
+        staticUrl = function (resource) {
+            return 'http://www.englishon.org/v1/' + resource;
+        };
+    }
+    browserInfo = function () {
+        var ua = navigator.userAgent,
+            tem,
+            M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+        if (/trident/i.test(M[1])) {
+            tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+            return 'IE ' + (tem[1] || '');
+        }
+        if (M[1] === 'Chrome') {
+            tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
+            if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+        }
+        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+        if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
+        return { 'browser': M[0], 'version': M[1] };
+    }();
+    //Restrict none chrome browsers or chrome versions older than 49
+    if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) <= 46) {
+        console.log('BROWSER NOT SUPPORTED.');
+        //return;
+    }
+    //THIS LINE IS TEMP
+    if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551') {
+        //return;
+    }
+    console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
+    //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
+    //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
+    var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
+
+    if (document.__englishon__) {
+        console.log("EnglishOn already loaded");
+        return;
+    }
+    document.__englishon__ = true;
+
+    var defaults = {
+        'token': null,
+        'backendUrl': DEFAULT_BACKEND_URL,
+        'isActive': false,
+        'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
+        'enableSound': true,
+        'enableTutorial': true,
+        'editor': false,
+        'isUser': false
+    };
+    // Store
+    configStorage.get(defaults).then(function (config) {
+        document.config = config;
+        console.log('initial content script*****: ' + document.config.isActive);
+        $('body').addClass('eo-language-' + config.targetLanguage);
+        if (config.enableTutorial) {
+            //startTutorial();
+        }
+
+        if (document.config.isUser) {
+            var auth = new Authenticator(config.backendUrl);
+            return auth.login(config.token).then(function (token) {
+                configStorage.set({ token: token });
+                return new HerokuBackend(config.backendUrl, token);
+            });
+        } else {
+            return new HerokuBackend(config.backendUrl, 'NON_USER');
+        }
+
+        return backend;
+    }).then(function (backend) {
+        document.englishonBackend = backend;
+        console.log('********************document.englishonBackend set');
+        if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') $($('.newsHead')[1]).css('background-color', '#e6e6e6');
+    }).then(function () {
+
+        if (document.config.editor) {
+            return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
+                console.log('**********************Fetched internal id');
+                document.internal_id = internal_id;
+                document.resources_promise.resolve();
+            });
+        }
+    }).then(function () {
+        // document.overlay.showButtons();
+
+    });
+}
+
+var startTutorial = function () {
+    $('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
+    var onPickLanguage = function () {
+        $('.eo-language_picker-option').off('click', onPickLanguage);
+        $('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
+
+        // in case questions are still hidden, keep trying
+        var timer = setInterval(function () {
+            var questions = $('.eo-question');
+            if (questions.length > 0) {
+                questions.first().addClass('eo-first_question');
+                var onOpenQuestion = function () {
+                    $('.eo-hint').off('click', onOpenQuestion);
+                    $('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
+                    configStorage.set({ enableTutorial: false });
+                };
+                $('.eo-hint').click(onOpenQuestion);
+                clearInterval(timer);
+            }
+        }, 100);
+    };
+    $('.eo-language_picker-option').click(onPickLanguage);
+};
+
+// **********
+// Dictionary
+// **********
+
+function languageOf(char) {
+    if (typeof char == 'string') {
+        char = char.charCodeAt(0);
+    }
+    if (char >= 65 && char <= 90) return 'en';
+    if (char >= 97 && char <= 122) return 'en';
+    if (char >= 1488 && char <= 1514) return 'he';
+}
+
+function parseDictionary(data) {
+    var dict = buckets.MultiDictionary();
+    var lines = data.split('\r\n');
+    $(lines).each(function (ix, line) {
+        var parts = line.split(' ').map(function (part) {
+            return part.trim().replace('_', ' ');
+        });
+        var heb = [];
+        var eng = [];
+        $(parts).each(function (ix, part) {
+            if (part === '') {
+                // do nothing, there was a bunch of adjacent whitespace chars.
+            } else {
+                var lang = languageOf(part.charCodeAt(0));
+                if (lang === 'en') eng.push(part);
+                if (lang === 'he') heb.push(part);
+            }
+        });
+        $(heb).each(function (ix, h) {
+            $(eng).each(function (jx, e) {
+                dict.set(h, e);
+                dict.set(e, h);
+            });
+        });
+    });
+    return dict;
+}
+
+// this line must be last!
+$(englishon);
+//
 // ******
 // Button
 // ******
@@ -8422,28 +8597,28 @@ document.EnglishOnMenu = function () {
     });
     $('#eo-mail_login_btn').on('click', login_with_mail);
 };
+$.when(document.resources_promise, document.loaded_promise).done(function () {
+    console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********');
+    $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
+
+    var overlay = Scraper.scrape();
+    document.overlay = overlay;
+    document.overlay.showButtons();
+    if (document.config.isUser) {
+        document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
+        document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
+            document.overlay.injector.on();
+            //???????unneeded
+            document.overlay.showQuestions();
+        });
+    }
+    document.EnglishOnMenu();
+});
 window.onload = function () {
 
     //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
     console.log('********************window onload');
-    document.resources_promise.then(function (res) {
-        console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********' + res);
-        $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
-
-        var overlay = Scraper.scrape();
-        document.overlay = overlay;
-        document.overlay.showButtons();
-        if (document.config.isUser) {
-            document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
-            document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
-                document.overlay.injector.on();
-                //???????unneeded
-                document.overlay.showQuestions();
-            });
-        }
-        document.EnglishOnMenu();
-    });
-
+    document.loaded_promise.resolve();
     window.addEventListener("message", receiveMessage, false);
 };
 
@@ -8610,179 +8785,5 @@ function createLogoutButton() {
     });
   }));
 }
-//
-// **************
-// Initialization
-// **************
-
-
-console.log('CONSOLE TEST');
-
-document.resources_promise = $.Deferred();
-
-function englishon() {
-    var staticUrl = undefined;
-
-    if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
-        staticUrl = function (resource) {
-            return 'http://localhost:8080/static/ex/' + resource;
-        };
-    } else {
-        staticUrl = function (resource) {
-            return 'http://www.englishon.org/v1/' + resource;
-        };
-    }
-    browserInfo = function () {
-        var ua = navigator.userAgent,
-            tem,
-            M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-        if (/trident/i.test(M[1])) {
-            tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-            return 'IE ' + (tem[1] || '');
-        }
-        if (M[1] === 'Chrome') {
-            tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
-            if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
-        }
-        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
-        if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
-        return { 'browser': M[0], 'version': M[1] };
-    }();
-    //Restrict none chrome browsers or chrome versions older than 49
-    if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) <= 46) {
-        console.log('BROWSER NOT SUPPORTED.');
-        //return;
-    }
-    //THIS LINE IS TEMP
-    if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551') {
-        //return;
-    }
-    console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
-    //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
-    //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
-    var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
-
-    if (document.__englishon__) {
-        console.log("EnglishOn already loaded");
-        return;
-    }
-    document.__englishon__ = true;
-
-    var defaults = {
-        'token': null,
-        'backendUrl': DEFAULT_BACKEND_URL,
-        'isActive': false,
-        'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
-        'enableSound': true,
-        'enableTutorial': true,
-        'editor': false,
-        'isUser': false
-    };
-    // Store
-    configStorage.get(defaults).then(function (config) {
-        document.config = config;
-        console.log('initial content script*****: ' + document.config.isActive);
-        $('body').addClass('eo-language-' + config.targetLanguage);
-        if (config.enableTutorial) {
-            //startTutorial();
-        }
-
-        if (document.config.isUser) {
-            var auth = new Authenticator(config.backendUrl);
-            return auth.login(config.token).then(function (token) {
-                configStorage.set({ token: token });
-                return new HerokuBackend(config.backendUrl, token);
-            });
-        } else {
-            return new HerokuBackend(config.backendUrl, 'NON_USER');
-        }
-
-        return backend;
-    }).then(function (backend) {
-        document.englishonBackend = backend;
-        console.log('********************document.englishonBackend set');
-        if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') $($('.newsHead')[1]).css('background-color', '#e6e6e6');
-    }).then(function () {
-
-        if (document.config.editor) {
-            return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
-                console.log('**********************Fetched internal id');
-                document.internal_id = internal_id;
-                document.resources_promise.resolve();
-            });
-        }
-    }).then(function () {
-        // document.overlay.showButtons();
-
-    });
-}
-
-var startTutorial = function () {
-    $('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
-    var onPickLanguage = function () {
-        $('.eo-language_picker-option').off('click', onPickLanguage);
-        $('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
-
-        // in case questions are still hidden, keep trying
-        var timer = setInterval(function () {
-            var questions = $('.eo-question');
-            if (questions.length > 0) {
-                questions.first().addClass('eo-first_question');
-                var onOpenQuestion = function () {
-                    $('.eo-hint').off('click', onOpenQuestion);
-                    $('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
-                    configStorage.set({ enableTutorial: false });
-                };
-                $('.eo-hint').click(onOpenQuestion);
-                clearInterval(timer);
-            }
-        }, 100);
-    };
-    $('.eo-language_picker-option').click(onPickLanguage);
-};
-
-// **********
-// Dictionary
-// **********
-
-function languageOf(char) {
-    if (typeof char == 'string') {
-        char = char.charCodeAt(0);
-    }
-    if (char >= 65 && char <= 90) return 'en';
-    if (char >= 97 && char <= 122) return 'en';
-    if (char >= 1488 && char <= 1514) return 'he';
-}
-
-function parseDictionary(data) {
-    var dict = buckets.MultiDictionary();
-    var lines = data.split('\r\n');
-    $(lines).each(function (ix, line) {
-        var parts = line.split(' ').map(function (part) {
-            return part.trim().replace('_', ' ');
-        });
-        var heb = [];
-        var eng = [];
-        $(parts).each(function (ix, part) {
-            if (part === '') {
-                // do nothing, there was a bunch of adjacent whitespace chars.
-            } else {
-                var lang = languageOf(part.charCodeAt(0));
-                if (lang === 'en') eng.push(part);
-                if (lang === 'he') heb.push(part);
-            }
-        });
-        $(heb).each(function (ix, h) {
-            $(eng).each(function (jx, e) {
-                dict.set(h, e);
-                dict.set(e, h);
-            });
-        });
-    });
-    return dict;
-}
-
-// this line must be last!
-$(englishon);
 //
 //# sourceMappingURL=englishon.map
