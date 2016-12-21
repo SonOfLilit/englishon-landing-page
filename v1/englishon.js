@@ -8128,10 +8128,7 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
 document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-dlg-login-grid'>\
     <div class='Grid-cell large-Grid--offset u-textCenter hidden' id='eo-dlg-login'>\
         <div class='Grid Grid--full'>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
+            <div class='Grid-cell locate-menu'></div>\
         </div>\
         <div id='eo-dlg-inner'>\
             <div class='Grid Grid--full Grid--gutters'>\
@@ -8180,11 +8177,8 @@ document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
 document.SIGNOUT_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-dlg-signout-grid'>\
     <div class='Grid-cell large-Grid--offset u-textCenter hidden' id='eo-dlg-signout'>\
         <div class='Grid Grid--full'>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu' id='signout-event-area'></div>\
+            <div class='Grid-cell locate-menu'></div>\
+            <div class='Grid-cell' id='signout-event-area'></div>\
         </div>\
         <div id='signout-inner'>\
             <div class='Grid Grid--full'>\
@@ -8623,10 +8617,7 @@ function createLogoutButton() {
 
 
 console.log('CONSOLE TEST');
-// document.resources_promise = new Promise(function(resolve, reject) {
-//     englishon();
-//     resolve('resources loaded');
-// });
+
 document.resources_promise = $.Deferred();
 
 function englishon() {
