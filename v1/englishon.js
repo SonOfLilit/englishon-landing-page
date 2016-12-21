@@ -8618,9 +8618,9 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
         document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
         document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
             //document.overlay.injector.on();
+            document.EnglishOnMenu();
         });
     }
-    document.EnglishOnMenu();
 });
 
 // ***************
