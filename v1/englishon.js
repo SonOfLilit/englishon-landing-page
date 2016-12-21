@@ -8298,12 +8298,11 @@ function englishon() {
             return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
                 console.log('**********************Fetched internal id');
                 document.internal_id = internal_id;
-                document.resources_promise.resolve();
             });
         }
     }).then(function () {
         // document.overlay.showButtons();
-
+        document.resources_promise.resolve();
     });
 }
 
@@ -8597,6 +8596,15 @@ document.EnglishOnMenu = function () {
     });
     $('#eo-mail_login_btn').on('click', login_with_mail);
 };
+
+window.onload = function () {
+
+    //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
+    console.log('********************window onload');
+    document.loaded_promise.resolve();
+    window.addEventListener("message", receiveMessage, false);
+};
+
 $.when(document.resources_promise, document.loaded_promise).done(function () {
     console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********');
     $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
@@ -8614,13 +8622,6 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     }
     document.EnglishOnMenu();
 });
-window.onload = function () {
-
-    //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
-    console.log('********************window onload');
-    document.loaded_promise.resolve();
-    window.addEventListener("message", receiveMessage, false);
-};
 
 // ***************
 // Language Picker
