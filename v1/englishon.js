@@ -8275,6 +8275,159 @@ var hide_dialogs = function (milisec) {
 // ****
 // Menu
 // ****
+document.EnglishOnMenu = function () {
+    /* returns a toggler function that both updates `configEntry`
+       and calls the given `toggle()` function, useful when you want
+       your saved configuration to always match what's on screen
+     */
+
+    var toggler = function (cls, configEntry, toggle_func) {
+        // initialize
+        var initial = JSON.parse(document.config[configEntry]);
+        toggle_func(initial);
+        $('body').toggleClass(cls, initial);
+        return function () {
+            enabled = !JSON.parse(document.config[configEntry]);
+            var config = {};
+            config[configEntry] = enabled;
+            configStorage.set(config);
+            toggle_func(enabled);
+            $('body').toggleClass(cls, enabled);
+        };
+    };
+
+    var login_with_mail = function () {
+        var email = $('#eo-login-email');
+        var password = $('#eo-login-password');
+        var auth = new Authenticator(document.config.backendUrl);
+        if (auth.validate({ email: email, password: password })) {
+            auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
+                if (res.status == 'error') {
+                    display_message(res.message, $('#eo-login-msg'));
+                    return;
+                }
+                configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val(), 'isActive': true });
+                $('#eo-power-switch-text').text('ON');
+                //refracting: replace it with togglepower
+                $('body').toggleClass('eo-active', true);
+                $('#eo-account-name').text(email.val());
+                $('#eo-account-area').off('click').on('click', toggle_signout_dialog);
+                document.overlay.showQuestions();
+
+                if (res.status == 'logged_in') {
+                    display_message(res.message, $('#eo-login-msg'));
+                    hide_dialogs(1000);
+                } else if (res.status == 'registered') {
+                    message = 'Thank you for registering! A confirmation message sent to the given email.';
+                    display_message(message, $('#eo-login-msg'));
+                    $('#eo-login-msg').parent().css('height', '55px');
+                    hide_dialogs(3500);
+                }
+            });
+        }
+    };
+    var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
+    var togglePower = toggler('eo-active', 'isActive', function (enable) {
+        elem = $('#eo-power-switch-text');
+        elem.toggleText('ON', 'OFF');
+        if (JSON.parse(enable)) {
+            document.overlay.showQuestions();
+            $('.eo-answered').on('click', function (e) {
+                var target = $(e.target);
+                //answer=target.data.correct_answers[0].answer;
+                //org=target.data.hint;
+                //target.toggleText(org,answer);
+                //target.toggleText('aaaa','bbbb');
+                //Speaker.speak(document.config.targetLanguage, target.text());
+            });
+            if (!document.config.isUser) {
+                console.log('a none user execute englishon for the first time...well done!');
+                configStorage.set({ 'isUser': true });
+                window.location.reload();
+            }
+        } else {
+            document.overlay.hideQuestions();
+        }
+    });
+
+    var signout = function () {
+        var popup = $('#eo-iframe')[0].contentWindow;
+        popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
+        configStorage.set({ 'isActive': false });
+        $('#eo-power-switch-text').text('OFF');
+        localStorage.removeItem('email');
+        localStorage.removeItem('eo-user-name');
+        var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
+        document.config.token = null; //Isn't it unneeded???
+        auth.login(document.config.token).then(function (token) {
+            configStorage.set({ token: token });
+            document.overlay.hideQuestions();
+            document.englishonBackend.token = token; //Isn't it unneeded???
+            //Give englishon the new guest token
+            popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+            $('body').removeClass('eo-active');
+            $('#eo-account-area').addClass('guest');
+            $('#eo-account-name').text('Sign in/up');
+            $('#eo-account-area').off('click').on('click', toggle_login_dialog);
+            message = 'You logged out';
+            display_message(message, $('#eo-signout-msg'));
+            $('#eo-menu').addClass('hidden');
+            $("#eo-dlg-signout").fadeOut(1600, "linear", function () {
+                $("#eo-dlg-signout").removeAttr('style').addClass('hidden');
+            });
+        });
+    };
+
+    this.menu_string = document.MENU_HTML;
+    this.container = $(this.menu_string);
+    this.login_dlg = $(document.LOGIN_DLG);
+    this.signout_dlg = $(document.SIGNOUT_DLG);
+    this.container.insertBefore($($('table')[0]));
+    this.login_dlg.insertBefore($($('table')[0]));
+    this.signout_dlg.insertBefore($($('table')[0]));
+    var offset = $('#top_menu_block').offset().top;
+    $('.locate-menu').css('height', offset - 45 + 'px');
+    $('#eo-power-switch').on('click', togglePower);
+    switch_text = JSON.parse(document.config.isActive) ? 'ON' : 'OFF';
+    $('#eo-power-switch-text').text(switch_text);
+    $('#eo-speaker_res').on('click', toggleSound);
+    $('#signout_btn').on('click', signout);
+    if (!localStorage.getItem('email')) {
+        $('#eo-account-area').addClass('guest');
+        $('#eo-account-area').on('click', toggle_login_dialog);
+        $('#eo-account-name').text('sign in/up');
+    } else {
+        $('#eo-account-area').on('click', toggle_signout_dialog);
+        $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
+        $('#eo-account-img').addClass('no-image');
+    }
+    var _editor = new Editor(document.overlay);
+    $('#eo-editor-btn').on('click', function (event) {
+        console.log("Editor enters");
+        document.overlay.hideQuestions();
+
+        event.preventDefault();
+        // after you've loaded the editor, there's no going back.
+        // (for now. this should be fixed.)
+        EnglishOnButton.element.off('click');
+        $('#eo-editor-btn').off('click');
+        _editor.fetchQuestions().then(function () {
+            _editor.highlight();
+        });
+    });
+
+    if (localStorage.getItem('editor')) $('#eo-editor-btn').parent().removeClass('hidden');
+    $('#signout-event-area').on('click', toggle_signout_dialog);
+    //TODO: add the editor button
+    var token = encodeURIComponent(document.englishonBackend.token);
+    if (document.config.isUser) var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
+    $('#google_iframe').append(google_login);
+    $('#eo-iframe').on('load', function () {
+        var popup = this.contentWindow;
+        popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+    });
+    $('#eo-mail_login_btn').on('click', login_with_mail);
+};
 window.onload = function () {
 
     //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
@@ -8290,166 +8443,13 @@ window.onload = function () {
             document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
             document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
                 document.overlay.injector.on();
-                //???????
+                //???????unneeded
                 document.overlay.showQuestions();
             });
         }
-        EnglishOnMenu();
+        document.EnglishOnMenu();
     });
 
-    var EnglishOnMenu = function () {
-        /* returns a toggler function that both updates `configEntry`
-           and calls the given `toggle()` function, useful when you want
-           your saved configuration to always match what's on screen
-         */
-
-        var toggler = function (cls, configEntry, toggle_func) {
-            // initialize
-            var initial = JSON.parse(document.config[configEntry]);
-            toggle_func(initial);
-            $('body').toggleClass(cls, initial);
-            return function () {
-                enabled = !JSON.parse(document.config[configEntry]);
-                var config = {};
-                config[configEntry] = enabled;
-                configStorage.set(config);
-                toggle_func(enabled);
-                $('body').toggleClass(cls, enabled);
-            };
-        };
-
-        var login_with_mail = function () {
-            var email = $('#eo-login-email');
-            var password = $('#eo-login-password');
-            var auth = new Authenticator(document.config.backendUrl);
-            if (auth.validate({ email: email, password: password })) {
-                auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
-                    if (res.status == 'error') {
-                        display_message(res.message, $('#eo-login-msg'));
-                        return;
-                    }
-                    configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val(), 'isActive': true });
-                    $('#eo-power-switch-text').text('ON');
-                    //refracting: replace it with togglepower
-                    $('body').toggleClass('eo-active', true);
-                    $('#eo-account-name').text(email.val());
-                    $('#eo-account-area').off('click').on('click', toggle_signout_dialog);
-                    document.overlay.showQuestions();
-
-                    if (res.status == 'logged_in') {
-                        display_message(res.message, $('#eo-login-msg'));
-                        hide_dialogs(1000);
-                    } else if (res.status == 'registered') {
-                        message = 'Thank you for registering! A confirmation message sent to the given email.';
-                        display_message(message, $('#eo-login-msg'));
-                        $('#eo-login-msg').parent().css('height', '55px');
-                        hide_dialogs(3500);
-                    }
-                });
-            }
-        };
-        var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
-        var togglePower = toggler('eo-active', 'isActive', function (enable) {
-            elem = $('#eo-power-switch-text');
-            elem.toggleText('ON', 'OFF');
-            if (JSON.parse(enable)) {
-                document.overlay.showQuestions();
-                $('.eo-answered').on('click', function (e) {
-                    var target = $(e.target);
-                    //answer=target.data.correct_answers[0].answer;
-                    //org=target.data.hint;
-                    //target.toggleText(org,answer);
-                    //target.toggleText('aaaa','bbbb');
-                    //Speaker.speak(document.config.targetLanguage, target.text());
-                });
-                if (!document.config.isUser) {
-                    console.log('a none user execute englishon for the first time...well done!');
-                    configStorage.set({ 'isUser': true });
-                    window.location.reload();
-                }
-            } else {
-                document.overlay.hideQuestions();
-            }
-        });
-
-        var signout = function () {
-            var popup = $('#eo-iframe')[0].contentWindow;
-            popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
-            configStorage.set({ 'isActive': false });
-            $('#eo-power-switch-text').text('OFF');
-            localStorage.removeItem('email');
-            localStorage.removeItem('eo-user-name');
-            var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
-            document.config.token = null; //Isn't it unneeded???
-            auth.login(document.config.token).then(function (token) {
-                configStorage.set({ token: token });
-                document.overlay.hideQuestions();
-                document.englishonBackend.token = token; //Isn't it unneeded???
-                //Give englishon the new guest token
-                popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
-                $('body').removeClass('eo-active');
-                $('#eo-account-area').addClass('guest');
-                $('#eo-account-name').text('Sign in/up');
-                $('#eo-account-area').off('click').on('click', toggle_login_dialog);
-                message = 'You logged out';
-                display_message(message, $('#eo-signout-msg'));
-                $('#eo-menu').addClass('hidden');
-                $("#eo-dlg-signout").fadeOut(1600, "linear", function () {
-                    $("#eo-dlg-signout").removeAttr('style').addClass('hidden');
-                });
-            });
-        };
-
-        this.menu_string = document.MENU_HTML;
-        this.container = $(this.menu_string);
-        this.login_dlg = $(document.LOGIN_DLG);
-        this.signout_dlg = $(document.SIGNOUT_DLG);
-        this.container.insertBefore($($('table')[0]));
-        this.login_dlg.insertBefore($($('table')[0]));
-        this.signout_dlg.insertBefore($($('table')[0]));
-        var offset = $('#top_menu_block').offset().top;
-        $('.locate-menu').css('height', offset - 45 + 'px');
-        $('#eo-power-switch').on('click', togglePower);
-        switch_text = JSON.parse(document.config.isActive) ? 'ON' : 'OFF';
-        $('#eo-power-switch-text').text(switch_text);
-        $('#eo-speaker_res').on('click', toggleSound);
-        $('#signout_btn').on('click', signout);
-        if (!localStorage.getItem('email')) {
-            $('#eo-account-area').addClass('guest');
-            $('#eo-account-area').on('click', toggle_login_dialog);
-            $('#eo-account-name').text('sign in/up');
-        } else {
-            $('#eo-account-area').on('click', toggle_signout_dialog);
-            $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
-            $('#eo-account-img').addClass('no-image');
-        }
-        var _editor = new Editor(document.overlay);
-        $('#eo-editor-btn').on('click', function (event) {
-            console.log("Editor enters");
-            document.overlay.hideQuestions();
-
-            event.preventDefault();
-            // after you've loaded the editor, there's no going back.
-            // (for now. this should be fixed.)
-            EnglishOnButton.element.off('click');
-            $('#eo-editor-btn').off('click');
-            _editor.fetchQuestions().then(function () {
-                _editor.highlight();
-            });
-        });
-
-        if (localStorage.getItem('editor')) $('#eo-editor-btn').parent().removeClass('hidden');
-        $('#signout-event-area').on('click', toggle_signout_dialog);
-        //TODO: add the editor button
-        var token = encodeURIComponent(document.englishonBackend.token);
-        if (document.config.isUser) var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
-        $('#google_iframe').append(google_login);
-        $('#eo-iframe').on('load', function () {
-            var popup = this.contentWindow;
-            popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
-        });
-        $('#eo-mail_login_btn').on('click', login_with_mail);
-    };
     window.addEventListener("message", receiveMessage, false);
 };
 
@@ -8623,10 +8623,11 @@ function createLogoutButton() {
 
 
 console.log('CONSOLE TEST');
-document.resources_promise = new Promise(function (resolve, reject) {
-    englishon();
-    resolve('resources loaded');
-});
+// document.resources_promise = new Promise(function(resolve, reject) {
+//     englishon();
+//     resolve('resources loaded');
+// });
+document.resources_promise = $.Deferred();
 
 function englishon() {
     var staticUrl = undefined;
@@ -8716,6 +8717,7 @@ function englishon() {
             return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
                 console.log('**********************Fetched internal id');
                 document.internal_id = internal_id;
+                document.resources_promise.resolve();
             });
         }
     }).then(function () {
@@ -8790,6 +8792,6 @@ function parseDictionary(data) {
 }
 
 // this line must be last!
-//$(englishon);
+$(englishon);
 //
 //# sourceMappingURL=englishon.map
