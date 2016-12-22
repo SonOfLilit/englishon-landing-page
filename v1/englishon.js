@@ -8116,7 +8116,7 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                 </div>\
             </div>\
             <div class='Grid Grid--full u-textCenter header'>\
-                <div class='Grid-cell vertical-container hidden'>\
+                <div class='Grid-cell hidden'>\
                     <div id='eo-editor-btn'>edit questions</div>\
                 </div>\
             </div>\
@@ -8570,7 +8570,7 @@ document.EnglishOnMenu = function () {
         $('#eo-account-img').addClass('no-image');
     }
     if (JSON.parse(document.config.editor)) {
-        $('#eo-editor-btn').parent().removeClass('hidden');
+        $('#eo-editor-btn').parent().removeClass('hidden').addClass('vertical-container');
         var _editor = new Editor(document.overlay);
         $('#eo-editor-btn').on('click', function (event) {
             console.log("Editor enters");
