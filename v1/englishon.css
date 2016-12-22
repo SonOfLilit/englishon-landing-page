@@ -3613,7 +3613,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   height: 20px;
   width: 50px;
   border-radius: 10px;
-  margin-left: 13px;
+  margin-left: 25%;
   font-family: Ubuntu;
   font-size: 11px;
   font-weight: 500;
@@ -3731,6 +3731,9 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 #coming_soon .Grid:hover {
   background-color: #3d4c58;
 }
+#coming_soon .Grid:hover .eo-low-layer {
+  opacity: .1;
+}
 
 #coming_soon .Grid-cell .Grid .tooltip,
 eo-signout-layout .signout {
@@ -3744,6 +3747,15 @@ eo-signout-layout .signout {
 
 #coming_soon .Grid-cell:hover .tooltip {
   visibility: visible;
+}
+
+#coming_soon .tooltip {
+  font-family: Ubuntu;
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  letter-spacing: 0.02em;
+  line-height: 26px;
 }
 
 #coming_soon .Grid,
@@ -3785,10 +3797,6 @@ eo-signout-layout .signout {
   font-weight: bold;
   color: #eceff1;
   opacity: .9;
-}
-
-.locate_menu {
-  opacity: 0;
 }
 
 #eo-dlg-login-grid > .Grid-cell,
@@ -3841,4 +3849,8 @@ eo-signout-layout .signout {
   border-left: 1px solid;
   height: 100%;
   border-color: #3d4c58;
+}
+
+.eo-low-layer :hover {
+  opacity: .1;
 }

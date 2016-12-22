@@ -8086,10 +8086,10 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                 <div class='Grid-cell'>\
                     <div class='Grid'>\
                         <span class='tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6'>\
+                        <div class='Grid-cell u-1of6 eo-low-layer'>\
                             <div class='flag'></div>\
                         </div>\
-                        <div class='Grid-cell vertical-container'>\
+                        <div class='Grid-cell vertical-container eo-low-layer'>\
                             <div class='eo-language-option-res'>Spanish</div>\
                         </div>\
                     </div>\
@@ -8097,10 +8097,10 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                 <div class='Grid-cell'>\
                     <div class='Grid'>\
                         <span class='tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6'>\
+                        <div class='Grid-cell u-1of6 eo-low-layer'>\
                             <div class='flag'></div>\
                         </div>\
-                        <div class='Grid-cell vertical-container'>\
+                        <div class='Grid-cell vertical-container eo-low-layer'>\
                             <div class='eo-language-option-res'>French</div>\
                         </div>\
                     </div>\
@@ -8108,10 +8108,10 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                 <div class='Grid-cell'>\
                     <div class='Grid'>\
                         <span class='tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6'>\
+                        <div class='Grid-cell u-1of6 eo-low-layer'>\
                             <div class='flag'></div>\
                         </div>\
-                        <div class='Grid-cell vertical-container'>\
+                        <div class='Grid-cell vertical-container eo-low-layer'>\
                             <div class='eo-language-option-res'>Chinese</div>\
                         </div>\
                     </div>\
