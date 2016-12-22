@@ -8043,20 +8043,23 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                     <div class='Grid-cell'>\
                         <div id='eo-account-img'></div>\
                     </div>\
-                    <div class='Grid-cell u-1of2'>\
+                    <div class='Grid-cell u-1of2  vertical-container'>\
                         <div id='eo-account-name'></div>\
                     </div>\
-                    <div class='Grid-cell'>\
-                        <div>&#9662;</div>\
+                    <div class='Grid-cell vertical-container '>\
+                        <div id='account-triangle'>&#9662;</div>\
                     </div>\
                 </div>\
             </div>\
             <div class='Grid u-textCenter'>\
-                <div class='Grid-cell u-1of3'>\
+                <div class='Grid-cell'>\
                     <div id='eo-power-switch'>\
                         <span id='eo-power-switch-text'></span>\
                         <div id='eo-power-switch-circle'></div>\
                     </div>\
+                </div>\
+                <div class='Grid-cell delimiter'>\
+                    <div class='eo-line'></div>\
                 </div>\
                 <div class='Grid-cell'>\
                     <div id='eo-speaker_res'></div>\
@@ -8070,7 +8073,8 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                 </div>\
                 <div class='Grid-cell'>\
                     <div class='Grid'>\
-                        <div class='Grid-cell u-1of6'>flag\
+                        <div class='Grid-cell u-1of6'>\
+                            <div class='flag'></div>\
                         </div>\
                         <div class='Grid-cell vertical-container'>\
                             <div class='eo-language-option-res'>English</div>\
@@ -8082,7 +8086,8 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                 <div class='Grid-cell'>\
                     <div class='Grid'>\
                         <span class='tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6'>flag\
+                        <div class='Grid-cell u-1of6'>\
+                            <div class='flag'></div>\
                         </div>\
                         <div class='Grid-cell vertical-container'>\
                             <div class='eo-language-option-res'>Spanish</div>\
@@ -8092,7 +8097,8 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                 <div class='Grid-cell'>\
                     <div class='Grid'>\
                         <span class='tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6'>flag\
+                        <div class='Grid-cell u-1of6'>\
+                            <div class='flag'></div>\
                         </div>\
                         <div class='Grid-cell vertical-container'>\
                             <div class='eo-language-option-res'>French</div>\
@@ -8102,7 +8108,8 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                 <div class='Grid-cell'>\
                     <div class='Grid'>\
                         <span class='tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6'>flag\
+                        <div class='Grid-cell u-1of6'>\
+                            <div class='flag'></div>\
                         </div>\
                         <div class='Grid-cell vertical-container'>\
                             <div class='eo-language-option-res'>Chinese</div>\
@@ -8112,7 +8119,7 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
             </div>\
             <div class='Grid Grid--full u-textCenter' id='picker_footer'>\
                 <div class='Grid-cell'>\
-                    <div>englishon</div>\
+                    <div id='englishon-bottom'></div>\
                 </div>\
             </div>\
             <div class='Grid Grid--full u-textCenter header'>\
@@ -8617,7 +8624,6 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     if (document.config.isUser) {
         document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
         document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
-            //document.overlay.injector.on();
             document.EnglishOnMenu();
         });
     }
