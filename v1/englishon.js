@@ -8032,11 +8032,8 @@ var Speaker = new function () {
 // source.buffer = Audiobuffer;
 // source.playbackRate.value = 1.5;
 //
-document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-menu-grid'>\
-    <div class='Grid-cell large-Grid--offset-1of5 hidden' id='eo-menu'>\
-        <div class='Grid Grid--full'>\
-            <div class='Grid-cell locate-menu'></div>\
-        </div>\
+document.MENU_HTML = "<div id='eo-menu'>\
+    <div id='eo-menu-inner'>\
         <div class='header'>\
             <div id='eo-account-area'>\
                 <div class='Grid u-textCenter'>\
@@ -8052,7 +8049,7 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                 </div>\
             </div>\
             <div class='Grid u-textCenter'>\
-                <div class='Grid-cell'>\
+                <div class='Grid-cell u-1of3'>\
                     <div id='eo-power-switch'>\
                         <span id='eo-power-switch-text'></span>\
                         <div id='eo-power-switch-circle'></div>\
@@ -8062,7 +8059,16 @@ document.MENU_HTML = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
                     <div class='eo-line'></div>\
                 </div>\
                 <div class='Grid-cell'>\
-                    <div id='eo-speaker_res'></div>\
+                    <div class='Grid'>\
+                        <div class='Grid-cell u-1of3'>\
+                            <div id='eo-speaker_res'></div>\
+                        </div>\
+                        <div class='Grid-cell'>\
+                            <div id='eo-slider'>\
+                                <div id='custom-handle' class='ui-slider-handle'></div>\
+                            </div>\
+                        </div>\
+                    </div>\
                 </div>\
             </div>\
         </div>\
@@ -8558,14 +8564,28 @@ document.EnglishOnMenu = function () {
     this.login_dlg = $(document.LOGIN_DLG);
     this.signout_dlg = $(document.SIGNOUT_DLG);
     this.container.insertBefore($($('table')[0]));
-    this.login_dlg.insertBefore($($('table')[0]));
-    this.signout_dlg.insertBefore($($('table')[0]));
-    var offset = $('#top_menu_block').offset().top;
-    $('.locate-menu').css('height', offset - 45 + 'px');
+    //(this.login_dlg).insertBefore($($('table')[0]));
+    //(this.signout_dlg).insertBefore($($('table')[0]));
+    //var offset = $('#top_menu_block').offset().top
+    //$('.locate-menu').css('height', offset - 45 + 'px');
+    if (window.matchMedia("(min-width:1050px)").matches) {
+        console.log('DESKTOP');
+        var offset = $('.eo-button').offset();
+        $('#eo-menu').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' });
+    };
     $('#eo-power-switch').on('click', togglePower);
     switch_text = JSON.parse(document.config.isActive) ? 'ON' : 'OFF';
     $('#eo-power-switch-text').text(switch_text);
     $('#eo-speaker_res').on('click', toggleSound);
+    var handle = $('#eo-slider');
+    $("#custom-handle").slider({
+        create: function () {
+            handle.text($(this).slider("value"));
+        },
+        slide: function (event, ui) {
+            handle.text(ui.value);
+        }
+    });
     $('#signout_btn').on('click', signout);
     if (!localStorage.getItem('email')) {
         $('#eo-account-area').addClass('guest');

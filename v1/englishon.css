@@ -3263,7 +3263,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 .Grid-cell {
   flex: 1;
   z-index: 3;
-  height: 50px;
+  height: 150px;
 }
 
 .Grid--flexCells > .Grid-cell {
@@ -3851,6 +3851,28 @@ eo-signout-layout .signout {
   border-color: #3d4c58;
 }
 
-.eo-low-layer :hover {
+.eo-low-layer:hover {
   opacity: .1;
+}
+
+#eo-slider {
+  margin-top: 17px;
+}
+
+#eo-menu {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: 3;
+}
+
+@media (min-width: 1050px) {
+  #eo-menu {
+    height: 381px;
+    width: 212px;
+  }
+  #eo-menu .Grid-cell {
+    height: 50px;
+  }
 }
