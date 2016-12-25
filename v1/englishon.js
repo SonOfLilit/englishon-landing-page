@@ -8064,8 +8064,9 @@ document.MENU_HTML = "<div id='eo-menu'>\
                             <div id='eo-speaker_res'></div>\
                         </div>\
                         <div class='Grid-cell'>\
-                            <div id='eo-slider'>\
+                            <div id='slider'>\
                                 <div id='custom-handle' class='ui-slider-handle'></div>\
+                                <div id = 'iuyrijyt'>iuy6trkjhyfg</div>\
                             </div>\
                         </div>\
                     </div>\
@@ -8577,7 +8578,7 @@ document.EnglishOnMenu = function () {
     switch_text = JSON.parse(document.config.isActive) ? 'ON' : 'OFF';
     $('#eo-power-switch-text').text(switch_text);
     $('#eo-speaker_res').on('click', toggleSound);
-    var handle = $('#eo-slider');
+    var handle = $('#slider');
     $("#custom-handle").slider({
         create: function () {
             handle.text($(this).slider("value"));
