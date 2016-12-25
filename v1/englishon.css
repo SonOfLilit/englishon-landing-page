@@ -3263,7 +3263,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 .Grid-cell {
   flex: 1;
   z-index: 3;
-  height: 150px;
+  height: 70px;
 }
 
 .Grid--flexCells > .Grid-cell {
@@ -3611,7 +3611,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   padding-right: 6px;
   background-color: #0e161d;
   height: 20px;
-  width: 50px;
+  width: 46.66px;
   border-radius: 10px;
   margin-left: 25%;
   font-family: Ubuntu;
@@ -3711,7 +3711,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 #eo-mail_login_btn {
-  height: 50px;
+  height: 46.66px;
   width: 150px;
   background-color: #4b5a66;
   border-radius: 25px;
@@ -3817,7 +3817,6 @@ eo-signout-layout .signout {
   background-image: url(http://www.englishon.org/v1/img/button-on-en.svg);
 }
 
-#eo-account-name,
 #eo-editor-btn {
   padding-left: 20px;
 }
@@ -3860,11 +3859,13 @@ eo-signout-layout .signout {
 }
 
 #eo-menu {
+  background-color: #eceff1;
   position: fixed;
   top: 0px;
   left: 0px;
   width: 100%;
   z-index: 3;
+  box-shadow: 10px 10px 5px #888888;
 }
 
 @media (min-width: 1050px) {
@@ -3873,6 +3874,6 @@ eo-signout-layout .signout {
     width: 212px;
   }
   #eo-menu .Grid-cell {
-    height: 50px;
+    height: 46.66px;
   }
 }
