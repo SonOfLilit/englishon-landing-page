@@ -3264,7 +3264,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 .Grid-cell {
   flex: 1;
   z-index: 3;
-  height: 150px;
+  height: 196px;
   font-size: 44px;
 }
 
@@ -3864,16 +3864,16 @@ eo-signout-layout .signout {
   height: 100%;
   z-index: 3;
   box-shadow: 10px 10px 5px #888888;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 @media (min-width: 1050px) {
   #eo-menu {
     height: 381px;
     width: 212px;
+    overflow-y: hidden;
   }
   #eo-menu .Grid-cell {
-    height: 46.66px;
-    font-size: 16px;
+    height: 44px;
   }
 }
