@@ -8627,13 +8627,13 @@ document.EnglishOnMenu = function () {
     $('#eo-mail_login_btn').on('click', login_with_mail);
 };
 
-window.onload = function () {
+$(function () {
 
     //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
     console.log('********************window onload');
     document.loaded_promise.resolve();
     window.addEventListener("message", receiveMessage, false);
-};
+});
 
 $.when(document.resources_promise, document.loaded_promise).done(function () {
     console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********');
