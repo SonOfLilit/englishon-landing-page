@@ -8647,7 +8647,7 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
         document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
             document.EnglishOnMenu();
         });
-    }
+    } else document.EnglishOnMenu();
 });
 
 // ***************
