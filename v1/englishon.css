@@ -3264,7 +3264,8 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 .Grid-cell {
   flex: 1;
   z-index: 3;
-  height: 70px;
+  height: 150px;
+  font-size: 44px;
 }
 
 .Grid--flexCells > .Grid-cell {
@@ -3525,7 +3526,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 .header {
   background-color: #4b5a66;
   font-family: Ubuntu;
-  font-size: 14px;
   font-weight: bold;
   color: white;
   text-align: left;
@@ -3677,7 +3677,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 
 #eo-language_header {
   font-family: Ubuntu;
-  font-size: 14px;
   font-weight: 500;
   color: #3d4c58;
   letter-spacing: 0.03em;
@@ -3691,7 +3690,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 
 .eo-language-option-res {
   font-family: Ubuntu;
-  font-size: 14px;
   font-weight: bold;
   color: #3d4c58;
   letter-spacing: 0.05em;
@@ -3717,7 +3715,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   background-color: #4b5a66;
   border-radius: 25px;
   font-family: Ubuntu;
-  font-size: 15px;
   font-weight: 500;
   color: white;
   letter-spacing: 0.03em;
@@ -3794,7 +3791,6 @@ eo-signout-layout .signout {
 #signout-inner .Grid-cell {
   background-color: #88b4e9;
   font-family: Ubuntu;
-  font-size: 14px;
   font-weight: bold;
   color: #eceff1;
   opacity: .9;
@@ -3868,15 +3864,16 @@ eo-signout-layout .signout {
   height: 100%;
   z-index: 3;
   box-shadow: 10px 10px 5px #888888;
+  overflow-y: scroll;
 }
 
 @media (min-width: 1050px) {
   #eo-menu {
-    overflow-y: scroll;
     height: 381px;
     width: 212px;
   }
   #eo-menu .Grid-cell {
     height: 46.66px;
+    font-size: 16px;
   }
 }
