@@ -2497,8 +2497,7 @@ body .ui-tooltip {
   font-weight: 700;
   src: url("http://www.englishon.org/v1/fonts/Ubuntu-B.ttf");
 }
-.eo-box, auto
-div.eo-question,
+.eo-box, auto div.eo-question,
 div.eo-question > .eo-hint,
 div.eo-question > .eo-options > .eo-option,
 div.eo-question > .eo-correct {
@@ -2568,8 +2567,7 @@ div.eo-question {
   /* options arrow can't be a child of eo-options because overflow: hidden */
   /* progress 3d animation */
 }
-auto
-div.eo-question,
+auto div.eo-question,
 div.eo-question > .eo-hint,
 div.eo-question > .eo-options > .eo-option,
 div.eo-question > .eo-correct {
@@ -2658,7 +2656,7 @@ div.eo-question {
   border-radius: 3px;
   -webkit-user-select: none;
   margin: 0;
-    /*
+        /*
     width: auto transitions
 
     We would like to animate width from auto to auto, but the CSS spec doesn't like us
@@ -2832,7 +2830,7 @@ div.eo-question.eo-answered > .eo-correct {
   padding-right: 22px;
 }
 div.eo-question:not(.eo-expired) > .eo-correct {
-    /* There's strange behavior where if .eo-correct has higher z-index than .eo-options,
+        /* There's strange behavior where if .eo-correct has higher z-index than .eo-options,
        which is above will depend on whether the .eo-correct was there from the beginning or
        not... or something.
 
@@ -2969,7 +2967,8 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   margin-right: auto;
   border-bottom: 1px solid #b8c5c9;
 }
-.eo-menu #eo-header #eo-account::before, .eo-menu #eo-header #eo-account > .eo-account-avatar {
+.eo-menu #eo-header #eo-account::before,
+.eo-menu #eo-header #eo-account > .eo-account-avatar {
   content: "";
   display: inline-block;
   position: relative;
@@ -3023,7 +3022,8 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 body.eo-active .eo-menu #eo-header #eo-toolbar > .eo-toolbar-toggle.eo-toolbar-toggle-active .eo-toggle-inner {
   background-color: #2cc6a8;
 }
-body.eo-active .eo-menu #eo-header #eo-toolbar > .eo-toolbar-toggle.eo-toolbar-toggle-active .eo-toggle-inner, body.eo-active .eo-menu #eo-header #eo-toolbar > .eo-toolbar-toggle.eo-toolbar-toggle-active .eo-toggle-inner::before {
+body.eo-active .eo-menu #eo-header #eo-toolbar > .eo-toolbar-toggle.eo-toolbar-toggle-active .eo-toggle-inner,
+body.eo-active .eo-menu #eo-header #eo-toolbar > .eo-toolbar-toggle.eo-toolbar-toggle-active .eo-toggle-inner::before {
   border-color: #2cc6a8;
 }
 body.eo-active .eo-menu #eo-header #eo-toolbar > .eo-toolbar-toggle.eo-toolbar-toggle-active .eo-toggle-inner::before {
@@ -3208,6 +3208,7 @@ body.www-bhol-co-il .eo-layout-warning {
 }
 body.www-bhol-co-il .eo-button {
   margin-right: 5px;
+  position: relative;
 }
 
 body.www-bloombergview-com .eo-button {
@@ -3871,6 +3872,7 @@ eo-signout-layout .signout {
 
 @media (min-width: 1050px) {
   #eo-menu {
+    overflow-y: scroll;
     height: 381px;
     width: 212px;
   }
