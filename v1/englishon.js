@@ -6520,135 +6520,143 @@ var I18N = WEBSITE_I18N[location.hostname];
 var MESSAGES = I18N.MESSAGES;
 //
 Authenticator = function (base) {
-  this.base = base;
+    this.base = base;
 };
 
 Authenticator.prototype.getTokenFor = function (userToken) {
-  var promise = $.get(this.base + "/tokens/from-user-token/" + encodeURIComponent(userToken) + "/").then(function (response) {
-    return response.token;
-  });
-  return promise;
+    var promise = $.get(this.base + "/tokens/from-user-token/" + encodeURIComponent(userToken) + "/").then(function (response) {
+        return response.token;
+    });
+    return promise;
 };
 
 Authenticator.prototype.getTokenForGuest = function () {
-  console.log("getTokenForGuest****! base is: " + this.base);
-  var promise = $.post(this.base + "/tokens/create/").then(function (response) {
-    return response.token;
-  });
-  return promise;
+    console.log("getTokenForGuest****! base is: " + this.base);
+    var promise = $.post(this.base + "/tokens/create/").then(function (response) {
+        return response.token;
+    });
+    return promise;
 };
 
 function showTOS() {
-  var buttons = {};
-  buttons[MESSAGES.CLOSE_TOS] = function () {
-    $(this).dialog("close");
-  };
-  $.ajax(chrome.extension.getURL('terms_of_service.html')).done(function (tos) {
-    $('<div>')
-    // TODO: real RTL
-    .attr('dir', 'rtl').html(tos).dialog({
-      autoOpen: true,
-      modal: true,
-      buttons: buttons,
-      width: '600',
-      height: '600',
-      overflow: 'auto'
+    var buttons = {};
+    buttons[MESSAGES.CLOSE_TOS] = function () {
+        $(this).dialog("close");
+    };
+    $.ajax(chrome.extension.getURL('terms_of_service.html')).done(function (tos) {
+        $('<div>')
+        // TODO: real RTL
+        .attr('dir', 'rtl').html(tos).dialog({
+            autoOpen: true,
+            modal: true,
+            buttons: buttons,
+            width: '600',
+            height: '600',
+            overflow: 'auto'
+        });
     });
-  });
 }
 
 Authenticator.prototype.getToken = function () {
-  console.log("getToken****");
-  var r = $.Deferred();
-  var dia = $('<div>');
-  dia.append($('<p>').text(MESSAGES.ENTER_USER_TOKEN));
-  dia.append($('<p>').append($('<input type="text" style="width: 100%;"></p>')));
-  dia.append($('<p>').text(MESSAGES.AGREE_TO_TOS).append($('<a>').attr('href', '#').text(MESSAGES.TOS_LINK).on('click', showTOS)));
-  var buttons = $('<p>');
-  // TODO: real rtl support instead of flipped button order
-  buttons.append($('<button>').text(MESSAGES.SUBMIT_WITH_TOKEN).on('click', function (event) {
-    event.preventDefault();
-    buttons.find('button').prop('disabled', true);
-    var promise = $.get(this.base + '/tokens/from-user-token/' + dia.find(':text').val() + '/');
-    waitFor(promise, MESSAGES.ERROR_INVALID_TOKEN);
-  }.bind(this)));
-  dia.append(buttons);
+    console.log("getToken****");
+    var r = $.Deferred();
+    var dia = $('<div>');
+    dia.append($('<p>').text(MESSAGES.ENTER_USER_TOKEN));
+    dia.append($('<p>').append($('<input type="text" style="width: 100%;"></p>')));
+    dia.append($('<p>').text(MESSAGES.AGREE_TO_TOS).append($('<a>').attr('href', '#').text(MESSAGES.TOS_LINK).on('click', showTOS)));
+    var buttons = $('<p>');
+    // TODO: real rtl support instead of flipped button order
+    buttons.append($('<button>').text(MESSAGES.SUBMIT_WITH_TOKEN).on('click', function (event) {
+        event.preventDefault();
+        buttons.find('button').prop('disabled', true);
+        var promise = $.get(this.base + '/tokens/from-user-token/' + dia.find(':text').val() + '/');
+        waitFor(promise, MESSAGES.ERROR_INVALID_TOKEN);
+    }.bind(this)));
+    dia.append(buttons);
 
-  function waitFor(promise, errorMsg) {
-    promise.then(function (response) {
-      if (response.token) {
-        r.resolve(response.token);
-        dia.dialog('close');
-      } else {
-        dia.append($('<p>').text(errorMsg));
-        buttons.find('button').prop('disabled', false);
-      }
-    }, function (error) {
-      dia.append($('<p>').text(errorMsg));
-      buttons.find('button').prop('disabled', false);
-    });
-  }
-  dia.dialog({ autoOpen: true, height: 'auto', width: 'auto' });
-  return r;
+    function waitFor(promise, errorMsg) {
+        promise.then(function (response) {
+            if (response.token) {
+                r.resolve(response.token);
+                dia.dialog('close');
+            } else {
+                dia.append($('<p>').text(errorMsg));
+                buttons.find('button').prop('disabled', false);
+            }
+        }, function (error) {
+            dia.append($('<p>').text(errorMsg));
+            buttons.find('button').prop('disabled', false);
+        });
+    }
+    dia.dialog({ autoOpen: true, height: 'auto', width: 'auto' });
+    return r;
 };
 
 Authenticator.prototype.register = function (user) {
-  console.log('register by mail)');
-  var res = $.post(this.base + '/tokens/register/', user, function (res) {
+    console.log('register by mail)');
+    var res = $.post(this.base + '/tokens/register/', user, function (res) {
+        return res;
+    });
     return res;
-  });
-  return res;
 };
 
 Authenticator.prototype.validate = function (user) {
-  emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/, tips = $('#eo-login-msg');
-  allFields = $([]).add(user.email).add(user.password);
-  allFields.removeClass('ui-state-error');
-  function checkLength(o, n, min, max) {
-    if (o.val().length > max || o.val().length < min) {
-      o.addClass("ui-state-error");
-      updateTips("Length of " + n + " must be between " + min + " and " + max + ".");
-      return false;
-    } else {
-      return true;
+    emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/, tips = $('#eo-login-msg');
+    allFields = $([]).add(user.email).add(user.password);
+    allFields.removeClass('ui-state-error');
+
+    function checkLength(o, n, min, max) {
+        if (o.val().length > max) {
+            o.addClass("ui-state-error");
+            updateTips("Max length for " + n + " is: " + max);
+            return false;
+        }
+        if (o.val().length < min) {
+            o.addClass("ui-state-error");
+            updateTips("Min length for " + n + " is: " + min);
+            return false;
+        } else {
+            return true;
+        }
     }
-  }
-  function checkRegexp(o, regexp, n) {
-    if (!regexp.test(o.val())) {
-      o.addClass("ui-state-error");
-      updateTips(n);
-      return false;
-    } else {
-      return true;
+
+    function checkRegexp(o, regexp, n) {
+        if (!regexp.test(o.val())) {
+            o.addClass("ui-state-error");
+            updateTips(n);
+            return false;
+        } else {
+            return true;
+        }
     }
-  }
-  function updateTips(t) {
-    tips.text(t).addClass("ui-state-highlight");
 
-    tips.parent().removeClass('hidden');
-    setTimeout(function () {
-      tips.removeClass("ui-state-highlight", 1500);
-    }, 500);
-  }
+    function updateTips(t) {
+        tips.text(t).addClass("ui-state-highlight");
 
-  var valid = true;
-  //valid = valid && checkLength( name, "username", 3, 16 );
-  valid = valid && checkLength(user.email, "email", 6, 80);
-  valid = valid && checkLength(user.password, "password", 5, 16);
+        tips.parent().removeClass('hidden');
+        setTimeout(function () {
+            tips.removeClass("ui-state-highlight", 1500);
+        }, 500);
+    }
 
-  //valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
-  valid = valid && checkRegexp(user.email, emailRegex, "eg. user_name@gmail.com");
-  valid = valid && checkRegexp(user.password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9");
+    var valid = true;
+    //valid = valid && checkLength( name, "username", 3, 16 );
+    valid = valid && checkLength(user.email, "email", 6, 80);
+    valid = valid && checkLength(user.password, "password", 5, 16);
 
-  return valid;
+    //valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
+    valid = valid && checkRegexp(user.email, emailRegex, "eg. user_name@gmail.com");
+    valid = valid && checkRegexp(user.password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9");
+
+    return valid;
 };
 Authenticator.prototype.login = function (token) {
-  if (token !== null) {
-    console.log('Authenticator.prototype.login****Token is existing already. Didnt create a new one');
-    return $.Deferred().resolve(token);
-  }
-  console.log('Authenticator.prototype.login****There is no token. Create a new one for guest');
-  return this.getTokenForGuest();
+    if (token !== null) {
+        console.log('Authenticator.prototype.login****Token is existing already. Didnt create a new one');
+        return $.Deferred().resolve(token);
+    }
+    console.log('Authenticator.prototype.login****There is no token. Create a new one for guest');
+    return this.getTokenForGuest();
 };
 //
 HerokuBackend = function (base, token) {
@@ -8039,16 +8047,19 @@ document.MENU_HTML = "<div id='eo-menu'>\
                 <div class='Grid-cell'>\
                     <div id='eo-account-img'></div>\
                 </div>\
-                <div class='Grid-cell u-1of2  vertical-container'>\
+                <div class='Grid-cell u-1of2  v-align h-align'>\
                     <div id='eo-account-name'></div>\
                 </div>\
-                <div class='Grid-cell vertical-container '>\
+                <div class='Grid-cell v-align'>\
                     <div id='account-triangle'>&#9662;</div>\
+                </div>\
+                <div class='Grid-cell v-align'>\
+                    <a href='#' aria-label='Close eo menu'>&times;</a>\
                 </div>\
             </div>\
         </div>\
         <div class='Grid u-textCenter eo-row'>\
-            <div class='Grid-cell u-1of3'>\
+            <div class='Grid-cell u-1of3 v-align h-align'>\
                 <div id='eo-power-switch'>\
                     <span id='eo-power-switch-text'></span>\
                     <div id='eo-power-switch-circle'></div>\
@@ -8059,10 +8070,10 @@ document.MENU_HTML = "<div id='eo-menu'>\
             </div>\
             <div class='Grid-cell'>\
                 <div class='Grid'>\
-                    <div class='Grid-cell u-1of3'>\
-                        <div id='eo-speaker_res'></div>\
+                    <div class='Grid-cell u-1of3 v-align h-align'>\
+                        <div id='eo-speaker-res'></div>\
                     </div>\
-                    <div class='Grid-cell'>\
+                    <div class='Grid-cell v-align h-align'>\
                         <div id='slider'>\
                             <div id='custom-handle' class='ui-slider-handle'></div>\
                             <div id='iuyrijyt'>iuy6trkjhyfg</div>\
@@ -8073,17 +8084,17 @@ document.MENU_HTML = "<div id='eo-menu'>\
         </div>\
     </div>\
     <div class='languages_picker'>\
-        <div class='Grid Grid--full eo-row'>\
-            <div class='Grid-cell vertical-container' id='picker_tittle'>\
+        <div class='Grid Grid--full'>\
+            <div class='Grid-cell v-align' id='eo-picker-tittle'>\
                 <div id='eo-language_header'>Pick a language</div>\
             </div>\
             <div class='Grid-cell'>\
                 <div class='Grid eo-row'>\
                     <div class='Grid-cell u-1of6'>\
-                        <div class='flag'></div>\
+                        <div class='flag us-flag'></div>\
                     </div>\
-                    <div class='Grid-cell vertical-container'>\
-                        <div class='eo-language-option-res'>English</div>\
+                    <div class='Grid-cell v-align'>\
+                        <div class='eo-language-option-res'>Usa</div>\
                     </div>\
                 </div>\
             </div>\
@@ -8093,9 +8104,9 @@ document.MENU_HTML = "<div id='eo-menu'>\
                 <div class='Grid'>\
                     <span class='tooltip'>Coming soon</span>\
                     <div class='Grid-cell u-1of6 eo-low-layer'>\
-                        <div class='flag'></div>\
+                        <div class='flag sp-flag'></div>\
                     </div>\
-                    <div class='Grid-cell vertical-container eo-low-layer'>\
+                    <div class='Grid-cell v-align eo-low-layer'>\
                         <div class='eo-language-option-res'>Spanish</div>\
                     </div>\
                 </div>\
@@ -8104,31 +8115,31 @@ document.MENU_HTML = "<div id='eo-menu'>\
                 <div class='Grid'>\
                     <span class='tooltip'>Coming soon</span>\
                     <div class='Grid-cell u-1of6 eo-low-layer'>\
-                        <div class='flag'></div>\
+                        <div class='flag fr-flag'></div>\
                     </div>\
-                    <div class='Grid-cell vertical-container eo-low-layer'>\
+                    <div class='Grid-cell v-align eo-low-layer'>\
                         <div class='eo-language-option-res'>French</div>\
                     </div>\
                 </div>\
             </div>\
-            <div class='Grid-cell eo-row'>\
+            <div class='Grid-cell eo-row' id='eo-last-option'>\
                 <div class='Grid'>\
                     <span class='tooltip'>Coming soon</span>\
                     <div class='Grid-cell u-1of6 eo-low-layer'>\
-                        <div class='flag'></div>\
+                        <div class='flag ch-flag'></div>\
                     </div>\
-                    <div class='Grid-cell vertical-container eo-low-layer'>\
+                    <div class='Grid-cell v-align eo-low-layer'>\
                         <div class='eo-language-option-res'>Chinese</div>\
                     </div>\
                 </div>\
             </div>\
         </div>\
-        <div class='Grid Grid--full u-textCenter eo-row' id='picker_footer'>\
-            <div class='Grid-cell'>\
+        <div class='Grid Grid--full u-textCenter'>\
+            <div class='Grid-cell' id='eo-picker-footer'>\
                 <div id='englishon-bottom'></div>\
             </div>\
         </div>\
-        <div class='Grid Grid--full u-textCenter header eo-row'>\
+        <div class='Grid Grid--full u-textCenter eo-row'>\
             <div class='Grid-cell hidden'>\
                 <div id='eo-editor-btn'>edit questions</div>\
             </div>\
@@ -8137,48 +8148,52 @@ document.MENU_HTML = "<div id='eo-menu'>\
 </div>\
 ";
 //
-document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-dlg-login-grid'>\
-    <div class='Grid-cell large-Grid--offset u-textCenter hidden' id='eo-dlg-login'>\
+document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
+    <div id='eo-dlg-inner'>\
         <div class='Grid Grid--full'>\
-            <div class='Grid-cell locate-menu'></div>\
-        </div>\
-        <div id='eo-dlg-inner'>\
-            <div class='Grid Grid--full Grid--gutters'>\
-                <div class='Grid-cell'>\
-                    <div id='eo-dlg-icon'></div>\
+            <div class='Grid-cell eo-row2 v-align h-align'>\
+            <div id='eo-dlg-icon'></div>\
+                <div class='eo-dlg-header'>Sign in/up</div>\
+            </div>\
+            <div class='Grid-cell eo-row3 v-align h-align'>\
+                <div>welcome to englishon... bla bla bla bla bla bla</div>\
+            </div>\
+            <div class='Grid-cell eo-row4'>\
+                <div id='google_iframe'></div>\
+            </div>\
+            <div class='Grid-cell hidden'>\
+                <div id='eo-google-msg'></div>\
+            </div>\
+            <div class='Grid-cell eo-row5'>\
+                <div class='Grid'>\
+                    <div class='Grid-cell line eo-delimiter'></div>\
+                    <div class='Grid-cell v-align h-align'>\
+                        <span>or</span>\
+                    </div>\
+                    <div class='Grid-cell line eo-delimiter'></div>\
                 </div>\
-                <div class='Grid-cell'>\
-                    <div class='dlg_header'>Sign in/up</div>\
-                </div>\
-                <div class='Grid-cell' id='wide_cell'>\
-                    <div id='google_iframe'></div>\
-                </div>\
-                <div class='Grid-cell hidden'>\
-                    <div id='eo-google-msg'></div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <div class='Grid eo-delimiter'>\
-                        <div class='Grid-cell line'></div>\
-                        <div class='Grid-cell'>\
-                            <span class='dlg_header'>or </span>\
-                        </div>\
-                        <div class='Grid-cell line'></div>\
+            </div>\
+            <div class='Grid-cell eo-row6'>\
+                <input type='text' placeholder='email address' id='eo-login-email' class='eo-input' />\
+            </div>\
+            <div class='Grid-cell eo-row6'>\
+                <input type='password' placeholder='password' id='eo-login-password' class='eo-input' />\
+            </div>\
+            <div class='Grid-cell hidden eo-row8'>\
+                <div id='eo-login-msg'></div>\
+            </div>\
+            <div class='Grid-cell eo-row9'>\
+                <div class='Grid'>\
+                    <div class='Grid-cell  v-align'>\
+                        <div>Service of term</div>\
+                    </div>\
+                    <div class='Grid-cell  v-align'>\
+                        <div id='eo-forgot-psw'>Forgot password?</div>\
                     </div>\
                 </div>\
-                <div class='Grid-cell hidden'>\
-                    <div id='eo-login-msg'></div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <input type='text' placeholder='email address' id='eo-login-email' class='eo-input' />\
-                </div>\
-                <div class='Grid-cell'>\
-                    <input type='password' placeholder='password' id='eo-login-password' class='eo-input' />\
-                </div>\
-                <div class='Grid-cell'>\
-                    <button id='eo-mail_login_btn'>sign in</button>\
-                </div>\
-                <div class='Grid-cell'>\
-                </div>\
+            </div>\
+            <div class='Grid-cell eo-row7 v-align h-align'>\
+                <div id='eo-mail_login_btn' class='v-align h-align'>sign in</div>\
             </div>\
         </div>\
     </div>\
@@ -8186,27 +8201,15 @@ document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of
 </div>\
 ";
 //
-document.SIGNOUT_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-dlg-signout-grid'>\
-    <div class='Grid-cell large-Grid--offset u-textCenter hidden' id='eo-dlg-signout'>\
-        <div class='Grid Grid--full'>\
-            <div class='Grid-cell locate-menu'></div>\
-            <div class='Grid-cell' id='signout-event-area'></div>\
+document.SIGNOUT_DLG = "<div class='hidden' id='eo-dlg-signout'>\
+    <div class='Grid Grid--full'>\
+        <div class='Grid-cell'></div>\
+        <div class='Grid-cell'></div>\
+        <div class='Grid-cell'>\
+            <div id='signout_btn' class ='v-align h-align'>sign out</div>\
         </div>\
-        <div id='signout-inner'>\
-            <div class='Grid Grid--full'>\
-                <div class='Grid-cell'></div>\
-                <div class='Grid-cell'>\
-                    <div id='signout_btn'>sign out</div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <div id='eo-signout-msg'></div>\
-                </div>\
-                <div class='Grid-cell'></div>\
-                <div class='Grid-cell'></div>\
-                <div class='Grid-cell'></div>\
-                <div class='Grid-cell'></div>\
-                <div class='Grid-cell'></div>\
-            </div>\
+        <div class='Grid-cell'>\
+            <div id='eo-signout-msg' class='v-align h-align'></div>\
         </div>\
     </div>\
 </div>\
@@ -8419,13 +8422,15 @@ var EnglishOnButton = new function () {
     };
 }();
 $(document).mouseup(function (e) {
+    var button = $('.eo-button');
+    if (button.is(e.target)) return;
     var menu = $('#eo-menu');
-    var button = $('#eo-button');
+
     var login_dlg = $('#eo-dlg-login');
     var signout_dlg = $('#eo-dlg-signout');
     if (!menu.is(e.target) // if the target of the click isn't the menu..
     && menu.has(e.target).length === 0 // ... nor a descendant of the menu
-    && !button.is(e.target) && !login_dlg.is(e.target) && login_dlg.has(e.target).length === 0 && !signout_dlg.is(e.target) && signout_dlg.has(e.target).length === 0) {
+    && !login_dlg.is(e.target) && login_dlg.has(e.target).length === 0 && !signout_dlg.is(e.target) && signout_dlg.has(e.target).length === 0) {
         menu.addClass('hidden');
         login_dlg.addClass('hidden');
         signout_dlg.addClass('hidden');
@@ -8438,7 +8443,11 @@ var toggle_login_dialog = function () {
 };
 
 var toggle_signout_dialog = function () {
+    var offset = $('.eo-button').offset();
     $("#eo-dlg-signout").removeAttr('style').toggleClass('hidden');
+    if (window.matchMedia("(min-width:1050px)").matches) {
+        $("#eo-dlg-signout").css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' });
+    };
 };
 var display_message = function (msg, element) {
     element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
@@ -8549,7 +8558,7 @@ document.EnglishOnMenu = function () {
             $('#eo-account-area').addClass('guest');
             $('#eo-account-name').text('Sign in/up');
             $('#eo-account-area').off('click').on('click', toggle_login_dialog);
-            message = 'You logged out';
+            message = "You've Signed Out";
             display_message(message, $('#eo-signout-msg'));
             $('#eo-menu').addClass('hidden');
             $("#eo-dlg-signout").fadeOut(1600, "linear", function () {
@@ -8557,21 +8566,23 @@ document.EnglishOnMenu = function () {
             });
         });
     };
-
+    document.signout = signout;
     this.menu_string = document.MENU_HTML;
     this.container = $(this.menu_string);
     this.login_dlg = $(document.LOGIN_DLG);
     this.signout_dlg = $(document.SIGNOUT_DLG);
     this.container.insertBefore($($('table')[0]));
-    //(this.login_dlg).insertBefore($($('table')[0]));
-    //(this.signout_dlg).insertBefore($($('table')[0]));
+    this.login_dlg.insertBefore($($('table')[0]));
+    this.signout_dlg.insertBefore($($('table')[0]));
     //var offset = $('#top_menu_block').offset().top
-    //$('.locate-menu').css('height', offset - 45 + 'px');
     if (window.matchMedia("(min-width:1050px)").matches) {
         console.log('DESKTOP');
 
         var offset = $('.eo-button').offset();
         $('#eo-menu').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' });
+        $('#eo-dlg-login').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' });
+        $('#eo-dlg-signout').css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' });
+        //$('#eo-menu').css({ top: 97 + 'px', left: offset.left + 100 + 'px' })
     } else {
         console.log('MOBILE');
         // $('#eo-menu').find('.eo-row').css({ 'height': screen.height / 8 + 'px', 'font-size': '16px' })
@@ -8590,7 +8601,7 @@ document.EnglishOnMenu = function () {
         }
     });
     $('#signout_btn').on('click', signout);
-    if (!localStorage.getItem('email')) {
+    if (JSON.parse(!localStorage.getItem('email'))) {
         $('#eo-account-area').addClass('guest');
         $('#eo-account-area').on('click', toggle_login_dialog);
         $('#eo-account-name').text('sign in/up');

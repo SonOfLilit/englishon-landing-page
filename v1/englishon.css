@@ -3252,6 +3252,12 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   color: #000 !important;
 }
 /* responsive.scss */
+.eo-delimiter {
+  height: 50%;
+  border-bottom: 1px solid #0e161d;
+  flex: 0 0 42%;
+}
+
 .Grid {
   display: flex;
   flex-wrap: wrap;
@@ -3264,8 +3270,20 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 .Grid-cell {
   flex: 1;
   z-index: 3;
-  height: 196px;
-  font-size: 44px;
+  font-size: 64px;
+  font-family: Ubuntu;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  line-height: 100px;
+}
+
+#eo-mail_login_btn {
+  height: 167px;
+  width: 600px;
+  background-color: #4b5a66;
+  border-radius: 75px;
+  color: white;
+  border: none;
 }
 
 .Grid--flexCells > .Grid-cell {
@@ -3403,9 +3421,15 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
     margin-left: 20%;
   }
 }
-#eo-dlg-inner {
+.eo-row {
+  height: 194px;
+}
+.eo-row .Grid {
+  height: 100%;
+}
+
+#eo-dlg-login {
   z-index: 4;
-  background-color: white;
 }
 
 #google_btn {
@@ -3550,6 +3574,12 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   flex: none !important;
 }
 
+#eo-dlg-inner {
+  margin: 0px 80px;
+  height: 100%;
+  overflow: hidden;
+}
+
 .u-1of2 {
   width: 50% !important;
 }
@@ -3559,7 +3589,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 .u-1of6 {
-  width: 19% !important;
+  width: 27% !important;
 }
 
 .u-1of3,
@@ -3576,11 +3606,8 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 #eo-account-area {
-  border-bottom: 1px solid;
-  border-color: #3d4c58;
+  border-bottom: 2px solid #3d4c58;
   cursor: pointer;
-  border-bottom: 1px solid;
-  border-color: #3d4c58;
 }
 
 #eo-dlg-icon {
@@ -3601,6 +3628,14 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg) !important;
 }
 
+#eo-picker-tittle {
+  height: 158.8235294117647px;
+}
+
+#eo-picker-footer {
+  height: 105.88235294117649px;
+}
+
 #eo-iframe {
   width: 160px;
   height: 60px;
@@ -3609,83 +3644,80 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 
 #eo-power-switch {
   cursor: pointer;
-  padding-right: 6px;
   background-color: #0e161d;
-  height: 20px;
-  width: 46.66px;
-  border-radius: 10px;
-  margin-left: 25%;
   font-family: Ubuntu;
   font-size: 11px;
   font-weight: 500;
   color: white;
-  letter-spacing: 0.03em;
   line-height: 20px;
   position: relative;
-  margin-top: 15px;
-  text-align: right;
+  height: 80px;
+  width: 187px;
+  border-radius: 40px;
+  font-size: 44px;
+}
+#eo-power-switch #eo-power-switch-text {
+  position: absolute;
+  top: 22px;
 }
 
 .eo-active #eo-power-switch {
   background-color: #2cc6a8;
   text-align: left;
   padding-left: 4px;
-  padding-right: 0px;
 }
 .eo-active #eo-power-switch-circle {
   border: 1px solid #2cc6a8;
-  left: 30px;
   transition: border-color 0.3s ease-in 0s, right 0.3s ease-in 0s;
+  left: 106px;
 }
 
-.dlg_header {
-  font-family: Ubuntu;
-  font-size: 24px;
+.eo-dlg-header {
+  font-size: 96px;
   color: #3d4c58;
-  letter-spacing: 0.03em;
-  line-height: 20px;
 }
 
 #eo-power-switch-circle {
   background-color: white;
-  border-radius: 22px;
-  height: 22px;
-  width: 22px;
   position: absolute;
-  top: -3px;
+  height: 88px;
+  width: 88px;
+  top: -12px;
+  border-radius: 50px;
 }
 
-#eo-speaker_res {
+#eo-speaker-res {
   background-image: url(http://www.englishon.org/v1/img/menu-sound-off.svg);
   background-repeat: no-repeat;
   padding-left: 10px;
   background-position: center;
-  background-size: 19px;
-  height: 45px;
+  background-size: 78px;
+  height: 100%;
+  width: 100%;
   cursor: pointer;
 }
-#eo-speaker_res:hover {
-  background-size: 24px;
+#eo-speaker-res:hover {
+  background-size: 96px;
 }
 
-.eo-speaker #eo-speaker_res {
+.eo-speaker #eo-speaker-res {
   background-image: url(http://www.englishon.org/v1/img/question-sound-on.svg);
 }
-.eo-speaker #eo-speaker_res:hover {
-  background-size: 24px;
+.eo-speaker #eo-speaker-res:hover {
+  background-size: 96px;
 }
 
 #eo-language_header {
   font-family: Ubuntu;
   font-weight: 500;
   color: #3d4c58;
-  letter-spacing: 0.03em;
   line-height: 20px;
   padding-left: 20px;
 }
 
-#picker_tittle {
-  border-bottom: 1px solid #d7dee3;
+#eo-picker-tittle,
+#eo-last-option {
+  border-bottom: 2px solid #d7dee3;
 }
 
 .eo-language-option-res {
@@ -3702,26 +3734,17 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 #eo-dlg-login .eo-input {
-  height: 40px;
-  width: 200px;
-  background-color: #c7d1d7;
+  direction: ltr;
+  height: 100%;
+  width: 720px;
   border: 1px solid #c7d1d7;
   border-radius: 5px;
+  padding-left: 10px;
+  font-size: 64px;
+  background-color: inherit;
 }
 
-#eo-mail_login_btn {
-  height: 46.66px;
-  width: 150px;
-  background-color: #4b5a66;
-  border-radius: 25px;
-  font-family: Ubuntu;
-  font-weight: 500;
-  color: white;
-  letter-spacing: 0.03em;
-  line-height: 25px;
-}
-
-.vertical-container {
+.v-align {
   display: flex;
   align-items: center;
 }
@@ -3779,39 +3802,35 @@ eo-signout-layout .signout {
   font-size: 15px;
 }
 
-.eo-delimiter {
-  height: 20%;
-}
-.eo-delimiter > .Grid-cell.line {
-  border-bottom-style: dotted;
-  height: 100%;
-  flex: 0 0 42%;
-}
-
-#signout-inner .Grid-cell {
-  background-color: #88b4e9;
-  font-family: Ubuntu;
-  font-weight: bold;
-  color: #eceff1;
-  opacity: .9;
-}
-
-#eo-dlg-login-grid > .Grid-cell,
-#eo-menu-grid > .Grid-cell,
-#eo-dlg-signout-grid > .Grid-cell {
-  height: 0px;
+#google_iframe {
+  margin-left: 20px;
+  padding-top: 30px;
 }
 
 #signout_btn {
   cursor: pointer;
+  width: 100%;
+  height: 100%;
 }
 
 #eo-editor-btn {
   cursor: pointer;
 }
 
-.flag {
+.us-flag {
   background-image: url(http://www.englishon.org/v1/img/button-on-en.svg);
+}
+
+.fr-flag {
+  background-image: url(http://www.englishon.org/v1/img/button-on-fr.svg);
+}
+
+.sp-flag {
+  background-image: url(http://www.englishon.org/v1/img/button-on-es.svg);
+}
+
+.ch-flag {
+  background-image: url(http://www.englishon.org/v1/img/button-on-zh.svg);
 }
 
 #eo-editor-btn {
@@ -3829,22 +3848,25 @@ eo-signout-layout .signout {
   height: 100%;
   width: 100%;
   background-position: center;
-  background-size: 32px;
+  background-size: 120px;
 }
 
 #englishon-bottom {
   background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
-  background-size: 40%;
+  background-size: 30%;
 }
 
 .delimiter {
   flex: 0 0 2%;
 }
 
+.h-align {
+  justify-content: center;
+}
+
 .eo-line {
-  border-left: 1px solid;
+  border-left: 1px solid #3d4c58;
   height: 100%;
-  border-color: #3d4c58;
 }
 
 .eo-low-layer:hover {
@@ -3855,25 +3877,234 @@ eo-signout-layout .signout {
   margin-top: 17px;
 }
 
-#eo-menu {
+#eo-menu,
+#eo-dlg-login {
+  box-shadow: 10px 10px 5px #888888;
   background-color: #eceff1;
-  position: fixed;
   top: 0px;
+}
+
+#eo-dlg-signout {
+  background-color: #4b5a66;
+  font-family: Ubuntu;
+  font-weight: bold;
+  top: 180px;
+  color: #eceff1;
+}
+#eo-dlg-signout .Grid-cell {
+  border-top: 1px solid #3d4c58;
+  height: 280px;
+}
+
+#eo-menu,
+#eo-dlg-login,
+#eo-dlg-signout {
+  position: fixed;
   left: 0px;
   width: 100%;
   height: 100%;
   z-index: 3;
-  box-shadow: 10px 10px 5px #888888;
   overflow-y: auto;
 }
 
+.eo-row2 {
+  height: 169px;
+}
+
+.eo-row3 {
+  height: 147px;
+}
+
+.eo-row4 {
+  height: 392px;
+}
+
+.eo-row5 {
+  height: 147px;
+}
+.eo-row5 > .Grid {
+  height: 100%;
+}
+
+.eo-row6 {
+  margin-top: 20px;
+  height: 98px;
+}
+
+.eo-row8 {
+  height: 21px;
+}
+
+.eo-row9 {
+  height: 15px;
+}
+.eo-row9 > .Grid {
+  height: 15px;
+  font-size: 11px;
+  font-family: arial;
+  font-weight: normal;
+  line-height: 15px;
+}
+
+.eo-row7 {
+  height: 281px;
+}
+
+#eo-dlg-icon {
+  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-repeat: no-repeat;
+  background-size: 35px;
+  height: 100%;
+  width: 20%;
+  margin-right: 20px;
+}
+
 @media (min-width: 1050px) {
-  #eo-menu {
+  #eo-menu,
+  #eo-dlg-login {
     height: 381px;
-    width: 212px;
+  }
+  #eo-menu .eo-input,
+  #eo-dlg-login .eo-input {
+    width: 170px;
+    font-size: 16px;
+  }
+
+  #eo-dlg-signout {
+    height: 305px;
+  }
+  #eo-dlg-signout .Grid-cell {
+    height: 76px;
+  }
+
+  #eo-menu,
+  #eo-dlg-login,
+  #eo-dlg-signout {
+    width: 240px;
     overflow-y: hidden;
   }
-  #eo-menu .Grid-cell {
-    height: 44px;
+  #eo-menu .eo-row,
+  #eo-dlg-login .eo-row,
+  #eo-dlg-signout .eo-row {
+    height: 51px;
+  }
+  #eo-menu .Grid-cell,
+  #eo-dlg-login .Grid-cell,
+  #eo-dlg-signout .Grid-cell {
+    font-size: 16px;
+    line-height: 25px;
+  }
+  #eo-menu .flag, #eo-menu #eo-account-img,
+  #eo-dlg-login .flag,
+  #eo-dlg-login #eo-account-img,
+  #eo-dlg-signout .flag,
+  #eo-dlg-signout #eo-account-img {
+    background-size: 32px;
+  }
+  #eo-menu #eo-power-switch,
+  #eo-dlg-login #eo-power-switch,
+  #eo-dlg-signout #eo-power-switch {
+    height: 20px;
+    width: 46.66px;
+    border-radius: 10px;
+    font-family: Ubuntu;
+    font-size: 11px;
+    border-radius: 50px;
+  }
+  #eo-menu #eo-power-switch #eo-power-switch-text,
+  #eo-dlg-login #eo-power-switch #eo-power-switch-text,
+  #eo-dlg-signout #eo-power-switch #eo-power-switch-text {
+    top: 0px;
+  }
+  #eo-menu #eo-power-switch-circle,
+  #eo-dlg-login #eo-power-switch-circle,
+  #eo-dlg-signout #eo-power-switch-circle {
+    height: 22px;
+    width: 22px;
+    top: -3px;
+    border-radius: 22px;
+  }
+  #eo-menu #eo-picker-footer,
+  #eo-dlg-login #eo-picker-footer,
+  #eo-dlg-signout #eo-picker-footer {
+    height: 29px;
+  }
+  #eo-menu #eo-picker-footer .Grid-cell,
+  #eo-dlg-login #eo-picker-footer .Grid-cell,
+  #eo-dlg-signout #eo-picker-footer .Grid-cell {
+    height: 100%;
+  }
+  #eo-menu #eo-picker-tittle,
+  #eo-dlg-login #eo-picker-tittle,
+  #eo-dlg-signout #eo-picker-tittle {
+    height: 45px;
+  }
+  #eo-menu #eo-speaker-res,
+  #eo-dlg-login #eo-speaker-res,
+  #eo-dlg-signout #eo-speaker-res {
+    background-size: 19px;
+  }
+  #eo-menu #eo-speaker-res:hover,
+  #eo-dlg-login #eo-speaker-res:hover,
+  #eo-dlg-signout #eo-speaker-res:hover {
+    background-size: 24px;
+  }
+
+  .eo-active #eo-power-switch-circle {
+    left: 30px;
+  }
+
+  .eo-row2 {
+    height: 52.75px;
+  }
+
+  .eo-row3 {
+    height: 36.75px;
+    line-height: 20px;
+  }
+
+  .eo-row4 {
+    height: 98px;
+  }
+
+  .eo-row5 {
+    height: 36.75px;
+  }
+  .eo-row5 > .Grid {
+    height: 100%;
+  }
+
+  .eo-row6 {
+    margin-top: 10px;
+    height: 24.5px;
+  }
+
+  .eo-row7 {
+    height: 70.25px;
+  }
+
+  .eo-dlg-header {
+    font-size: 24px;
+  }
+
+  #eo-mail_login_btn {
+    height: 46.66px;
+    width: 150px;
+    border-radius: 25px;
+  }
+
+  #eo-dlg-inner {
+    margin: 0px 20px;
+  }
+
+  #eo-dlg-login .eo-row9 {
+    height: 15px;
+  }
+  #eo-dlg-login .eo-row9 > .Grid > .Grid-cell {
+    height: 15px;
+    font-size: 11px;
+    font-family: arial;
+    font-weight: normal;
+    line-height: 15px;
   }
 }
