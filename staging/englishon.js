@@ -6410,7 +6410,6 @@ el.animate(animation,{queue:false,duration:o.duration,easing:o.easing,complete:f
 });
 //
 var configStorage;
-// I clean i code for chrome extention here
 // in the real world we will store config on the server
 // and do some CORS voodoo to fetch it.
 configStorage = {
@@ -6521,136 +6520,143 @@ var I18N = WEBSITE_I18N[location.hostname];
 var MESSAGES = I18N.MESSAGES;
 //
 Authenticator = function (base) {
-  this.base = base;
+    this.base = base;
 };
 
 Authenticator.prototype.getTokenFor = function (userToken) {
-  var promise = $.get(this.base + "/tokens/from-user-token/" + encodeURIComponent(userToken) + "/").then(function (response) {
-    return response.token;
-  });
-  return promise;
+    var promise = $.get(this.base + "/tokens/from-user-token/" + encodeURIComponent(userToken) + "/").then(function (response) {
+        return response.token;
+    });
+    return promise;
 };
 
 Authenticator.prototype.getTokenForGuest = function () {
-  console.log("getTokenForGuest****! base is: " + this.base);
-  var promise = $.post(this.base + "/tokens/create/").then(function (response) {
-    return response.token;
-  });
-  return promise;
+    console.log("getTokenForGuest****! base is: " + this.base);
+    var promise = $.post(this.base + "/tokens/create/").then(function (response) {
+        return response.token;
+    });
+    return promise;
 };
 
 function showTOS() {
-  var buttons = {};
-  buttons[MESSAGES.CLOSE_TOS] = function () {
-    $(this).dialog("close");
-  };
-  $.ajax(chrome.extension.getURL('terms_of_service.html')).done(function (tos) {
-    $('<div>')
-    // TODO: real RTL
-    .attr('dir', 'rtl').html(tos).dialog({
-      autoOpen: true,
-      modal: true,
-      buttons: buttons,
-      width: '600',
-      height: '600',
-      overflow: 'auto'
+    var buttons = {};
+    buttons[MESSAGES.CLOSE_TOS] = function () {
+        $(this).dialog("close");
+    };
+    $.ajax(chrome.extension.getURL('terms_of_service.html')).done(function (tos) {
+        $('<div>')
+        // TODO: real RTL
+        .attr('dir', 'rtl').html(tos).dialog({
+            autoOpen: true,
+            modal: true,
+            buttons: buttons,
+            width: '600',
+            height: '600',
+            overflow: 'auto'
+        });
     });
-  });
 }
 
 Authenticator.prototype.getToken = function () {
-  console.log("getToken****");
-  var r = $.Deferred();
-  var dia = $('<div>');
-  dia.append($('<p>').text(MESSAGES.ENTER_USER_TOKEN));
-  dia.append($('<p>').append($('<input type="text" style="width: 100%;"></p>')));
-  dia.append($('<p>').text(MESSAGES.AGREE_TO_TOS).append($('<a>').attr('href', '#').text(MESSAGES.TOS_LINK).on('click', showTOS)));
-  var buttons = $('<p>');
-  // TODO: real rtl support instead of flipped button order
-  buttons.append($('<button>').text(MESSAGES.SUBMIT_WITH_TOKEN).on('click', function (event) {
-    event.preventDefault();
-    buttons.find('button').prop('disabled', true);
-    var promise = $.get(this.base + '/tokens/from-user-token/' + dia.find(':text').val() + '/');
-    waitFor(promise, MESSAGES.ERROR_INVALID_TOKEN);
-  }.bind(this)));
-  dia.append(buttons);
+    console.log("getToken****");
+    var r = $.Deferred();
+    var dia = $('<div>');
+    dia.append($('<p>').text(MESSAGES.ENTER_USER_TOKEN));
+    dia.append($('<p>').append($('<input type="text" style="width: 100%;"></p>')));
+    dia.append($('<p>').text(MESSAGES.AGREE_TO_TOS).append($('<a>').attr('href', '#').text(MESSAGES.TOS_LINK).on('click', showTOS)));
+    var buttons = $('<p>');
+    // TODO: real rtl support instead of flipped button order
+    buttons.append($('<button>').text(MESSAGES.SUBMIT_WITH_TOKEN).on('click', function (event) {
+        event.preventDefault();
+        buttons.find('button').prop('disabled', true);
+        var promise = $.get(this.base + '/tokens/from-user-token/' + dia.find(':text').val() + '/');
+        waitFor(promise, MESSAGES.ERROR_INVALID_TOKEN);
+    }.bind(this)));
+    dia.append(buttons);
 
-  function waitFor(promise, errorMsg) {
-    promise.then(function (response) {
-      if (response.token) {
-        r.resolve(response.token);
-        dia.dialog('close');
-      } else {
-        dia.append($('<p>').text(errorMsg));
-        buttons.find('button').prop('disabled', false);
-      }
-    }, function (error) {
-      dia.append($('<p>').text(errorMsg));
-      buttons.find('button').prop('disabled', false);
-    });
-  }
-  dia.dialog({ autoOpen: true, height: 'auto', width: 'auto' });
-  return r;
+    function waitFor(promise, errorMsg) {
+        promise.then(function (response) {
+            if (response.token) {
+                r.resolve(response.token);
+                dia.dialog('close');
+            } else {
+                dia.append($('<p>').text(errorMsg));
+                buttons.find('button').prop('disabled', false);
+            }
+        }, function (error) {
+            dia.append($('<p>').text(errorMsg));
+            buttons.find('button').prop('disabled', false);
+        });
+    }
+    dia.dialog({ autoOpen: true, height: 'auto', width: 'auto' });
+    return r;
 };
 
 Authenticator.prototype.register = function (user) {
-  console.log('register by mail)');
-  var res = $.post(this.base + '/tokens/register/', user, function (res, status, request) {
-    res.status = request.statusText;
+    console.log('register by mail)');
+    var res = $.post(this.base + '/tokens/register/', user, function (res) {
+        return res;
+    });
     return res;
-  });
-  return res;
 };
 
 Authenticator.prototype.validate = function (user) {
-  emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/, tips = $('#eo-login-msg');
-  allFields = $([]).add(user.email).add(user.password);
-  allFields.removeClass('ui-state-error');
-  function checkLength(o, n, min, max) {
-    if (o.val().length > max || o.val().length < min) {
-      o.addClass("ui-state-error");
-      updateTips("Length of " + n + " must be between " + min + " and " + max + ".");
-      return false;
-    } else {
-      return true;
+    emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/, tips = $('#eo-login-msg');
+    allFields = $([]).add(user.email).add(user.password);
+    allFields.removeClass('ui-state-error');
+
+    function checkLength(o, n, min, max) {
+        if (o.val().length > max) {
+            o.addClass("ui-state-error");
+            updateTips("Max length for " + n + " is: " + max);
+            return false;
+        }
+        if (o.val().length < min) {
+            o.addClass("ui-state-error");
+            updateTips("Min length for " + n + " is: " + min);
+            return false;
+        } else {
+            return true;
+        }
     }
-  }
-  function checkRegexp(o, regexp, n) {
-    if (!regexp.test(o.val())) {
-      o.addClass("ui-state-error");
-      updateTips(n);
-      return false;
-    } else {
-      return true;
+
+    function checkRegexp(o, regexp, n) {
+        if (!regexp.test(o.val())) {
+            o.addClass("ui-state-error");
+            updateTips(n);
+            return false;
+        } else {
+            return true;
+        }
     }
-  }
-  function updateTips(t) {
-    tips.text(t).addClass("ui-state-highlight");
 
-    tips.parent().removeClass('hidden');
-    setTimeout(function () {
-      tips.removeClass("ui-state-highlight", 1500);
-    }, 500);
-  }
+    function updateTips(t) {
+        tips.text(t).addClass("ui-state-highlight");
 
-  var valid = true;
-  //valid = valid && checkLength( name, "username", 3, 16 );
-  valid = valid && checkLength(user.email, "email", 6, 80);
-  valid = valid && checkLength(user.password, "password", 5, 16);
+        tips.parent().removeClass('hidden');
+        setTimeout(function () {
+            tips.removeClass("ui-state-highlight", 1500);
+        }, 500);
+    }
 
-  //valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
-  valid = valid && checkRegexp(user.email, emailRegex, "eg. user_name@gmail.com");
-  valid = valid && checkRegexp(user.password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9");
+    var valid = true;
+    //valid = valid && checkLength( name, "username", 3, 16 );
+    valid = valid && checkLength(user.email, "email", 6, 80);
+    valid = valid && checkLength(user.password, "password", 5, 16);
 
-  return valid;
+    //valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
+    valid = valid && checkRegexp(user.email, emailRegex, "eg. user_name@gmail.com");
+    valid = valid && checkRegexp(user.password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9");
+
+    return valid;
 };
 Authenticator.prototype.login = function (token) {
-  if (token !== null) {
-    console.log('Authenticator.prototype.login****Token is existing already. Didnt create a new one');
-    return $.Deferred().resolve(token);
-  }
-  console.log('Authenticator.prototype.login****There is no token. Create a new one for guest');
-  return this.getTokenForGuest();
+    if (token !== null) {
+        console.log('Authenticator.prototype.login****Token is existing already. Didnt create a new one');
+        return $.Deferred().resolve(token);
+    }
+    console.log('Authenticator.prototype.login****There is no token. Create a new one for guest');
+    return this.getTokenForGuest();
 };
 //
 HerokuBackend = function (base, token) {
@@ -7813,7 +7819,7 @@ ShturemFrontpageOverlay = function (parts) {
 
   this.showButtons = function () {
     $('div#top_menu_block').append(EnglishOnButton.element);
-    EnglishOnButton.registerHandlers(this);
+    //EnglishOnButton.registerHandlers(this);
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
   };
@@ -7838,6 +7844,11 @@ ShturemFrontpageOverlay = function (parts) {
   this.showQuestions = function () {
     $.each(this.parts, function (url, part) {
       if (part.injector) part.injector.on();
+    });
+  };
+  this.hideQuestions = function () {
+    $.each(this.parts, function (url, part) {
+      if (part.injector) part.injector.off();
     });
   };
 };
@@ -7889,49 +7900,66 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   }.bind(this);
 };
 //
+var BHOL_ROOT_URL = 'http://www.bhol.co.il/';
+
+function normalizeBholLink(path) {
+    var linicom = path.match(/http:\/\/linicom.*&a=(http%3A[^&]*)&/);
+    if (linicom) {
+        path = unescape(linicom[1]);
+    }
+    if (!path.startsWith('http://') && !path.startsWith('https://')) {
+        path = BHOL_ROOT_URL + (path.startsWith('/') ? path.substr(1) : path);
+    }
+    var res = path.match(/^(https?:\/\/www.bhol.co.il)\/(?:|column|or_)article(?:|_old).aspx\?(?:|.*&)id=(\d+)/i);
+    if (res) {
+        path = res[1].toLowerCase() + '$' + res[2];
+    }
+    return path;
+}
+
 Scraper = new function () {
-  function dispatch(location) {
-    if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
-      if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
-      if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
-    }
-  }
-
-  this.scrape = function () {
-    var scraper = dispatch(location);
-    if (!scraper) {
-      console.log("EnglishOn: unknown website");
-      return;
+    function dispatch(location) {
+        if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
+            if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
+            if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
+        }
     }
 
-    return scraper.scrape();
-  };
+    this.scrape = function () {
+        var scraper = dispatch(location);
+        if (!scraper) {
+            console.log("EnglishOn: unknown website");
+            return;
+        }
+
+        return scraper.scrape();
+    };
 }();
 
 var ShturemArticleScraper = function () {
 
-  this.scrape = function () {
-    url = document.URL.replace(/#.*$/, '');
-    var subtitle = $('span.artSubtitle')[0];
-    var bodytext = $('div.artText')[0];
-    // Shturem article bodies are not divided internally to <p>s.
-    // they're just blobs of text with the occasional double <br>.
-    return new ShturemArticleOverlay(url, subtitle, bodytext);
-  };
+    this.scrape = function () {
+        url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
+        var subtitle = $('span.artSubtitle')[0];
+        var bodytext = $('div.artText')[0];
+        // Shturem article bodies are not divided internally to <p>s.
+        // they're just blobs of text with the occasional double <br>.
+        return new ShturemArticleOverlay(url, subtitle, bodytext);
+    };
 };
 
 var ShturemFrontPageScraper = function () {
-  console.log('option 4');
-  this.scrape = function () {
-    var parts = {};
-    $('td.mainpn_text').each(function (i, para) {
-      var url = $(para).closest('table').find('td.mainpn_bottom a')[0].href;
-      parts[url] = para;
-      // hack to make answers visible
-      $(para).attr('style', 'overflow: visible;');
-    });
-    return new ShturemFrontpageOverlay(parts);
-  };
+    console.log('option 4');
+    this.scrape = function () {
+        var parts = {};
+        $('td.mainpn_text').each(function (i, para) {
+            var url = $(para).closest('table').find('td.mainpn_bottom a')[0].href;
+            parts[url] = para;
+            // hack to make answers visible
+            $(para).attr('style', 'overflow: visible;');
+        });
+        return new ShturemFrontpageOverlay(parts);
+    };
 };
 //
 /* Speaks target-language phrases aloud.
@@ -7960,50 +7988,54 @@ Technically, `fetch()` returns a `Deferred` that return an `AudioBuffer`, and ke
 get the benefit of work already done. `speak()` simply calls `fetch()` and plays the result.
  */
 var Speaker = new function () {
-  var audioContext = new AudioContext();
-  var gainNode = audioContext.createGain();
-  gainNode.connect(audioContext.destination);
-  this.cache = {};
+    var audioContext = new AudioContext();
+    var gainNode = audioContext.createGain();
+    gainNode.connect(audioContext.destination);
+    this.cache = {};
 
-  this.toggle = function (enable) {
-    gainNode.gain.value = enable ? 1 : 0;
-  };
+    this.toggle = function (enable) {
+        gainNode.gain.value = enable ? 1 : 0;
+    };
 
-  this.fetch = function (language, phrase) {
-    var key = language + '/' + phrase;
-    if (this.cache[key]) {
-      return this.cache[key];
-    }
-    var r = $.Deferred();
-    document.englishonBackend.getTextToSpeechLink(language, phrase).then(function (url) {
-      // can't use jQuery because it doesn't support arraybuffer yet
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', url, true);
-      xhr.responseType = 'arraybuffer';
-      xhr.onload = function (e) {
-        audioContext.decodeAudioData(xhr.response, r.resolve.bind(r));
-      };
-      xhr.onerror = function (e) {
-        console.log('Error pronouncing phrase "' + key + '": ' + e.error);
-        console.log(e);
-      };
-      xhr.send();
-    });
-    this.cache[key] = r;
-    return r;
-  };
+    this.changeVolume = function (value) {
+        gainNode.gain.value = value;
+    };
 
-  this.speak = function (language, phrase) {
-    this.fetch(language, phrase).then(this.playBuffer.bind(this));
-  };
+    this.fetch = function (language, phrase) {
+        var key = language + '/' + phrase;
+        if (this.cache[key]) {
+            return this.cache[key];
+        }
+        var r = $.Deferred();
+        document.englishonBackend.getTextToSpeechLink(language, phrase).then(function (url) {
+            // can't use jQuery because it doesn't support arraybuffer yet
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = function (e) {
+                audioContext.decodeAudioData(xhr.response, r.resolve.bind(r));
+            };
+            xhr.onerror = function (e) {
+                console.log('Error pronouncing phrase "' + key + '": ' + e.error);
+                console.log(e);
+            };
+            xhr.send();
+        });
+        this.cache[key] = r;
+        return r;
+    };
 
-  this.playBuffer = function (audioBuffer) {
-    var audioSourceNode = audioContext.createBufferSource();
-    audioSourceNode.buffer = audioBuffer;
-    audioSourceNode.playbackRate.value = 0.9;
-    audioSourceNode.connect(gainNode);
-    audioSourceNode.start();
-  };
+    this.speak = function (language, phrase) {
+        this.fetch(language, phrase).then(this.playBuffer.bind(this));
+    };
+
+    this.playBuffer = function (audioBuffer) {
+        var audioSourceNode = audioContext.createBufferSource();
+        audioSourceNode.buffer = audioBuffer;
+        audioSourceNode.playbackRate.value = 0.9;
+        audioSourceNode.connect(gainNode);
+        audioSourceNode.start();
+    };
 }();
 
 // var context = AudioContext();
@@ -8012,172 +8044,343 @@ var Speaker = new function () {
 // source.buffer = Audiobuffer;
 // source.playbackRate.value = 1.5;
 //
-document.MENU_HTML = "<div class='Grid Grid--gutters Grid--full large-Grid--1of5 med-Grid--1of3' id='eo-menu'>\
-    <div class='Grid-cell large-Grid--offset-1of5'>\
-    <div class='Grid Grid--full'>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-    </div>\
-        <div class='header'>\
-            <div id='eo-account-area' class='eo-account-event-area'>\
-                <div class='Grid u-textCenter'>\
-                    <div class='Grid-cell'>\
-                        <div id='eo-account-img'></div>\
-                    </div>\
-                    <div class='Grid-cell u-1of2'>\
-                        <div id='eo-account-name'></div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div>&#9662;</div>\
-                    </div>\
-                </div>\
-            </div>\
-            <div class='Grid u-textCenter'>\
-                <div class='Grid-cell u-1of3'>\
-                    <div id='eo-onoff'>\
-                        <div id='eo-onoff-circle'></div>\
-                    </div>\
-                </div>\
+document.MENU_HTML = "<div id='eo-menu'>\
+    <div class='header'>\
+        <div id='eo-account-area'>\
+            <div class='Grid u-textCenter eo-row eo-menu-inner'>\
                 <div class='Grid-cell'>\
-                    <div id='eo-speaker_res'></div>\
+                    <div id='eo-account-img'></div>\
+                </div>\
+                <div class='Grid-cell u-1of2  v-align h-align'>\
+                    <div id='eo-account-name'></div>\
+                </div>\
+                <div class='Grid-cell v-align'>\
+                    <div id='account-triangle'>&#9662;</div>\
                 </div>\
             </div>\
         </div>\
-        <div class='languages_picker'>\
-            <div class='Grid Grid--full'>\
-                <div class='Grid-cell vertical-container' id='picker_tittle'>\
-                    <div id='eo-language_header'>Pick a language</div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <div class='Grid'>\
-                        <div class='Grid-cell u-1of6'>flag\
-                        </div>\
-                        <div class='Grid-cell vertical-container'>\
-                            <div class='eo-language-option-res'>English</div>\
-                        </div>\
-                    </div>\
+        <div class='Grid u-textCenter eo-row eo-menu-inner'>\
+            <div class='Grid-cell u-1of3 v-align h-align'>\
+                <div id='eo-power-switch'>\
+                    <span id='eo-power-switch-text'></span>\
+                    <div id='eo-power-switch-circle'></div>\
                 </div>\
             </div>\
-            <div class='Grid Grid--full' id='coming_soon'>\
-                <div class='Grid-cell'>\
-                    <div class='Grid'>\
-                        <span class='tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6'>flag\
-                        </div>\
-                        <div class='Grid-cell vertical-container'>\
-                            <div class='eo-language-option-res'>Spanish</div>\
-                        </div>\
-                    </div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <div class='Grid'>\
-                        <span class='tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6'>flag\
-                        </div>\
-                        <div class='Grid-cell vertical-container'>\
-                            <div class='eo-language-option-res'>French</div>\
-                        </div>\
-                    </div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <div class='Grid'>\
-                        <span class='tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6'>flag\
-                        </div>\
-                        <div class='Grid-cell vertical-container'>\
-                            <div class='eo-language-option-res'>Chines</div>\
-                        </div>\
-                    </div>\
-                </div>\
+            <div class='Grid-cell delimiter'>\
+                <div class='eo-line'></div>\
             </div>\
-            <div class='Grid Grid--full u-textCenter' id='picker_footer'>\
-                <div class='Grid-cell'>\
-                    <div>englishon</div>\
-                </div>\
-            </div>\
-        </div>\
-    </div>\
-</div>\
-";
-//
-document.LOGIN_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3 hidden' id='eo-dlg-login'>\
-    <div class='Grid-cell large-Grid--offset u-textCenter'>\
-    <div class='Grid Grid--full'>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu'></div>\
-      <div class='Grid-cell locate_menu eo-account-event-area'></div>\
-    </div>\
-        <div id='eo-dlg-inner'>\
-            <div class='Grid Grid--full Grid--gutters'>\
-                <div class='Grid-cell'>\
-                    <div id='eo-dlg-icon'></div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <div class='dlg_header'>Sign in/up</div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <button id='google_btn'>google</button>\
-                </div>\
-                <div class='Grid-cell' id='wide_cell'>\
-                    <div id='google_iframe'></div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <div class='Grid eo-delimiter'>\
-                        <div class='Grid-cell line'></div>\
-                        <div class='Grid-cell'>\
-                            <span class='dlg_header'>or </span>\
-                        </div>\
-                        <div class='Grid-cell line'></div>\
-                    </div>\
-                </div>\
-                <div class='Grid-cell hidden'>\
-                    <div id='eo-login-msg'></div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <input type='text' placeholder='email address' id='eo-login-email' class='eo-input' />\
-                </div>\
-                <div class='Grid-cell'>\
-                    <input type='password' placeholder='password' id='eo-login-password' class='eo-input' />\
-                </div>\
-                <div class='Grid-cell'>\
-                    <button id='eo-mail_login_btn'>sign in</button>\
-                </div>\
-                <div class='Grid-cell'>\
-                </div>\
-            </div>\
-        </div>\
-    </div>\
-</div>\
-</div>\
-";
-//
-document.SIGNOUT_DLG = "<div class='Grid Grid--full large-Grid--1of5 med-Grid--1of3 hidden' id='eo-dlg-signout'>\
-    <div class='Grid-cell large-Grid--offset u-textCenter'>\
-        <div class='Grid Grid--full'>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu'></div>\
-            <div class='Grid-cell locate_menu eo-account-event-area'></div>\
-        </div>\
-        <div class='Grid Grid--full'>\
-            <div class='Grid-cell'></div>\
             <div class='Grid-cell'>\
-                <div id='signout_btn'>sign out</div>\
+                <div class='Grid'>\
+                    <div class='Grid-cell u-1of3 v-align h-align'>\
+                        <div id='eo-speaker-res'></div>\
+                    </div>\
+                    <div class='Grid-cell v-align h-align'>\
+                        <input type='range' value='0' id='eo-slider' />\
+                    </div>\
+                </div>\
             </div>\
-            <div class='Grid-cell'></div>\
-            <div class='Grid-cell'></div>\
-            <div class='Grid-cell'></div>\
-            <div class='Grid-cell'></div>\
-            <div class='Grid-cell'></div>\
+        </div>\
+    </div>\
+    <div class='languages_picker'>\
+        <div class='Grid Grid--full'>\
+            <div class='Grid-cell v-align eo-menu-inner' id='eo-picker-tittle'>\
+                <div id='eo-language_header'>Pick a language</div>\
+            </div>\
+            <div class='Grid-cell eo-menu-inner'>\
+                <div class='Grid eo-row'>\
+                    <div class='Grid-cell u-1of6'>\
+                        <div class='flag us-flag'></div>\
+                    </div>\
+                    <div class='Grid-cell v-align'>\
+                        <div class='eo-language-option-res'>Usa</div>\
+                    </div>\
+                </div>\
+            </div>\
+        </div>\
+        <div class='Grid Grid--full' id='coming_soon'>\
+            <div class='Grid-cell eo-row eo-menu-inner'>\
+                <div class='Grid'>\
+                    <span class='tooltip'>Coming soon</span>\
+                    <div class='Grid-cell u-1of6 eo-low-layer'>\
+                        <div class='flag sp-flag'></div>\
+                    </div>\
+                    <div class='Grid-cell v-align eo-low-layer'>\
+                        <div class='eo-language-option-res'>Spanish</div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class='Grid-cell eo-row eo-menu-inner' id='eo-last-option'>\
+                <div class='Grid'>\
+                    <span class='tooltip'>Coming soon</span>\
+                    <div class='Grid-cell u-1of6 eo-low-layer'>\
+                        <div class='flag fr-flag'></div>\
+                    </div>\
+                    <div class='Grid-cell v-align eo-low-layer'>\
+                        <div class='eo-language-option-res'>French</div>\
+                    </div>\
+                </div>\
+            </div>\
+        </div>\
+        <div class='Grid Grid--full u-textCenter'>\
+            <div class='Grid-cell eo-row'>\
+                <div id='englishon-bottom'></div>\
+            </div>\
+            <div class='Grid-cell eo-row10 eo-menu-inner'>\
+                <div class='Grid'>\
+                    <div class='Grid-cell v-align eo-menu-footer'>help?</div>\
+                    <div class='Grid-cell v-align right-align eo-menu-footer'>customer service</div>\
+                </div>\
+            </div>\
+        </div>\
+        <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner'>\
+            <div class='Grid-cell hidden'>\
+                <div id='eo-editor-btn'>edit questions</div>\
+            </div>\
         </div>\
     </div>\
 </div>\
 ";
+//
+document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
+    <div id='eo-dlg-inner'>\
+        <div class='Grid Grid--full'>\
+            <div class='Grid-cell eo-row2 v-align h-align'>\
+            <div id='eo-dlg-icon'></div>\
+                <div class='eo-dlg-header'>Sign in/up</div>\
+            </div>\
+            <div class='Grid-cell eo-row3 v-align h-align'>\
+                <div>welcome to englishon... bla bla bla bla bla bla</div>\
+            </div>\
+            <div class='Grid-cell eo-row4'>\
+                <div id='google_iframe'></div>\
+            </div>\
+            <div class='Grid-cell hidden'>\
+                <div id='eo-google-msg'></div>\
+            </div>\
+            <div class='Grid-cell eo-row5'>\
+                <div class='Grid'>\
+                    <div class='Grid-cell line eo-delimiter'></div>\
+                    <div class='Grid-cell v-align h-align'>\
+                        <span>or</span>\
+                    </div>\
+                    <div class='Grid-cell line eo-delimiter'></div>\
+                </div>\
+            </div>\
+            <div class='Grid-cell eo-row6'>\
+                <input type='text' placeholder='email address' id='eo-login-email' class='eo-input' />\
+            </div>\
+            <div class='Grid-cell eo-row6'>\
+                <input type='password' placeholder='password' id='eo-login-password' class='eo-input' />\
+            </div>\
+            <div class='Grid-cell hidden eo-row8'>\
+                <div id='eo-login-msg'></div>\
+            </div>\
+            <div class='Grid-cell eo-row9'>\
+                <div class='Grid'>\
+                    <div class='Grid-cell v-align'>\
+                        <div>Terms of service</div>\
+                    </div>\
+                    <div class='Grid-cell v-align'>\
+                        <div id='eo-forgot-psw'>Forgot password?</div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class='Grid-cell eo-row7 v-align h-align'>\
+                <div id='eo-mail_login_btn' class='v-align h-align'>sign in</div>\
+            </div>\
+        </div>\
+    </div>\
+</div>\
+</div>\
+";
+//
+document.SIGNOUT_DLG = "<div class='hidden' id='eo-dlg-signout'>\
+    <div class='Grid Grid--full'>\
+        <div class='Grid-cell'></div>\
+        <div class='Grid-cell'></div>\
+        <div class='Grid-cell'>\
+            <div id='signout_btn' class ='v-align h-align'>Sign out</div>\
+        </div>\
+        <div class='Grid-cell'>\
+            <div id='eo-signout-msg' class='v-align h-align'></div>\
+        </div>\
+    </div>\
+</div>\
+";
+//
+// **************
+// Initialization
+// **************
+
+
+console.log('CONSOLE TEST');
+
+document.resources_promise = $.Deferred();
+document.loaded_promise = $.Deferred();
+
+function englishon() {
+    var staticUrl = undefined;
+
+    if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
+        staticUrl = function (resource) {
+            return 'http://localhost:8080/static/ex/' + resource;
+        };
+    } else {
+        staticUrl = function (resource) {
+            return 'http://www.englishon.org/v1/' + resource;
+        };
+    }
+    browserInfo = function () {
+        var ua = navigator.userAgent,
+            tem,
+            M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+        if (/trident/i.test(M[1])) {
+            tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+            return 'IE ' + (tem[1] || '');
+        }
+        if (M[1] === 'Chrome') {
+            tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
+            if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+        }
+        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+        if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
+        return { 'browser': M[0], 'version': M[1] };
+    }();
+    //Restrict none chrome browsers or chrome versions older than 49
+    if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) <= 46) {
+        console.log('BROWSER NOT SUPPORTED.');
+        //return;
+    }
+    //THIS LINE IS TEMP
+    if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551') {
+        return;
+    }
+    console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
+    //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
+    //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
+    var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
+
+    if (document.__englishon__) {
+        console.log("EnglishOn already loaded");
+        return;
+    }
+    document.__englishon__ = true;
+
+    var defaults = {
+        'token': null,
+        'backendUrl': DEFAULT_BACKEND_URL,
+        'isActive': false,
+        'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
+        'enableSound': true,
+        'enableTutorial': true,
+        'editor': false,
+        'isUser': false
+    };
+    // Store
+    configStorage.get(defaults).then(function (config) {
+        document.config = config;
+        console.log('initial content script*****: ' + document.config.isActive);
+        $('body').addClass('eo-language-' + config.targetLanguage);
+        if (config.enableTutorial) {
+            //startTutorial();
+        }
+
+        if (document.config.isUser) {
+            var auth = new Authenticator(config.backendUrl);
+            return auth.login(config.token).then(function (token) {
+                configStorage.set({ token: token });
+                return new HerokuBackend(config.backendUrl, token);
+            });
+        } else {
+            return new HerokuBackend(config.backendUrl, 'NON_USER');
+        }
+
+        return backend;
+    }).then(function (backend) {
+        document.englishonBackend = backend;
+        console.log('********************document.englishonBackend set');
+        if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') $($('.newsHead')[1]).css('background-color', '#e6e6e6');
+    }).then(function () {
+
+        if (document.config.editor) {
+            return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
+                console.log('**********************Fetched internal id');
+                document.internal_id = internal_id;
+            });
+        }
+    }).then(function () {
+        // document.overlay.showButtons();
+        document.resources_promise.resolve();
+    });
+}
+
+var startTutorial = function () {
+    $('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
+    var onPickLanguage = function () {
+        $('.eo-language_picker-option').off('click', onPickLanguage);
+        $('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
+
+        // in case questions are still hidden, keep trying
+        var timer = setInterval(function () {
+            var questions = $('.eo-question');
+            if (questions.length > 0) {
+                questions.first().addClass('eo-first_question');
+                var onOpenQuestion = function () {
+                    $('.eo-hint').off('click', onOpenQuestion);
+                    $('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
+                    configStorage.set({ enableTutorial: false });
+                };
+                $('.eo-hint').click(onOpenQuestion);
+                clearInterval(timer);
+            }
+        }, 100);
+    };
+    $('.eo-language_picker-option').click(onPickLanguage);
+};
+
+// **********
+// Dictionary
+// **********
+
+function languageOf(char) {
+    if (typeof char == 'string') {
+        char = char.charCodeAt(0);
+    }
+    if (char >= 65 && char <= 90) return 'en';
+    if (char >= 97 && char <= 122) return 'en';
+    if (char >= 1488 && char <= 1514) return 'he';
+}
+
+function parseDictionary(data) {
+    var dict = buckets.MultiDictionary();
+    var lines = data.split('\r\n');
+    $(lines).each(function (ix, line) {
+        var parts = line.split(' ').map(function (part) {
+            return part.trim().replace('_', ' ');
+        });
+        var heb = [];
+        var eng = [];
+        $(parts).each(function (ix, part) {
+            if (part === '') {
+                // do nothing, there was a bunch of adjacent whitespace chars.
+            } else {
+                var lang = languageOf(part.charCodeAt(0));
+                if (lang === 'en') eng.push(part);
+                if (lang === 'he') heb.push(part);
+            }
+        });
+        $(heb).each(function (ix, h) {
+            $(eng).each(function (jx, e) {
+                dict.set(h, e);
+                dict.set(e, h);
+            });
+        });
+    });
+    return dict;
+}
+
+// this line must be last!
+$(englishon);
 //
 // ******
 // Button
@@ -8211,146 +8414,244 @@ var EnglishOnButton = new function () {
         this.changeState('eo-button-off');
     };
 }();
+$(document).mouseup(function (e) {
+    var button = $('.eo-button');
+    if (button.is(e.target)) return;
+    var menu = $('#eo-menu');
 
+    var login_dlg = $('#eo-dlg-login');
+    var signout_dlg = $('#eo-dlg-signout');
+    if (!menu.is(e.target) // if the target of the click isn't the menu..
+    && menu.has(e.target).length === 0 // ... nor a descendant of the menu
+    && !login_dlg.is(e.target) && login_dlg.has(e.target).length === 0 && !signout_dlg.is(e.target) && signout_dlg.has(e.target).length === 0) {
+        menu.addClass('hidden');
+        login_dlg.addClass('hidden');
+        signout_dlg.addClass('hidden');
+    }
+});
+
+var toggle_login_dialog = function () {
+    $("#eo-dlg-login").toggleClass('hidden');
+    $('#eo-login-msg').text('').removeClass('ui-state-highlight');
+};
+
+var toggle_signout_dialog = function () {
+    var offset = $('.eo-button').offset();
+    $("#eo-dlg-signout").removeAttr('style').toggleClass('hidden');
+    if (window.matchMedia("(min-width:1050px)").matches) {
+        $("#eo-dlg-signout").css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' });
+    };
+};
+var display_message = function (msg, element) {
+    element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
+};
+var hide_dialogs = function (milisec) {
+    setTimeout(function () {
+        $('#eo-dlg-login').addClass('hidden');
+        $('#eo-menu').addClass('hidden');
+        $('#eo-signout-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+        $('#eo-login-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+        $('#eo-google-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+    }, milisec);
+};
 // ****
 // Menu
 // ****
-window.onload = function () {
-    if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
-    console.log('window onload');
-    var EnglishOnMenu = new function () {
-        /* returns a toggler function that both updates `configEntry`
-           and calls the given `toggle()` function, useful when you want
-           your saved configuration to always match what's on screen
-         */
-        var toggler = function (cls, configEntry, toggle_func) {
-            // initialize
-            var initial = JSON.parse(document.config[configEntry]);
-            toggle_func(initial);
-            $('body').toggleClass(cls, initial);
-            return function () {
-                enabled = !JSON.parse(document.config[configEntry]);
-                var config = {};
-                config[configEntry] = enabled;
-                configStorage.set(config);
-                console.log('buttton pressed!!!!');
-                toggle_func(enabled);
-                $('body').toggleClass(cls, enabled);
-            };
+document.EnglishOnMenu = function () {
+    /* returns a toggler function that both updates `configEntry`
+       and calls the given `toggle()` function, useful when you want
+       your saved configuration to always match what's on screen
+     */
+
+    var toggler = function (cls, configEntry, toggle_func) {
+        // initialize
+        var initial = JSON.parse(document.config[configEntry]);
+        toggle_func(initial);
+        $('body').toggleClass(cls, initial);
+        return function () {
+            enabled = !JSON.parse(document.config[configEntry]);
+            var config = {};
+            config[configEntry] = enabled;
+            configStorage.set(config);
+            toggle_func(enabled);
+            $('body').toggleClass(cls, enabled);
         };
-        var login_with_mail = function () {
-            var email = $('#eo-login-email');
-            var password = $('#eo-login-password');
-            var auth = new Authenticator(document.config.backendUrl);
-            if (auth.validate({ email: email, password: password })) {
-                auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
-                    configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
-                    $('#eo-account-name').text(email.val());
-                    if (res.status == 'CREATED') {
-                        message_element = $('#eo-login-msg');
-                        message_element.text('Thank you for registering! A confirmation message sent to the given email.').addClass('ui-state-highlight');
-                        message_element.parent().removeClass('hidden').css('height', '55px');
-                        $('.eo-account-event-area').off('click', toggle_login_dialog).on('click', toggle_signout_dialog);
-                        setTimeout(function () {
-                            $('#eo-dlg-login').addClass('hidden');
-                        }, 1500);
-                    }
-                });
-            }
-        };
-        var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
-        var togglePower = toggler('eo-active', 'isActive', function (enable) {
-            elem = $('#eo-onoff');
-            var children = elem.children();
-            elem.toggleText('ON', 'OFF');
-            elem.append(children);
-            if (JSON.parse(enable)) {
-                document.overlay.showQuestions();
-                console.log('I am standing here. length of answers array: ' + $('.eo-answered').length);
-                $('.eo-answered').on('click', function (e) {
-                    var target = $(e.target);
-                    //answer=target.data.correct_answers[0].answer;
-                    //org=target.data.hint;
-                    //target.toggleText(org,answer);
-                    //target.toggleText('aaaa','bbbb');
-                    //Speaker.speak(document.config.targetLanguage, target.text());
-                });
-                if (!document.config.isUser) {
-                    console.log('a none user execute englishon for the first time...well done!');
-                    configStorage.set({ 'isUser': true });
-                    window.location.reload();
+    };
+
+    var login_with_mail = function () {
+        var email = $('#eo-login-email');
+        var password = $('#eo-login-password');
+        var auth = new Authenticator(document.config.backendUrl);
+        if (auth.validate({ email: email, password: password })) {
+            auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
+                if (res.status == 'error') {
+                    display_message(res.message, $('#eo-login-msg'));
+                    return;
                 }
-            } else {
-                document.overlay.hideQuestions();
-            }
-        });
-        var toggle_login_dialog = function () {
-            $("#eo-dlg-login").toggleClass('hidden');
-        };
+                configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val(), 'isActive': true });
+                $('#eo-power-switch-text').text('ON');
+                //refracting: replace it with togglepower
+                $('body').toggleClass('eo-active', true);
+                $('#eo-account-name').text(email.val());
+                $('#eo-account-area').off('click').on('click', toggle_signout_dialog);
+                document.overlay.showQuestions();
 
-        var toggle_signout_dialog = function () {
-            console.log('event event');
-            $("#eo-dlg-signout").toggleClass('hidden');
-        };
-        var signout = function () {
-            var popup = $('#eo-iframe')[0].contentWindow;
-            popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
-            configStorage.set({ 'isActive': false });
-            localStorage.removeItem('email');
-            localStorage.removeItem('eo-user-name');
-            var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
-            document.config.token = null; //Isn't it unneeded???
-            auth.login(document.config.token).then(function (token) {
-                console.log("receiveMessage ******** token: " + token);
-                configStorage.set({ token: token });
-                document.overlay.hideQuestions();
-                document.englishonBackend.token = token; //Isn't it unneeded???
-                //Give englishon the new guest token
-                popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
-                $('body').toggleClass('eo-active', false);
-                $('#eo-account-area').addClass('guest');
-                $('#eo-account-name').text('sign in');
-                $('.eo-account-event-area').off('click').on('click', toggle_login_dialog);
-                $('#eo-dlg-signout').addClass('hidden');
+                if (res.status == 'logged_in') {
+                    display_message(res.message, $('#eo-login-msg'));
+                    hide_dialogs(1000);
+                } else if (res.status == 'registered') {
+                    message = 'Thank you for registering! A confirmation message sent to the given email.';
+                    display_message(message, $('#eo-login-msg'));
+                    $('#eo-login-msg').parent().css('height', '55px');
+                    hide_dialogs(3500);
+                }
             });
-        };
-
-        this.menu_string = document.MENU_HTML;
-        this.container = $(this.menu_string);
-        this.login_dlg = $(document.LOGIN_DLG);
-        this.signout_dlg = $(document.SIGNOUT_DLG);
-        this.container.insertBefore($($('table')[0]));
-        this.login_dlg.insertBefore($($('table')[0]));
-        this.signout_dlg.insertBefore($($('table')[0]));
-        $('#eo-onoff').on('click', togglePower);
-        switch_text = JSON.parse(document.config.isActive) ? 'ON' : 'OFF';
-        elem = $('#eo-onoff');
-        var children = elem.children();
-        elem.text(switch_text);
-        elem.append(children);
-        $('#eo-speaker_res').on('click', toggleSound);
-        $('#signout_btn').on('click', signout);
-        if (!localStorage.getItem('email')) {
-            $('#eo-account-area').addClass('guest');
-            $('.eo-account-event-area').on('click', toggle_login_dialog);
-            $('#eo-account-name').text('sign in');
-        } else {
-            $('.eo-account-event-area').on('click', toggle_signout_dialog);
-            $('#eo-account-name').text('sign in');
-            $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
         }
+    };
+    var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
+    var togglePower = toggler('eo-active', 'isActive', function (enable) {
+        elem = $('#eo-power-switch-text');
+        elem.toggleText('ON', 'OFF');
+        if (JSON.parse(enable)) {
+            document.overlay.showQuestions();
+            $('.eo-answered').on('click', function (e) {
+                var target = $(e.target);
+                //answer=target.data.correct_answers[0].answer;
+                //org=target.data.hint;
+                //target.toggleText(org,answer);
+                //target.toggleText('aaaa','bbbb');
+                //Speaker.speak(document.config.targetLanguage, target.text());
+            });
+            if (!document.config.isUser) {
+                console.log('a none user execute englishon for the first time...well done!');
+                configStorage.set({ 'isUser': true });
+                window.location.reload();
+            }
+        } else {
+            document.overlay.hideQuestions();
+        }
+    });
 
-        //TODO: add the editor button
-        var token = encodeURIComponent(document.englishonBackend.token);
-        if (document.config.isUser) var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
-        $('#google_iframe').append(google_login);
-        $('#eo-iframe').on('load', function () {
-            var popup = this.contentWindow;
+    var signout = function () {
+        var popup = $('#eo-iframe')[0].contentWindow;
+        popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
+        configStorage.set({ 'isActive': false });
+        $('#eo-power-switch-text').text('OFF');
+        localStorage.removeItem('email');
+        localStorage.removeItem('eo-user-name');
+        var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
+        document.config.token = null; //Isn't it unneeded???
+        auth.login(document.config.token).then(function (token) {
+            configStorage.set({ token: token });
+            document.overlay.hideQuestions();
+            document.englishonBackend.token = token; //Isn't it unneeded???
+            //Give englishon the new guest token
             popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+            $('body').removeClass('eo-active');
+            $('#eo-account-area').addClass('guest');
+            $('#eo-account-name').text('Sign in/up');
+            $('#eo-account-area').off('click').on('click', toggle_login_dialog);
+            message = "You've Signed Out";
+            display_message(message, $('#eo-signout-msg'));
+            $('#eo-menu').addClass('hidden');
+            $("#eo-dlg-signout").fadeOut(1600, "linear", function () {
+                $("#eo-dlg-signout").removeAttr('style').addClass('hidden');
+            });
         });
-        $('#eo-mail_login_btn').on('click', login_with_mail);
-    }();
+    };
+    document.signout = signout;
+    this.menu_string = document.MENU_HTML;
+    this.container = $(this.menu_string);
+    this.login_dlg = $(document.LOGIN_DLG);
+    this.signout_dlg = $(document.SIGNOUT_DLG);
+    this.container.insertBefore($($('table')[0]));
+    this.login_dlg.insertBefore($($('table')[0]));
+    this.signout_dlg.insertBefore($($('table')[0]));
+    //var offset = $('#top_menu_block').offset().top
+    if (window.matchMedia("(min-width:1050px)").matches) {
+        console.log('DESKTOP');
+
+        var offset = $('.eo-button').offset();
+        $('#eo-menu').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' });
+        $('#eo-dlg-login').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' });
+        $('#eo-dlg-signout').css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' });
+        //$('#eo-menu').css({ top: 97 + 'px', left: offset.left + 100 + 'px' })
+    } else {
+        console.log('MOBILE');
+        // $('#eo-menu').find('.eo-row').css({ 'height': screen.height / 8 + 'px', 'font-size': '16px' })
+    };
+    $('#eo-power-switch').on('click', togglePower);
+    switch_text = JSON.parse(document.config.isActive) ? 'ON' : 'OFF';
+    $('#eo-power-switch-text').text(switch_text);
+    $('#eo-speaker_res').on('click', toggleSound);
+    $('#eo-slider').attr('max', 50);
+    $('#eo-slider').on('change', function (e) {
+        console.log('input change!! value is: ' + e.target.value);
+        Speaker.changeVolume(e.target.value);
+    });
+
+    $('#signout_btn').on('click', signout);
+    if (JSON.parse(!localStorage.getItem('email'))) {
+        $('#eo-account-area').addClass('guest');
+        $('#eo-account-area').on('click', toggle_login_dialog);
+        $('#eo-account-name').text('sign in/up');
+    } else {
+        $('#eo-account-area').on('click', toggle_signout_dialog);
+        $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
+        $('#eo-account-img').addClass('no-image');
+    }
+    if (JSON.parse(document.config.editor)) {
+        $('#eo-editor-btn').parent().removeClass('hidden').addClass('vertical-container');
+        var _editor = new Editor(document.overlay);
+        $('#eo-editor-btn').on('click', function (event) {
+            console.log("Editor enters");
+            document.overlay.hideQuestions();
+
+            event.preventDefault();
+            // after you've loaded the editor, there's no going back.
+            // (for now. this should be fixed.)
+            EnglishOnButton.element.off('click');
+            $('#eo-editor-btn').off('click');
+            _editor.fetchQuestions().then(function () {
+                _editor.highlight();
+            });
+        });
+    }
+
+    $('#signout-event-area').on('click', toggle_signout_dialog);
+    //TODO: add the editor button
+    var token = encodeURIComponent(document.englishonBackend.token);
+    if (document.config.isUser) var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
+    $('#google_iframe').append(google_login);
+    $('#eo-iframe').on('load', function () {
+        var popup = this.contentWindow;
+        popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+    });
+    $('#eo-mail_login_btn').on('click', login_with_mail);
 };
+
+$(function () {
+
+    //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
+    console.log('********************window onload');
+    document.loaded_promise.resolve();
+    window.addEventListener("message", receiveMessage, false);
+});
+
+$.when(document.resources_promise, document.loaded_promise).done(function () {
+    console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********');
+    $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
+
+    var overlay = Scraper.scrape();
+    document.overlay = overlay;
+    document.overlay.showButtons();
+    if (document.config.isUser) {
+        document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
+        document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
+            document.EnglishOnMenu();
+        });
+    } else document.EnglishOnMenu();
+});
 
 // ***************
 // Language Picker
@@ -8445,14 +8746,6 @@ function createSuperMenu(overlay) {
     return menu;
 }
 
-function createLoginBtn() {
-    //var token=encodeURIComponent(document.englishonBackend.token) + '/'
-}
-
-function cleanToken() {
-    console.log('cleanToken');
-}
-
 // ***********************
 // Register Event Handlers
 // ***********************
@@ -8461,18 +8754,10 @@ function receiveMessage(event) {
     // Do we trust the sender of this message?  (might be
     // different from what we originally opened, for example). 
     var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
-    if (document.englishonBackend == undefined || origin !== document.englishonBackend.base) return;
+    if (origin !== document.englishonBackend.base) return;
     // event.source is popup
     console.log('receiveMessage from englishon');
-    //DUPLICATE CODE< FIX IT
-    var toggle_login_dialog = function () {
-        $("#eo-dlg-login").toggleClass('hidden');
-    };
 
-    var toggle_signout_dialog = function () {
-        console.log('event event');
-        $("#eo-dlg-signout").toggleClass('hidden');
-    };
     var django_token = event.data.token;
     var img = event.data.image;
     var email = event.data.email;
@@ -8481,20 +8766,21 @@ function receiveMessage(event) {
     $('#eo-account-img').css("background-image", "url(" + img + ")");
     $('#eo-account-name').text(user_name);
     $('#eo-account-area').removeClass('guest');
-    $('#eo-dlg-login').addClass('hidden');
     if (!localStorage.getItem('email')) {
         console.log("THIS IS A REAL LOGIN");
         configStorage.set({ token: django_token, 'isActive': true, 'eo-user-name': user_name });
         document.englishonBackend.token = django_token;
         $('body').toggleClass('eo-active', true);
+        $('#eo-power-switch-text').text('ON');
         document.overlay.showQuestions();
         localStorage.setItem('email', email);
-        $('.eo-account-event-area').off('click');
-        $('.eo-account-event-area').on('click', toggle_signout_dialog);
+        $('#eo-account-area').off('click').on('click', toggle_signout_dialog);
+        message = 'You logged in';
+        display_message(message, $('#eo-google-msg'));
+        hide_dialogs(1000);
     }
 }
 //end of recieve message
-window.addEventListener("message", receiveMessage, false);
 //
 // *********
 // Name List
@@ -8530,200 +8816,5 @@ function createLogoutButton() {
     });
   }));
 }
-//
-// **************
-// Initialization
-// **************
-
-var staticUrl = undefined;
-console.log('CONSOLE TEST');
-
-if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
-  staticUrl = function (resource) {
-    return 'http://localhost:8080/static/ex/' + resource;
-  };
-} else {
-  staticUrl = function (resource) {
-    return 'http://www.englishon.org/v1/' + resource;
-  };
-}
-
-browserInfo = function () {
-  var ua = navigator.userAgent,
-      tem,
-      M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-  if (/trident/i.test(M[1])) {
-    tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-    return 'IE ' + (tem[1] || '');
-  }
-  if (M[1] === 'Chrome') {
-    tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
-    if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
-  }
-  M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
-  if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
-  return { 'browser': M[0], 'version': M[1] };
-}();
-
-function englishon() {
-  //Restrict none chrome browsers or chrome versions older than 49
-  if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) <= 46) {
-    console.log('BROWSER NOT SUPPORTED.');
-    //return;
-  }
-  //THIS LINE IS TEMP
-  if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551') {
-    return;
-  }
-  console.log('****Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
-  //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
-  //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
-  var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
-
-  if (document.__englishon__) {
-    console.log("EnglishOn already loaded");
-    return;
-  }
-  document.__englishon__ = true;
-
-  var defaults = {
-    'token': null,
-    'backendUrl': DEFAULT_BACKEND_URL,
-    'isActive': false,
-    'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
-    'enableSound': true,
-    'enableTutorial': true,
-    'editor': false,
-    'isUser': false
-  };
-  // Store
-  configStorage.get(defaults).then(function (config) {
-    document.config = config;
-    console.log('initial content script*****: ' + document.config.isActive);
-    $('body').addClass('eo-language-' + config.targetLanguage);
-    if (config.enableTutorial) {
-      startTutorial();
-    }
-    $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
-
-    var overlay = Scraper.scrape();
-    document.overlay = overlay;
-
-    if (document.config.isUser) {
-      var auth = new Authenticator(config.backendUrl);
-      return auth.login(config.token).then(function (token) {
-        configStorage.set({ token: token });
-        return new HerokuBackend(config.backendUrl, token);
-      });
-    } else {
-      return new HerokuBackend(config.backendUrl, 'NON_USER');
-    }
-    //check this location
-    //document.englishonBackend = backend;
-    return backend;
-  }).then(function (backend) {
-    document.englishonBackend = backend;
-    console.log('document.englishonBackend set');
-    if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') $($('.newsHead')[1]).css('background-color', '#e6e6e6');
-    if (document.config.isUser) {
-      //loadEnglishon();
-      document.overlay.fetchLinkStates(backend).then(document.overlay.markLinks.bind(document.overlay));
-      document.overlay.fetchQuestions(backend).then(function (questions) {
-        document.overlay.injector.on();
-        //document.overlay.showQuestions();
-      });
-    }
-  }).then(function () {
-
-    if (document.config.editor) {
-      return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
-        console.log('Fetched internal id');
-        document.internal_id = internal_id;
-      });
-    }
-  }).then(function () {
-    document.overlay.showButtons();
-  });
-}
-
-function loadEnglishon() {
-
-  var backend = document.englishonBackend;
-  document.overlay.fetchLinkStates(backend).then(document.overlay.markLinks.bind(document.overlay));
-  document.overlay.fetchQuestions(backend).then(function (questions) {
-    document.overlay.injector.on();
-    //document.overlay.showQuestions();
-  });
-
-  console.log("i am here! loadEnglishon");
-}
-
-var startTutorial = function () {
-  $('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
-  var onPickLanguage = function () {
-    $('.eo-language_picker-option').off('click', onPickLanguage);
-    $('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
-
-    // in case questions are still hidden, keep trying
-    var timer = setInterval(function () {
-      var questions = $('.eo-question');
-      if (questions.length > 0) {
-        questions.first().addClass('eo-first_question');
-        var onOpenQuestion = function () {
-          $('.eo-hint').off('click', onOpenQuestion);
-          $('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
-          configStorage.set({ enableTutorial: false });
-        };
-        $('.eo-hint').click(onOpenQuestion);
-        clearInterval(timer);
-      }
-    }, 100);
-  };
-  $('.eo-language_picker-option').click(onPickLanguage);
-};
-
-// **********
-// Dictionary
-// **********
-
-function languageOf(char) {
-  if (typeof char == 'string') {
-    char = char.charCodeAt(0);
-  }
-  if (char >= 65 && char <= 90) return 'en';
-  if (char >= 97 && char <= 122) return 'en';
-  if (char >= 1488 && char <= 1514) return 'he';
-}
-
-function parseDictionary(data) {
-  var dict = buckets.MultiDictionary();
-  var lines = data.split('\r\n');
-  $(lines).each(function (ix, line) {
-    var parts = line.split(' ').map(function (part) {
-      return part.trim().replace('_', ' ');
-    });
-    var heb = [];
-    var eng = [];
-    $(parts).each(function (ix, part) {
-      if (part === '') {
-        // do nothing, there was a bunch of adjacent whitespace chars.
-      } else {
-        var lang = languageOf(part.charCodeAt(0));
-        if (lang === 'en') eng.push(part);
-        if (lang === 'he') heb.push(part);
-      }
-    });
-    $(heb).each(function (ix, h) {
-      $(eng).each(function (jx, e) {
-        dict.set(h, e);
-        dict.set(e, h);
-      });
-    });
-  });
-  return dict;
-}
-
-// this line must be last!
-$(englishon);
 //
 //# sourceMappingURL=englishon.map
