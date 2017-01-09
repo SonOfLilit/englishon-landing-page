@@ -2474,7 +2474,12 @@ body .ui-tooltip {
   src: url("http://www.englishon.org/v1/fonts/Roboto-Regular.ttf");
 }
 @font-face {
-  font-family: "Roboto";
+  font-family: "Roboto-Light";
+  font-style: normal;
+  src: url("http://www.englishon.org/v1/fonts/Roboto-Light.ttf");
+}
+@font-face {
+  font-family: "Roboto-Bold";
   font-style: normal;
   font-weight: 700;
   src: url("http://www.englishon.org/v1/fonts/Roboto-Bold.ttf");
@@ -2486,13 +2491,19 @@ body .ui-tooltip {
   src: url("http://www.englishon.org/v1/fonts/NotoSans-Regular.ttf");
 }
 @font-face {
-  font-family: "Noto Sans";
+  font-family: "Noto-Sans-Bold";
   font-style: normal;
   font-weight: 700;
   src: url("http://www.englishon.org/v1/fonts/NotoSans-Bold.ttf");
 }
 @font-face {
   font-family: "Ubuntu";
+  font-style: normal;
+  font-weight: 500;
+  src: url("http://www.englishon.org/v1/fonts/Ubuntu-M.ttf");
+}
+@font-face {
+  font-family: "Ubuntu-Bold";
   font-style: normal;
   font-weight: 700;
   src: url("http://www.englishon.org/v1/fonts/Ubuntu-B.ttf");
@@ -3252,9 +3263,114 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   color: #000 !important;
 }
 /* responsive.scss */
+#eo-menu input[type=range] {
+  -webkit-appearance: none;
+  width: 80%;
+  /*Copied as a trial to paint left side of slide in another color*/
+}
+#eo-menu input[type=range]:focus {
+  outline: none;
+}
+#eo-menu input[type=range]::-webkit-slider-runnable-track {
+  width: 80%;
+  height: 20px;
+  cursor: pointer;
+  transition: all .2s ease;
+  background: #2cc6a8;
+  border: 1px solid #2cc6a8;
+  border-radius: 50px;
+}
+#eo-menu input[type=range]::-webkit-slider-thumb {
+  box-shadow: 0px 0px 5px 0px #000000;
+  height: 60px;
+  width: 60px;
+  border-radius: 50px;
+  background: #eceff1;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -21px;
+}
+#eo-menu input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #39d3b5;
+}
+#eo-menu input[type=range]::-moz-range-track {
+  width: 80%;
+  height: 20px;
+  cursor: pointer;
+  transition: all .2s ease;
+  background: #2cc6a8;
+  border: 1px solid #2cc6a8;
+  border-radius: 50px;
+}
+#eo-menu input[type=range]::-moz-range-thumb {
+  box-shadow: 0px 0px 5px 0px #000000;
+  height: 60px;
+  width: 60px;
+  border-radius: 50px;
+  background: #eceff1;
+  cursor: pointer;
+}
+#eo-menu input[type=range]::-ms-track {
+  width: 80%;
+  height: 20px;
+  cursor: pointer;
+  transition: all .2s ease;
+  background: transparent;
+  border-color: transparent;
+  border-width: 30px 0;
+  color: transparent;
+}
+#eo-menu input[type=range]::-ms-fill-lower {
+  background: #27b196;
+  border: 1px solid #2cc6a8;
+  border-radius: 100px;
+}
+#eo-menu input[type=range]::-ms-fill-upper {
+  background: #2cc6a8;
+  border: 1px solid #2cc6a8;
+  border-radius: 100px;
+}
+#eo-menu input[type=range]::-ms-thumb {
+  box-shadow: 0px 0px 5px 0px #000000;
+  height: 60px;
+  width: 60px;
+  border-radius: 50px;
+  background: #eceff1;
+  cursor: pointer;
+  margin-top: 0;
+}
+#eo-menu input[type=range]:focus::-ms-fill-lower {
+  background: #2cc6a8;
+}
+#eo-menu input[type=range]:focus::-ms-fill-upper {
+  background: #39d3b5;
+}
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  #eo-menu input[type=range] input[type='range'] {
+    overflow: hidden;
+    width: 80px;
+    -webkit-appearance: none;
+    background-color: #9a905d;
+  }
+  #eo-menu input[type=range] input[type='range']::-webkit-slider-runnable-track {
+    height: 10px;
+    -webkit-appearance: none;
+    color: #13bba4;
+    margin-top: -1px;
+  }
+  #eo-menu input[type=range] input[type='range']::-webkit-slider-thumb {
+    width: 10px;
+    -webkit-appearance: none;
+    height: 10px;
+    cursor: ew-resize;
+    background: #434343;
+    box-shadow: -80px 0 0 80px #43e5f7;
+  }
+}
+
 .eo-delimiter {
   height: 50%;
-  border-bottom: 1px solid #0e161d;
+  border-bottom: 1px solid #d7dee3;
   flex: 0 0 42%;
 }
 
@@ -3271,19 +3387,18 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   flex: 1;
   z-index: 3;
   font-size: 64px;
-  font-family: Ubuntu;
-  font-weight: 500;
   letter-spacing: 0.03em;
-  line-height: 100px;
+  line-height: 1.3;
 }
 
-#eo-mail_login_btn {
-  height: 167px;
-  width: 600px;
-  background-color: #4b5a66;
+#eo-mail-login-btn {
+  height: 88px;
+  width: 528px;
+  background-color: #2cc6a8;
   border-radius: 75px;
   color: white;
   border: none;
+  cursor: pointer;
 }
 
 .Grid--flexCells > .Grid-cell {
@@ -3327,7 +3442,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 .Grid--full > .Grid-cell {
-  flex: 0 0 100%;
+  flex: 0 1 100%;
 }
 
 .Grid--1of2 > .Grid-cell {
@@ -3549,12 +3664,11 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 
 .header {
   background-color: #4b5a66;
-  font-family: Ubuntu;
-  font-weight: bold;
+  font-family: Roboto;
   color: white;
   text-align: left;
   letter-spacing: 0.05em;
-  line-height: 20px;
+  line-height: 1.3;
 }
 
 .cell--centered {
@@ -3567,6 +3681,9 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 .u-1of2,
+.u-7of10,
+.u-1of10,
+.u-2of10,
 .u-full {
   -webkit-box-flex: 0 !important;
   -webkit-flex: none !important;
@@ -3575,13 +3692,25 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 #eo-dlg-inner {
-  margin: 0px 80px;
+  margin: 0px 104px;
   height: 100%;
   overflow: hidden;
 }
 
 .u-1of2 {
   width: 50% !important;
+}
+
+.u-1of10 {
+  width: 11% !important;
+}
+
+.u-2of10 {
+  width: 20% !important;
+}
+
+.u-7of10 {
+  width: 69% !important;
 }
 
 .u-1of3 {
@@ -3610,19 +3739,10 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   cursor: pointer;
 }
 
-#eo-dlg-icon {
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
-  background-repeat: no-repeat;
-  height: 40px;
-  background-position: center;
-  background-size: 33px;
-}
-
 #wide_cell {
   height: 80px;
 }
 
-#eo-account-img,
 .guest #eo-account-img,
 .no-image {
   background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg) !important;
@@ -3645,11 +3765,10 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 #eo-power-switch {
   cursor: pointer;
   background-color: #0e161d;
-  font-family: Ubuntu;
+  font-family: Roboto-Light;
   font-size: 11px;
-  font-weight: 500;
   color: white;
-  line-height: 20px;
+  line-height: 1.3;
   position: relative;
   height: 80px;
   width: 187px;
@@ -3658,18 +3777,26 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 #eo-power-switch #eo-power-switch-text {
   position: absolute;
-  top: 22px;
+  top: 16px;
+  left: 98px;
+}
+
+.eo-menu-inner {
+  padding-left: 92px;
+  padding-right: 92px;
 }
 
 .eo-active #eo-power-switch {
   background-color: #2cc6a8;
   text-align: left;
-  padding-left: 4px;
+  padding-left: 16px;
+}
+.eo-active #eo-power-switch #eo-power-switch-text {
+  left: 44px;
 }
 .eo-active #eo-power-switch-circle {
-  border: 1px solid #2cc6a8;
   transition: border-color 0.3s ease-in 0s, right 0.3s ease-in 0s;
-  left: 106px;
+  left: 116px;
 }
 
 .eo-dlg-header {
@@ -3678,11 +3805,20 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 #eo-power-switch-circle {
-  background-color: white;
+  background-color: #eceff1;
   position: absolute;
   height: 88px;
   width: 88px;
-  top: -12px;
+  top: -6px;
+  border: 1px solid #eceff1;
+  border-radius: 50px;
+  left: -5px;
+}
+#eo-power-switch-circle:hover {
+  background-color: white;
+}
+
+#eo-slider {
   border-radius: 50px;
 }
 
@@ -3690,7 +3826,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   background-image: url(http://www.englishon.org/v1/img/menu-sound-off.svg);
   background-repeat: no-repeat;
   padding-left: 10px;
-  background-position: center;
+  background-position: right;
   background-size: 78px;
   height: 100%;
   width: 100%;
@@ -3708,29 +3844,22 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 #eo-language_header {
-  font-family: Ubuntu;
-  font-weight: 500;
+  font-family: Roboto;
   color: #3d4c58;
-  line-height: 20px;
-  padding-left: 20px;
+  line-height: 1.3;
 }
 
 #eo-picker-tittle,
 #eo-last-option {
-  border-bottom: 2px solid #d7dee3;
+  border-bottom: 1px solid #d7dee3;
 }
 
 .eo-language-option-res {
-  font-family: Ubuntu;
-  font-weight: bold;
+  font-family: Roboto;
   color: #3d4c58;
   letter-spacing: 0.05em;
-  line-height: 20px;
+  line-height: 1.3;
   padding-left: 10px;
-}
-
-#eo-menu-footer {
-  border-top: 1px solid #d7dee3;
 }
 
 #eo-dlg-login .eo-input {
@@ -3740,13 +3869,17 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   border: 1px solid #c7d1d7;
   border-radius: 5px;
   padding-left: 10px;
-  font-size: 64px;
-  background-color: inherit;
+  font-size: 56px;
+  font-family: Roboto-Light;
 }
 
 .v-align {
   display: flex;
   align-items: center;
+}
+
+#eo-dlg-login.valid input {
+  background-color: #2cc6a8;
 }
 
 #coming_soon .Grid:hover {
@@ -3771,12 +3904,11 @@ eo-signout-layout .signout {
 }
 
 #coming_soon .tooltip {
-  font-family: Ubuntu;
+  font-family: Roboto;
   font-size: 18px;
-  font-weight: 500;
   color: white;
   letter-spacing: 0.02em;
-  line-height: 26px;
+  line-height: 1.3;
 }
 
 #coming_soon .Grid,
@@ -3799,7 +3931,8 @@ eo-signout-layout .signout {
 #eo-login-msg,
 #eo-google-msg,
 #eo-signout-msg {
-  font-size: 15px;
+  font-size: 60px;
+  font-family: Roboto-Light;
 }
 
 #google_iframe {
@@ -3815,6 +3948,17 @@ eo-signout-layout .signout {
 
 #eo-editor-btn {
   cursor: pointer;
+}
+
+#eo-account-name:hover,
+#account-triangle:hover {
+  color: #2cc6a8;
+}
+
+#eo-account-name {
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .us-flag {
@@ -3838,22 +3982,45 @@ eo-signout-layout .signout {
 }
 
 #account-triangle {
-  padding-left: 60%;
+  font-size: 104px;
+}
+
+#eo-dlg-login #djDebug {
+  display: hidden;
+}
+
+#help {
+  flex: 0 1 33%;
+  padding-right: 17%;
+  border-right: 1px solid green;
+}
+
+#contact {
+  flex: 0 1 47%;
+  padding-left: 2%;
 }
 
 .flag,
-#englishon-bottom,
 #eo-account-img {
   background-repeat: no-repeat;
   height: 100%;
   width: 100%;
-  background-position: center;
+  background-position: left;
   background-size: 120px;
 }
 
 #englishon-bottom {
+  background-repeat: no-repeat;
+  height: 120px;
+  width: 100%;
+  background-position: center;
+  background-size: 120px;
+  margin-top: 32px;
+}
+
+#englishon-bottom {
   background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
-  background-size: 30%;
+  background-size: 35%;
 }
 
 .delimiter {
@@ -3862,6 +4029,10 @@ eo-signout-layout .signout {
 
 .h-align {
   justify-content: center;
+}
+
+.right-align {
+  justify-content: flex-end;
 }
 
 .eo-line {
@@ -3873,8 +4044,8 @@ eo-signout-layout .signout {
   opacity: .1;
 }
 
-#eo-slider {
-  margin-top: 17px;
+.subtitle {
+  font-family: Roboto-Light;
 }
 
 #eo-menu,
@@ -3886,8 +4057,7 @@ eo-signout-layout .signout {
 
 #eo-dlg-signout {
   background-color: #4b5a66;
-  font-family: Ubuntu;
-  font-weight: bold;
+  font-family: Roboto;
   top: 180px;
   color: #eceff1;
 }
@@ -3908,7 +4078,8 @@ eo-signout-layout .signout {
 }
 
 .eo-row2 {
-  height: 169px;
+  height: 208px;
+  margin-top: 52px;
 }
 
 .eo-row3 {
@@ -3932,34 +4103,113 @@ eo-signout-layout .signout {
 }
 
 .eo-row8 {
-  height: 21px;
+  height: 80px;
 }
 
 .eo-row9 {
-  height: 15px;
+  height: 60px;
 }
 .eo-row9 > .Grid {
-  height: 15px;
-  font-size: 11px;
-  font-family: arial;
-  font-weight: normal;
-  line-height: 15px;
+  height: 100%;
+}
+.eo-row9 > .Grid > .Grid-cell {
+  height: 100%;
+}
+
+.eo-delimiter2 {
+  border-right: 1px solid #b8c6cf;
 }
 
 .eo-row7 {
-  height: 281px;
+  height: 160px;
+}
+
+.eo-row11 {
+  height: 120px;
+}
+
+.eo-row10 {
+  height: 88px;
+  margin-top: 20px;
+}
+.eo-row10 .Grid {
+  height: 100%;
+}
+
+.eo-menu-footer {
+  font-size: 44px;
+  line-height: 1.3;
+  font-family: Roboto-Light;
+  color: #768086;
+  cursor: pointer;
+}
+.eo-menu-footer:hover {
+  color: #2cc6a8;
 }
 
 #eo-dlg-icon {
   background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
   background-repeat: no-repeat;
-  background-size: 35px;
+  background-size: 122px;
+  background-position: center;
   height: 100%;
   width: 20%;
-  margin-right: 20px;
 }
 
 @media (min-width: 1050px) {
+  #eo-login-msg,
+  #eo-google-msg,
+  #eo-signout-msg {
+    font-size: 12px;
+  }
+
+  #eo-dlg-icon {
+    background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+    background-repeat: no-repeat;
+    height: 40px;
+    background-size: 30.5px;
+  }
+
+  #eo-menu .eo-menu-inner {
+    padding-left: 23px;
+    padding-right: 23px;
+  }
+
+  #eo-menu input[type=range] {
+    -webkit-appearance: none;
+    width: 80%;
+  }
+  #eo-menu input[type=range]:focus {
+    outline: none;
+  }
+  #eo-menu input[type=range]::-webkit-slider-runnable-track {
+    width: 80%;
+    height: 5px;
+    cursor: pointer;
+    transition: all .2s ease;
+    background: #2cc6a8;
+    border: 1px solid #2cc6a8;
+    border-radius: 50px;
+  }
+  #eo-menu input[type=range]::-webkit-slider-thumb {
+    box-shadow: 0px 0px 5px 0px #000000;
+    height: 15px;
+    width: 15px;
+    border-radius: 50px;
+    background: #eceff1;
+    cursor: pointer;
+    -webkit-appearance: none;
+    /* margin-top: ((-$track-border-width * 4 + $track-height) / 2) - ($thumb-height / 2);*/
+    margin-top: -6px;
+  }
+
+  .eo-active #eo-menu #eo-power-switch {
+    padding-left: 4px;
+  }
+  .eo-active #eo-menu #eo-power-switch #eo-power-switch-text {
+    left: 11px;
+  }
+
   #eo-menu,
   #eo-dlg-login {
     height: 381px;
@@ -3967,7 +4217,7 @@ eo-signout-layout .signout {
   #eo-menu .eo-input,
   #eo-dlg-login .eo-input {
     width: 170px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   #eo-dlg-signout {
@@ -3992,7 +4242,13 @@ eo-signout-layout .signout {
   #eo-dlg-login .Grid-cell,
   #eo-dlg-signout .Grid-cell {
     font-size: 16px;
-    line-height: 25px;
+    line-height: 1.3;
+  }
+  #eo-menu .eo-menu-footer,
+  #eo-dlg-login .eo-menu-footer,
+  #eo-dlg-signout .eo-menu-footer {
+    font-size: 11px;
+    line-height: 1.3;
   }
   #eo-menu .flag, #eo-menu #eo-account-img,
   #eo-dlg-login .flag,
@@ -4007,21 +4263,22 @@ eo-signout-layout .signout {
     height: 20px;
     width: 46.66px;
     border-radius: 10px;
-    font-family: Ubuntu;
+    font-family: Roboto-Light;
     font-size: 11px;
     border-radius: 50px;
   }
   #eo-menu #eo-power-switch #eo-power-switch-text,
   #eo-dlg-login #eo-power-switch #eo-power-switch-text,
   #eo-dlg-signout #eo-power-switch #eo-power-switch-text {
-    top: 0px;
+    top: 4px;
+    left: 23px;
   }
   #eo-menu #eo-power-switch-circle,
   #eo-dlg-login #eo-power-switch-circle,
   #eo-dlg-signout #eo-power-switch-circle {
     height: 22px;
     width: 22px;
-    top: -3px;
+    top: -2px;
     border-radius: 22px;
   }
   #eo-menu #eo-picker-footer,
@@ -4033,6 +4290,12 @@ eo-signout-layout .signout {
   #eo-dlg-login #eo-picker-footer .Grid-cell,
   #eo-dlg-signout #eo-picker-footer .Grid-cell {
     height: 100%;
+  }
+  #eo-menu #englishon-bottom,
+  #eo-dlg-login #englishon-bottom,
+  #eo-dlg-signout #englishon-bottom {
+    margin-top: 8px;
+    height: 30px;
   }
   #eo-menu #eo-picker-tittle,
   #eo-dlg-login #eo-picker-tittle,
@@ -4056,15 +4319,20 @@ eo-signout-layout .signout {
 
   .eo-row2 {
     height: 52.75px;
+    margin-top: 20px;
   }
 
   .eo-row3 {
     height: 36.75px;
-    line-height: 20px;
+    line-height: 1.3;
   }
 
   .eo-row4 {
     height: 98px;
+  }
+
+  .eo-row11 {
+    height: 30px;
   }
 
   .eo-row5 {
@@ -4080,31 +4348,42 @@ eo-signout-layout .signout {
   }
 
   .eo-row7 {
-    height: 70.25px;
+    height: 40.25px;
+  }
+
+  .eo-row8 {
+    height: 20px;
   }
 
   .eo-dlg-header {
-    font-size: 24px;
+    font-size: 20px;
   }
 
-  #eo-mail_login_btn {
-    height: 46.66px;
-    width: 150px;
-    border-radius: 25px;
+  .eo-row10 {
+    height: 22px;
+    margin-top: 5px;
+  }
+
+  #eo-mail-login-btn {
+    height: 22.66px;
+    width: 132px;
+    border-radius: 5px;
   }
 
   #eo-dlg-inner {
-    margin: 0px 20px;
+    margin: 0px 26px;
   }
 
   #eo-dlg-login .eo-row9 {
     height: 15px;
   }
-  #eo-dlg-login .eo-row9 > .Grid > .Grid-cell {
-    height: 15px;
+
+  #account-triangle {
+    font-size: 26px;
+  }
+
+  #eo-menu-footer {
     font-size: 11px;
-    font-family: arial;
-    font-weight: normal;
-    line-height: 15px;
+    line-height: 1.3;
   }
 }
