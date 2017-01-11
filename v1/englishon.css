@@ -3370,7 +3370,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 
 .eo-delimiter {
   height: 50%;
-  border-bottom: 1px solid #d7dee3;
+  border-bottom: 2px solid #d7dee3;
   flex: 0 0 42%;
 }
 
@@ -3545,6 +3545,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 
 #eo-dlg-login {
   z-index: 4;
+  overflow-y: auto;
 }
 
 #google_btn {
@@ -3662,6 +3663,11 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   text-align: center !important;
 }
 
+#google_iframe {
+  height: 100%;
+  margin-top: 100px;
+}
+
 .header {
   background-color: #4b5a66;
   font-family: Roboto;
@@ -3694,7 +3700,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 #eo-dlg-inner {
   margin: 0px 104px;
   height: 100%;
-  overflow: hidden;
 }
 
 .u-1of2 {
@@ -3760,6 +3765,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   width: 160px;
   height: 60px;
   border: none;
+  transform: scale(3.5);
 }
 
 #eo-power-switch {
@@ -3935,9 +3941,11 @@ eo-signout-layout .signout {
   font-family: Roboto-Light;
 }
 
-#google_iframe {
+#google-iframe {
   margin-left: 20px;
   padding-top: 30px;
+  height: 180px;
+  padding-top: 100px;
 }
 
 #signout_btn {
@@ -3962,7 +3970,7 @@ eo-signout-layout .signout {
 }
 
 .us-flag {
-  background-image: url(http://www.englishon.org/v1/img/button-on-en.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-on-usa.svg);
 }
 
 .fr-flag {
@@ -4157,6 +4165,21 @@ eo-signout-layout .signout {
 }
 
 @media (min-width: 1050px) {
+  #google-iframe {
+    margin-left: 20px;
+    padding-top: 30px;
+    height: 45px;
+    padding-top: 25px;
+  }
+
+  #eo-iframe {
+    transform: scale(1);
+  }
+
+  .eo-delimiter {
+    border-bottom: 1px solid #d7dee3;
+  }
+
   #eo-login-msg,
   #eo-google-msg,
   #eo-signout-msg {
@@ -4372,6 +4395,7 @@ eo-signout-layout .signout {
 
   #eo-dlg-inner {
     margin: 0px 26px;
+    overflow: hidden;
   }
 
   #eo-dlg-login .eo-row9 {

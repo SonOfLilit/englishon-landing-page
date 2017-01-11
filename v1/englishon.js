@@ -8046,7 +8046,7 @@ var Speaker = new function () {
 // source.buffer = Audiobuffer;
 // source.playbackRate.value = 1.5;
 //
-document.MENU_HTML = "<div id='eo-menu'>\
+document.MENU_HTML = "<div id='eo-menu' class='hidden'>\
     <div class='header'>\
         <div id='eo-account-area'>\
             <div class='Grid u-textCenter eo-row eo-menu-inner'>\
@@ -8094,7 +8094,7 @@ document.MENU_HTML = "<div id='eo-menu'>\
                         <div class='flag us-flag'></div>\
                     </div>\
                     <div class='Grid-cell v-align'>\
-                        <div class='eo-language-option-res'>Usa</div>\
+                        <div class='eo-language-option-res'>English (US)</div>\
                     </div>\
                 </div>\
             </div>\
@@ -8154,7 +8154,7 @@ document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
                 <div class='subtitle'>welcome to englishon... bla bla bla bla bla bla</div>\
             </div>\
             <div class='Grid-cell eo-row4'>\
-                <div id='google_iframe'></div>\
+                <div id='google-iframe'></div>\
             </div>\
             <div class='Grid-cell hidden'>\
                 <div id='eo-google-msg'></div>\
@@ -8647,14 +8647,25 @@ document.EnglishOnMenu = function () {
     //TODO: add the editor button
     var token = encodeURIComponent(document.englishonBackend.token);
     if (document.config.isUser) var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
-    $('#google_iframe').append(google_login);
+    $('#google-iframe').append(google_login);
     $('#eo-iframe').on('load', function () {
         var popup = this.contentWindow;
+        if (window.matchMedia("(max-width:700px)").matches) {
+            $(".abcRioButton").css({
+                width: '100%',
+                height: '100%'
+            });
+        };
+        $('#djDebug').css({
+            display: 'none'
+        });
+
         popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
     });
     $('#eo-mail-login-btn').on('click', login_with_mail);
     $('#eo-login-email').on('click', function (e) {
         e.target.focus();
+        //$('#eo-dlg-login').css({ 'top': '-500px' })
     });
 };
 
