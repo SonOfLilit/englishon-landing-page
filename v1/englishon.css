@@ -3295,7 +3295,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 #eo-menu input[type=range]::-moz-range-track {
   width: 80%;
-  height: 20px;
+  height: 5px;
   cursor: pointer;
   transition: all .2s ease;
   background: #2cc6a8;
@@ -3304,8 +3304,8 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 #eo-menu input[type=range]::-moz-range-thumb {
   box-shadow: 0px 0px 5px 0px #000000;
-  height: 70px;
-  width: 70px;
+  height: 15px;
+  width: 15px;
   border-radius: 50px;
   background: #eceff1;
   cursor: pointer;
