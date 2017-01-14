@@ -21,7 +21,7 @@
 להתאכסן board
 לוחות boards
 קרשים boards
-ילקוט book_bag book_bag book_bag book_bag book_bag book_bag book_bag
+ילקוט book_bag
 תיק_ספרים book_bag
 תיק bag
 שק bag

@@ -6799,1001 +6799,989 @@ HerokuBackend.prototype.is_new_session = function () {
 };
 //
 Editor = function (overlay) {
-  this.paragraphs = $([overlay.subtitle, overlay.bodytext]);
-  this.overlay = overlay;
-  var lines = document.internal_id.split("\n");
-  var internal_dic = {};
-  for (var i = 0; i < lines.length; i++) {
-    var line = lines[i].split(" ");
-    internal_dic[line[0]] = [];
-    for (var j = 1; j < line.length; j++) {
-      internal_dic[line[0]].push(line[j]);
+    this.paragraphs = $([overlay.subtitle, overlay.bodytext]);
+    this.overlay = overlay;
+    var lines = document.internal_id.split("\n");
+    var internal_dic = {};
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].split(" ");
+        internal_dic[line[0]] = [];
+        for (var j = 1; j < line.length; j++) {
+            internal_dic[line[0]].push(line[j]);
+        }
     }
-  }
-  this.internal_id = internal_dic;
-  this.ps = [];
+    this.internal_id = internal_dic;
+    this.ps = [];
 };
 
 Editor.prototype.createAutoQuestion = function (event) {
-  event.preventDefault();
-  var span = $(event.target).parent();
-  console.log('createAutoQuestion***** span is: ' + span);
-  var ctx = this.autoContext(span);
+    event.preventDefault();
+    var span = $(event.target).parent();
+    console.log('createAutoQuestion***** span is: ' + span);
+    var ctx = this.autoContext(span);
 
-  //var ctx = this.autoContext(span);
-  if (!ctx) {
-    alert("No suitable context found");
-    span.removeClass('auto-editor-candidate_inne').addClass('eo-editor-irrelevant').off('click');
-    return;
-  }
+    //var ctx = this.autoContext(span);
+    if (!ctx) {
+        alert("No suitable context found");
+        span.removeClass('auto-editor-candidate_inne').addClass('eo-editor-irrelevant').off('click');
+        return;
+    }
 
-  var replaced = span.data('word');
-  var correct = span.find(".correct_answer").val();
-  if (correct == "Don't create") {
-    span.removeClass('auto-editor-candidate_inner').addClass('eo-editor-irrelevant').off('click');
-    return;
-  }
-  var word_location = 2;
-  if (!ctx) {
-    alert("No suitable context found");
-    span.removeClass('auto-editor-candidate_inner').addClass('eo-editor-irrelevant').off('click');
-    return;
-  }
+    var replaced = span.data('word');
+    var correct = span.find(".correct_answer").val();
+    if (correct == "Don't create") {
+        span.removeClass('auto-editor-candidate_inner').addClass('eo-editor-irrelevant').off('click');
+        return;
+    }
+    var word_location = 2;
+    if (!ctx) {
+        alert("No suitable context found");
+        span.removeClass('auto-editor-candidate_inner').addClass('eo-editor-irrelevant').off('click');
+        return;
+    }
 
-  //Creating a list of 4 Distractions randomaly, using the word buffer of the internal id
-  var wrong = [];
-  internal_id_keys = Object.keys(this.internal_id);
-  while (wrong.length < 3) {
-    // candidate=this.internal_id[internal_id_keys[Math.floor((Math.random() * internal_id_keys.length) + 0) ]][0];
-    translation = internal_id_keys[Math.floor(Math.random() * internal_id_keys.length + 0)];
-    arrayOfCandidate = this.internal_id[translation];
-    candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
-    if (wrong.indexOf(candidate) == -1 && candidate != correct)
-      //wrong.push(candidate);
-      wrong.push({ word: candidate, translation: translation });
-  }
-
-  var question = {
-    'context': ctx,
-    'replaced': replaced,
-    'hint': replaced,
-    'correct_answers': [correct],
-    'wrong_answers': wrong,
-    'word_location': word_location,
-    'hint_language': 'he',
-    'answer_language': 'en'
-  };
-  console.log("Finished create the object in createAutoquestion");
-  var res = document.englishonBackend.createQuestion(question);
-  span.data('context', ctx).removeClass('auto-editor-candidate_inner').addClass('eo-editor-question').off('click', 'onClick');
-  // .on('click', this.question_onClick.bind(this));
-  span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
-    e.stopPropagation();
-  });
+    //Creating a list of 4 Distractions randomaly, using the word buffer of the internal id
+    var wrong = [];
+    internal_id_keys = Object.keys(this.internal_id);
+    while (wrong.length < 3) {
+        // candidate=this.internal_id[internal_id_keys[Math.floor((Math.random() * internal_id_keys.length) + 0) ]][0];
+        translation = internal_id_keys[Math.floor(Math.random() * internal_id_keys.length + 0)];
+        arrayOfCandidate = this.internal_id[translation];
+        candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
+        if (wrong.indexOf(candidate) == -1 && candidate != correct) wrong.push({ word: candidate, translation: translation });
+    }
+    var question = {
+        'context': ctx,
+        'replaced': replaced,
+        'hint': replaced,
+        'correct_answers': [correct],
+        'wrong_answers': wrong,
+        'word_location': word_location,
+        'hint_language': 'he',
+        'answer_language': 'en'
+    };
+    console.log("Finished create the object in createAutoquestion");
+    var res = document.englishonBackend.createQuestion(question);
+    span.data('context', ctx).removeClass('auto-editor-candidate_inner').addClass('eo-editor-question').off('click', 'onClick');
+    // .on('click', this.question_onClick.bind(this));
+    span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
+        e.stopPropagation();
+    });
 };
 
 Editor.prototype.question_onClick = function (event) {
-  var test = this;
-  event.preventDefault();
-  var span = $(event.target);
-  //var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
-  var word = span.data('word');
-  var context = span.data('context');
-  var question = {
-    'word': word,
-    'ctx': context
-  };
-  var q_dialog = $('<div  align="left" dir="ltr">');
-  q_dialog.append($('<h3>').text('You are deleting this word: ' + word));
-  q_dialog.append($('<h3>').text('With this context: ' + context));
-  q_dialog.append($('<button>').text("Delete Question").click(function (event) {
-    span.removeClass('eo-editor-question').addClass('eo-editor-candidate');
-    span.off('click');
-    document.englishonBackend.deleteQuestion(question);
-    span.on('click', this.onClick.bind(this));
-    q_dialog.dialog('close');
-  }.bind(this)));
+    var test = this;
+    event.preventDefault();
+    var span = $(event.target);
+    //var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
+    var word = span.data('word');
+    var context = span.data('context');
+    var question = {
+        'word': word,
+        'ctx': context
+    };
+    var q_dialog = $('<div  align="left" dir="ltr">');
+    q_dialog.append($('<h3>').text('You are deleting this word: ' + word));
+    q_dialog.append($('<h3>').text('With this context: ' + context));
+    q_dialog.append($('<button>').text("Delete Question").click(function (event) {
+        span.removeClass('eo-editor-question').addClass('eo-editor-candidate');
+        span.off('click');
+        document.englishonBackend.deleteQuestion(question);
+        span.on('click', this.onClick.bind(this));
+        q_dialog.dialog('close');
+    }.bind(this)));
 
-  q_dialog.dialog();
+    q_dialog.dialog();
 };
 Editor.prototype.onClick = function (event) {
-  event.preventDefault();
-  var span = $(event.target);
-  var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
-  var word = span.data('word');
-
-  if (!ctx) {
-    alert("No suitable context found");
-    span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click');
-    return;
-  }
-  span.data('context', ctx);
-  var dia = $('<div align="left">');
-  var acc = $('<div>');
-  var tabs = [];
-  acc.append($('<h3>').text("Hebrew -> English"));
-  tabs.push(this.h2eui(span));
-  acc.append(tabs[0]);
-  /*acc.append($('<h3>').text("English -> Hebrew"));
-  tabs.push(this.e2hui(span))
-  acc.append(tabs[1]);*/
-  acc.accordion({ heightStyle: 'content' });
-  dia.append(acc);
-  dia.append($('<button>').text("Create Question").click(function (event) {
     event.preventDefault();
-    var question = tabs[acc.accordion('option', 'active')].data('extractor')();
-    if (question) {
-      question.context = ctx;
+    var span = $(event.target);
+    var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
+    var word = span.data('word');
 
-      document.englishonBackend.createQuestion(question);
-      span.off('click').removeClass('eo-editor-candidate').addClass('eo-editor-question').on('click', this.question_onClick.bind(this));
-      dia.dialog('close');
+    if (!ctx) {
+        alert("No suitable context found");
+        span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click');
+        return;
     }
-  }.bind(this)));
-  dia.append($('<button>').text("Mark Irrelevant").click(function (event) {
-    event.preventDefault();
-    span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click');
-    dia.dialog('close');
-  }));
-  dia.append($('<button>').text('Close').click(function (event) {
-    event.preventDefault();
-    dia.dialog('close');
-  }));
+    span.data('context', ctx);
+    var dia = $('<div align="left">');
+    var acc = $('<div>');
+    var tabs = [];
+    acc.append($('<h3>').text("Hebrew -> English"));
+    tabs.push(this.h2eui(span));
+    acc.append(tabs[0]);
+    /*acc.append($('<h3>').text("English -> Hebrew"));
+    tabs.push(this.e2hui(span))
+    acc.append(tabs[1]);*/
+    acc.accordion({ heightStyle: 'content' });
+    dia.append(acc);
+    dia.append($('<button>').text("Create Question").click(function (event) {
+        event.preventDefault();
+        var question = tabs[acc.accordion('option', 'active')].data('extractor')();
+        if (question) {
+            question.context = ctx;
 
-  dia.dialog({ autoOpen: true, height: 'auto', width: 'auto' });
-  $(".wrd").text(word);
+            document.englishonBackend.createQuestion(question);
+            span.off('click').removeClass('eo-editor-candidate').addClass('eo-editor-question').on('click', this.question_onClick.bind(this));
+            dia.dialog('close');
+        }
+    }.bind(this)));
+    dia.append($('<button>').text("Mark Irrelevant").click(function (event) {
+        event.preventDefault();
+        span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click');
+        dia.dialog('close');
+    }));
+    dia.append($('<button>').text('Close').click(function (event) {
+        event.preventDefault();
+        dia.dialog('close');
+    }));
+
+    dia.dialog({ autoOpen: true, height: 'auto', width: 'auto' });
+    $(".wrd").text(word);
 };
 
 Editor.prototype.generateUI = function () {
-  return $('<div>').append($('<div>').addClass('language_specific')).append($('<div>').append($('<label>').text("Word:")).append($('<span>', { class: 'wrd' })))
-  //.append($('<input>', {type: 'text', id: 'wrd'})))
-  .append($('<div>').append($('<label>').text("Additional correct answers:")).append($('<input>', { type: 'text', name: 'additional' }))).append($('<div>').append($('<label>').text("Wrong answers:")).append($('<input>', { type: 'text', name: 'wrong' })));
+    return $('<div>').append($('<div>').addClass('language_specific')).append($('<div>').append($('<label>').text("Word:")).append($('<span>', { class: 'wrd' })))
+    //.append($('<input>', {type: 'text', id: 'wrd'})))
+    .append($('<div>').append($('<label>').text("Additional correct answers:")).append($('<input>', { type: 'text', name: 'additional' }))).append($('<div>').append($('<label>').text("Wrong answers:")).append($('<input>', { type: 'text', name: 'wrong' })));
 };
 
 Editor.prototype.h2eui = function (span) {
-  var div = this.generateUI();
-  var languageSpecific = div.find('.language_specific');
+    var div = this.generateUI();
+    var languageSpecific = div.find('.language_specific');
 
-  div.data('extractor', function () {
-    //guy
-    // var replaced = div.find(':radio:checked').data('heb');
-    // var correct = div.find(':checkbox:checked').toArray().map(
-    //   function(cb) { return $(cb).data('eng'); });
-    var replaced = div.find('.wrd').text();
-    var additional = parseCommaSeparated(div.find('input[name="additional"]').val());
-    //correct = correct.concat(additional);
-    correct = additional;
-    var wrong = parseCommaSeparated(div.find('input[name="wrong"]').val());
-    var wrong_answers = wrong.map(function (wrong) {
-      return { word: wrong };
+    div.data('extractor', function () {
+        //guy
+        // var replaced = div.find(':radio:checked').data('heb');
+        // var correct = div.find(':checkbox:checked').toArray().map(
+        //   function(cb) { return $(cb).data('eng'); });
+        var replaced = div.find('.wrd').text();
+        var additional = parseCommaSeparated(div.find('input[name="additional"]').val());
+        //correct = correct.concat(additional);
+        correct = additional;
+        var wrong = parseCommaSeparated(div.find('input[name="wrong"]').val());
+        var wrong_answers = wrong.map(function (wrong) {
+            return { word: wrong };
+        });
+        if (!replaced) {
+            alert("Choose correct breakdown");
+            return;
+        }
+        if (correct.length === 0) {
+            alert("No correct answers chosen");
+            return;
+        }
+        var question = {
+            'replaced': replaced,
+            'hint': replaced,
+            'correct_answers': correct,
+            'wrong_answers': wrong_answers,
+            'hint_language': 'he',
+            'answer_language': 'en'
+        };
+
+        return question;
     });
-    if (!replaced) {
-      alert("Choose correct breakdown");
-      return;
-    }
-    if (correct.length === 0) {
-      alert("No correct answers chosen");
-      return;
-    }
-    var question = {
-      'replaced': replaced,
-      'hint': replaced,
-      'correct_answers': correct,
-      'wrong_answers': wrong_answers,
-      'hint_language': 'he',
-      'answer_language': 'en'
-    };
 
-    return question;
-  });
-
-  return div;
+    return div;
 };
 
 function parseCommaSeparated(commaSeparated) {
-  return commaSeparated.split(',').map(function (word) {
-    return word.trim();
-  }).filter(function (word) {
-    return word !== '';
-  });
+    return commaSeparated.split(',').map(function (word) {
+        return word.trim();
+    }).filter(function (word) {
+        return word !== '';
+    });
 }
 
 Editor.prototype.e2hui = function (span) {
-  var dict = this.lookup(span.data('word'));
-  var h1 = Object.keys(dict).length === 1;
-  var h1e1 = h1 && dict[Object.keys(dict)[0]].length === 1;
+    var dict = this.lookup(span.data('word'));
+    var h1 = Object.keys(dict).length === 1;
+    var h1e1 = h1 && dict[Object.keys(dict)[0]].length === 1;
 
-  var div = this.generateUI();
-  var languageSpecific = div.find('.language_specific');
-  $.each(dict, function (orig, engs) {
-    $.each(engs, function (ix, eng) {
-      languageSpecific.append($('<input type="radio" name="eo-editor-eng">').prop('checked', h1e1).data('orig', orig).data('eng', eng)).append($('<label>').text(eng));
-      $.each(document.dictionary.get(eng), function (jx, heb) {
-        languageSpecific.append($('<input type="checkbox">').data('heb', heb)).append($('<label>').text(heb));
-      });
+    var div = this.generateUI();
+    var languageSpecific = div.find('.language_specific');
+    $.each(dict, function (orig, engs) {
+        $.each(engs, function (ix, eng) {
+            languageSpecific.append($('<input type="radio" name="eo-editor-eng">').prop('checked', h1e1).data('orig', orig).data('eng', eng)).append($('<label>').text(eng));
+            $.each(document.dictionary.get(eng), function (jx, heb) {
+                languageSpecific.append($('<input type="checkbox">').data('heb', heb)).append($('<label>').text(heb));
+            });
+        });
     });
-  });
 
-  div.data('extractor', function () {
-    var replaced = div.find(':radio:checked').data('orig');
-    var hint = div.find(':radio:checked').data('eng');
-    var correct = div.find(':checkbox:checked').toArray().map(function (cb) {
-      return $(cb).data('heb');
+    div.data('extractor', function () {
+        var replaced = div.find(':radio:checked').data('orig');
+        var hint = div.find(':radio:checked').data('eng');
+        var correct = div.find(':checkbox:checked').toArray().map(function (cb) {
+            return $(cb).data('heb');
+        });
+        var additional = parseCommaSeparated(div.find('input[name="additional"]').val());
+        correct = correct.concat(additional);
+        var wrong = parseCommaSeparated(div.find('input[name="wrong"]').val());
+        var wrong_answers = wrong.map(function (wrong) {
+            return { word: wrong };
+        });
+        if (!replaced || !hint) {
+            alert("Choose correct breakdown");
+            return;
+        }
+
+        if (correct.indexOf(replaced) === -1) correct.push(replaced);
+
+        var question = {
+            'replaced': replaced,
+            'hint': hint,
+            'correct_answers': correct,
+            'wrong_answers': wrong_answers,
+            'answer_language': 'he'
+        };
+
+        return question;
     });
-    var additional = parseCommaSeparated(div.find('input[name="additional"]').val());
-    correct = correct.concat(additional);
-    var wrong = parseCommaSeparated(div.find('input[name="wrong"]').val());
-    var wrong_answers = wrong.map(function (wrong) {
-      return { word: wrong };
-    });
-    if (!replaced || !hint) {
-      alert("Choose correct breakdown");
-      return;
-    }
 
-    if (correct.indexOf(replaced) === -1) correct.push(replaced);
-
-    var question = {
-      'replaced': replaced,
-      'hint': hint,
-      'correct_answers': correct,
-      'wrong_answers': wrong_answers,
-      'answer_language': 'he'
-    };
-
-    return question;
-  });
-
-  return div;
+    return div;
 };
 
 Editor.prototype.autoContext = function (span) {
-  var text = span.data('text');
-  var word = span.data('word');
-  var start = span.data('start');
-  var end = span.data('end');
-  //console.log("start value: "+start+" and end value: "+ end);
-  var len = 5;
-  while (true) {
-    //debugger;
-    var ctx = text.slice(Math.max(0, start - len), Math.min(text.length, end + len));
-    // is the context ambiguous?
-    if (ctx.indexOf(word) !== ctx.lastIndexOf(word)) {
-      console.log("The context is ambiguous. context is: " + ctx);
-      break;
+    var text = span.data('text');
+    var word = span.data('word');
+    var start = span.data('start');
+    var end = span.data('end');
+    //console.log("start value: "+start+" and end value: "+ end);
+    var len = 5;
+    while (true) {
+        //debugger;
+        var ctx = text.slice(Math.max(0, start - len), Math.min(text.length, end + len));
+        // is the context ambiguous?
+        if (ctx.indexOf(word) !== ctx.lastIndexOf(word)) {
+            console.log("The context is ambiguous. context is: " + ctx);
+            break;
+        }
+        // is the context unique?
+        // console.log('autocontext****'+this)
+        // console.log('autocontext****'+this.internal_id)
+        // console.log('autocontext****'+this.paragraphs)
+        // console.log('autocontext****'+this.ps)
+        if (this.ps.filter(function (p) {
+            return p.indexOf(ctx) !== -1;
+        }).length === 1) {
+            return ctx; //success!
+        } else {
+            // context isn't unique.
+            // try again with a longer context.
+            console.log("try again with a longer context.context: " + ctx);
+            len += 5;
+            continue;
+        }
+        // is this the largest candidate context?
+        if (ctx === span.data('text')) break;
     }
-    // is the context unique?
-    // console.log('autocontext****'+this)
-    // console.log('autocontext****'+this.internal_id)
-    // console.log('autocontext****'+this.paragraphs)
-    // console.log('autocontext****'+this.ps)
-    if (this.ps.filter(function (p) {
-      return p.indexOf(ctx) !== -1;
-    }).length === 1) {
-      return ctx; //success!
-    } else {
-      // context isn't unique.
-      // try again with a longer context.
-      console.log("try again with a longer context.context: " + ctx);
-      len += 5;
-      continue;
-    }
-    // is this the largest candidate context?
-    if (ctx === span.data('text')) break;
-  }
 };
 
 Editor.prototype.fetchQuestions = function () {
-  console.log("url: " + this.overlay.url);
-  return document.englishonBackend.getArticle(this.overlay.url).then(function (questions) {
-    this.questions = questions;
-    // console.log("fetchQuestions***paragraphs: "+this.overlay.paragraphs);
-    console.log("fetchQuestions*** I brought questions for editor");
-  }.bind(this));
+    console.log("url: " + this.overlay.url);
+    return document.englishonBackend.getArticle(this.overlay.url).then(function (questions) {
+        this.questions = questions;
+        // console.log("fetchQuestions***paragraphs: "+this.overlay.paragraphs);
+        console.log("fetchQuestions*** I brought questions for editor");
+    }.bind(this));
 };
 
 Editor.prototype.highlight = function () {
-  var questions = this.questions;
-  var prefix = ["ל", "ב", "ה", "ש", "מ", "כ", "ו"];
-  var question_dict = {};
-  for (var i = 0; i < questions.length; i++) {
-    if (!(questions[i].replaced in question_dict)) {
-      question_dict[questions[i].replaced] = [questions[i].context];
-    } else {
-      question_dict[questions[i].replaced].push(questions[i].context);
-    }
-  }
-  this.ps = [];
-  this.paragraphs.each(function (i, p) {
-    p = $(p);
-    $('.artText a').text('HERE IS A LINK!!!!!!');
-    var text = p.text();
-    this.ps.push(text);
-    p.empty();
-    var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
-    var match = [];
-    var lastIndex = 0;
-    while ((match = re.exec(text)) !== null) {
-      var isExist = false;
-      //TODO: The code is duplicate. Fix it
-      if (match[0] in question_dict) {
-        for (var i = 0; i < question_dict[match[0]].length; i++) {
-          var context = question_dict[match[0]][i];
-          var start_index = match.index - context.slice(0, context.indexOf(match[0])).length;
-          var end_index = re.lastIndex + context.slice(context.indexOf(match[0]) + match[0].length, context.length).length;
-
-          if (text.slice(start_index, end_index) == context) {
-            console.log("Find a ready question!!! " + text.slice(start_index, end_index));
-            isExist = true;
-            p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-            p.append($('<span>').addClass('eo-editor-question').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).data('context', context)
-            //.off('click',Editor.prototype.onClick())
-            .on('click', this.question_onClick.bind(this)));
-          }
-        }
-      } else if (match[0].slice(1) in question_dict && prefix.indexOf(match[0].slice(0, 1)) != -1) {
-        for (var i = 0; i < question_dict[match[0].slice(1)].length; i++) {
-          var context = question_dict[match[0].slice(1)][i];
-          var start_index = match.index + 1 - context.slice(0, context.indexOf(match[0].slice(1))).length;
-          var end_index = re.lastIndex + context.slice(context.indexOf(match[0].slice(1)) + match[0].slice(1).length, context.length).length;
-
-          if (text.slice(start_index, end_index) == context) {
-            console.log("Find a ready question!!! " + text.slice(start_index, end_index));
-            isExist = true;
-            p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index + 1)));
-            p.append($('<span>').addClass('eo-editor-question').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).data('context', context)
-            //.off('click',Editor.prototype.onClick())
-            .on('click', this.question_onClick.bind(this)));
-          }
-        }
-      }
-
-      if (isExist == false) {
-
-        if (match[0] in this.internal_id) {
-          // console.log("found id candidte: "+match[0]);
-          p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-
-          var select = $('<select>').addClass('correct_answer');
-          //.on('click',this.createQuestion.bind(this))
-          //.on('change',this.createQuestion.bind(span))
-          var span = $('<span>').addClass('auto-editor-candidate_inner').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).append(select);
-          span.find('select').append($('<option>').text('').addClass('hide')).on('change', this.createAutoQuestion.bind(this));
-          for (var i = 0; i < this.internal_id[match[0]].length; i++) {
-            select.append($('<option>').text(this.internal_id[match[0]][i]));
-          }
-
-          p.append(span);
-        } else if (match[0].slice(1) in this.internal_id && prefix.indexOf(match[0].slice(0, 1)) != -1) {
-          console.log("I found a candidate with prefix: " + match[0].slice(1));
-          p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index + 1)));
-
-          var select = $('<select>').addClass('correct_answer').on('change', this.createAutoQuestion.bind(this));
-          select.append($('<option>').text('').addClass('hide'));
-          for (var i = 0; i < this.internal_id[match[0].slice(1)].length; i++) {
-            select.append($('<option>').text(this.internal_id[match[0].slice(1)][i]));
-          }
-          p.append($('<span>').addClass('auto-editor-candidate_inner').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).append(select));
+    var questions = this.questions;
+    var prefix = ["ל", "ב", "ה", "ש", "מ", "כ", "ו"];
+    var question_dict = {};
+    for (var i = 0; i < questions.length; i++) {
+        if (!(questions[i].replaced in question_dict)) {
+            question_dict[questions[i].replaced] = [questions[i].context];
         } else {
-          p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-          p.append($('<span>').addClass('eo-editor-candidate').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
+            question_dict[questions[i].replaced].push(questions[i].context);
         }
-      }
-      lastIndex = re.lastIndex;
     }
-    p.get(0).appendChild(document.createTextNode(text.slice(lastIndex)));
-  }.bind(this));
+    this.ps = [];
+    this.paragraphs.each(function (i, p) {
+        p = $(p);
+        $('.artText a').text('HERE IS A LINK!!!!!!');
+        var text = p.text();
+        this.ps.push(text);
+        p.empty();
+        var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
+        var match = [];
+        var lastIndex = 0;
+        while ((match = re.exec(text)) !== null) {
+            var isExist = false;
+            //TODO: The code is duplicate. Fix it
+            if (match[0] in question_dict) {
+                for (var i = 0; i < question_dict[match[0]].length; i++) {
+                    var context = question_dict[match[0]][i];
+                    var start_index = match.index - context.slice(0, context.indexOf(match[0])).length;
+                    var end_index = re.lastIndex + context.slice(context.indexOf(match[0]) + match[0].length, context.length).length;
+
+                    if (text.slice(start_index, end_index) == context) {
+                        console.log("Find a ready question!!! " + text.slice(start_index, end_index));
+                        isExist = true;
+                        p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+                        p.append($('<span>').addClass('eo-editor-question').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).data('context', context)
+                        //.off('click',Editor.prototype.onClick())
+                        .on('click', this.question_onClick.bind(this)));
+                    }
+                }
+            } else if (match[0].slice(1) in question_dict && prefix.indexOf(match[0].slice(0, 1)) != -1) {
+                for (var i = 0; i < question_dict[match[0].slice(1)].length; i++) {
+                    var context = question_dict[match[0].slice(1)][i];
+                    var start_index = match.index + 1 - context.slice(0, context.indexOf(match[0].slice(1))).length;
+                    var end_index = re.lastIndex + context.slice(context.indexOf(match[0].slice(1)) + match[0].slice(1).length, context.length).length;
+
+                    if (text.slice(start_index, end_index) == context) {
+                        console.log("Find a ready question!!! " + text.slice(start_index, end_index));
+                        isExist = true;
+                        p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index + 1)));
+                        p.append($('<span>').addClass('eo-editor-question').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).data('context', context)
+                        //.off('click',Editor.prototype.onClick())
+                        .on('click', this.question_onClick.bind(this)));
+                    }
+                }
+            }
+
+            if (isExist == false) {
+
+                if (match[0] in this.internal_id) {
+                    // console.log("found id candidte: "+match[0]);
+                    p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+
+                    var select = $('<select>').addClass('correct_answer');
+                    //.on('click',this.createQuestion.bind(this))
+                    //.on('change',this.createQuestion.bind(span))
+                    var span = $('<span>').addClass('auto-editor-candidate_inner').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).append(select);
+                    span.find('select').append($('<option>').text('').addClass('hide')).on('change', this.createAutoQuestion.bind(this));
+                    for (var i = 0; i < this.internal_id[match[0]].length; i++) {
+                        select.append($('<option>').text(this.internal_id[match[0]][i]));
+                    }
+
+                    p.append(span);
+                } else if (match[0].slice(1) in this.internal_id && prefix.indexOf(match[0].slice(0, 1)) != -1) {
+                    console.log("I found a candidate with prefix: " + match[0].slice(1));
+                    p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index + 1)));
+
+                    var select = $('<select>').addClass('correct_answer').on('change', this.createAutoQuestion.bind(this));
+                    select.append($('<option>').text('').addClass('hide'));
+                    for (var i = 0; i < this.internal_id[match[0].slice(1)].length; i++) {
+                        select.append($('<option>').text(this.internal_id[match[0].slice(1)][i]));
+                    }
+                    p.append($('<span>').addClass('auto-editor-candidate_inner').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).append(select));
+                } else {
+                    p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+                    p.append($('<span>').addClass('eo-editor-candidate').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
+                }
+            }
+            lastIndex = re.lastIndex;
+        }
+        p.get(0).appendChild(document.createTextNode(text.slice(lastIndex)));
+    }.bind(this));
 };
 //
 jQuery.fn.extend({
-  toggleText: function (a, b) {
-    var that = this;
-    if (that.text() != a && that.text() != b) {
-      that.text(a);
-    } else if (that.text() == a) {
-      that.text(b);
-    } else if (that.text() == b) {
-      that.text(a);
+    toggleText: function (a, b) {
+        var that = this;
+        if (that.text() != a && that.text() != b) {
+            that.text(a);
+        } else if (that.text() == a) {
+            that.text(b);
+        } else if (that.text() == b) {
+            that.text(a);
+        }
+        return this;
+    },
+    //for toggle text which containing html entities
+    toggleHtml: function (a, b) {
+        a = a.replace('_', '&#160;');
+        if (b) b = b.replace('_', '&#160;');
+        var that = this;
+        if (that.html() != a && that.html() != b) {
+            that.html(a);
+        } else if (that.html() == a) {
+            that.html(b);
+        } else if (that.html() == b) {
+            that.html(a);
+        }
+        return this;
     }
-    return this;
-  }
 });
 Injector = function (paragraphs) {
-  var interacted = false;
+    var interacted = false;
 
-  function report(msg, data) {
-    if (!data) data = {};
-    if (msg === "StartedQuestion" && !interacted) {
-      interacted = true;
-      report("StartedQuiz");
-      is_new_session = document.englishonBackend.is_new_session();
-      if (is_new_session) {
-        console.log('reporting StartedSession.... ..... ...... ');
-        report("StartedSession");
-      }
+    function report(msg, data) {
+        if (!data) data = {};
+        if (msg === "StartedQuestion" && !interacted) {
+            interacted = true;
+            report("StartedQuiz");
+            is_new_session = document.englishonBackend.is_new_session();
+            if (is_new_session) {
+                console.log('reporting StartedSession.... ..... ...... ');
+                report("StartedSession");
+            }
+        }
+        document.englishonBackend.report(msg, data);
+        if (msg === "CompletedQuestion" && $('.eo-question:not(.eo-answered)').length === 0) {
+            report("CompletedQuiz");
+        }
     }
-    document.englishonBackend.report(msg, data);
-    if (msg === "CompletedQuestion" && $('.eo-question:not(.eo-answered)').length === 0) {
-      report("CompletedQuiz");
-    }
-  }
 
-  this.elements = [];
-  this.isActive = false;
-
-  this.toggle = function (value) {
-    if (value) {
-      this.on();
-    } else {
-      this.off();
-    }
-  };
-
-  this.off = function () {
-    if (!this.isActive) {
-      return;
-    }
-    $(this.elements).each(function (i, q) {
-      q.replacement.replaceWith(q.original);
-    });
+    this.elements = [];
     this.isActive = false;
-    console.log("hide questions now");
-  };
-  this.on = function () {
-    if (this.isActive) {
-      return;
+
+    this.toggle = function (value) {
+        if (value) {
+            this.on();
+        } else {
+            this.off();
+        }
+    };
+
+    this.off = function () {
+        if (!this.isActive) {
+            return;
+        }
+        $(this.elements).each(function (i, q) {
+            q.replacement.replaceWith(q.original);
+        });
+        this.isActive = false;
+        console.log("hide questions now");
+    };
+    this.on = function () {
+        if (this.isActive) {
+            return;
+        }
+        if (this.elements.length) $('.artText').last().css('line-height', '150%');
+        $(this.elements).each(function (i, q) {
+            console.log('Injector****find edge questions: ' + q.original);
+            q.replacement = q.qobj.replacement();
+            q.original.replaceWith(q.replacement);
+        });
+        this.isActive = true;
+    };
+
+    this.setQuestions = function (questions, toggleSound) {
+        this.isBatch = true;
+        for (var i = 0; i < questions.length; i++) {
+            this.addQuestion(questions[i], toggleSound);
+        }
+        this.isBatch = false;
+        updateProgressBars();
+    };
+
+    this.addQuestion = function (question, toggleSound) {
+        var target = this.findTarget(question.context, question.replaced);
+        if (!target) {
+            console.log("addQuestion***Could not find question: ", question);
+            return;
+        }
+
+        var q = new Question(question, toggleSound);
+        this.elements.push({ qobj: q, original: target });
+
+        if (!this.isBatch) {
+            updateProgressBars();
+        }
+    };
+
+    function Question(question, toggleSound) {
+        var isExpired = question.tried && question.tried.length > 0;
+        var isMultipleChoice = question.wrong_answers && question.wrong_answers.length !== 0;
+        var r;
+        if (isExpired) {
+            if (isMultipleChoice) {
+                r = new ExpiredMultipleChoiceQuestion(question);
+            } else {
+                r = new ExpiredOpenQuestion(question);
+            }
+        } else if (isMultipleChoice) {
+            r = new MultipleChoice(question, toggleSound);
+        } else {
+            r = new OpenQuestion(question, toggleSound);
+        }
+        r.report = report;
+        return r;
     }
-    if (this.elements.length) $('.artText').last().css('line-height', '150%');
-    $(this.elements).each(function (i, q) {
-      console.log('Injector****find edge questions: ' + q.original);
-      q.replacement = q.qobj.replacement();
-      q.original.replaceWith(q.replacement);
-    });
-    this.isActive = true;
-  };
 
-  this.setQuestions = function (questions, toggleSound) {
-    this.isBatch = true;
-    for (var i = 0; i < questions.length; i++) {
-      this.addQuestion(questions[i], toggleSound);
-    }
-    this.isBatch = false;
-    updateProgressBars();
-  };
+    this.findTarget = function (ctx, replaced) {
 
-  this.addQuestion = function (question, toggleSound) {
-    var target = this.findTarget(question.context, question.replaced);
-    if (!target) {
-      console.log("addQuestion***Could not find question: ", question);
-      return;
-    }
+        var found;
+        // paragraphs.each(function(i, p) {
+        $.each(paragraphs, function (i, p) {
 
-    var q = new Question(question, toggleSound);
-    this.elements.push({ qobj: q, original: target });
-
-    if (!this.isBatch) {
-      updateProgressBars();
-    }
-  };
-
-  function Question(question, toggleSound) {
-    var isExpired = question.tried && question.tried.length > 0;
-    var isMultipleChoice = question.wrong_answers && question.wrong_answers.length !== 0;
-    var r;
-    if (isExpired) {
-      if (isMultipleChoice) {
-        r = new ExpiredMultipleChoiceQuestion(question);
-      } else {
-        r = new ExpiredOpenQuestion(question);
-      }
-    } else if (isMultipleChoice) {
-      r = new MultipleChoice(question, toggleSound);
-    } else {
-      r = new OpenQuestion(question, toggleSound);
-    }
-    r.report = report;
-    return r;
-  }
-
-  this.findTarget = function (ctx, replaced) {
-
-    var found;
-    // paragraphs.each(function(i, p) {
-    $.each(paragraphs, function (i, p) {
-
-      findAndReplaceDOMText(p, { find: ctx,
-        replace: function (portion, match) {
-          if (found && portion.text.indexOf(replaced) !== -1) {
-            console.log("Ambiguous match", replaced, portion.text);
-            return portion.text;
-          }
-          var ix = portion.text.indexOf(replaced);
-          if (ix === -1) return portion.text;
-          var before = document.createTextNode(portion.text.slice(0, ix));
-          var target = $('<span>').addClass('eo-injection-target').text(portion.text.slice(ix, ix + replaced.length));
-          var after = document.createTextNode(portion.text.slice(ix + replaced.length));
-          var frag = document.createDocumentFragment();
-          frag.appendChild(before);
-          frag.appendChild(target.get(0));
-          frag.appendChild(after);
-          found = target;
-          return frag;
-        } });
-    });
-    return found;
-  };
+            findAndReplaceDOMText(p, {
+                find: ctx,
+                replace: function (portion, match) {
+                    if (found && portion.text.indexOf(replaced) !== -1) {
+                        console.log("Ambiguous match", replaced, portion.text);
+                        return portion.text;
+                    }
+                    var ix = portion.text.indexOf(replaced);
+                    if (ix === -1) return portion.text;
+                    var before = document.createTextNode(portion.text.slice(0, ix));
+                    var target = $('<span>').addClass('eo-injection-target').text(portion.text.slice(ix, ix + replaced.length));
+                    var after = document.createTextNode(portion.text.slice(ix + replaced.length));
+                    var frag = document.createDocumentFragment();
+                    frag.appendChild(before);
+                    frag.appendChild(target.get(0));
+                    frag.appendChild(after);
+                    found = target;
+                    return frag;
+                }
+            });
+        });
+        return found;
+    };
 };
 
 updateProgressBars = function () {
-  // you'd think activating the current one would be enough... but since we want them to animate
-  // from the previous state and not from 0, the easiest way is to update all of them always.
-  var all = $('.eo-question').length;
-  var answered = $('.eo-question.eo-answered').length;
-  $('.eo-progress-inner').css('width', (100 * answered / all).toString() + '%');
+    // you'd think activating the current one would be enough... but since we want them to animate
+    // from the previous state and not from 0, the easiest way is to update all of them always.
+    var all = $('.eo-question').length;
+    var answered = $('.eo-question.eo-answered').length;
+    $('.eo-progress-inner').css('width', (100 * answered / all).toString() + '%');
 };
 
 var AbstractQuestion = function (qdata, toggleSound) {
-  this.data = qdata;
-  if (typeof this.data.correct_answer === 'string') this.correct = [this.data.correct_answer];else // multiple correct answers
-    this.correct = this.data.correct_answers.map(function (a) {
-      return a.answer;
-    });
+    this.data = qdata;
+    if (typeof this.data.correct_answer === 'string') this.correct = [this.data.correct_answer];else // multiple correct answers
+        this.correct = this.data.correct_answers.map(function (a) {
+            return a.answer;
+        });
 
-  this.practicedWord = this.data.hint_language === document.config.targetLanguage ? this.data.hint : this.correct[0];
+    this.practicedWord = this.data.hint_language === document.config.targetLanguage ? this.data.hint : this.correct[0];
 
-  this.toggleSound = toggleSound;
-  this.tried = [];
-  this.maxtime = 40;
-  this.maxattempts = 3;
-  this.touched = false;
+    this.toggleSound = toggleSound;
+    this.tried = [];
+    this.maxtime = 40;
+    this.maxattempts = 3;
+    this.touched = false;
 };
 
 AbstractQuestion.prototype.replacement = function () {
-  if (!this.element) {
-    this.element = this.createElement();
-  }
-  this.bindInput();
-  return this.element;
+    if (!this.element) {
+        this.element = this.createElement();
+    }
+    this.bindInput();
+    return this.element;
 };
 
 AbstractQuestion.prototype.createElement = function () {
-  return $('<div style="margin-bottom:0">').addClass('eo-question').addClass(this.languageOrderClass()).append($('<span>').addClass('eo-correct').text(this.correct[0])).append($('<span>').addClass('eo-hint').text(this.data.hint))
-  // .append($('<span>')
-  //   .addClass('eo-mute_button')
-  //   .click(function () { this.toggleSound(); }.bind(this)))
-  .append($('<span>').addClass('eo-progress').append($('<span>').addClass('eo-progress-inner')));
+    return $('<div style="margin-bottom:0">').addClass('eo-question').addClass(this.languageOrderClass()).append($('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append($('<span>').addClass('eo-hint').text(this.data.hint))
+    // .append($('<span>')
+    //   .addClass('eo-mute_button')
+    //   .click(function () { this.toggleSound(); }.bind(this)))
+    .append($('<span>').addClass('eo-progress').append($('<span>').addClass('eo-progress-inner')));
 };
 
 AbstractQuestion.prototype.bindInput = function () {
-  this.element.find('.eo-hint').click(this.questionOnClick.bind(this));
+    this.element.find('.eo-hint').click(this.questionOnClick.bind(this));
 };
 
 AbstractQuestion.prototype.questionOnClick = function (e) {
-  e.preventDefault();
-  if (this.element.hasClass('eo-answered')) {
-    return;
-  }
-  this.touch();
-  if (this.element.hasClass('eo-active')) {
-    this.closeUnanswered();
-  } else {
-    this.open();
-    var handler = function (e) {
-      if (this.element.has(e.target).length === 0) {
-        if (this.element.hasClass('eo-active')) {
-          this.closeUnanswered();
-        }
-        $(document).off('click', handler);
-      }
-    }.bind(this);
-    $(document).on('click', handler);
-  }
+    e.preventDefault();
+    if (this.element.hasClass('eo-answered')) {
+        return;
+    }
+    this.touch();
+    if (this.element.hasClass('eo-active')) {
+        this.closeUnanswered();
+    } else {
+        this.open();
+        var handler = function (e) {
+            if (this.element.has(e.target).length === 0) {
+                if (this.element.hasClass('eo-active')) {
+                    this.closeUnanswered();
+                }
+                $(document).off('click', handler);
+            }
+        }.bind(this);
+        $(document).on('click', handler);
+    }
 };
 
 AbstractQuestion.prototype.open = function () {
-  // placeholder, you probably want to call not super() but animateStateChange() directly
-  this.element.addClass('eo-active');
-  console.log("EVENT AbstractQuestion.prototype.open ");
+    // placeholder, you probably want to call not super() but animateStateChange() directly
+    this.element.addClass('eo-active');
+    console.log("EVENT AbstractQuestion.prototype.open ");
 };
 
 AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesToRemove, finalWidth) {
-  var offset = this.element.offset().left;
-  var future_point = offset - (finalWidth - Number(this.element.css('width').replace(/[^\d\.\-]/g, '')));
-  var parentoffset = this.element.parent().offset().left;
-  //console.log( "animateStateChange*****left of parent: " + parentoffset.left + ", top: " + parentoffset.top );
+    var offset = this.element.offset().left;
+    var future_point = offset - (finalWidth - Number(this.element.css('width').replace(/[^\d\.\-]/g, '')));
+    var parentoffset = this.element.parent().offset().left;
+    //console.log( "animateStateChange*****left of parent: " + parentoffset.left + ", top: " + parentoffset.top );
 
-  // explicitly set initial width
-  // +1 because rounding down makes the text sometimes not fit, and one pixel is a small price for solving it
-  this.element.css('width', this.element.outerWidth() + 1);
-  // force repaint
-  this.element.width();
-  // change state
-  this.element.addClass(classesToAdd);
-  this.element.removeClass(classesToRemove);
-  // force repaint
-  this.element.width();
-  // explicitly set target width
-  if (future_point < parentoffset) console.log('edge question!');else this.element.css('width', finalWidth + 1);
+    // explicitly set initial width
+    // +1 because rounding down makes the text sometimes not fit, and one pixel is a small price for solving it
+    this.element.css('width', this.element.outerWidth() + 1);
+    // force repaint
+    this.element.width();
+    // change state
+    this.element.addClass(classesToAdd);
+    this.element.removeClass(classesToRemove);
+    // force repaint
+    this.element.width();
+    // explicitly set target width
+    if (future_point < parentoffset) console.log('edge question!');else this.element.css('width', finalWidth + 1);
 };
 
 AbstractQuestion.prototype.closeUnanswered = function () {
-  this.animateStateChange(null, 'eo-active', this.element.find('.eo-hint').outerWidth());
+    this.animateStateChange(null, 'eo-active', this.element.find('.eo-hint').outerWidth());
 };
 
 AbstractQuestion.prototype.closeAnswered = function () {
-  this.animateStateChange('eo-answered', 'eo-active', this.element.find('.eo-correct').outerWidth());
+    this.animateStateChange('eo-answered', 'eo-active', this.element.find('.eo-correct').outerWidth());
 };
 
 AbstractQuestion.prototype.isCorrect = function (answer) {
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
 
-  try {
-    for (var _iterator = this.correct[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var ans = _step.value;
-
-      if (ans.toLowerCase() === answer.toLowerCase()) return true;
-    }
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
     try {
-      if (!_iteratorNormalCompletion && _iterator.return) {
-        _iterator.return();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
-  }
+        for (var _iterator = this.correct[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var ans = _step.value;
 
-  return false;
+            if (ans.toLowerCase() === answer.toLowerCase()) return true;
+        }
+    } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+            }
+        } finally {
+            if (_didIteratorError) {
+                throw _iteratorError;
+            }
+        }
+    }
+
+    return false;
 };
 
 AbstractQuestion.prototype.touch = function (event) {
-  if (!this.touched) {
-    this.report('StartedQuestion', {
-      question: this.data.id
-    });
-    var language = document.config.targetLanguage;
-    if (this.practicedWord === this.data.hint) {
-      Speaker.fetch(language, this.practicedWord);
-    } else {
-      Speaker.fetch(language, this.correct[0]);
-      for (i = 0; i < this.data.wrong_answers.length; i++) {
-        Speaker.fetch(language, this.data.wrong_answers[i].answer);
-      }
+    if (!this.touched) {
+        this.report('StartedQuestion', {
+            question: this.data.id
+        });
+        var language = document.config.targetLanguage;
+        if (this.practicedWord === this.data.hint) {
+            Speaker.fetch(language, this.practicedWord);
+        } else {
+            Speaker.fetch(language, this.correct[0]);
+            for (i = 0; i < this.data.wrong_answers.length; i++) {
+                Speaker.fetch(language, this.data.wrong_answers[i].answer);
+            }
+        }
+        this.touched = true;
     }
-    this.touched = true;
-  }
 };
 
-AbstractQuestion.prototype.guess = function (answer) {
-  //console.log("EVENT guess ");
-  var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
-  if (isAnswerInTargetLanguage) {
-    Speaker.speak(document.config.targetLanguage, answer);
-  }
-  var isCorrect = this.isCorrect(answer);
-  if (isCorrect) {
-    if (!isAnswerInTargetLanguage) {
-      Speaker.speak(document.config.targetLanguage, this.practicedWord);
+AbstractQuestion.prototype.guess = function (answer, target) {
+    //console.log("EVENT guess ");
+    var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
+    if (isAnswerInTargetLanguage) {
+        Speaker.speak(document.config.targetLanguage, answer.replace('_', ' '));
     }
-    this.closeAnswered();
-    updateProgressBars();
-  } else {
-    this.element.addClass('eo-show_solution');
-  }
+    var isCorrect = this.isCorrect(answer);
+    if (isCorrect) {
+        if (!isAnswerInTargetLanguage) {
+            //Speaker.speak(document.config.targetLanguage, this.practicedWord);
+            Speaker.speak(document.config.targetLanguage, this.practicedWord.replace('_', ' '));
+        }
+        this.closeAnswered();
+        updateProgressBars();
+    } else {
+        this.element.addClass('eo-show_solution');
+        //this is not the right place for that code. pass it to multipleChoiseQuestion
+        $(target).toggleHtml($(target).data('translate'), $(target).data('word'));
+    }
 
-  // don't count the same answer multiple times.
-  if (this.tried.indexOf(answer) !== -1) return;
-  this.tried.push(answer);
+    // don't count the same answer multiple times.
+    if (this.tried.indexOf(answer) !== -1) return;
+    this.tried.push(answer);
 
-  this.report('TriedAnswer', {
-    question: this.data.id,
-    answer: answer
-  });
-
-  if (isCorrect) {
-    this.report('CompletedQuestion', {
-      question: this.data.id,
-      reason: 'correct'
+    this.report('TriedAnswer', {
+        question: this.data.id,
+        answer: answer
     });
-  }
+
+    if (isCorrect) {
+        this.report('CompletedQuestion', {
+            question: this.data.id,
+            reason: 'correct'
+        });
+    }
 };
 
 AbstractQuestion.prototype.languageOrderClass = function () {
-  return this.practicedWord !== this.data.hint ? 'eo-dest_hint' : 'eo-source_hint';
+    return this.practicedWord !== this.data.hint ? 'eo-dest_hint' : 'eo-source_hint';
 };
 
 AbstractQuestion.prototype.markAnswered = function () {
-  var correct = this.element.find('.eo-correct');
-  var finalWidth = correct.outerWidth();
-  // explicitly set initial width
-  // +1 because rounding makes it sometimes not fit, and one pixel is a small price for solving it
-  this.element.css('width', this.element.outerWidth() + 1);
-  // force repaint
-  this.element.width();
-  // change state
-  this.element.removeClass('eo-active');
-  this.element.addClass('eo-answered');
+    var correct = this.element.find('.eo-correct');
+    var finalWidth = correct.outerWidth();
+    // explicitly set initial width
+    // +1 because rounding makes it sometimes not fit, and one pixel is a small price for solving it
+    this.element.css('width', this.element.outerWidth() + 1);
+    // force repaint
+    this.element.width();
+    // change state
+    this.element.removeClass('eo-active');
+    this.element.addClass('eo-answered');
 
-  // force repaint
-  correct.width();
-  // explicitly set target and width
-  this.element.css('width', finalWidth + 1);
+    // force repaint
+    correct.width();
+    // explicitly set target and width
+    this.element.css('width', finalWidth + 1);
 };
 
 var OpenQuestion = function (question, toggleSound) {
-  AbstractQuestion.call(this, question, toggleSound);
-  this.lang = languageOf(this.correct[0].charCodeAt(0));
+    AbstractQuestion.call(this, question, toggleSound);
+    this.lang = languageOf(this.correct[0].charCodeAt(0));
 };
 
 OpenQuestion.prototype = Object.create(AbstractQuestion.prototype);
 OpenQuestion.prototype.constructor = OpenQuestion;
 
 OpenQuestion.prototype.createElement = function () {
-  console.log("EVENT OpenQuestion.prototype.createElement ??");
-  var element = AbstractQuestion.prototype.createElement.call(this);
-  element.addClass('eo-open');
-  this.input = $('<input>').addClass('eo-input');
-  element.find('.eo-hint').after(this.input);
-  return element;
+    console.log("EVENT OpenQuestion.prototype.createElement ??");
+    var element = AbstractQuestion.prototype.createElement.call(this);
+    element.addClass('eo-open');
+    this.input = $('<input>').addClass('eo-input');
+    element.find('.eo-hint').after(this.input);
+    return element;
 };
 
 OpenQuestion.prototype.bindInput = function () {
-  AbstractQuestion.prototype.bindInput.call(this);
+    AbstractQuestion.prototype.bindInput.call(this);
 
-  this.input.on('keypress', this.onKeyPress.bind(this)).on('focus', this.touch.bind(this)).on('blur', function (event) {
-    if (this.langWarning) this.langWarning.hide();
-  }.bind(this)).autocomplete({ source: document.wordlist }).on('autocompleteselect', this.onSelect.bind(this));
+    this.input.on('keypress', this.onKeyPress.bind(this)).on('focus', this.touch.bind(this)).on('blur', function (event) {
+        if (this.langWarning) this.langWarning.hide();
+    }.bind(this)).autocomplete({ source: document.wordlist }).on('autocompleteselect', this.onSelect.bind(this));
 };
 
 OpenQuestion.prototype.onKeyPress = function (event) {
-  var key = event.keyCode;
-  if (key === 13 || key === 10) {
-    event.preventDefault();
-    this.guess(this.input.val());
-    return false;
-  }
-  var lang = languageOf(event.charCode);
-  if (!lang) {
-    return;
-  } else if (lang !== this.lang) {
-    if (!this.langWarning) {
-      this.langWarning = $('<div>').addClass('eo-layout-warning').addClass('eo-box').append($('<p dir="ltr">').text(MESSAGES.WRONG_KEYBOARD_LAYOUT)).append($('<p>').append($('<strong>').text(MESSAGES.WRONG_KEYBOARD_LAYOUT_HINT)));
-      this.element.prepend(this.langWarning);
-
-      this.guess = function (answer) {
-        if (this.langWarning) this.langWarning.hide();
-        AbstractQuestion.prototype.guess.call(this, answer);
-      };
+    var key = event.keyCode;
+    if (key === 13 || key === 10) {
+        event.preventDefault();
+        this.guess(this.input.val());
+        return false;
     }
-    this.langWarning.show();
-  } else if (lang === this.lang) {
-    if (this.langWarning) this.langWarning.hide();
-  }
+    var lang = languageOf(event.charCode);
+    if (!lang) {
+        return;
+    } else if (lang !== this.lang) {
+        if (!this.langWarning) {
+            this.langWarning = $('<div>').addClass('eo-layout-warning').addClass('eo-box').append($('<p dir="ltr">').text(MESSAGES.WRONG_KEYBOARD_LAYOUT)).append($('<p>').append($('<strong>').text(MESSAGES.WRONG_KEYBOARD_LAYOUT_HINT)));
+            this.element.prepend(this.langWarning);
+
+            this.guess = function (answer) {
+                if (this.langWarning) this.langWarning.hide();
+                AbstractQuestion.prototype.guess.call(this, answer);
+            };
+        }
+        this.langWarning.show();
+    } else if (lang === this.lang) {
+        if (this.langWarning) this.langWarning.hide();
+    }
 };
 
 OpenQuestion.prototype.onSelect = function (event, ui) {
-  this.input.val(ui.item.value);
-  this.guess(this.input.val());
+    this.input.val(ui.item.value);
+    this.guess(this.input.val());
 };
 
 OpenQuestion.prototype.open = function () {
-  //console.log("EVENT open question ??");
-  this.animateStateChange('eo-active', null, this.element.outerWidth() + this.input.outerWidth());
-  this.input.focus();
+    //console.log("EVENT open question ??");
+    this.animateStateChange('eo-active', null, this.element.outerWidth() + this.input.outerWidth());
+    this.input.focus();
 };
 
 OpenQuestion.prototype.closeUnanswered = function () {
-  AbstractQuestion.prototype.closeUnanswered.call(this);
-  if (!this.element.hasClass('eo-answered')) {
-    if (this.element.hasClass('eo-open') && this.input.val()) {
-      this.guess(this.input.val());
+    AbstractQuestion.prototype.closeUnanswered.call(this);
+    if (!this.element.hasClass('eo-answered')) {
+        if (this.element.hasClass('eo-open') && this.input.val()) {
+            this.guess(this.input.val());
+        }
     }
-  }
 };
 
 OpenQuestion.prototype.guess = function (answer) {
-  var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
-  if (isAnswerInTargetLanguage) {
-    Speaker.speak(document.config.targetLanguage, this.correct[0]);
-  } else {
-    Speaker.speak(document.config.targetLanguage, this.practicedWord);
-  }
-  this.closeAnswered();
-  updateProgressBars();
-  var isCorrect = this.isCorrect(answer);
+    var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
+    if (isAnswerInTargetLanguage) {
+        Speaker.speak(document.config.targetLanguage, this.correct[0]);
+    } else {
+        Speaker.speak(document.config.targetLanguage, this.practicedWord);
+    }
+    this.closeAnswered();
+    updateProgressBars();
+    var isCorrect = this.isCorrect(answer);
 
-  // don't count the same answer multiple times.
-  if (this.tried.indexOf(answer) !== -1) return;
-  this.tried.push(answer);
+    // don't count the same answer multiple times.
+    if (this.tried.indexOf(answer) !== -1) return;
+    this.tried.push(answer);
 
-  this.report('TriedAnswer', {
-    question: this.data.id,
-    answer: answer
-  });
-
-  if (isCorrect) {
-    this.element.addClass('eo-correct_answer');
-    this.report('CompletedQuestion', {
-      question: this.data.id,
-      reason: 'correct'
+    this.report('TriedAnswer', {
+        question: this.data.id,
+        answer: answer
     });
-  } else {
-    this.element.addClass('eo-wrong_answer');
-    this.report('CompletedQuestion', {
-      question: this.data.id,
-      reason: 'ran out of attempts'
-    });
-  }
+
+    if (isCorrect) {
+        this.element.addClass('eo-correct_answer');
+        this.report('CompletedQuestion', {
+            question: this.data.id,
+            reason: 'correct'
+        });
+    } else {
+        this.element.addClass('eo-wrong_answer');
+        this.report('CompletedQuestion', {
+            question: this.data.id,
+            reason: 'ran out of attempts'
+        });
+    }
 };
 
 var MultipleChoice = function (question, toggleSound) {
-  AbstractQuestion.call(this, question, toggleSound);
+    AbstractQuestion.call(this, question, toggleSound);
 };
 
 MultipleChoice.prototype = Object.create(AbstractQuestion.prototype);
 MultipleChoice.prototype.constructor = MultipleChoice;
 
 MultipleChoice.prototype.createElement = function () {
-  // var answers = this.data.wrong_answers.map(function(x) {
-  //   return x.trim(); }).concat(this.correct);
-  // shuffle(answers);
-  var answers = this.data.wrong_answers;
-  shuffle(answers);
-  option_elements = answers.map(function (answer) {
-    if (answer.answer.includes('_')) {
-      var li = $('<li>').addClass('eo-option')
-      //replacing '_' with none breakable HTML CODE, so the word will not displayed in two lines
-      .append($('<span>' + answer.answer.substring(0, answer.answer.indexOf('_')) + '&#8209;' + answer.answer.substring(answer.answer.indexOf('_') + 1, answer.answer.length) + '</span>')).on('click', function (e) {
-        var target = $(e.target);
-        if (answer.translation) target.toggleText(answer.answer.replace('_', '-'), answer.translation.replace('_', '-'));
-        //Speaker.speak(document.config.targetLanguage, target.text());
-      });
-    } else {
-      var li = $('<li>').addClass('eo-option').append($('<span>').text(answer.answer)).on('click', function (e) {
-        var target = $(e.target);
-        if (answer.translation) target.toggleText(answer.answer.replace('_', '-'), answer.translation.replace('_', '-'));
-        //Speaker.speak(document.config.targetLanguage, target.text());
-      });
-    }
-    return li;
-  }.bind(this));
-  //   option_elements=answers.map(function(answer) {
-  //   if (answer.answer.includes('_')){
-  //        //replacing '_' with none breakable HTML CODE, so the word will not displayed in two lines
-  //       var unbreakable_span=$('<span>'+answer.answer.substring(0,answer.answer.indexOf('_'))+ '&#8209;'+answer.answer.substring(answer.answer.indexOf('_')+1 , answer.answer.length)+'</span>')
-  //   } else{
-  //       var unbreakable_span=$('<span>'+answer.answer+'</span>')
-  //   }
-  //   var li = $('<li>')
-  //     .addClass('eo-option')
-  //     .append($(unbreakable_span))
-  //     .on('click',function(e){
-  //               var target=$(e.target);
-  //               target.toggleText(answer.answer, answer.translation.replace('_','-'));
-  //               Speaker.speak(document.config.targetLanguage, target.text());});
-
-  //   return li;
-  // }.bind(this))
-  option_elements.push($('<li>').addClass('eo-option eo-correct_option').append($('<span>').text(this.correct[0])));
-  shuffle(option_elements);
-  var element = AbstractQuestion.prototype.createElement.call(this);
-  element.addClass('eo-multiple_choice');
-  this.options = $('<ul>').addClass('eo-options').append(option_elements);
-  element.find('.eo-hint').after(this.options);
-  return element;
+    // var answers = this.data.wrong_answers.map(function(x) {
+    //   return x.trim(); }).concat(this.correct);
+    // shuffle(answers);
+    var answers = this.data.wrong_answers;
+    shuffle(answers);
+    option_elements = answers.map(function (answer) {
+        var li = $('<li>').addClass('eo-option')
+        //replacing '_' with none breakable HTML ENTITY, so the word will not displayed in two lines
+        .append($('<span>').html(answer.answer.replace('_', '&#160;')).data('translate', answer.translation).data('word', answer.answer));
+        return li;
+    }.bind(this));
+    option_elements.push($('<li>').addClass('eo-option eo-correct_option').append($('<span>').html(this.correct[0].replace('_', '&#160;')).data('word', this.correct[0])));
+    shuffle(option_elements);
+    var element = AbstractQuestion.prototype.createElement.call(this);
+    element.addClass('eo-multiple_choice');
+    this.options = $('<ul>').addClass('eo-options').append(option_elements);
+    element.find('.eo-hint').after(this.options);
+    return element;
 };
 
 function shuffle(arr) {
-  var i = arr.length,
-      j,
-      temp;
-  if (i === 0) return;
-  while (--i) {
-    j = Math.floor(Math.random() * (i + 1));
-    temp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = temp;
-  }
+    var i = arr.length,
+        j,
+        temp;
+    if (i === 0) return;
+    while (--i) {
+        j = Math.floor(Math.random() * (i + 1));
+        temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
 };
 
 MultipleChoice.prototype.bindInput = function () {
-  AbstractQuestion.prototype.bindInput.call(this);
-  this.element.find('.eo-option').click(this.optionOnClick.bind(this));
+    AbstractQuestion.prototype.bindInput.call(this);
+    this.element.find('.eo-option').click(this.optionOnClick.bind(this));
 };
 
 MultipleChoice.prototype.optionOnClick = function (e) {
-  e.preventDefault();
-  this.guess($(e.target).text());
+    e.preventDefault();
+    this.guess($(e.target).data('word'), e.target);
 };
 
 MultipleChoice.prototype.open = function () {
-  var width = Math.max(this.element.outerWidth(), this.options.outerWidth());
-  // // see super() for explanation of +1
-  this.options.width(this.element.outerWidth() + 1);
-  this.animateStateChange('eo-active', null, width);
-  this.options.width(width + 1);
+    var width = Math.max(this.element.outerWidth(), this.options.outerWidth());
+    // // see super() for explanation of +1
+    this.options.width(this.element.outerWidth() + 1);
+    this.animateStateChange('eo-active', null, width);
+    this.options.width(width + 1);
 };
 
 MultipleChoice.prototype.closeUnanswered = function () {
-  AbstractQuestion.prototype.closeUnanswered.call(this);
-  if (!this.element.hasClass('eo-answered')) {
-    if (this.element.hasClass('eo-show_solution')) {
-      this.guess(this.correct[0]);
+    AbstractQuestion.prototype.closeUnanswered.call(this);
+    if (!this.element.hasClass('eo-answered')) {
+        if (this.element.hasClass('eo-show_solution')) {
+            this.guess(this.correct[0]);
+        }
     }
-  }
 };
 
 MultipleChoice.prototype.closeAnswered = function () {
-  // see super for more documentation
-  var correctOption = this.element.find('.eo-option.eo-correct_option span');
-  var initialTop = correctOption.offset().top - this.element.offset().top;
-  var correct = this.element.find('.eo-correct');
+    // see super for more documentation
+    var correctOption = this.element.find('.eo-option.eo-correct_option span');
+    var initialTop = correctOption.offset().top - this.element.offset().top;
+    var correct = this.element.find('.eo-correct');
 
-  correct.css('top', initialTop);
-  // force repaint
-  correct.width();
-  var org = this.data.hint;
-  var answer = this.data.correct_answers[0].answer;
-  // this.element.data('org',this.data.hint)
-  // this.element.data('answer',this.data.correct_answers[0].answer)
-  //window.localStorage.setItem('', );
-  this.element.on('click', function (e) {
-    e.preventDefault();
-    var target = $(e.target);
-    target.toggleText(org, answer);
-    Speaker.speak(document.config.targetLanguage, target.text());
-  });
-  AbstractQuestion.prototype.closeAnswered.call(this);
+    correct.css('top', initialTop);
+    // force repaint
+    correct.width();
+    var org = this.data.hint;
+    var answer = this.data.correct_answers[0].answer;
+    // this.element.data('org',this.data.hint)
+    // this.element.data('answer',this.data.correct_answers[0].answer)
+    //window.localStorage.setItem('', );
+    //this is the point! check here to fix the correct answer bug
+    this.element.on('click', function (e) {
+        e.preventDefault();
+        var target = $(e.target);
+        target.toggleHtml(org, answer);
+        Speaker.speak(document.config.targetLanguage, target.text());
+    });
+    AbstractQuestion.prototype.closeAnswered.call(this);
 
-  correct.css('top', 0);
+    correct.css('top', 0);
 };
 
 // completely non-interactive
 var AbstractExpiredQuestion = function (question) {
-  AbstractQuestion.call(this, question);
+    AbstractQuestion.call(this, question);
 };
 
 AbstractExpiredQuestion.prototype = Object.create(AbstractQuestion.prototype);
 AbstractExpiredQuestion.prototype.constructor = AbstractExpiredQuestion;
 
 AbstractExpiredQuestion.prototype.createElement = function () {
-  var element = AbstractQuestion.prototype.createElement.call(this).addClass('eo-answered').addClass('eo-expired');
+    var element = AbstractQuestion.prototype.createElement.call(this).addClass('eo-answered').addClass('eo-expired');
 
-  return element;
+    return element;
 };
 
 AbstractExpiredQuestion.prototype.bindInput = function () {};
 
 var ExpiredOpenQuestion = function (question) {
-  AbstractExpiredQuestion.call(this, question);
+    AbstractExpiredQuestion.call(this, question);
 };
 
 ExpiredOpenQuestion.prototype = Object.create(AbstractExpiredQuestion.prototype);
 ExpiredOpenQuestion.prototype.constructor = ExpiredOpenQuestion;
 
 ExpiredOpenQuestion.prototype.createElement = function () {
-  var element = AbstractExpiredQuestion.prototype.createElement.call(this);
+    var element = AbstractExpiredQuestion.prototype.createElement.call(this);
 
-  var tried = this.data.tried.slice();
-  var lastAnswer = tried.pop();
-  if (this.isCorrect(lastAnswer)) {
-    element.addClass('eo-correct_answer');
-  } else {
-    element.addClass('eo-wrong_answer');
-  }
+    var tried = this.data.tried.slice();
+    var lastAnswer = tried.pop();
+    if (this.isCorrect(lastAnswer)) {
+        element.addClass('eo-correct_answer');
+    } else {
+        element.addClass('eo-wrong_answer');
+    }
 
-  return element;
+    return element;
 };
 
 var ExpiredMultipleChoiceQuestion = function (question) {
-  AbstractExpiredQuestion.call(this, question);
+    AbstractExpiredQuestion.call(this, question);
 };
 
 ExpiredMultipleChoiceQuestion.prototype = Object.create(AbstractExpiredQuestion.prototype);
@@ -8046,7 +8034,7 @@ var Speaker = new function () {
 // source.buffer = Audiobuffer;
 // source.playbackRate.value = 1.5;
 //
-document.MENU_HTML = "<div id='eo-menu'>\
+document.MENU_HTML = "<div id='eo-menu' class='hidden'>\
     <div class='header'>\
         <div id='eo-account-area'>\
             <div class='Grid u-textCenter eo-row eo-menu-inner'>\
@@ -8094,7 +8082,7 @@ document.MENU_HTML = "<div id='eo-menu'>\
                         <div class='flag us-flag'></div>\
                     </div>\
                     <div class='Grid-cell v-align'>\
-                        <div class='eo-language-option-res'>Usa</div>\
+                        <div class='eo-language-option-res'>English (US)</div>\
                     </div>\
                 </div>\
             </div>\
@@ -8129,14 +8117,14 @@ document.MENU_HTML = "<div id='eo-menu'>\
             </div>\
             <div class='Grid-cell eo-row10 eo-menu-inner'>\
                 <div class='Grid'>\
-                    <div class='Grid-cell v-align right-align eo-menu-footer' id='help'>Help</div>\
+                    <div class='Grid-cell v-align right-align eo-menu-footer' id='help'>Need Help?</div>\
                     <div class='Grid-cell v-align eo-menu-footer' id='contact'>Contact Us</div>\
                 </div>\
             </div>\
         </div>\
-        <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner'>\
-            <div class='Grid-cell hidden'>\
-                <div id='eo-editor-btn'>edit questions</div>\
+        <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner' id='editor-row'>\
+            <div class='Grid-cell hidden v-align h-align'>\
+                <div id='eo-editor-btn' class='v-align h-align'>edit questions</div>\
             </div>\
         </div>\
     </div>\
@@ -8154,7 +8142,7 @@ document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
                 <div class='subtitle'>welcome to englishon... bla bla bla bla bla bla</div>\
             </div>\
             <div class='Grid-cell eo-row4'>\
-                <div id='google_iframe'></div>\
+                <div id='google-iframe'></div>\
             </div>\
             <div class='Grid-cell hidden'>\
                 <div id='eo-google-msg'></div>\
@@ -8437,7 +8425,6 @@ var toggle_login_dialog = function () {
     $("#eo-dlg-login").toggleClass('hidden');
     $('#djDebug').css({ 'display': 'none' });
     $('#eo-login-msg').text('').removeClass('ui-state-highlight');
-    $('#eo-login-email').focus();
 };
 
 var toggle_signout_dialog = function () {
@@ -8627,6 +8614,7 @@ document.EnglishOnMenu = function () {
         $('#eo-account-img').addClass('no-image');
     }
     if (JSON.parse(document.config.editor)) {
+        $('#eo-menu').addClass('menu-editor');
         $('#eo-editor-btn').parent().removeClass('hidden').addClass('vertical-container');
         var _editor = new Editor(document.overlay);
         $('#eo-editor-btn').on('click', function (event) {
@@ -8648,12 +8636,34 @@ document.EnglishOnMenu = function () {
     //TODO: add the editor button
     var token = encodeURIComponent(document.englishonBackend.token);
     if (document.config.isUser) var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
-    $('#google_iframe').append(google_login);
+    $('#google-iframe').append(google_login);
     $('#eo-iframe').on('load', function () {
         var popup = this.contentWindow;
+        if (window.matchMedia("(max-width:700px)").matches) {
+            $(".abcRioButton").css({
+                width: '100%',
+                height: '100%'
+            });
+        };
+        $('#djDebug').css({
+            display: 'none'
+        });
+
         popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
     });
     $('#eo-mail-login-btn').on('click', login_with_mail);
+    $('#eo-login-email').on('click', function (e) {
+        e.target.focus();
+        //Shturem is misiing <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        //This is causing chrome to compute the body width as 980px anycase, in inspector too
+        if (window.matchMedia("(max-width:980px)").matches) {
+            // if (window.matchMedia("(max-width:425px)").matches) {
+            $('#eo-dlg-login').css({ 'height': '50%' });
+            $('#eo-menu').css({ 'height': '50%' });
+            element = document.getElementById('eo-login-email');
+            element.scrollIntoView();
+        };
+    });
 };
 
 $(function () {

@@ -3282,20 +3282,20 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 #eo-menu input[type=range]::-webkit-slider-thumb {
   box-shadow: 0px 0px 5px 0px #000000;
-  height: 60px;
-  width: 60px;
+  height: 70px;
+  width: 70px;
   border-radius: 50px;
   background: #eceff1;
   cursor: pointer;
   -webkit-appearance: none;
-  margin-top: -21px;
+  margin-top: -26px;
 }
 #eo-menu input[type=range]:focus::-webkit-slider-runnable-track {
   background: #39d3b5;
 }
 #eo-menu input[type=range]::-moz-range-track {
   width: 80%;
-  height: 20px;
+  height: 5px;
   cursor: pointer;
   transition: all .2s ease;
   background: #2cc6a8;
@@ -3304,8 +3304,8 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 #eo-menu input[type=range]::-moz-range-thumb {
   box-shadow: 0px 0px 5px 0px #000000;
-  height: 60px;
-  width: 60px;
+  height: 15px;
+  width: 15px;
   border-radius: 50px;
   background: #eceff1;
   cursor: pointer;
@@ -3317,7 +3317,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   transition: all .2s ease;
   background: transparent;
   border-color: transparent;
-  border-width: 30px 0;
+  border-width: 35px 0;
   color: transparent;
 }
 #eo-menu input[type=range]::-ms-fill-lower {
@@ -3332,8 +3332,8 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 #eo-menu input[type=range]::-ms-thumb {
   box-shadow: 0px 0px 5px 0px #000000;
-  height: 60px;
-  width: 60px;
+  height: 70px;
+  width: 70px;
   border-radius: 50px;
   background: #eceff1;
   cursor: pointer;
@@ -3368,9 +3368,12 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   }
 }
 
+/*Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">*/
+/*This is causing chrome to compute the body width as 980px anycase, in inspector too*/
+/*That is the reason to determine 980px as the media queries breakpoint */
 .eo-delimiter {
   height: 50%;
-  border-bottom: 1px solid #d7dee3;
+  border-bottom: 2px solid #d7dee3;
   flex: 0 0 42%;
 }
 
@@ -3455,6 +3458,11 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 
 .Grid--1of4 > .Grid-cell {
   flex: 0 0 25%;
+}
+
+#editor-row {
+  background-color: #4b5a66;
+  color: white;
 }
 
 @media (--break-sm) {
@@ -3545,6 +3553,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 
 #eo-dlg-login {
   z-index: 4;
+  overflow-y: auto;
 }
 
 #google_btn {
@@ -3662,6 +3671,11 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   text-align: center !important;
 }
 
+#google_iframe {
+  height: 100%;
+  margin-top: 100px;
+}
+
 .header {
   background-color: #4b5a66;
   font-family: Roboto;
@@ -3694,7 +3708,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 #eo-dlg-inner {
   margin: 0px 104px;
   height: 100%;
-  overflow: hidden;
 }
 
 .u-1of2 {
@@ -3760,6 +3773,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   width: 160px;
   height: 60px;
   border: none;
+  transform: scale(3.5);
 }
 
 #eo-power-switch {
@@ -3894,13 +3908,17 @@ eo-signout-layout .signout {
   visibility: hidden;
   position: absolute;
   text-align: center;
-  font-size: 15px;
-  padding-top: 10px;
-  padding-left: 63px;
+  font-size: 16px;
+  padding-top: 14px;
+  padding-left: 60px;
 }
 
 #coming_soon .Grid-cell:hover .tooltip {
   visibility: visible;
+}
+
+#coming_soon .Grid-cell:hover {
+  padding: 0px;
 }
 
 #coming_soon .tooltip {
@@ -3935,19 +3953,18 @@ eo-signout-layout .signout {
   font-family: Roboto-Light;
 }
 
-#google_iframe {
+#google-iframe {
   margin-left: 20px;
   padding-top: 30px;
+  height: 180px;
+  padding-top: 100px;
 }
 
+#eo-editor-btn,
 #signout_btn {
   cursor: pointer;
   width: 100%;
   height: 100%;
-}
-
-#eo-editor-btn {
-  cursor: pointer;
 }
 
 #eo-account-name:hover,
@@ -3962,7 +3979,7 @@ eo-signout-layout .signout {
 }
 
 .us-flag {
-  background-image: url(http://www.englishon.org/v1/img/button-on-en.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-on-usa.svg);
 }
 
 .fr-flag {
@@ -3977,10 +3994,6 @@ eo-signout-layout .signout {
   background-image: url(http://www.englishon.org/v1/img/button-on-zh.svg);
 }
 
-#eo-editor-btn {
-  padding-left: 20px;
-}
-
 #account-triangle {
   font-size: 104px;
 }
@@ -3990,9 +4003,9 @@ eo-signout-layout .signout {
 }
 
 #help {
-  flex: 0 1 33%;
-  padding-right: 17%;
-  border-right: 1px solid green;
+  flex: 0 1 47%;
+  padding-right: 3%;
+  border-right: 1px solid #d7dee3;
 }
 
 #contact {
@@ -4087,7 +4100,7 @@ eo-signout-layout .signout {
 }
 
 .eo-row4 {
-  height: 392px;
+  height: 360px;
 }
 
 .eo-row5 {
@@ -4157,6 +4170,29 @@ eo-signout-layout .signout {
 }
 
 @media (min-width: 1050px) {
+  #eo-menu.menu-editor {
+    height: 411px;
+  }
+
+  #coming_soon .Grid-cell:hover {
+    padding: 0px;
+  }
+
+  #google-iframe {
+    margin-left: 20px;
+    padding-top: 30px;
+    height: 45px;
+    padding-top: 25px;
+  }
+
+  #eo-iframe {
+    transform: scale(1);
+  }
+
+  .eo-delimiter {
+    border-bottom: 1px solid #d7dee3;
+  }
+
   #eo-login-msg,
   #eo-google-msg,
   #eo-signout-msg {
@@ -4212,7 +4248,7 @@ eo-signout-layout .signout {
 
   #eo-menu,
   #eo-dlg-login {
-    height: 381px;
+    height: 360px;
   }
   #eo-menu .eo-input,
   #eo-dlg-login .eo-input {
@@ -4328,7 +4364,7 @@ eo-signout-layout .signout {
   }
 
   .eo-row4 {
-    height: 98px;
+    height: 90px;
   }
 
   .eo-row11 {
@@ -4372,6 +4408,7 @@ eo-signout-layout .signout {
 
   #eo-dlg-inner {
     margin: 0px 26px;
+    overflow: hidden;
   }
 
   #eo-dlg-login .eo-row9 {
