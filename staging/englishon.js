@@ -6516,6 +6516,11 @@ var WEBSITE_I18N = {
         MESSAGES: MESSAGES_EN,
         DIRECTION: LTR,
         DEFAULT_TARGET_LANGUAGE: 'en'
+    },
+    'www.englishon.org': {
+        MESSAGES: MESSAGES_EN,
+        DIRECTION: LTR,
+        DEFAULT_TARGET_LANGUAGE: 'en'
     }
 };
 var I18N = WEBSITE_I18N[location.hostname];
@@ -8129,6 +8134,7 @@ document.MENU_HTML = "<div id='eo-menu' class='hidden'>\
         </div>\
     </div>\
 </div>\
+<div id='browser_info' class='hidden'>Your browser is not supported. <a href='shturem.net'>chrome</a><a href='shturem.net'>firefox</a></div>\
 ";
 //
 document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
@@ -8139,7 +8145,7 @@ document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
                 <div class='eo-dlg-header'>Sign Up/In</div>\
             </div>\
             <div class='Grid-cell eo-row3 v-align h-align'>\
-                <div class='subtitle'>welcome to englishon... bla bla bla bla bla bla</div>\
+                <div class='subtitle'>Welcome to englishon. Learn english- fast and fun</div>\
             </div>\
             <div class='Grid-cell eo-row4'>\
                 <div id='google-iframe'></div>\

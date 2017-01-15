@@ -55,7 +55,6 @@
 קליד key
 מפתח key
 מקש key
-לכוון_כלי_מוזיקה key
 קלידים keys
 מפתחות keys
 משפחה family
