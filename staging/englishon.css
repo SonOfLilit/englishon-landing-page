@@ -2901,6 +2901,9 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 
 /* Button */
 .eo-button {
+  overflow: visible;
+  display: inline-block;
+  position: relative;
   padding-right: 30px;
 }
 .eo-button.eo-button-loading {
@@ -2917,11 +2920,6 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 }
 
 /* Menu */
-.eo-button {
-  overflow: visible;
-  display: inline-block;
-}
-
 .eo-menu {
   position: absolute;
   z-index: 9999;
