@@ -8138,7 +8138,7 @@ document.MENU_HTML = "<div id='eo-menu' class='hidden'>\
         </div>\
     </div>\
 </div>\
-<div id='browser_info' class='hidden'>Your browser is not supported. <a href='shturem.net'>chrome</a><a href='shturem.net'>firefox</a></div>\
+\
 ";
 //
 document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
@@ -8670,8 +8670,8 @@ document.EnglishOnMenu = function () {
         //This is causing chrome to compute the body width as 980px anycase, in inspector too
         if (window.matchMedia("(max-width:980px)").matches) {
             // if (window.matchMedia("(max-width:425px)").matches) {
-            $('#eo-dlg-login').css({ 'height': '75%' });
-            $('#eo-menu').css({ 'height': '75%' });
+            $('#eo-dlg-login').css({ 'height': '80%' });
+            $('#eo-menu').css({ 'height': '80%' });
             //TODO: check why this code is not working
             element = document.getElementById('eo-login-email');
             element.scrollIntoView();
