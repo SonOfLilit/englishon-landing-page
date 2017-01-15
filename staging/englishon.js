@@ -8488,6 +8488,8 @@ document.EnglishOnMenu = function () {
             auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
                 if (res.status == 'error') {
                     display_message(res.message, $('#eo-login-msg'));
+                    $('#eo-dlg-login').css({ 'height': '100%' });
+                    $('#eo-menu').css({ 'height': '100%' });
                     return;
                 }
                 $('#eo-account-area').removeClass('guest');
@@ -8668,8 +8670,9 @@ document.EnglishOnMenu = function () {
         //This is causing chrome to compute the body width as 980px anycase, in inspector too
         if (window.matchMedia("(max-width:980px)").matches) {
             // if (window.matchMedia("(max-width:425px)").matches) {
-            // $('#eo-dlg-login').css({ 'height': '50%' })
-            // $('#eo-menu').css({ 'height': '50%' })
+            $('#eo-dlg-login').css({ 'height': '75%' });
+            $('#eo-menu').css({ 'height': '75%' });
+            //TODO: check why this code is not working
             element = document.getElementById('eo-login-email');
             element.scrollIntoView();
         };
