@@ -8668,8 +8668,8 @@ document.EnglishOnMenu = function () {
         //This is causing chrome to compute the body width as 980px anycase, in inspector too
         if (window.matchMedia("(max-width:980px)").matches) {
             // if (window.matchMedia("(max-width:425px)").matches) {
-            $('#eo-dlg-login').css({ 'height': '50%' });
-            $('#eo-menu').css({ 'height': '50%' });
+            // $('#eo-dlg-login').css({ 'height': '50%' })
+            // $('#eo-menu').css({ 'height': '50%' })
             element = document.getElementById('eo-login-email');
             element.scrollIntoView();
         };
