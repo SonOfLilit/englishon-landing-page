@@ -90,7 +90,7 @@ div.body{
   direction:rtl;
 }
 
-div.ticker{text-align:right;position:relative;height:159px;background-image:url("/images/hebrew/ticker_bg.gif");width:168px;background-position:right;background-repeat:repeat-y;}
+div.ticker{text-align:right;position:relative;height:159px;background-image:url("http://shturem.net/images/hebrew/ticker_bg.gif");width:168px;background-position:right;background-repeat:repeat-y;}
 
 div.mazal-ticker {
   text-align:right;
@@ -105,14 +105,14 @@ div.mazal-ticker div.top {
 div.mazal-ticker div.top a,div.mazal-ticker div.top a:hover {
  text-decoration: none; 
  height: 40px; display: block;
- background-image:url("/images/hebrew/mazal_top.gif");
+ background-image:url("http://shturem.net/images/hebrew/mazal_top.gif");
  background-position:right top; background-repeat:no-repeat;
 }
 
 div.mazal-ticker div.bottom {
  margin: 0; padding: 0;
  height:120px; width: 154px;
- background-image:url("/images/hebrew/mazal_bg.gif");
+ background-image:url("http://shturem.net/images/hebrew/mazal_bg.gif");
  background-position:right top; background-repeat:no-repeat;
 }
 div.mazal-ticker div.bottom marquee#mazal_scroller {
@@ -142,7 +142,7 @@ font-size:11px;
 .box_mazalo {
   margin-top: 5px;
   background-color: #406718;
-  background-image: url("/images/hebrew/mazalo/mazalo_bg2.jpg"); background-repeat: repeat-y;
+  background-image: url("http://shturem.net/images/hebrew/mazalo/mazalo_bg2.jpg"); background-repeat: repeat-y;
   padding: 0; color: #ffffff;
 }
 .box_mazalo td {
@@ -170,7 +170,7 @@ font-size:11px;
 
 body.mazalo {
   margin: 0; padding: 0; 
-  background-image: url("/images/hebrew/mazalo/mazalo_popup_bg770_2.jpg"); background-repeat: no-repeat;
+  background-image: url("http://shturem.net/images/hebrew/mazalo/mazalo_popup_bg770_2.jpg"); background-repeat: no-repeat;
   background-color: #ffffff;
   background-position: right top;
   color: #ffffff;
@@ -183,7 +183,7 @@ body.mazalo {
 .popup_mazalo input.name { width: 115px; }
 .popup_mazalo textarea.comments { width: 300px; overflow: auto; }
 .popup_mazalo input, .popup_mazalo textarea {
-  background-image: url("/images/hebrew/mazalo/input_bg.jpg"); background-position: top left;
+  background-image: url("http://shturem.net/images/hebrew/mazalo/input_bg.jpg"); background-position: top left;
   border: 1px solid #808080;
 }
 .popup_mazalo input.submit, .popup_mazalo input.name, .popup_mazalo input.city { padding: 3px; }
@@ -291,11 +291,11 @@ td.leftColumn{text-align:left; padding: 0px;}
 td.centerColumn{text-align: center;}
 td.rightColumn{padding:0px;}
 td.mainBanner{text-align:left;width:235px;}
-//td.topBannerLeft{text-align:right;height:103px;width:11px;background-color:white;vertical-align:middle;background-image:url('/images/banner_top_left.gf');background-position:left;background-repeat:no-repeat;}
-//td.topBannerRight{text-align:left;height:103px;width:11px;background-color:white;vertical-align:middle;background-image:url('/images/banner_top_right.gf');background-position:left;background-repeat:no-repeat;}
+//td.topBannerLeft{text-align:right;height:103px;width:11px;background-color:white;vertical-align:middle;background-image:url('http://shturem.net/images/banner_top_left.gf');background-position:left;background-repeat:no-repeat;}
+//td.topBannerRight{text-align:left;height:103px;width:11px;background-color:white;vertical-align:middle;background-image:url('http://shturem.net/images/banner_top_right.gf');background-position:left;background-repeat:no-repeat;}
 td.topBanner{background-color:#E6E6E6;padding-left:10px;}
-td.bannerLeft{text-align:right;height:69px;width:11px;background-color:white;vertical-align:middle;background-image:url('/images/hebrew/banner_left.gif');background-position:left;background-repeat:no-repeat;}
-td.bannerRight{text-align:left;height:69px;width:11px;background-color:white;vertical-align:middle;background-image:url('/images/hebrew/banner_right.gif');background-position:left;background-repeat:no-repeat;}
+td.bannerLeft{text-align:right;height:69px;width:11px;background-color:white;vertical-align:middle;background-image:url('http://shturem.net/images/hebrew/banner_left.gif');background-position:left;background-repeat:no-repeat;}
+td.bannerRight{text-align:left;height:69px;width:11px;background-color:white;vertical-align:middle;background-image:url('http://shturem.net/images/hebrew/banner_right.gif');background-position:left;background-repeat:no-repeat;}
 td.bannerMiddle{width:214px;background-color:#880000;}
 td.banner{background-color:#E6E6E6;padding-left:10px;}
 td.dateBarLeft{padding-left:10px;background-color:#ECEAEB;color:#B00100;text-align:left;font-weight:bold;}
@@ -305,31 +305,31 @@ td.headImg{margin:0px;padding:0px;border:1px solid black;width:270;}
 td.headTxt{width:290;padding:20px;border:1px solid black;}
 td.newsTopRight{width:307px;text-align:right;vertical-align:middle;padding:0px;margin:0px;padding-top:1px;}
 td.newsTopLeft{text-align:left;vertical-align:top;height:168px;padding:0px;margin:0px;}
-td.newsTopCenter{background-image:url("/images/hebrew/maintopbg.jpg");background-position:top right;background-repeat:repeat-x;background-color:#E6E6E6;width:370px;height:168px;padding:0px;padding-right:20px;padding-top:50px;padding-left:20px;text-align:center;text-align:right;vertical-align:top;}
-td.newsTopBorder{background-image:url("/images/hebrew/maintopborder.gif");background-repeat:repeat-x;padding:0px;margin:0px;height:10px;}
+td.newsTopCenter{background-image:url("http://shturem.net/images/hebrew/maintopbg.jpg");background-position:top right;background-repeat:repeat-x;background-color:#E6E6E6;width:370px;height:168px;padding:0px;padding-right:20px;padding-top:50px;padding-left:20px;text-align:center;text-align:right;vertical-align:top;}
+td.newsTopBorder{background-image:url("http://shturem.net/images/hebrew/maintopborder.gif");background-repeat:repeat-x;padding:0px;margin:0px;height:10px;}
 td.searchBarLeft{background-color:#E0DEDF;width:100%;height:25px;}
 td.searchBarRight{width:128px;height:25px;padding-left:5px;vertical-align:middle;}
 
 td.catLogo{text-align:right}
 
 td.categoryArticles{width:300px;vertical-align:top;padding-right:20px;padding-bottom:20px;}
-td.newsarticleshead{background-image:url("/images/hebrew/news_art_head.gif");width:273;height:19px;background-repeat:no-repeat;background-position:top right;padding-right:10px;font-weight:bold;color:white;}
+td.newsarticleshead{background-image:url("http://shturem.net/images/hebrew/news_art_head.gif");width:273;height:19px;background-repeat:no-repeat;background-position:top right;padding-right:10px;font-weight:bold;color:white;}
 td.regcontent{vertical-align:top;width:260px;padding-right:10px;padding-left:10px;line-height:18px;padding-top:0px;height:30px;}
-td.boxtop{padding-right:10px;width:153px;height:22px;color:white;font-weight:bold;background-image:url("/images/boxtop.gif");background-repeat:no-repeat;}
+td.boxtop{padding-right:10px;width:153px;height:22px;color:white;font-weight:bold;background-image:url("http://shturem.net/images/boxtop.gif");background-repeat:no-repeat;}
 td.boxText{padding-right:0px;padding-top:0px;}
 td.boxBanner{padding-top:5px;}
-td.mekusharimTop{background-image:url("/images/hebrew/mekusharim_top.gif");height:22px;width:152px;font-weight:bold;background-repeat:no-repeat;background-position:right;padding-right:10px;}
+td.mekusharimTop{background-image:url("http://shturem.net/images/hebrew/mekusharim_top.gif");height:22px;width:152px;font-weight:bold;background-repeat:no-repeat;background-position:right;padding-right:10px;}
 td.mekusharimMiddle{background-color:#DDDCDA;width:145px;text-align:center;height:50px;padding:5px;}
-td.mekusharimBottom{background-image:url("/images/hebrew/mekusharim_bottom.gif");height:13px;width:152px;font-weight:bold;background-repeat:no-repeat;background-position:right;}
+td.mekusharimBottom{background-image:url("http://shturem.net/images/hebrew/mekusharim_bottom.gif");height:13px;width:152px;font-weight:bold;background-repeat:no-repeat;background-position:right;}
 
 div.redmail{
 margin-bottom:10px;width:154px;
- background-image:url("/images/hebrew/redmail_bottom.gif");
+ background-image:url("http://shturem.net/images/hebrew/redmail_bottom.gif");
  background-repeat:no-repeat;background-position:bottom right;
  background-color:#D4CFBB;
 }
 div.redmail div.top a,div.redmail div.top a:hover {
- background-image: url("/images/hebrew/redmail_title.gif");
+ background-image: url("http://shturem.net/images/hebrew/redmail_title.gif");
  height:40px;width:154px;
  font-weight:bold;background-repeat:no-repeat;background-position:right;
  display: block; text-decoration: none;
@@ -347,13 +347,13 @@ div.redmail ul.links {
   margin: 0;
 }
 
-td.picofdayTop{background-image:url("/images/hebrew/picofday_top.gif");height:26px;width:151px;font-weight:bold;background-repeat:no-repeat;background-position:right;padding-right:10px;}
+td.picofdayTop{background-image:url("http://shturem.net/images/hebrew/picofday_top.gif");height:26px;width:151px;font-weight:bold;background-repeat:no-repeat;background-position:right;padding-right:10px;}
 td.picofdayMiddle{margin:0px;padding:0px;height:80px;background-color:#CCCCCC}
 td.picofdayText{padding:5px;margin:0px;padding-bottom:5px;width:151px;height:30px;text-align:right;color:#333333;background-color:#CCCCCC;font-weight:bold;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color="#880000";}
 td.picofdayBottom{font-weight:bold;color:#AF0706;text-align:center;height:0px;width:151px;font-weight:bold;background-repeat:no-repeat;background-position:bottom right;}
-td.searchTop{background-image:url("/images/hebrew/search_top.gif");height:23px;width:123px;font-weight:bold;background-repeat:no-repeat;background-position:right;padding-right:10px;}
+td.searchTop{background-image:url("http://shturem.net/images/hebrew/search_top.gif");height:23px;width:123px;font-weight:bold;background-repeat:no-repeat;background-position:right;padding-right:10px;}
 td.searcMiddle{background-color:#DDDCDA;width:123px;text-align:center;height:50px;padding:5px;}
-td.searchBottom{background-image:url("/images/hebrew/search_bottom.gif");height:13px;width:123px;font-weight:bold;background-repeat:no-repeat;background-position:right;}
+td.searchBottom{background-image:url("http://shturem.net/images/hebrew/search_bottom.gif");height:13px;width:123px;font-weight:bold;background-repeat:no-repeat;background-position:right;}
 
 td.catMenu{height:20px;padding:5px;padding-right:13px;background-color:#000080;text-align:center;}
 td.catMenuSelected{height:20px;padding:5px;padding-right:13px;background-color:#898989;text-align:center;}
@@ -368,16 +368,16 @@ td.catBoxBottom{padding-right:15px;padding-bottom:20px;}
 td.catBoxText{width:100%;height:90px;padding-right:15px;overflow:hidden;}
 td.mainBoxText{width:116xp;height:100%;padding:10px;}
 td.mainBoxImg{padding-top:10px;}
-td.mainNews{background-image:url("/images/hebrew/main_news_head.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
-td.mainCols{background-image:url("/images/hebrew/main_cols_head.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
-td.mainElse{background-image:url("/images/hebrew/main_else_head.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
-td.multiMain1{background-image:url("/images/hebrew/multimedia_strip1.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
-td.multiMain2{background-image:url("/images/hebrew/multimedia_strip2.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
-td.multiMain3{background-image:url("/images/hebrew/multimedia_strip3.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
-td.multiMain4{background-image:url("/images/hebrew/multimedia_strip4.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
+td.mainNews{background-image:url("http://shturem.net/images/hebrew/main_news_head.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
+td.mainCols{background-image:url("http://shturem.net/images/hebrew/main_cols_head.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
+td.mainElse{background-image:url("http://shturem.net/images/hebrew/main_else_head.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
+td.multiMain1{background-image:url("http://shturem.net/images/hebrew/multimedia_strip1.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
+td.multiMain2{background-image:url("http://shturem.net/images/hebrew/multimedia_strip2.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
+td.multiMain3{background-image:url("http://shturem.net/images/hebrew/multimedia_strip3.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
+td.multiMain4{background-image:url("http://shturem.net/images/hebrew/multimedia_strip4.gif");width:414;height:27px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;}
 td.footer{color:#999999}
-td.catNews{vertical-align:top;background-image:url("/images/hebrew/cat_news_head.gif");width:414;height:37px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;padding-top:3px;}
-td.commentsHead{vertical-align:top;background-image:url("/images/hebrew/cat_news_head.gif");width:414;height:50px;background-repeat:no-repeat;background-position:center right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;padding-top:5px;vertical-align:middle;}
+td.catNews{vertical-align:top;background-image:url("http://shturem.net/images/hebrew/cat_news_head.gif");width:414;height:37px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;padding-top:3px;}
+td.commentsHead{vertical-align:top;background-image:url("http://shturem.net/images/hebrew/cat_news_head.gif");width:414;height:50px;background-repeat:no-repeat;background-position:center right;padding-right:10px;padding-bottom:5px;font-weight:bold;color:white;padding-top:5px;vertical-align:middle;}
 td.artImage{border:0px solid black;padding:3px;text-align:center;}
 td.artTitle{padding-right:5px;}
 td.artText{padding-right:5px;font-size:12px;text-align: right;}
@@ -389,7 +389,7 @@ div.artTitle_container {
 .artReporter{
   margin-top: 10px;
   padding-bottom:15px;
-  background-image:url("/images/hebrew/bg-writer2.jpg");background-position:top right;background-repeat:no-repeat;
+  background-image:url("http://shturem.net/images/hebrew/bg-writer2.jpg");background-position:top right;background-repeat:no-repeat;
   padding-right:5px;color:white;font-weight:bold;font-size:14px;
 }
 .artReporter_print {
@@ -397,8 +397,8 @@ div.artTitle_container {
 }
 td.artImages{padding-bottom:20px;text-align:center;}
 td.artImages img { margin: 0;}
-td.artLinks{height:30px;background-image:url("/images/artlinksbg.gif");background-position:center right;background-repeat:no-repeat;text-align:center;}
-td.artGoBack{height:30px;width:67px;background-image:url("/images/artgoback.jpg");background-position:center right;background-repeat:no-repeat;text-align:center;}
+td.artLinks{height:30px;background-image:url("http://shturem.net/images/artlinksbg.gif");background-position:center right;background-repeat:no-repeat;text-align:center;}
+td.artGoBack{height:30px;width:67px;background-image:url("http://shturem.net/images/artgoback.jpg");background-position:center right;background-repeat:no-repeat;text-align:center;}
 td.authorMenu{vertical-align:top;padding-bottom:5px;padding-left:15px;}
 td.moreColumns{font-weight:bold;}
 
@@ -410,9 +410,9 @@ td.moreColumns{font-weight:bold;}
   background-repeat:no-repeat;background-position:center;
   cursor: pointer;
 }
-.congrats_item .pic_1 { background-image:url("/images/happy1.jpg"); }
-.congrats_item .pic_2 { background-image:url("/images/happy2.jpg"); }
-.congrats_item .pic_3 { background-image:url("/images/happy3.jpg"); }
+.congrats_item .pic_1 { background-image:url("http://shturem.net/images/happy1.jpg"); }
+.congrats_item .pic_2 { background-image:url("http://shturem.net/images/happy2.jpg"); }
+.congrats_item .pic_3 { background-image:url("http://shturem.net/images/happy3.jpg"); }
 
 .congrats_item .title {
   font-size:14px; background-color:#E1E0DE;
@@ -469,7 +469,7 @@ td.confrom{text-align:center;}
 td.commentadd{vertical-align:top;padding-left:5px;padding-bottom:10px;}
 td.pbadd{vertical-align:top;padding-left:5px;padding-bottom:4px;}
 td.commentsend{text-align:left;padding-left:15px;padding-bottom:10px;font-family: Arial;}
-td.commentHead{vertical-align:top;background-image:url("/images/hebrew/cat_news_head.gif");width:414;height:25px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:0px;font-weight:bold;color:white;padding-top:3px;}
+td.commentHead{vertical-align:top;background-image:url("http://shturem.net/images/hebrew/cat_news_head.gif");width:414;height:25px;background-repeat:no-repeat;background-position:top right;padding-right:10px;padding-bottom:0px;font-weight:bold;color:white;padding-top:3px;}
 td.infoTitle{font-size:18px;color:black;font-weight:bold;}
 td.searchresult{vertical-align:top;padding-right:10px;padding-left:10px;line-height:18px;padding-top:0px;padding-bottom:10px;}
 td.searchArea{font-weight:bold;text-decoration:underline;verticlal-align:top;padding-right:10px;padding-left:10px;padding-bottom:0px;font-size:14px;}
@@ -496,15 +496,15 @@ table.calendar th{
   background-color:#010066;color:white;font-weight:bold;font-size:16px;text-align:center;
 }
 td.calendar_shadow_r {
-  background-image: url("/images/events/shadow/16_r.jpg");
+  background-image: url("http://shturem.net/images/events/shadow/16_r.jpg");
   background-position: left; background-repeat: repeat-y;
 }
 td.calendar_shadow_b {
-  background-image: url("/images/events/shadow/16_b.jpg");
+  background-image: url("http://shturem.net/images/events/shadow/16_b.jpg");
   background-position: left; background-repeat: repeat-x;
 }
 td.calendar_shadow_br {
-  background-image: url("/images/events/shadow/16_br.jpg");
+  background-image: url("http://shturem.net/images/events/shadow/16_br.jpg");
   background-position: top left; background-repeat: no-repeat;
 }
 
@@ -525,10 +525,10 @@ a.events_add_mz:hover { color: #000080; background-color: #90c090; font-size: 10
 h5.cal_date { color:#000000;font-weight:bold;font-size:18px;text-align:center; }
 
 .cal_date th.top_red {
- width: 249px; height: 32px; background-image: url("/images/events/d_red_top.jpg");
+ width: 249px; height: 32px; background-image: url("http://shturem.net/images/events/d_red_top.jpg");
 }
 .cal_date th.top_blue {
- width: 249px; height: 32px; background-image: url("/images/events/d_blue_top.jpg");
+ width: 249px; height: 32px; background-image: url("http://shturem.net/images/events/d_blue_top.jpg");
 }
 .cal_date div.top_text {
   padding-right: 20px; padding-left: 20px;
@@ -536,17 +536,17 @@ h5.cal_date { color:#000000;font-weight:bold;font-size:18px;text-align:center; }
   text-align: right;
 }
 .cal_date td.body_red {
- width: 249px; background-image: url("/images/events/d_red_body.jpg");
+ width: 249px; background-image: url("http://shturem.net/images/events/d_red_body.jpg");
 }
 .cal_date td.body_blue {
- width: 249px; background-image: url("/images/events/d_blue_body.jpg");
+ width: 249px; background-image: url("http://shturem.net/images/events/d_blue_body.jpg");
 }
 .cal_date td.bottom_red {
- width: 249px; height: 11px; background-image: url("/images/events/d_red_bottom.jpg");
+ width: 249px; height: 11px; background-image: url("http://shturem.net/images/events/d_red_bottom.jpg");
  font-size: 5px; background-position: top left; background-repeat: no-repeat;
 }
 .cal_date td.bottom_blue {
- width: 249px; height: 11px; background-image: url("/images/events/d_blue_bottom.jpg");
+ width: 249px; height: 11px; background-image: url("http://shturem.net/images/events/d_blue_bottom.jpg");
  font-size: 5px; background-position: top left; background-repeat: no-repeat;
 }
 .cal_date div.cal_body {
@@ -592,12 +592,12 @@ tr.pbshow{display:table-row;}
 table.pbin{width:550px;;text-align:center;background-color:#E0DEDF; margin-top:10px; margin-bottom:10px;}
 table.wantedin{width:450px;text-align:center;background-color:#CDBE94; margin-top:10px; margin-bottom:10px;border:1px solid black;font-weight:bold;}
 td.pbin{}
-td.surveyTop{background-image:url("/images/survey_top.gif");background-position:top;padding-right:5px;padding-left:5px;color:white;height:16px;width:153px;font-weight:bold;}
+td.surveyTop{background-image:url("http://shturem.net/images/survey_top.gif");background-position:top;padding-right:5px;padding-left:5px;color:white;height:16px;width:153px;font-weight:bold;}
 td.surveyTitle{padding:3px;color:white;background-color:#AC0000;padding-right:20px;padding-left:5px;font-weight:bold;}
 td.surveySend{color:white;background-color:#AC0000;padding-right:0px;padding-left:0px;font-weight:bold;}
 td.surveyTextLeft{border-left:solid #AC0000 1px;padding-top:5px;padding-bottom:5px;background-color:#dfdfdf;color:black;padding-right:5px;padding-left:5px;}
 td.surveyTextRight{border-right:solid #AC0000 1px;padding-top:5px;padding-bottom:5px;background-color:#dfdfdf;color:black;padding-right:5px;padding-left:5px;}
-td.surveyBottom{background-image:url("/images/survey_bottom.gif");background-position:top;padding-right:5px;padding-left:5px;color:white;height:16px;width:153px;font-weight:bold;}
+td.surveyBottom{background-image:url("http://shturem.net/images/survey_bottom.gif");background-position:top;padding-right:5px;padding-left:5px;color:white;height:16px;width:153px;font-weight:bold;}
 
 .surveyTitelName{font-weight:bold;font-size:20px;}
 
@@ -659,15 +659,15 @@ td.mainpn_top {
   color: #ffffff;
   font-size: 19px; font-weight: bold; text-align: center;
 }
-table.mainpn td.top_reg {background-image:url("/images/mainpn/455px/art_top_reg.jpg");background-color:#880000;}
-table.mainpn td.top_blue {background-image:url("/images/mainpn/455px/art_top_blue.jpg");background-color:#000058;}
-table.mainpn td.top_black {background-image:url("/images/mainpn/455px/art_top_black.jpg");background-color:#000000;}
-table.mainpn td.top_pirsum {background-image:url("/images/mainpn/455px/art_top_pirsum.jpg"); background-color:#335d2b;}
+table.mainpn td.top_reg {background-image:url("http://shturem.net/images/mainpn/455px/art_top_reg.jpg");background-color:#880000;}
+table.mainpn td.top_blue {background-image:url("http://shturem.net/images/mainpn/455px/art_top_blue.jpg");background-color:#000058;}
+table.mainpn td.top_black {background-image:url("http://shturem.net/images/mainpn/455px/art_top_black.jpg");background-color:#000000;}
+table.mainpn td.top_pirsum {background-image:url("http://shturem.net/images/mainpn/455px/art_top_pirsum.jpg"); background-color:#335d2b;}
 
-table.mainpn td.top_green {background-image:url("/images/mainpn/455px/art_top_green.jpg");background-color:#5A8800;}
-table.mainpn td.top_brown {background-image:url("/images/mainpn/455px/art_top_brown.jpg");background-color:#894715;}
-table.mainpn td.top_orange {background-image:url("/images/mainpn/455px/art_top_orange.jpg");background-color:#c3800d;}
-table.mainpn td.top_purple {background-image:url("/images/mainpn/455px/art_top_purple.jpg"); background-color:#89024e;}
+table.mainpn td.top_green {background-image:url("http://shturem.net/images/mainpn/455px/art_top_green.jpg");background-color:#5A8800;}
+table.mainpn td.top_brown {background-image:url("http://shturem.net/images/mainpn/455px/art_top_brown.jpg");background-color:#894715;}
+table.mainpn td.top_orange {background-image:url("http://shturem.net/images/mainpn/455px/art_top_orange.jpg");background-color:#c3800d;}
+table.mainpn td.top_purple {background-image:url("http://shturem.net/images/mainpn/455px/art_top_purple.jpg"); background-color:#89024e;}
 
 div.mainpn_title_top {
   padding-top: 9px;
@@ -705,7 +705,7 @@ td.mainpn_text {
 }
 td.mainpn_bottom {
   width: 455px; height: 27px;
-  background-image: url("/images/mainpn/455px/art_bottom_he.jpg");
+  background-image: url("http://shturem.net/images/mainpn/455px/art_bottom_he.jpg");
   background-position: top center; background-repeat: no-repeat;
 }
 td.mainpn_bottom a,td.mainpn_bottom a:hover {
@@ -978,18 +978,18 @@ td.mainpn_nextart {
 body.new_format {
   direction:rtl;
   background-color: #FFFFFF;
-  background-image:url("/images/mainpn/side_bg.jpg");
+  background-image:url("http://shturem.net/images/mainpn/side_bg.jpg");
 }
 
 td.new_side_right {
   background-color: #FFFFFF;
-  background-image:url("/images/mainpn/side_right.jpg");
+  background-image:url("http://shturem.net/images/mainpn/side_right.jpg");
   background-position: left; background-repeat: repeat-y;
   width: 23px;
 }
 td.new_side_left {
   background-color: #FFFFFF;
-  background-image:url("/images/mainpn/side_left.jpg");
+  background-image:url("http://shturem.net/images/mainpn/side_left.jpg");
   background-position: right; background-repeat: repeat-y;
   width: 23px;
 }
@@ -1059,7 +1059,7 @@ text-align: right;
 }
 
 table.new_top_banner {
-  background-image:url("/images/mainpn/top_banner_bg.jpg");
+  background-image:url("http://shturem.net/images/mainpn/top_banner_bg.jpg");
 }
 div.new_upper_ad_banner {
   width: 220px; height: 78px;
@@ -1077,32 +1077,32 @@ a.new_footer:hover {
 }
 td.new_top_bar1 {
   height: 34px; width: 11px;
-  background-image: url("/images/mainpn/hebrew/tbar1.jpg");
+  background-image: url("http://shturem.net/images/mainpn/hebrew/tbar1.jpg");
   background-position: top right; background-repeat: no-repeat;
 }
 td.new_top_bar2 {
-  height: 34px; width: 225px; background-image: url("/images/mainpn/hebrew/tbar2.jpg");
+  height: 34px; width: 225px; background-image: url("http://shturem.net/images/mainpn/hebrew/tbar2.jpg");
   background-position: top left; background-repeat: repeat-x;
   color: #ffffff; font-size: 11px; font-weight: bold;
 }
 td.new_top_bar3 {
   height: 34px; width: 113px;
-  background-image: url("/images/mainpn/hebrew/tbar3.jpg");
+  background-image: url("http://shturem.net/images/mainpn/hebrew/tbar3.jpg");
   background-position: top left; background-repeat: no-repeat;
 }
 td.new_top_bar4 {
-  height: 34px; width: 280px; background-image: url("/images/mainpn/hebrew/tbar4.jpg");
+  height: 34px; width: 280px; background-image: url("http://shturem.net/images/mainpn/hebrew/tbar4.jpg");
   background-position: top left; background-repeat: repeat-x;
 }
 td.new_top_bar5 {
   height: 34px; width: 160px;
-  background-image: url("/images/mainpn/hebrew/tbar5_fav.jpg");
+  background-image: url("http://shturem.net/images/mainpn/hebrew/tbar5_fav.jpg");
   background-position: top right; background-repeat: no-repeat;
   cursor: pointer;
 }
 td.new_top_bar5_old {
   height: 34px; width: 160px;
-  background-image: url("/images/mainpn/hebrew/tbar5_old.jpg");
+  background-image: url("http://shturem.net/images/mainpn/hebrew/tbar5_old.jpg");
   background-position: top right; background-repeat: no-repeat;
   cursor: pointer;
 }
@@ -1146,7 +1146,7 @@ div.comments_new_cnt {
   float: right;
   font-size: 12px; font-family: Arial; font-weight: bold;
   background-color: #a0c2ce;
-  background-image: url("/images/comments/title2_bg.jpg");
+  background-image: url("http://shturem.net/images/comments/title2_bg.jpg");
   width: 39px; line-height: 27px;
   color: #111111;
   text-align: center; vertical-align: middle;
@@ -1188,7 +1188,7 @@ div.com_dir_ltr {
 div.comments_new_selected div.c_body {
   background-color: #f8f8de;
   border: 1px solid #ddc89b;
-  background-image: url("/images/comments/com_favorite.gif");
+  background-image: url("http://shturem.net/images/comments/com_favorite.gif");
   background-position: top left; background-repeat: no-repeat;
 }
 a.comments_anchor, a.comments_anchor:hover {
@@ -1277,25 +1277,25 @@ table.photocredit_big_under {
 /* BEGIN: sel_tkb */
 div.sel_tkb {
   width: 155px;
-  background-image: url("/images/comments/talkback-mid.jpg");
+  background-image: url("http://shturem.net/images/comments/talkback-mid.jpg");
   background-repeat: repeat-y;
   padding: 0; margin: 0;
 }
 div.sel_tkb div.top {
   width: 155px; height: 77px;
-  background-image: url("/images/comments/tkb_top77.jpg");
+  background-image: url("http://shturem.net/images/comments/tkb_top77.jpg");
   background-repeat: no-repeat;
 }
 div.sel_tkb div.bottom {
   width: 155px;
-  background-image: url("/images/comments/talkback-bottom_120.jpg");
+  background-image: url("http://shturem.net/images/comments/talkback-bottom_120.jpg");
   background-repeat: no-repeat;
   background-position: bottom left;
 }
 div.sel_tkb div.inner_div {
   width: 155px; overflow: hidden;
   display: block;
-  background-image: url("/images/comments/tkb_innertop64.jpg");
+  background-image: url("http://shturem.net/images/comments/tkb_innertop64.jpg");
   background-repeat: no-repeat;
   background-position: top left;
 }
