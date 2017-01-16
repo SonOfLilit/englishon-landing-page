@@ -8669,7 +8669,7 @@ document.EnglishOnMenu = function () {
             $('#eo-menu').css({ 'height': '50%' });
             //TODO: check why this code is not working
             element = document.getElementById('eo-login-email');
-            element.scrollIntoView();
+            element.scrollIntoView(true);
         };
     });
 };
