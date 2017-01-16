@@ -8659,13 +8659,25 @@ document.EnglishOnMenu = function () {
         popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
     });
     $('#eo-mail-login-btn').on('click', login_with_mail);
+    var _originalSize = $(window).width() + $(window).height();
+    $(window).resize(function () {
+        if ($(window).width() + $(window).height() != _originalSize) {
+            console.log("keyboard show up");
+            element = document.getElementById('eo-login-email');
+            element.scrollIntoView(true);
+            //$(".copyright_link").css("position", "relative");
+        } else {
+            console.log("keyboard closed");
+            //$(".copyright_link").css("position", "fixed");
+        }
+    });
     $('#eo-login-email').on('click', function (e) {
         e.target.focus();
         //Shturem is misiing <meta name="viewport" content="width=device-width, initial-scale=1.0">
         //This is causing chrome to compute the body width as 980px anycase, in inspector too
         if (window.matchMedia("(max-width:980px)").matches) {
             //if (window.matchMedia("(max-width:425px)").matches) {
-            $('#eo-dlg-login').css({ 'background-color': 'blue' });
+            $('#eo-dlg-login').css({ 'background-color': 'red' });
             //$('#eo-menu').css({ 'height': '100%' })
             //TODO: check why this code is not working
             element = document.getElementById('eo-login-email');
