@@ -8651,12 +8651,7 @@ document.EnglishOnMenu = function () {
     $('#google-iframe').append(google_login);
     $('#eo-iframe').on('load', function () {
         var popup = this.contentWindow;
-        if (window.matchMedia("(max-width:700px)").matches) {
-            $(".abcRioButton").css({
-                width: '100%',
-                height: '100%'
-            });
-        };
+
         $('#djDebug').css({
             display: 'none'
         });
@@ -8669,9 +8664,9 @@ document.EnglishOnMenu = function () {
         //Shturem is misiing <meta name="viewport" content="width=device-width, initial-scale=1.0">
         //This is causing chrome to compute the body width as 980px anycase, in inspector too
         if (window.matchMedia("(max-width:980px)").matches) {
-            // if (window.matchMedia("(max-width:425px)").matches) {
-            $('#eo-dlg-login').css({ 'height': '80%' });
-            $('#eo-menu').css({ 'height': '80%' });
+            //if (window.matchMedia("(max-width:425px)").matches) {
+            $('#eo-dlg-login').css({ 'background-color': 'green', height: '50%' });
+            $('#eo-menu').css({ 'height': '50%' });
             //TODO: check why this code is not working
             element = document.getElementById('eo-login-email');
             element.scrollIntoView();

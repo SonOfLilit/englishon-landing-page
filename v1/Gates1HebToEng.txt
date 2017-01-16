@@ -109,7 +109,6 @@
 מכנסיים_קצרים shorts
 לקצר short
 קצר short
-לגרום_לקצר_חשמלי short
 ז'קט jacket
 עטיפה jacket
 כיסוי jacket
