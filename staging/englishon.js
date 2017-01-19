@@ -8755,7 +8755,7 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     browserInfo = document.browserInfo;
     if (browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) <= 46 ||
     //    if ((browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) > 46) ||
-    browserInfo.browser == 'Firefox' && parseInt(browserInfo.version) != 49) {
+    browserInfo.browser == 'Firefox' && parseInt(browserInfo.version) < 49) {
         upgrade_dialog = $('<div id="eo-upgrade-dialog">').addClass('hidden').append($('<div>').text(document.MESSAGES.UPGRADE_MESSAGE)).append($('<div>').append($('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('Press here to upgrade chrome'))).append($('<div>').append($('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('Press here to upgrade firefox')));
         upgrade_dialog.insertBefore($('body'));
         $('.eo-button').off('click').on('click', function () {
