@@ -2901,6 +2901,9 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 
 /* Button */
 .eo-button {
+  overflow: visible;
+  display: inline-block;
+  position: relative;
   padding-right: 30px;
 }
 .eo-button.eo-button-loading {
@@ -2917,11 +2920,6 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 }
 
 /* Menu */
-.eo-button {
-  overflow: visible;
-  display: inline-block;
-}
-
 .eo-menu {
   position: absolute;
   z-index: 9999;
@@ -3908,9 +3906,9 @@ eo-signout-layout .signout {
   visibility: hidden;
   position: absolute;
   text-align: center;
-  font-size: 16px;
-  padding-top: 14px;
-  padding-left: 60px;
+  font-size: 64px;
+  padding-top: 56px;
+  padding-left: 240px;
 }
 
 #coming_soon .Grid-cell:hover .tooltip {
@@ -3919,6 +3917,9 @@ eo-signout-layout .signout {
 
 #coming_soon .Grid-cell:hover {
   padding: 0px;
+}
+#coming_soon .Grid-cell:hover .u-1of6 {
+  padding-left: 87px;
 }
 
 #coming_soon .tooltip {
@@ -4044,8 +4045,30 @@ eo-signout-layout .signout {
   justify-content: center;
 }
 
+.header-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 35% !important;
+}
+
+.icon-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 20% !important;
+}
+
 .right-align {
   justify-content: flex-end;
+  display: flex;
+}
+
+.left-align {
+  justify-content: flex-start;
+  display: flex;
 }
 
 .eo-line {
@@ -4063,7 +4086,7 @@ eo-signout-layout .signout {
 
 #eo-menu,
 #eo-dlg-login {
-  box-shadow: 10px 10px 5px #888888;
+  box-shadow: 7px 7px 7px #888888;
   background-color: #eceff1;
   top: 0px;
 }
@@ -4143,7 +4166,7 @@ eo-signout-layout .signout {
 
 .eo-row10 {
   height: 88px;
-  margin-top: 20px;
+  /*margin-top: 20px;*/
 }
 .eo-row10 .Grid {
   height: 100%;
@@ -4160,16 +4183,32 @@ eo-signout-layout .signout {
   color: #2cc6a8;
 }
 
+#eo-upgrade-dialog {
+  background-color: #eceff1;
+  font-family: Roboto-Light;
+  font-size: 16px;
+}
+
 #eo-dlg-icon {
   background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
   background-repeat: no-repeat;
   background-size: 122px;
-  background-position: center;
+  background-position: top;
   height: 100%;
-  width: 20%;
 }
 
 @media (min-width: 1050px) {
+  #coming_soon .Grid-cell .Grid .tooltip,
+  eo-signout-layout .signout {
+    font-size: 16px;
+    padding-top: 14px;
+    padding-left: 60px;
+  }
+
+  #coming_soon .Grid-cell:hover .u-1of6 {
+    padding-left: 23px;
+  }
+
   #eo-menu.menu-editor {
     height: 411px;
   }
@@ -4286,6 +4325,13 @@ eo-signout-layout .signout {
     font-size: 11px;
     line-height: 1.3;
   }
+  @-moz-document url-prefix() {
+    #eo-menu .eo-menu-footer,
+    #eo-dlg-login .eo-menu-footer,
+    #eo-dlg-signout .eo-menu-footer {
+      font-size: 10px;
+    }
+  }
   #eo-menu .flag, #eo-menu #eo-account-img,
   #eo-dlg-login .flag,
   #eo-dlg-login #eo-account-img,
@@ -4397,7 +4443,7 @@ eo-signout-layout .signout {
 
   .eo-row10 {
     height: 22px;
-    margin-top: 5px;
+    /*margin-top: 5px;*/
   }
 
   #eo-mail-login-btn {
@@ -4419,8 +4465,23 @@ eo-signout-layout .signout {
     font-size: 26px;
   }
 
-  #eo-menu-footer {
-    font-size: 11px;
-    line-height: 1.3;
+  #modal {
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: black;
+    /* Fallback color */
+    background-color: rgba(80, 80, 80, 0.75);
+    /* Black w/ opacity */
   }
 }
