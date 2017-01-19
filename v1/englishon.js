@@ -8610,6 +8610,7 @@ document.EnglishOnMenu = function () {
             message = "You've Signed Out";
             display_message(message, $('#eo-signout-msg'));
             $('#eo-menu').addClass('hidden');
+            $('#modal').addClass('hidden');
             $("#eo-dlg-signout").fadeOut(1600, "linear", function () {
                 $("#eo-dlg-signout").removeAttr('style').addClass('hidden');
             });
