@@ -8497,6 +8497,7 @@ var display_message = function (msg, element) {
 };
 var hide_dialogs = function (milisec) {
     setTimeout(function () {
+        $('#modal').addClass('hidden');
         $('#eo-dlg-login').addClass('hidden');
         $('#eo-menu').addClass('hidden');
         $('#eo-signout-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
