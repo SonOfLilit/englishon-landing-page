@@ -6434,22 +6434,26 @@ configStorage = {
 };
 //
 var MESSAGES_EN = {
+    LANGUAGE: 'english',
+    DIRECTION: 'ltr',
     MENU_TITLE: 'Sign Up/In',
     POWER_SWICHT_ON: 'On',
     POWER_SWICHT_ON: 'Off',
     LANGUAGES_PICKER_TITLE: 'Pick a language',
-    COMING_SOON: 'comming soon',
+    COMING_SOON: 'Comming soon',
     EN: "English (US)",
     ES: "Spanish",
     FR: "French",
     ZH: "Chinese",
-    HELP: 'Help',
+    HELP: 'Need Help?',
     CONTACT: 'Conatct Us',
-
+    OR: 'OR',
     // Login dialog
-    LOGIN_TITLE: 'Sign Up/In',
+    LOGIN_SIGN_IN_TITLE: 'Sign In',
+    LOGIN_SIGN_UP_TITLE: 'Sign Up',
     LOGIN_SUBTITLE: 'Welcome to englishon. Learn english- fast and fun',
     AGREE_TO_TOS: "I agree to the Terms of Use and Privacy Policy ",
+    FORGOT_PASSWORD: 'Forgot password?',
 
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
 
@@ -6461,69 +6465,86 @@ var MESSAGES_EN = {
     LOGGED_IN_AS: "You logged in",
     LOGOUT: "You've Signed Out",
     LOGIN_AS: "Log in as:",
-    LOGIN_BUTTON: "Sign Up/In"
+    LOGIN_BUTTON: "Sign Up/In",
+    CHOOSE_LANGUAGE: 'Change menu language',
+    SIGN_OUT: 'Sign out',
+    UPGRADE_MESSAGE: 'It is a good time for upgrading...'
 
 };
 // Until we have real RTL, it's important not to finish sentences with periods, because they'll align wrong
 var MESSAGES_HE = {
-    LOGIN_BUTTON: "הכנס קוד",
+    LANGUAGE: 'hebrew',
+    DIRECTION: 'rtl',
+    MENU_TITLE: 'רישום וכניסה',
+    POWER_SWICHT_ON: 'On',
+    POWER_SWICHT_ON: 'Off',
+    LANGUAGES_PICKER_TITLE: 'בחר שפה',
+    COMING_SOON: 'Comming soon',
+    EN: "English (US)",
+    ES: "Spanish",
+    FR: "French",
+    ZH: "Chinese",
+    HELP: 'צריך עזרה?',
+    CONTACT: 'צור קשר',
+    OR: 'או',
+    // Login dialog
+    LOGIN_SIGN_IN_TITLE: 'התחבר',
+    LOGIN_SIGN_UP_TITLE: 'הירשם',
+    LOGIN_SUBTITLE: 'ברוך הבא לאינגלשאון. למד אנגלית- בכיף ובמהירות',
+    AGREE_TO_TOS: "אני מסכים לתנאי השימוש ולפוליסת הביטוח ",
+    FORGOT_PASSWORD: 'שכחת סיסמה?',
 
-    // getToken
-    ENTER_USER_TOKEN: "אם יש לך קוד משתמש של אינגלישון, הדבק אותו כאן",
-    SUBMIT_WITH_TOKEN: "יש לי קוד",
-    ERROR_INVALID_TOKEN: "קוד שגוי",
-    ERROR_CREATING_TOKEN: "שגיאה בהתחברות כאורח",
-    AGREE_TO_TOS: "על ידי התחברות את\\ה מסכימ\\ה ל",
-    TOS_LINK: "תנאי השימוש",
-    CLOSE_TOS: "סגור",
+    ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
 
-    ERROR_CONNECTING: "הייתה שגיאה בהתחברות לאינגלישון, אם זה קורה שוב דווח בבקשה לsupport@englishon.org",
+    ENABLE: "Enable EnglishON",
+    DISABLE: "Disable EnglishON",
 
-    ENABLE: "הדלק את אינגלישון",
-    DISABLE: "כבה את אינגלישון",
-
-    WRONG_KEYBOARD_LAYOUT: "החלף את שפת המקלדת",
+    WRONG_KEYBOARD_LAYOUT: "Please switch keyboard layout.",
     WRONG_KEYBOARD_LAYOUT_HINT: "Alt + Shift",
-    LOGGED_IN_AS: "מחובר בתור",
-    LOGGED_OUT: "אינך מחובר",
-    LOGOUT: "התנתק",
-    LOGIN_AS: "התחבר בתור:",
+    LOGGED_IN_AS: "You logged in",
+    LOGOUT: "You've Signed Out",
+    LOGIN_AS: "Log in as:",
+    LOGIN_BUTTON: "התחברות/רישום",
+    CHOOSE_LANGUAGE: 'בחר שפה שבה יוצג התפריט',
+    SIGN_OUT: 'התנתק',
+    UPGRADE_MESSAGE: 'זמן טוב לשידרוג הדפדפן שלך...',
+    PROFILE: 'Profile',
+    SETTINGS: 'Settings'
 
-    EN: "אנגלית",
-    ES: "ספרדית",
-    FR: "צרפתית",
-    ZH: "סינית"
 };
+document.HE_MESSAGES = MESSAGES_HE;
+document.EN_MESSAGES = MESSAGES_EN;
 var RTL = 'rtl',
     LTR = 'ltr';
 var WEBSITE_I18N = {
     'www.bhol.co.il': {
-        MESSAGES: MESSAGES_HE,
+        MESSAGES: document.EN_MESSAGES,
         DIRECTION: RTL,
         DEFAULT_TARGET_LANGUAGE: 'en'
     },
     'www.bloombergview.com': {
-        MESSAGES: MESSAGES_EN,
+        MESSAGES: document.EN_MESSAGES,
         DIRECTION: LTR,
         DEFAULT_TARGET_LANGUAGE: 'fr'
     },
     'shturem.net': {
-        MESSAGES: MESSAGES_HE,
+        MESSAGES: document.HE_MESSAGES,
         DIRECTION: RTL,
         DEFAULT_TARGET_LANGUAGE: 'en'
     },
     'www.shturem.net': {
-        MESSAGES: MESSAGES_EN,
+        MESSAGES: document.HE_MESSAGES,
         DIRECTION: LTR,
         DEFAULT_TARGET_LANGUAGE: 'en'
     },
     'www.englishon.org': {
-        MESSAGES: MESSAGES_EN,
+        MESSAGES: document.HE_MESSAGES,
         DIRECTION: LTR,
         DEFAULT_TARGET_LANGUAGE: 'en'
     }
 };
 var I18N = WEBSITE_I18N[location.hostname];
+
 document.MESSAGES = I18N.MESSAGES;
 //
 Authenticator = function (base) {
@@ -8043,7 +8064,8 @@ var Speaker = new function () {
 // source.buffer = Audiobuffer;
 // source.playbackRate.value = 1.5;
 //
-document.MENU_HTML = "<div id='eo-menu' class='hidden'>\
+document.MENU_HTML = "<div id='modal' class='hidden'>\
+<div id='eo-menu' class='hidden'>\
     <div class='header'>\
         <div id='eo-account-area'>\
             <div class='Grid u-textCenter eo-row eo-menu-inner'>\
@@ -8096,7 +8118,7 @@ document.MENU_HTML = "<div id='eo-menu' class='hidden'>\
                 </div>\
             </div>\
         </div>\
-        <div class='Grid Grid--full' id='coming_soon'>\
+        <div id='coming_soon'>\
             <div class='Grid-cell eo-row eo-menu-inner'>\
                 <div class='Grid'>\
                     <span class='tooltip'>Coming soon</span>\
@@ -8120,15 +8142,13 @@ document.MENU_HTML = "<div id='eo-menu' class='hidden'>\
                 </div>\
             </div>\
         </div>\
-        <div class='Grid Grid--full u-textCenter'>\
-            <div class='Grid-cell eo-row11'>\
-                <div id='englishon-bottom'></div>\
-            </div>\
-            <div class='Grid-cell eo-row10 eo-menu-inner'>\
-                <div class='Grid'>\
-                    <div class='Grid-cell v-align right-align eo-menu-footer' id='help'>Need Help?</div>\
-                    <div class='Grid-cell v-align eo-menu-footer' id='contact'>Contact Us</div>\
-                </div>\
+        <div class='Grid-cell eo-row11 h-align'>\
+            <div id='englishon-bottom'></div>\
+        </div>\
+        <div class='Grid-cell eo-row10 eo-menu-inner'>\
+            <div class='Grid'>\
+                <div class='Grid-cell v-align right-align eo-menu-footer' id='help'>Need Help?</div>\
+                <div class='Grid-cell v-align eo-menu-footer' id='contact'>Contact Us</div>\
             </div>\
         </div>\
         <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner' id='editor-row'>\
@@ -8138,18 +8158,25 @@ document.MENU_HTML = "<div id='eo-menu' class='hidden'>\
         </div>\
     </div>\
 </div>\
-\
+</div>\
 ";
 //
 document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
     <div id='eo-dlg-inner'>\
         <div class='Grid Grid--full'>\
-            <div class='Grid-cell eo-row2 v-align h-align'>\
-            <div id='eo-dlg-icon'></div>\
-                <div class='eo-dlg-header'>Sign Up/In</div>\
+            <div class='Grid-cell eo-row2'>\
+                <div class='Grid'>\
+                    <div class='Grid-cell header-cell right-align v-align'>\
+                        <div class='' id='dlg-sign-in-header'>Sign In</div>\
+                    </div>\
+                    <div class='Grid-cell icon-cell'>\
+                        <div id='eo-dlg-icon'></div>\
+                    </div>\
+                    <div class='Grid-cell header-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
+                </div>\
             </div>\
             <div class='Grid-cell eo-row3 v-align h-align'>\
-                <div class='subtitle'>Welcome to englishon. Learn english- fast and fun</div>\
+                <div class='subtitle' id='subtitle'>Welcome to englishon. Learn english- fast and fun</div>\
             </div>\
             <div class='Grid-cell eo-row4'>\
                 <div id='google-iframe'></div>\
@@ -8161,23 +8188,23 @@ document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
                 <div class='Grid'>\
                     <div class='Grid-cell line eo-delimiter'></div>\
                     <div class='Grid-cell v-align h-align'>\
-                        <span class='subtitle'>OR</span>\
+                        <span class='subtitle' id='or'>OR</span>\
                     </div>\
                     <div class='Grid-cell line eo-delimiter'></div>\
                 </div>\
             </div>\
             <div class='Grid-cell eo-row6'>\
-                <input type='text' placeholder='email address' id='eo-login-email' class='eo-input' />\
+                <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' />\
             </div>\
             <div class='Grid-cell eo-row6'>\
-                <input type='password' placeholder='password' id='eo-login-password' class='eo-input' />\
+                <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' />\
             </div>\
             <div class='Grid-cell hidden eo-row8'>\
                 <div id='eo-login-msg'></div>\
             </div>\
             <div class='Grid-cell eo-row9'>\
                 <div class='Grid'>\
-                    <div class='Grid-cell v-align eo-menu-footer'>\
+                    <div class='Grid-cell v-align eo-menu-footer' id='tos'>\
                         <div>Terms of service</div>\
                     </div>\
                     <div class='Grid-cell v-align eo-menu-footer'>\
@@ -8197,9 +8224,11 @@ document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
 document.SIGNOUT_DLG = "<div class='hidden' id='eo-dlg-signout'>\
     <div class='Grid Grid--full'>\
         <div class='Grid-cell'></div>\
-        <div class='Grid-cell'></div>\
         <div class='Grid-cell'>\
-            <div id='signout_btn' class ='v-align h-align'>Sign out</div>\
+            <div id='eo-choose-lang' class='v-align h-align'></div>\
+        </div>\
+        <div class='Grid-cell'>\
+            <div id='signout_btn' class='v-align h-align'>Sign out</div>\
         </div>\
         <div class='Grid-cell'>\
             <div id='eo-signout-msg' class='v-align h-align'></div>\
@@ -8246,11 +8275,13 @@ function englishon() {
         if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
         return { 'browser': M[0], 'version': M[1] };
     }();
+    document.browserInfo = browserInfo;
     //Restrict none chrome browsers or chrome versions older than 49
-    if (browserInfo.browser != 'Chrome' || parseInt(browserInfo.version) <= 46) {
+    if (browserInfo.browser != 'Chrome' && (browserInfo.browser != 'Firefox' || !window.matchMedia("(min-width:1050px)").matches)) {
         console.log('BROWSER NOT SUPPORTED.');
         //return;
     }
+
     //THIS LINE IS TEMP
     if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.englishon.org/hidden/shturem.html') {
         return;
@@ -8386,16 +8417,15 @@ $(englishon);
 // ******
 // Button
 // ******
+var englishon_btn_func = function (e) {
+    e.preventDefault();
+    $('#eo-menu').toggleClass('hidden');
+    $('#modal').toggleClass('hidden');
+};
 
 var EnglishOnButton = new function () {
     this.currentState = 'eo-button-on';
-    this.element = $('<div>').addClass('eo-button').addClass(this.currentState).on('click', function (e) {
-        e.preventDefault();
-        $('#eo-menu').toggleClass('hidden');
-        // if (EnglishOnMenu.container.has(e.target).length === 0) {
-        //   //EnglishOnMenu.toggle();
-        // }
-    });
+    this.element = $('<div>').addClass('eo-button').addClass(this.currentState).on('click', englishon_btn_func);
 
     this.changeState = function (state) {
         this.element.removeClass(this.currentState);
@@ -8425,12 +8455,29 @@ $(document).mouseup(function (e) {
     if (!menu.is(e.target) // if the target of the click isn't the menu..
     && menu.has(e.target).length === 0 // ... nor a descendant of the menu
     && !login_dlg.is(e.target) && login_dlg.has(e.target).length === 0 && !signout_dlg.is(e.target) && signout_dlg.has(e.target).length === 0) {
+        $('#modal').addClass('hidden');
         menu.addClass('hidden');
         login_dlg.addClass('hidden');
         signout_dlg.addClass('hidden');
     }
 });
-
+display_menu_messages = function () {
+    var messages = document.MESSAGES;
+    $('#eo-account-name').text(messages.MENU_TITLE);
+    $('#eo-language_header').text(messages.LANGUAGES_PICKER_TITLE);
+    $('#help').text(messages.HELP);
+    $('#contact').text(messages.CONTACT);
+    $('#dlg-sign-in-header').text(messages.LOGIN_SIGN_IN_TITLE);
+    $('#dlg-sign-up-header').text(messages.LOGIN_SIGN_UP_TITLE);
+    $('#subtitle').text(messages.LOGIN_SUBTITLE);
+    $('#or').text(messages.OR);
+    $('#tos').text(messages.AGREE_TO_TOS);
+    $('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);
+    $('#eo-mail-login-btn').text(messages.LOGIN_BUTTON);
+    $('#eo-picker-tittle').css({ direction: messages.DIRECTION });
+    $('#eo-choose-lang').text(messages.CHOOSE_LANGUAGE);
+    $('#signout_btn').text(messages.SIGN_OUT);
+};
 var toggle_login_dialog = function () {
     $("#eo-dlg-login").toggleClass('hidden');
     $('#djDebug').css({ 'display': 'none' });
@@ -8441,7 +8488,8 @@ var toggle_signout_dialog = function () {
     var offset = $('.eo-button').offset();
     $("#eo-dlg-signout").removeAttr('style').toggleClass('hidden');
     if (window.matchMedia("(min-width:1050px)").matches) {
-        $("#eo-dlg-signout").css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' });
+        //$("#eo-dlg-signout").css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' })
+        $('#eo-dlg-signout').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
     };
 };
 var display_message = function (msg, element) {
@@ -8556,7 +8604,7 @@ document.EnglishOnMenu = function () {
             popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
             $('body').removeClass('eo-active');
             $('#eo-account-area').addClass('guest');
-            $('#eo-account-name').text('Sign Up/In');
+            $('#eo-account-name').text(document.MESSAGES.MENU_TITLE);
             $('#eo-account-area').off('click').on('click', toggle_login_dialog);
             message = "You've Signed Out";
             display_message(message, $('#eo-signout-msg'));
@@ -8574,20 +8622,26 @@ document.EnglishOnMenu = function () {
     this.container.insertBefore($($('table')[0]));
     this.login_dlg.insertBefore($($('table')[0]));
     this.signout_dlg.insertBefore($($('table')[0]));
+    display_menu_messages();
     $('#djDebug').css({ 'display': 'none' });
     //var offset = $('#top_menu_block').offset().top
     if (window.matchMedia("(min-width:1050px)").matches) {
         console.log('DESKTOP');
 
         var offset = $('.eo-button').offset();
-        $('#eo-menu').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' });
-        $('#eo-dlg-login').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' });
-        $('#eo-dlg-signout').css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' });
-        //$('#eo-menu').css({ top: 97 + 'px', left: offset.left + 100 + 'px' })
+        //top left values to display dialogs near button
+        //$('#eo-menu').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' })
+        //$('#eo-dlg-login').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' })
+        //$('#eo-dlg-signout').css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' })
+        //top left values to display centered dialogs 
+        $('#eo-menu').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
+        $('#eo-dlg-login').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
+        $('#eo-dlg-signout').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
     } else {
         console.log('MOBILE');
         // $('#eo-menu').find('.eo-row').css({ 'height': screen.height / 8 + 'px', 'font-size': '16px' })
     };
+
     $('#eo-power-switch').on('click', togglePower);
     switch_text = JSON.parse(document.config.isActive) ? 'On' : 'Off';
     $('#eo-power-switch-text').text(switch_text);
@@ -8619,7 +8673,7 @@ document.EnglishOnMenu = function () {
         $('#eo-account-area').addClass('guest');
         $('#eo-account-img').addClass('no-image');
         $('#eo-account-area').on('click', toggle_login_dialog);
-        $('#eo-account-name').text('Sign Up/In');
+        $('#eo-account-name').text(document.MESSAGES.MENU_TITLE);
     } else {
         $('#eo-account-area').on('click', toggle_signout_dialog);
         $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
@@ -8643,7 +8697,10 @@ document.EnglishOnMenu = function () {
             });
         });
     }
-
+    $('#eo-choose-lang').on('click', function () {
+        document.MESSAGES = document.MESSAGES.LANGUAGE == 'english' ? document.MESSAGES = document.HE_MESSAGES : document.MESSAGES = document.EN_MESSAGES;
+        display_menu_messages();
+    });
     $('#signout-event-area').on('click', toggle_signout_dialog);
     //TODO: add the editor button
     var token = encodeURIComponent(document.englishonBackend.token);
@@ -8665,24 +8722,16 @@ document.EnglishOnMenu = function () {
             console.log("keyboard show up");
             element = document.getElementById('eo-login-email');
             element.scrollIntoView(true);
-            //$(".copyright_link").css("position", "relative");
-        } else {
-            console.log("keyboard closed");
-            //$(".copyright_link").css("position", "fixed");
         }
+        // else {
+        //     console.log("keyboard closed");
+        // }
     });
     $('#eo-login-email').on('click', function (e) {
+        //causing the keyboard to open 
         e.target.focus();
         //Shturem is misiing <meta name="viewport" content="width=device-width, initial-scale=1.0">
         //This is causing chrome to compute the body width as 980px anycase, in inspector too
-        if (window.matchMedia("(max-width:980px)").matches) {
-            //if (window.matchMedia("(max-width:425px)").matches) {
-            $('#eo-dlg-login').css({ 'background-color': 'red' });
-            //$('#eo-menu').css({ 'height': '100%' })
-            //TODO: check why this code is not working
-            element = document.getElementById('eo-login-email');
-            element.scrollIntoView(true);
-        };
     });
 };
 
@@ -8699,8 +8748,20 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
 
     var overlay = Scraper.scrape();
+
     document.overlay = overlay;
     document.overlay.showButtons();
+
+    browserInfo = document.browserInfo;
+    if (browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) <= 46 ||
+    //    if ((browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) > 46) ||
+    browserInfo.browser == 'Firefox' && parseInt(browserInfo.version) != 49 && window.matchMedia("(min-width:1050px)").matches) {
+        upgrade_dialog = $('<div id="eo-upgrade-dialog">').addClass('hidden').append($('<div>').text(document.MESSAGES.UPGRADE_MESSAGE)).append($('<div>').append($('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('Press here to upgrade chrome'))).append($('<div>').append($('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('Press here to upgrade firefox')));
+        upgrade_dialog.insertBefore($('body'));
+        $('.eo-button').off('click').on('click', function () {
+            $('#eo-upgrade-dialog').dialog();
+        });
+    }
     if (document.config.isUser) {
         document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
         document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
