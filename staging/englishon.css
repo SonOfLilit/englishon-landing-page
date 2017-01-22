@@ -3741,10 +3741,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   flex: none !important;
 }
 
-.hidden {
-  display: none;
-}
-
 #eo-account-area {
   border-bottom: 2px solid #3d4c58;
   cursor: pointer;
@@ -3890,6 +3886,28 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   align-items: center;
 }
 
+.h-align {
+  justify-content: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.guest .option-dlg-logged {
+  display: none;
+}
+.guest .option-dlg-guest {
+  display: flex;
+}
+
+.logged .option-dlg-logged {
+  display: flex;
+}
+.logged .option-dlg-guest {
+  display: none;
+}
+
 #eo-dlg-login.valid input {
   background-color: #2cc6a8;
 }
@@ -3961,8 +3979,11 @@ eo-signout-layout .signout {
   padding-top: 100px;
 }
 
-#eo-editor-btn,
 #signout_btn {
+  cursor: pointer;
+}
+
+#eo-editor-btn {
   cursor: pointer;
   width: 100%;
   height: 100%;
@@ -4041,10 +4062,6 @@ eo-signout-layout .signout {
   flex: 0 0 2%;
 }
 
-.h-align {
-  justify-content: center;
-}
-
 .header-cell {
   -webkit-box-flex: 0 !important;
   -webkit-flex: none !important;
@@ -4091,26 +4108,31 @@ eo-signout-layout .signout {
   top: 0px;
 }
 
-#eo-dlg-signout {
-  background-color: #4b5a66;
-  font-family: Roboto;
-  top: 180px;
-  color: #eceff1;
-}
-#eo-dlg-signout .Grid-cell {
-  border-top: 1px solid #3d4c58;
-  height: 280px;
-}
-
 #eo-menu,
-#eo-dlg-login,
-#eo-dlg-signout {
+#eo-dlg-login {
   position: fixed;
   left: 0px;
   width: 100%;
   height: 100%;
   z-index: 3;
   overflow-y: auto;
+}
+
+#eo-dlg-signout {
+  background-color: #eceff1;
+  font-family: Roboto;
+  top: 180px;
+  color: #3d4c58;
+  position: fixed;
+  left: 0px;
+  width: 100%;
+  height: 1000px;
+  z-index: 3;
+  overflow-y: auto;
+}
+#eo-dlg-signout .Grid-cell {
+  border-top: 1px solid #d7dee3;
+  height: 280px;
 }
 
 .eo-row2 {
@@ -4296,10 +4318,10 @@ eo-signout-layout .signout {
   }
 
   #eo-dlg-signout {
-    height: 305px;
+    height: 250px;
   }
   #eo-dlg-signout .Grid-cell {
-    height: 76px;
+    height: 83px;
   }
 
   #eo-menu,
@@ -4307,6 +4329,7 @@ eo-signout-layout .signout {
   #eo-dlg-signout {
     width: 240px;
     overflow-y: hidden;
+    /*firefox need a smaller font at menu footer*/
   }
   #eo-menu .eo-row,
   #eo-dlg-login .eo-row,
