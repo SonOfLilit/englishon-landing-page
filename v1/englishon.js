@@ -8101,7 +8101,7 @@ document.MENU_HTML = "<div id='modal' class='hidden'>\
                     <div class='Grid-cell u-1of3 v-align h-align'>\
                         <div id='eo-speaker-res'></div>\
                     </div>\
-                    <div class='Grid-cell v-align h-align'>\
+                    <div class='Grid-cell v-align right-align'>\
                         <div id='slider'></div>\
                     </div>\
                 </div>\
@@ -8301,7 +8301,7 @@ function englishon() {
     }
 
     //THIS LINE IS TEMP
-    //TEMPORARY THE CODE IS RUN IN THIS SPECIFIC ARTICLE
+    //TEMPORARY THE CODE IS RUN JUST IN THIS SPECIFIC ARTICLE
     if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.englishon.org/hidden/shturem.html') {
         return;
     }

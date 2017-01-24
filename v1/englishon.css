@@ -6795,8 +6795,8 @@ eo-signout-layout .signout {
 }
 
 .eo-row2 {
-  height: 208px;
-  margin-top: 52px;
+  height: 11.32%;
+  margin-top: 3.33%;
 }
 
 .eo-row3 {
@@ -6885,6 +6885,14 @@ eo-signout-layout .signout {
   background-size: 122px;
   background-position: top;
   height: 100%;
+}
+
+#eo-menu .ui-slider-horizontal {
+  height: 14%;
+}
+#eo-menu .ui-slider-handle {
+  top: -100%;
+  border-radius: 50%;
 }
 
 @media (min-width: 1050px) {
