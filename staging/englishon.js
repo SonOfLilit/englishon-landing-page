@@ -6486,7 +6486,7 @@ var MESSAGES = {
         // Login dialog
         LOGIN_SIGN_IN_TITLE: 'Sign In',
         LOGIN_SIGN_UP_TITLE: 'Sign Up',
-        LOGIN_SUBTITLE: 'Welcome to EnglishON Gain 2nd Language Skills Pain Free and For Free',
+        LOGIN_SUBTITLE: 'EnglishON</br>Improve Language Skills</br>Fun, Easy, Free',
         AGREE_TO_TOS: "By signing in/up, you agree to the Terms of Use and Privacy Policy",
         FORGOT_PASSWORD: 'Forgot password?',
 
@@ -8524,7 +8524,7 @@ display_menu_messages = function () {
     $('#contact').text(messages.CONTACT);
     $('#dlg-sign-in-header').text(messages.LOGIN_SIGN_IN_TITLE);
     $('#dlg-sign-up-header').text(messages.LOGIN_SIGN_UP_TITLE);
-    $('#subtitle').text(messages.LOGIN_SUBTITLE);
+    $('#subtitle').html(messages.LOGIN_SUBTITLE);
     $('#or').text(messages.OR);
     $('#tos').text(messages.AGREE_TO_TOS);
     $('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);

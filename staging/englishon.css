@@ -5943,13 +5943,14 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 #eo-mail-login-btn {
-  height: 88px;
-  width: 528px;
+  width: 604px;
+  height: 106.64px;
   background-color: #2cc6a8;
-  border-radius: 75px;
+  border-radius: 12px;
   color: white;
   border: none;
   cursor: pointer;
+  font-size: 52px;
 }
 
 .Grid--flexCells > .Grid-cell {
@@ -6653,6 +6654,7 @@ eo-signout-layout .signout {
 
 .subtitle {
   font-family: Roboto-Light;
+  font-size: 60px;
 }
 
 #eo-menu,
@@ -6690,29 +6692,32 @@ eo-signout-layout .signout {
 }
 
 .eo-row2 {
-  height: 11.32%;
-  margin-top: 3.33%;
+  height: 163px;
+  margin-top: 48px;
+}
+.eo-row2 > .Grid {
+  height: 100%;
 }
 
 .eo-row3 {
-  height: 147px;
+  height: 223px;
   font-size: 60px;
 }
 
 .eo-row4 {
-  height: 360px;
+  height: 220px;
 }
 
 .eo-row5 {
-  height: 147px;
+  height: 83px;
 }
 .eo-row5 > .Grid {
   height: 100%;
 }
 
 .eo-row6 {
-  margin-top: 20px;
-  height: 98px;
+  margin-top: 40px;
+  height: 90px;
 }
 
 .eo-row8 {
@@ -6720,7 +6725,7 @@ eo-signout-layout .signout {
 }
 
 .eo-row9 {
-  height: 60px;
+  height: 120px;
 }
 .eo-row9 > .Grid {
   height: 100%;
@@ -6734,11 +6739,15 @@ eo-signout-layout .signout {
 }
 
 .eo-row7 {
-  height: 160px;
+  height: 81px;
 }
 
 .eo-row11 {
   height: 120px;
+}
+
+.eo-row12 {
+  height: 160px;
 }
 
 .eo-row10 {
@@ -6760,8 +6769,8 @@ eo-signout-layout .signout {
 .eo-menu-footer {
   font-size: 44px;
   line-height: 1.3;
-  font-family: Roboto-Light;
-  color: #768086;
+  font-family: Roboto;
+  color: #c7d1d5;
   cursor: pointer;
 }
 .eo-menu-footer:hover {
@@ -6790,291 +6799,286 @@ eo-signout-layout .signout {
   border-radius: 50%;
 }
 
-/*@media (min-width: 1050px)*/
-#eo-picker-tittle,
-#eo-last-option {
-  border-bottom: 1px solid #d7dee3;
-}
+@media (min-width: 1050px) {
+  #eo-picker-tittle,
+  #eo-last-option {
+    border-bottom: 1px solid #d7dee3;
+  }
 
-#coming_soon .Grid-cell .Grid .tooltip,
-eo-signout-layout .signout {
-  font-size: 16px;
-  padding-top: 14px;
-  padding-left: 60px;
-}
+  #coming_soon .Grid-cell .Grid .tooltip,
+  eo-signout-layout .signout {
+    font-size: 16px;
+    padding-top: 14px;
+    padding-left: 60px;
+  }
 
-#coming_soon .Grid-cell:hover .u-1of6 {
-  padding-left: 23px;
-}
+  #coming_soon .Grid-cell:hover .u-1of6 {
+    padding-left: 23px;
+  }
 
-#eo-menu.menu-editor {
-  height: 411px;
-}
+  #eo-menu.menu-editor {
+    height: 411px;
+  }
 
-#coming_soon .Grid-cell:hover {
-  padding: 0px;
-}
+  #coming_soon .Grid-cell:hover {
+    padding: 0px;
+  }
 
-#google-iframe {
-  margin-left: 20px;
-  padding-top: 0px;
-  height: 45px;
-}
+  #google-iframe {
+    margin-left: 20px;
+    padding-top: 0px;
+    height: 45px;
+  }
 
-#eo-iframe {
-  transform: scale(1);
-}
+  #eo-iframe {
+    transform: scale(1);
+  }
 
-.eo-delimiter {
-  border-bottom: 1px solid #d7dee3;
-}
+  .eo-delimiter {
+    border-bottom: 1px solid #d7dee3;
+  }
 
-#eo-login-msg,
-#eo-google-msg,
-#eo-signout-msg {
-  font-size: 12px;
-}
+  #eo-login-msg,
+  #eo-google-msg,
+  #eo-signout-msg {
+    font-size: 12px;
+  }
 
-#eo-dlg-icon {
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
-  background-repeat: no-repeat;
-  height: 40px;
-  background-size: 30.5px;
-}
+  #eo-dlg-icon {
+    background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+    background-repeat: no-repeat;
+    height: 40px;
+    background-size: 30.5px;
+  }
 
-#eo-menu .eo-menu-inner {
-  padding-left: 23px;
-  padding-right: 23px;
-}
+  #eo-menu .eo-menu-inner {
+    padding-left: 23px;
+    padding-right: 23px;
+  }
 
-.eo-active #eo-menu #eo-power-switch {
-  padding-left: 4px;
-}
-.eo-active #eo-menu #eo-power-switch #eo-power-switch-text {
-  left: 11px;
-}
+  .eo-active #eo-menu #eo-power-switch {
+    padding-left: 4px;
+  }
+  .eo-active #eo-menu #eo-power-switch #eo-power-switch-text {
+    left: 11px;
+  }
 
-#eo-menu,
-#eo-dlg-login {
-  height: 360px;
-}
-#eo-menu .eo-input,
-#eo-dlg-login .eo-input {
-  width: 170px;
-  font-size: 14px;
-}
+  #eo-menu,
+  #eo-dlg-login {
+    height: 360px;
+  }
+  #eo-menu .eo-input,
+  #eo-dlg-login .eo-input {
+    width: 170px;
+    font-size: 14px;
+  }
 
-#eo-dlg-signout {
-  height: 250px;
-}
-#eo-dlg-signout .Grid-cell {
-  height: 83px;
-}
+  #eo-dlg-signout {
+    height: 250px;
+  }
+  #eo-dlg-signout .Grid-cell {
+    height: 83px;
+  }
 
-#eo-menu,
-#eo-dlg-login,
-#eo-dlg-signout {
-  width: 240px;
-  overflow-y: hidden;
-  /*firefox need a smaller font at menu footer*/
-}
-#eo-menu .eo-row,
-#eo-dlg-login .eo-row,
-#eo-dlg-signout .eo-row {
-  height: 51px;
-}
-#eo-menu .Grid-cell,
-#eo-dlg-login .Grid-cell,
-#eo-dlg-signout .Grid-cell {
-  font-size: 16px;
-  line-height: 1.3;
-}
-#eo-menu .Grid-cell .subtitle,
-#eo-dlg-login .Grid-cell .subtitle,
-#eo-dlg-signout .Grid-cell .subtitle {
-  font-size: 15px;
-}
-#eo-menu .eo-menu-footer,
-#eo-dlg-login .eo-menu-footer,
-#eo-dlg-signout .eo-menu-footer {
-  font-size: 11px;
-  line-height: 1.3;
-}
-@-moz-document url-prefix() {
+  #eo-menu,
+  #eo-dlg-login,
+  #eo-dlg-signout {
+    width: 240px;
+    overflow-y: hidden;
+    /*firefox need a smaller font at menu footer*/
+  }
+  #eo-menu .eo-row,
+  #eo-dlg-login .eo-row,
+  #eo-dlg-signout .eo-row {
+    height: 51px;
+  }
+  #eo-menu .Grid-cell,
+  #eo-dlg-login .Grid-cell,
+  #eo-dlg-signout .Grid-cell {
+    font-size: 16px;
+    line-height: 1.3;
+  }
+  #eo-menu .Grid-cell .subtitle,
+  #eo-dlg-login .Grid-cell .subtitle,
+  #eo-dlg-signout .Grid-cell .subtitle {
+    font-size: 15px;
+  }
   #eo-menu .eo-menu-footer,
   #eo-dlg-login .eo-menu-footer,
   #eo-dlg-signout .eo-menu-footer {
-    font-size: 10px;
+    font-size: 11px;
+    line-height: 1.3;
+  }
+  @-moz-document url-prefix() {
+    #eo-menu .eo-menu-footer,
+    #eo-dlg-login .eo-menu-footer,
+    #eo-dlg-signout .eo-menu-footer {
+      font-size: 10px;
+    }
+  }
+  #eo-menu .flag, #eo-menu #eo-account-img,
+  #eo-dlg-login .flag,
+  #eo-dlg-login #eo-account-img,
+  #eo-dlg-signout .flag,
+  #eo-dlg-signout #eo-account-img {
+    background-size: 32px;
+  }
+  #eo-menu #eo-power-switch,
+  #eo-dlg-login #eo-power-switch,
+  #eo-dlg-signout #eo-power-switch {
+    height: 20px;
+    width: 46.66px;
+    border-radius: 10px;
+    font-family: Roboto-Light;
+    font-size: 11px;
+    border-radius: 50px;
+  }
+  #eo-menu #eo-power-switch #eo-power-switch-text,
+  #eo-dlg-login #eo-power-switch #eo-power-switch-text,
+  #eo-dlg-signout #eo-power-switch #eo-power-switch-text {
+    top: 4px;
+    left: 23px;
+  }
+  #eo-menu #eo-power-switch-circle,
+  #eo-dlg-login #eo-power-switch-circle,
+  #eo-dlg-signout #eo-power-switch-circle {
+    height: 22px;
+    width: 22px;
+    top: -2px;
+    border-radius: 22px;
+  }
+  #eo-menu #eo-picker-footer,
+  #eo-dlg-login #eo-picker-footer,
+  #eo-dlg-signout #eo-picker-footer {
+    height: 29px;
+  }
+  #eo-menu #eo-picker-footer .Grid-cell,
+  #eo-dlg-login #eo-picker-footer .Grid-cell,
+  #eo-dlg-signout #eo-picker-footer .Grid-cell {
+    height: 100%;
+  }
+  #eo-menu #englishon-bottom,
+  #eo-dlg-login #englishon-bottom,
+  #eo-dlg-signout #englishon-bottom {
+    margin-top: 4px;
+    height: 30px;
+  }
+  #eo-menu #eo-picker-tittle,
+  #eo-dlg-login #eo-picker-tittle,
+  #eo-dlg-signout #eo-picker-tittle {
+    height: 45px;
+  }
+  #eo-menu #eo-speaker-res,
+  #eo-dlg-login #eo-speaker-res,
+  #eo-dlg-signout #eo-speaker-res {
+    background-size: 19px;
+  }
+  #eo-menu #eo-speaker-res:hover,
+  #eo-dlg-login #eo-speaker-res:hover,
+  #eo-dlg-signout #eo-speaker-res:hover {
+    background-size: 24px;
+  }
+
+  .eo-active #eo-power-switch-circle {
+    left: 30px;
+  }
+
+  .eo-row2 {
+    height: 40.75px;
+    margin-top: 12px;
+  }
+
+  .eo-row3 {
+    height: 55.75px;
+    line-height: 1.3;
+    font-size: 15px;
+  }
+
+  .eo-row4 {
+    height: 55px;
+  }
+
+  .eo-row11 {
+    height: 30px;
+  }
+
+  .eo-row5 {
+    height: 20.75px;
+  }
+  .eo-row5 > .Grid {
+    height: 100%;
+  }
+
+  .eo-row6 {
+    margin-top: 10px;
+    height: 24.5px;
+  }
+
+  .eo-row7 {
+    height: 20.25px;
+  }
+
+  .eo-row8 {
+    height: 20px;
+  }
+
+  .eo-dlg-header {
+    font-size: 20px;
+  }
+
+  .eo-row10 {
+    height: 11px;
+    /*margin-top: 5px;*/
+  }
+
+  #eo-mail-login-btn {
+    height: 26.66px;
+    width: 152px;
+    border-radius: 3px;
+    font-size: 13px;
+  }
+
+  #eo-dlg-inner {
+    margin: 0px 29px;
+    overflow: hidden;
+  }
+
+  #eo-dlg-login .eo-row9 {
+    height: 30px;
+  }
+
+  #eo-dlg-login .eo-row12 {
+    height: 40px;
+  }
+
+  #account-triangle {
+    font-size: 26px;
+  }
+
+  #modal {
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: black;
+    /* Fallback color */
+    background-color: rgba(80, 80, 80, 0.75);
+    /* Black w/ opacity */
   }
 }
-#eo-menu .flag, #eo-menu #eo-account-img,
-#eo-dlg-login .flag,
-#eo-dlg-login #eo-account-img,
-#eo-dlg-signout .flag,
-#eo-dlg-signout #eo-account-img {
-  background-size: 32px;
-}
-#eo-menu #eo-power-switch,
-#eo-dlg-login #eo-power-switch,
-#eo-dlg-signout #eo-power-switch {
-  height: 20px;
-  width: 46.66px;
-  border-radius: 10px;
-  font-family: Roboto-Light;
-  font-size: 11px;
-  border-radius: 50px;
-}
-#eo-menu #eo-power-switch #eo-power-switch-text,
-#eo-dlg-login #eo-power-switch #eo-power-switch-text,
-#eo-dlg-signout #eo-power-switch #eo-power-switch-text {
-  top: 4px;
-  left: 23px;
-}
-#eo-menu #eo-power-switch-circle,
-#eo-dlg-login #eo-power-switch-circle,
-#eo-dlg-signout #eo-power-switch-circle {
-  height: 22px;
-  width: 22px;
-  top: -2px;
-  border-radius: 22px;
-}
-#eo-menu #eo-picker-footer,
-#eo-dlg-login #eo-picker-footer,
-#eo-dlg-signout #eo-picker-footer {
-  height: 29px;
-}
-#eo-menu #eo-picker-footer .Grid-cell,
-#eo-dlg-login #eo-picker-footer .Grid-cell,
-#eo-dlg-signout #eo-picker-footer .Grid-cell {
-  height: 100%;
-}
-#eo-menu #englishon-bottom,
-#eo-dlg-login #englishon-bottom,
-#eo-dlg-signout #englishon-bottom {
-  margin-top: 4px;
-  height: 30px;
-}
-#eo-menu #eo-picker-tittle,
-#eo-dlg-login #eo-picker-tittle,
-#eo-dlg-signout #eo-picker-tittle {
-  height: 45px;
-}
-#eo-menu #eo-speaker-res,
-#eo-dlg-login #eo-speaker-res,
-#eo-dlg-signout #eo-speaker-res {
-  background-size: 19px;
-}
-#eo-menu #eo-speaker-res:hover,
-#eo-dlg-login #eo-speaker-res:hover,
-#eo-dlg-signout #eo-speaker-res:hover {
-  background-size: 24px;
-}
-
-.eo-active #eo-power-switch-circle {
-  left: 30px;
-}
-
-.eo-row2 {
-  height: 40.75px;
-  margin-top: 12px;
-}
-
-.eo-row3 {
-  height: 55.75px;
-  line-height: 1.3;
-  font-size: 15px;
-}
-
-.eo-row4 {
-  height: 55px;
-}
-
-.eo-row11 {
-  height: 30px;
-}
-
-.eo-row12 {
-  height: 90px;
-}
-
-.eo-row5 {
-  height: 20.75px;
-}
-.eo-row5 > .Grid {
-  height: 100%;
-}
-
-.eo-row6 {
-  margin-top: 10px;
-  height: 24.5px;
-}
-
-.eo-row7 {
-  height: 20.25px;
-}
-
-.eo-row8 {
-  height: 20px;
-}
-
-.eo-dlg-header {
-  font-size: 20px;
-}
-
-.eo-row10 {
-  height: 11px;
-  /*margin-top: 5px;*/
-}
-
-#eo-mail-login-btn {
-  height: 26.66px;
-  width: 152px;
-  border-radius: 3px;
-  font-size: 13px;
-}
-
-#eo-dlg-inner {
-  margin: 0px 29px;
-  overflow: hidden;
-}
-
-#eo-dlg-login .eo-row9 {
-  height: 30px;
-}
-
-#eo-dlg-login .eo-row12 {
-  height: 40px;
-}
-
-#account-triangle {
-  font-size: 26px;
-}
-
-#modal {
-  /* Hidden by default */
-  position: fixed;
-  /* Stay in place */
-  z-index: 1;
-  /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%;
-  /* Full width */
-  height: 100%;
-  /* Full height */
-  overflow: auto;
-  /* Enable scroll if needed */
-  background-color: black;
-  /* Fallback color */
-  background-color: rgba(80, 80, 80, 0.75);
-  /* Black w/ opacity */
-}
-
-@media (max-width: 981px) {
+/*@media (max-width: 981px) {
   #modal {
     background-color: #eceff1;
   }
-
   #eo-menu,
   #eo-dlg-login,
   #eo-dlg-signout {
@@ -7082,4 +7086,4 @@ eo-signout-layout .signout {
     top: 550px;
     left: 360px;
   }
-}
+}*/
