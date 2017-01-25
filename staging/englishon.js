@@ -5816,6 +5816,40 @@ el.animate(animation,{queue:false,duration:o.duration,easing:o.easing,complete:f
  * http://api.jqueryui.com/transfer-effect/
  */var effectTransfer=$.effects.effect.transfer=function(o,done){var elem=$(this),target=$(o.to),targetFixed=target.css("position")==="fixed",body=$("body"),fixTop=targetFixed?body.scrollTop():0,fixLeft=targetFixed?body.scrollLeft():0,endPosition=target.offset(),animation={top:endPosition.top-fixTop,left:endPosition.left-fixLeft,height:target.innerHeight(),width:target.innerWidth()},startPosition=elem.offset(),transfer=$("<div class='ui-effects-transfer'></div>").appendTo(document.body).addClass(o.className).css({top:startPosition.top-fixTop,left:startPosition.left-fixLeft,height:elem.innerHeight(),width:elem.innerWidth(),position:targetFixed?"fixed":"absolute"}).animate(animation,o.duration,o.easing,function(){transfer.remove();done();});};});
 //
+/*!
+ * jQuery UI Touch Punch 0.2.3
+ *
+ * Copyright 2011–2014, Dave Furfero
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ *
+ * Depends:
+ *  jquery.ui.widget.js
+ *  jquery.ui.mouse.js
+ */
+!function (a) {
+  function f(a, b) {
+    if (!(a.originalEvent.touches.length > 1)) {
+      a.preventDefault();var c = a.originalEvent.changedTouches[0],
+          d = document.createEvent("MouseEvents");d.initMouseEvent(b, !0, !0, window, 1, c.screenX, c.screenY, c.clientX, c.clientY, !1, !1, !1, !1, 0, null), a.target.dispatchEvent(d);
+    }
+  }if (a.support.touch = "ontouchend" in document, a.support.touch) {
+    var e,
+        b = a.ui.mouse.prototype,
+        c = b._mouseInit,
+        d = b._mouseDestroy;b._touchStart = function (a) {
+      var b = this;!e && b._mouseCapture(a.originalEvent.changedTouches[0]) && (e = !0, b._touchMoved = !1, f(a, "mouseover"), f(a, "mousemove"), f(a, "mousedown"));
+    }, b._touchMove = function (a) {
+      e && (this._touchMoved = !0, f(a, "mousemove"));
+    }, b._touchEnd = function (a) {
+      e && (f(a, "mouseup"), f(a, "mouseout"), this._touchMoved || f(a, "click"), e = !1);
+    }, b._mouseInit = function () {
+      var b = this;b.element.bind({ touchstart: a.proxy(b, "_touchStart"), touchmove: a.proxy(b, "_touchMove"), touchend: a.proxy(b, "_touchEnd") }), c.call(b);
+    }, b._mouseDestroy = function () {
+      var b = this;b.element.unbind({ touchstart: a.proxy(b, "_touchStart"), touchmove: a.proxy(b, "_touchMove"), touchend: a.proxy(b, "_touchEnd") }), d.call(b);
+    };
+  }
+}(jQuery);
+//
 /**
  * findAndReplaceDOMText v 0.4.3
  * @author James Padolsey http://james.padolsey.com
@@ -6452,8 +6486,8 @@ var MESSAGES = {
         // Login dialog
         LOGIN_SIGN_IN_TITLE: 'Sign In',
         LOGIN_SIGN_UP_TITLE: 'Sign Up',
-        LOGIN_SUBTITLE: 'Welcome to englishon. Learn english- fast and fun',
-        AGREE_TO_TOS: "I agree to the Terms of Use and Privacy Policy ",
+        LOGIN_SUBTITLE: 'Welcome to EnglishON Gain 2nd Language Skills Pain Free and For Free',
+        AGREE_TO_TOS: "By signing in/up, you agree to the Terms of Use and Privacy Policy",
         FORGOT_PASSWORD: 'Forgot password?',
 
         ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
@@ -6466,7 +6500,7 @@ var MESSAGES = {
         LOGGED_IN_AS: "You logged in",
         LOGOUT: "You've Signed Out",
         LOGIN_AS: "Log in as:",
-        LOGIN_BUTTON: "Sign Up/In",
+        LOGIN_BUTTON: "LEARN FOR FREE",
         SIGN_OUT: 'Sign out',
         UPGRADE_MESSAGE: 'It is a good time for upgrading...',
         SIGN_OUT_FIDBACK: "You've Signed Out",
@@ -6492,9 +6526,9 @@ var MESSAGES = {
         // Login dialog
         LOGIN_SIGN_IN_TITLE: 'התחבר',
         LOGIN_SIGN_UP_TITLE: 'הירשם',
-        LOGIN_SUBTITLE: 'ברוך הבא לאינגלשאון. למד אנגלית- בכיף ובמהירות',
-        AGREE_TO_TOS: "אני מסכים לתנאי השימוש ולפוליסת הביטוח ",
-        FORGOT_PASSWORD: 'שכחת סיסמה?',
+        LOGIN_SUBTITLE: 'ברוכים הבאים לאינגלישון שפר את המיומנות שלך בשפה שניה בקלי קלות',
+        AGREE_TO_TOS: "אני מסכים לתנאי השימוש ולתנאי הפרטיות ",
+        FORGOT_PASSWORD: '?שכחת סיסמה',
 
         ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
 
@@ -6506,7 +6540,7 @@ var MESSAGES = {
         LOGGED_IN_AS: "You logged in",
         LOGOUT: "You've Signed Out",
         LOGIN_AS: "Log in as:",
-        LOGIN_BUTTON: "התחברות/רישום",
+        LOGIN_BUTTON: "החל ללמוד בחינם",
         SIGN_OUT: 'התנתק',
         UPGRADE_MESSAGE: 'זמן טוב לשידרוג הדפדפן שלך...',
         PROFILE: 'Profile',
@@ -8101,8 +8135,8 @@ document.MENU_HTML = "<div id='modal' class='hidden'>\
                     <div class='Grid-cell u-1of3 v-align h-align'>\
                         <div id='eo-speaker-res'></div>\
                     </div>\
-                    <div class='Grid-cell v-align h-align'>\
-                        <input type='range' value='0' id='eo-slider' />\
+                    <div class='Grid-cell v-align right-align'>\
+                        <div id='eo-slider'></div>\
                     </div>\
                 </div>\
             </div>\
@@ -8113,12 +8147,12 @@ document.MENU_HTML = "<div id='modal' class='hidden'>\
             <div class='Grid-cell v-align eo-menu-inner' id='eo-picker-tittle'>\
                 <div id='eo-language_header'>Pick a language</div>\
             </div>\
-            <div class='Grid-cell eo-menu-inner'>\
+            <div class='Grid-cell eo-menu-inner available'>\
                 <div class='Grid eo-row'>\
                     <div class='Grid-cell u-1of6'>\
                         <div class='flag us-flag'></div>\
                     </div>\
-                    <div class='Grid-cell v-align'>\
+                    <div class='Grid-cell v-align '>\
                         <div class='eo-language-option-res'>English (US)</div>\
                     </div>\
                 </div>\
@@ -8157,7 +8191,7 @@ document.MENU_HTML = "<div id='modal' class='hidden'>\
                 <div class='Grid-cell v-align eo-menu-footer' id='contact'>Contact Us</div>\
             </div>\
         </div>\
-        <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner' id='editor-row'>\
+        <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
             <div class='Grid-cell hidden v-align h-align'>\
                 <div id='eo-editor-btn' class='v-align h-align'>edit questions</div>\
             </div>\
@@ -8208,14 +8242,14 @@ document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
             <div class='Grid-cell hidden eo-row8'>\
                 <div id='eo-login-msg'></div>\
             </div>\
-            <div class='Grid-cell eo-row9'>\
-                <div class='Grid'>\
-                    <div class='Grid-cell v-align eo-menu-footer' id='tos'>\
-                        <div>Terms of service</div>\
-                    </div>\
-                    <div class='Grid-cell v-align eo-menu-footer'>\
-                        <a href='http://localhost:8080/recover' id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
-                    </div>\
+            <div class='Grid-cell v-align right-align eo-row9'>\
+                <div class='v-align right-align eo-menu-footer'>\
+                    <a href='http://localhost:8080/recover' id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
+                </div>\
+            </div>\
+            <div class='Grid-cell eo-row12'>\
+                <div class='v-align eo-menu-footer' id='tos'>\
+                    <div>Terms of service</div>\
                 </div>\
             </div>\
             <div class='Grid-cell eo-row7 v-align h-align'>\
@@ -8261,9 +8295,6 @@ document.SIGNOUT_DLG = "<div class='hidden' id='eo-dlg-signout'>\
 // Initialization
 // **************
 
-
-console.log('CONSOLE TEST');
-
 document.resources_promise = $.Deferred();
 document.loaded_promise = $.Deferred();
 
@@ -8279,6 +8310,7 @@ function englishon() {
             return 'http://www.englishon.org/v1/' + resource;
         };
     }
+    //function to retriave info about the browser
     browserInfo = function () {
         var ua = navigator.userAgent,
             tem,
@@ -8299,10 +8331,11 @@ function englishon() {
     //Restrict none chrome browsers or chrome versions older than 49
     if (browserInfo.browser != 'Chrome' && (browserInfo.browser != 'Firefox' || !window.matchMedia("(min-width:1050px)").matches)) {
         console.log('BROWSER NOT SUPPORTED.');
-        //return;
+        return;
     }
 
     //THIS LINE IS TEMP
+    //TEMPORARY THE CODE IS RUN JUST IN THIS SPECIFIC ARTICLE
     if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.englishon.org/hidden/shturem.html') {
         return;
     }
@@ -8320,7 +8353,7 @@ function englishon() {
     var defaults = {
         'token': null,
         'backendUrl': DEFAULT_BACKEND_URL,
-        'isActive': false,
+        'isActive': true,
         'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
         'enableSound': true,
         'volume': 100,
@@ -8639,9 +8672,21 @@ document.EnglishOnMenu = function () {
             $("#eo-dlg-signout").fadeOut(1600, "linear", function () {
                 $("#eo-dlg-signout").removeAttr('style').addClass('hidden');
                 $('body').addClass('guest').removeClass('logged');
+                $('#eo-signout-msg').text('');
             });
         });
     };
+    var change_volume = function () {
+        val = $('#eo-slider').slider('value');
+        configStorage.set({ volume: val });
+        Speaker.changeVolume(val);
+        if (val == '0') {
+            toggleSound();
+        } else if (!JSON.parse(localStorage.getItem('enableSound'))) {
+            toggleSound();
+        }
+    };
+
     document.signout = signout;
     this.menu_string = document.MENU_HTML;
     this.container = $(this.menu_string);
@@ -8650,6 +8695,7 @@ document.EnglishOnMenu = function () {
     this.container.insertBefore($($('table')[0]));
     this.login_dlg.insertBefore($($('table')[0]));
     this.signout_dlg.insertBefore($($('table')[0]));
+    $("#eo-slider").slider({ range: "min", value: document.config.volume, stop: change_volume });
     display_menu_messages();
     $('#djDebug').css({ 'display': 'none' });
     //var offset = $('#top_menu_block').offset().top
@@ -8675,26 +8721,16 @@ document.EnglishOnMenu = function () {
     $('#eo-power-switch-text').text(switch_text);
     $('#eo-speaker-res').on('click', function () {
         toggleSound();
-        vol = JSON.parse(document.config.enableSound) ? document.config.volume : '0';
-        $('#eo-slider').val(vol);
+        vol = JSON.parse(document.config.enableSound) ? document.config.volume : 0;
+        $('#eo-slider').slider('value', vol);
     });
     //initializing volume slider
     //$('#eo-slider').attr('max', 50);
     if (JSON.parse(document.config.enableSound)) {
-        $('#eo-slider').val(document.config.volume);
+        $('#eo-slider').slider('value', document.config.volume);
     } else {
-        $('#eo-slider').val(0);
+        $('#eo-slider').slider('value', 0);
     };
-
-    $('#eo-slider').on('change', function (e) {
-        configStorage.set({ volume: e.target.value });
-        Speaker.changeVolume(e.target.value);
-        if (e.target.value == '0') {
-            toggleSound();
-        } else if (!JSON.parse(localStorage.getItem('enableSound'))) {
-            toggleSound();
-        }
-    });
 
     $('#signout_btn').on('click', signout);
     if (JSON.parse(!localStorage.getItem('email'))) {
