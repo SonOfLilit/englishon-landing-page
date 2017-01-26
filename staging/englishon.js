@@ -6487,7 +6487,7 @@ var MESSAGES = {
         LOGIN_SIGN_IN_TITLE: 'Sign In',
         LOGIN_SIGN_UP_TITLE: 'Sign Up',
         LOGIN_SUBTITLE: 'EnglishON</br>Improve Language Skills</br>Fun, Easy, Free',
-        AGREE_TO_TOS: "By signing in/up, you agree to the Terms of Use and Privacy Policy",
+        AGREE_TO_TOS: "By signing in/up, you agree to the</br> Terms of Use and Privacy Policy",
         FORGOT_PASSWORD: 'Forgot password?',
 
         ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
@@ -8473,8 +8473,11 @@ $(englishon);
 // ******
 var englishon_btn_func = function (e) {
     e.preventDefault();
-    $('#eo-menu').toggleClass('hidden');
-    $('#modal').toggleClass('hidden');
+    // $('#eo-menu').toggleClass('hidden');
+    // $('#modal').toggleClass('hidden');
+    $('#eo-menu').removeClass('hidden');
+    $('#modal').removeClass('hidden');
+    window.history.pushState({ 'screen_name': 'eo_main_menu' }, '', 'englishon_menu');
 };
 
 var EnglishOnButton = new function () {
@@ -8510,10 +8513,8 @@ $(document).mouseup(function (e) {
     if (!menu.is(e.target) // if the target of the click isn't the menu..
     && menu.has(e.target).length === 0 // ... nor a descendant of the menu
     && !login_dlg.is(e.target) && login_dlg.has(e.target).length === 0 && !signout_dlg.is(e.target) && signout_dlg.has(e.target).length === 0) {
-        $('#modal').addClass('hidden');
-        menu.addClass('hidden');
-        login_dlg.addClass('hidden');
-        signout_dlg.addClass('hidden');
+        hide_dialogs(0);
+        window.history.pushState({ 'screen_name': 'shturem' }, '', document.overlay.url.substring(document.overlay.url.indexOf('index.php')));
     }
 });
 display_menu_messages = function () {
@@ -8524,7 +8525,7 @@ display_menu_messages = function () {
     $('#contact').text(messages.CONTACT);
     $('#dlg-sign-in-header').text(messages.LOGIN_SIGN_IN_TITLE);
     $('#dlg-sign-up-header').text(messages.LOGIN_SIGN_UP_TITLE);
-    $('#subtitle').html(messages.LOGIN_SUBTITLE);
+    $('#subtitle').text(messages.LOGIN_SUBTITLE);
     $('#or').text(messages.OR);
     $('#tos').text(messages.AGREE_TO_TOS);
     $('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);
@@ -8539,6 +8540,7 @@ var toggle_login_dialog = function () {
     $("#eo-dlg-signout").addClass('hidden');
     $('#djDebug').css({ 'display': 'none' });
     $('#eo-login-msg').text('').removeClass('ui-state-highlight');
+    window.history.pushState({ 'screen_name': 'eo_login' }, '', 'eo_login');
 };
 
 var toggle_options_dialog = function () {
@@ -8548,6 +8550,7 @@ var toggle_options_dialog = function () {
         //$("#eo-dlg-signout").css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' })
         $('#eo-dlg-signout').css({ top: (screen.height - 540) / 2 + 51 + 'px', left: (screen.width - 360) / 2 + 'px' });
     };
+    window.history.pushState({ 'screen_name': 'eo_options' }, '', 'eo_options');
 };
 var display_message = function (msg, element) {
     element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
@@ -8556,6 +8559,7 @@ var hide_dialogs = function (milisec) {
     setTimeout(function () {
         $('#modal').addClass('hidden');
         $('#eo-dlg-login').addClass('hidden');
+        $('#eo-dlg-signout').addClass('hidden');
         $('#eo-menu').addClass('hidden');
         $('#eo-signout-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
         $('#eo-login-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
@@ -8676,16 +8680,6 @@ document.EnglishOnMenu = function () {
             });
         });
     };
-    var change_volume = function () {
-        val = $('#eo-slider').slider('value');
-        configStorage.set({ volume: val });
-        Speaker.changeVolume(val);
-        if (val == '0') {
-            toggleSound();
-        } else if (!JSON.parse(localStorage.getItem('enableSound'))) {
-            toggleSound();
-        }
-    };
 
     document.signout = signout;
     this.menu_string = document.MENU_HTML;
@@ -8695,7 +8689,7 @@ document.EnglishOnMenu = function () {
     this.container.insertBefore($($('table')[0]));
     this.login_dlg.insertBefore($($('table')[0]));
     this.signout_dlg.insertBefore($($('table')[0]));
-    $("#eo-slider").slider({ range: "min", value: document.config.volume, stop: change_volume });
+    $("#slider").slider({ range: "min" });
     display_menu_messages();
     $('#djDebug').css({ 'display': 'none' });
     //var offset = $('#top_menu_block').offset().top
@@ -8721,16 +8715,26 @@ document.EnglishOnMenu = function () {
     $('#eo-power-switch-text').text(switch_text);
     $('#eo-speaker-res').on('click', function () {
         toggleSound();
-        vol = JSON.parse(document.config.enableSound) ? document.config.volume : 0;
-        $('#eo-slider').slider('value', vol);
+        vol = JSON.parse(document.config.enableSound) ? document.config.volume : '0';
+        $('#eo-slider').val(vol);
     });
     //initializing volume slider
     //$('#eo-slider').attr('max', 50);
     if (JSON.parse(document.config.enableSound)) {
-        $('#eo-slider').slider('value', document.config.volume);
+        $('#eo-slider').val(document.config.volume);
     } else {
-        $('#eo-slider').slider('value', 0);
+        $('#eo-slider').val(0);
     };
+
+    $('#eo-slider').on('change', function (e) {
+        configStorage.set({ volume: e.target.value });
+        Speaker.changeVolume(e.target.value);
+        if (e.target.value == '0') {
+            toggleSound();
+        } else if (!JSON.parse(localStorage.getItem('enableSound'))) {
+            toggleSound();
+        }
+    });
 
     $('#signout_btn').on('click', signout);
     if (JSON.parse(!localStorage.getItem('email'))) {
@@ -8823,6 +8827,23 @@ $(function () {
 });
 
 $.when(document.resources_promise, document.loaded_promise).done(function () {
+    //register the handler for backspace/forward
+    window.onpopstate = function (e) {
+        if (e.state) {
+            console.log('i know you want to see: ' + e.state.screen_name);
+            if (e.state.screen_name == 'shturem') hide_dialogs(0);else if (e.state.screen_name == 'eo_main_menu') {
+                $('#eo-menu').removeClass('hidden');
+                $('#eo-dlg-login').addClass('hidden');
+                $('#eo-dlg-signout').addClass('hidden');
+            } else if (e.state.screen_name == 'eo_login') {
+                $('#eo-dlg-login').removeClass('hidden');
+                $('#eo-dlg-signout').addClass('hidden');
+            } else if (e.state.screen_name == 'eo_options') {
+                $('#eo-dlg-signout').removeClass('hidden');
+                $('#eo-dlg-login').addClass('hidden');
+            }
+        }
+    };
     console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********');
     $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
 
