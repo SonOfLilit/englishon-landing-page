@@ -7976,11 +7976,11 @@ Scraper = new function () {
     function dispatch(location) {
         if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
             if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
-            if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
+            if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper(location.host);
         }
         if (location.host === 'www.englishon.org') {
-            if (location.pathname === '/hidden/shturem.html' || location.pathname === '/index.php' && location.search === '') return new ShturemArticleScraper();
-            if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
+            if (location.pathname === '/hidden/shturem.html' || location.pathname === '/index.php' && location.search === '') return new ShturemArticleScraper(location.host);
+            if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper(location.host);
         }
     }
 
@@ -7995,10 +7995,11 @@ Scraper = new function () {
     };
 }();
 
-var ShturemArticleScraper = function () {
+var ShturemArticleScraper = function (host) {
 
     this.scrape = function () {
         url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
+        if (host == 'www.englishon.org') url = ('http://www.englishon.org' + location.pathname + location.search).replace(/#.*$/, '');
         var subtitle = $('span.artSubtitle')[0];
         var bodytext = $('div.artText')[0];
         // Shturem article bodies are not divided internally to <p>s.
