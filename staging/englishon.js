@@ -7979,7 +7979,7 @@ Scraper = new function () {
             if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
         }
         if (location.host === 'www.englishon.org') {
-            if (location.pathname === '/hidden/shturem.html' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
+            if (location.pathname === '/hidden/shturem.html' || location.pathname === '/index.php' && location.search === '') return new ShturemArticleScraper();
             if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
         }
     }
