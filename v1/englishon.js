@@ -8817,6 +8817,7 @@ document.EnglishOnMenu = function () {
         //Shturem is misiing <meta name="viewport" content="width=device-width, initial-scale=1.0">
         //This is causing chrome to compute the body width as 980px anycase, in inspector too
     });
+    window.history.pushState({ 'screen_name': 'shturem' }, '', document.overlay.url.substring(document.overlay.url.indexOf('index.php')));
 };
 
 $(function () {
