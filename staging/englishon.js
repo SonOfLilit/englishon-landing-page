@@ -6468,88 +6468,88 @@ configStorage = {
 };
 //
 var MESSAGES = {
-    'english': {
-        LANGUAGE: 'english',
-        DIRECTION: 'ltr',
-        MENU_TITLE: 'Sign Up/In',
-        POWER_SWICHT_ON: 'On',
-        POWER_SWICHT_ON: 'Off',
-        LANGUAGES_PICKER_TITLE: 'Pick a language',
-        COMING_SOON: 'Comming soon',
-        EN: "English (US)",
-        ES: "Spanish",
-        FR: "French",
-        ZH: "Chinese",
-        HELP: 'Need Help?',
-        CONTACT: 'Conatct Us',
-        OR: 'OR',
-        // Login dialog
-        LOGIN_SIGN_IN_TITLE: 'Sign In',
-        LOGIN_SIGN_UP_TITLE: 'Sign Up',
-        LOGIN_SUBTITLE: 'EnglishON</br>Improve Language Skills</br>Fun, Easy, Free',
-        AGREE_TO_TOS: "By signing in/up, you agree to the</br> Terms of Use and Privacy Policy",
-        FORGOT_PASSWORD: 'Forgot password?',
+  'english': {
+    LANGUAGE: 'english',
+    DIRECTION: 'ltr',
+    MENU_TITLE: 'Sign Up/In',
+    POWER_SWICHT_ON: 'On',
+    POWER_SWICHT_ON: 'Off',
+    LANGUAGES_PICKER_TITLE: 'Pick a language',
+    COMING_SOON: 'Comming soon',
+    EN: "English (US)",
+    ES: "Spanish",
+    FR: "French",
+    ZH: "Chinese",
+    HELP: 'Need Help?',
+    CONTACT: 'Conatct Us',
+    OR: 'OR',
+    // Login dialog
+    LOGIN_SIGN_IN_TITLE: 'Sign In',
+    LOGIN_SIGN_UP_TITLE: 'Sign Up',
+    LOGIN_SUBTITLE: 'EnglishON</br>Improve Language Skills</br>Fun, Easy, Free',
+    AGREE_TO_TOS: "By signing in/up, you agree to the</br> Terms of Use and Privacy Policy",
+    FORGOT_PASSWORD: 'Forgot password?',
 
-        ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
+    ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
 
-        ENABLE: "Enable EnglishON",
-        DISABLE: "Disable EnglishON",
+    ENABLE: "Enable EnglishON",
+    DISABLE: "Disable EnglishON",
 
-        WRONG_KEYBOARD_LAYOUT: "Please switch keyboard layout.",
-        WRONG_KEYBOARD_LAYOUT_HINT: "Alt + Shift",
-        LOGGED_IN_AS: "You logged in",
-        LOGOUT: "You've Signed Out",
-        LOGIN_AS: "Log in as:",
-        LOGIN_BUTTON: "LEARN FOR FREE",
-        SIGN_OUT: 'Sign out',
-        UPGRADE_MESSAGE: 'It is a good time for upgrading...',
-        SIGN_OUT_FIDBACK: "You've Signed Out",
-        LOGGED_IN_FIDBACK: 'You signed in',
-        GET_STARTED: 'Get Started',
-        SITE_LANGUAGE: 'Site Language'
-    },
-    'hebrew': {
-        LANGUAGE: 'hebrew',
-        DIRECTION: 'rtl',
-        MENU_TITLE: 'רישום וכניסה',
-        POWER_SWICHT_ON: 'On',
-        POWER_SWICHT_ON: 'Off',
-        LANGUAGES_PICKER_TITLE: 'בחר שפה',
-        COMING_SOON: 'Comming soon',
-        EN: "English (US)",
-        ES: "Spanish",
-        FR: "French",
-        ZH: "Chinese",
-        HELP: 'צריך עזרה?',
-        CONTACT: 'צור קשר',
-        OR: 'או',
-        // Login dialog
-        LOGIN_SIGN_IN_TITLE: 'התחבר',
-        LOGIN_SIGN_UP_TITLE: 'הירשם',
-        LOGIN_SUBTITLE: 'ברוכים הבאים לאינגלישון שפר את המיומנות שלך בשפה שניה בקלי קלות',
-        AGREE_TO_TOS: "אני מסכים לתנאי השימוש ולתנאי הפרטיות ",
-        FORGOT_PASSWORD: '?שכחת סיסמה',
+    WRONG_KEYBOARD_LAYOUT: "Please switch keyboard layout.",
+    WRONG_KEYBOARD_LAYOUT_HINT: "Alt + Shift",
+    LOGGED_IN_AS: "You logged in",
+    LOGOUT: "You've Signed Out",
+    LOGIN_AS: "Log in as:",
+    LOGIN_BUTTON: "LEARN FOR FREE",
+    SIGN_OUT: 'Sign out',
+    UPGRADE_MESSAGE: 'It is a good time for upgrading...',
+    SIGN_OUT_FIDBACK: "You've Signed Out",
+    LOGGED_IN_FIDBACK: 'You signed in',
+    GET_STARTED: 'Get Started',
+    SITE_LANGUAGE: 'Site Language'
+  },
+  'hebrew': {
+    LANGUAGE: 'hebrew',
+    DIRECTION: 'rtl',
+    MENU_TITLE: 'רישום וכניסה',
+    POWER_SWICHT_ON: 'On',
+    POWER_SWICHT_ON: 'Off',
+    LANGUAGES_PICKER_TITLE: 'בחר שפה',
+    COMING_SOON: 'Comming soon',
+    EN: "English (US)",
+    ES: "Spanish",
+    FR: "French",
+    ZH: "Chinese",
+    HELP: 'צריך עזרה?',
+    CONTACT: 'צור קשר',
+    OR: 'או',
+    // Login dialog
+    LOGIN_SIGN_IN_TITLE: 'התחבר',
+    LOGIN_SIGN_UP_TITLE: 'הירשם',
+    LOGIN_SUBTITLE: 'ברוכים הבאים לאינגלישון שפר את המיומנות שלך בשפה שניה בקלי קלות',
+    AGREE_TO_TOS: "אני מסכים לתנאי השימוש ולתנאי הפרטיות ",
+    FORGOT_PASSWORD: '?שכחת סיסמה',
 
-        ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
+    ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
 
-        ENABLE: "Enable EnglishON",
-        DISABLE: "Disable EnglishON",
+    ENABLE: "Enable EnglishON",
+    DISABLE: "Disable EnglishON",
 
-        WRONG_KEYBOARD_LAYOUT: "Please switch keyboard layout.",
-        WRONG_KEYBOARD_LAYOUT_HINT: "Alt + Shift",
-        LOGGED_IN_AS: "You logged in",
-        LOGOUT: "You've Signed Out",
-        LOGIN_AS: "Log in as:",
-        LOGIN_BUTTON: "החל ללמוד בחינם",
-        SIGN_OUT: 'התנתק',
-        UPGRADE_MESSAGE: 'זמן טוב לשידרוג הדפדפן שלך...',
-        PROFILE: 'Profile',
-        SETTINGS: 'Settings',
-        SIGN_OUT_FIDBACK: 'התנתקת מאינגלישאון...',
-        LOGGED_IN_FIDBACK: 'התחברת לאינגלשיאון',
-        GET_STARTED: 'התחל ללמוד שפות',
-        SITE_LANGUAGE: 'בחר שפה'
-    }
+    WRONG_KEYBOARD_LAYOUT: "Please switch keyboard layout.",
+    WRONG_KEYBOARD_LAYOUT_HINT: "Alt + Shift",
+    LOGGED_IN_AS: "You logged in",
+    LOGOUT: "You've Signed Out",
+    LOGIN_AS: "Log in as:",
+    LOGIN_BUTTON: "החל ללמוד בחינם",
+    SIGN_OUT: 'התנתק',
+    UPGRADE_MESSAGE: 'זמן טוב לשידרוג הדפדפן שלך...',
+    PROFILE: 'Profile',
+    SETTINGS: 'Settings',
+    SIGN_OUT_FIDBACK: 'התנתקת מאינגלישאון...',
+    LOGGED_IN_FIDBACK: 'התחברת לאינגלשיאון',
+    GET_STARTED: 'התחל ללמוד שפות',
+    SITE_LANGUAGE: 'בחר שפה'
+  }
 
 };
 // Until we have real RTL, it's important not to finish sentences with periods, because they'll align wrong
@@ -6558,172 +6558,178 @@ document.MESSAGES = MESSAGES;
 var RTL = 'rtl',
     LTR = 'ltr';
 var WEBSITE_I18N = {
-    'www.bhol.co.il': {
-        DIRECTION: RTL,
-        DEFAULT_TARGET_LANGUAGE: 'en',
-        SITE_LANGUAGE: 'english'
-    },
-    'www.bloombergview.com': {
-        DIRECTION: LTR,
-        DEFAULT_TARGET_LANGUAGE: 'fr',
-        SITE_LANGUAGE: 'english'
-    },
-    'shturem.net': {
-        DIRECTION: RTL,
-        DEFAULT_TARGET_LANGUAGE: 'en',
-        SITE_LANGUAGE: 'hebrew'
-    },
-    'www.shturem.net': {
-        DIRECTION: LTR,
-        DEFAULT_TARGET_LANGUAGE: 'en',
-        SITE_LANGUAGE: 'hebrew'
-    },
-    'www.englishon.org': {
-        DIRECTION: LTR,
-        DEFAULT_TARGET_LANGUAGE: 'en',
-        SITE_LANGUAGE: 'hebrew'
-    }
+  'www.bhol.co.il': {
+    DIRECTION: RTL,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'english'
+  },
+  'www.bloombergview.com': {
+    DIRECTION: LTR,
+    DEFAULT_TARGET_LANGUAGE: 'fr',
+    SITE_LANGUAGE: 'english'
+  },
+  'shturem.net': {
+    DIRECTION: RTL,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'hebrew'
+  },
+  'www.shturem.net': {
+    DIRECTION: LTR,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'hebrew'
+  },
+  'www.englishon.org': {
+    DIRECTION: LTR,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'hebrew'
+  }
 };
 var I18N = WEBSITE_I18N[location.hostname];
 //
 Authenticator = function (base) {
-    this.base = base;
+  this.base = base;
 };
 
 Authenticator.prototype.getTokenFor = function (userToken) {
-    var promise = $.get(this.base + "/tokens/from-user-token/" + encodeURIComponent(userToken) + "/").then(function (response) {
-        return response.token;
-    });
-    return promise;
+  var promise = $.get(this.base + "/tokens/from-user-token/" + encodeURIComponent(userToken) + "/").then(function (response) {
+    return response.token;
+  });
+  return promise;
 };
 
 Authenticator.prototype.getTokenForGuest = function () {
-    console.log("getTokenForGuest****! base is: " + this.base);
-    var promise = $.post(this.base + "/tokens/create/").then(function (response) {
-        return response.token;
-    });
-    return promise;
+  console.log("getTokenForGuest****! base is: " + this.base);
+  var promise = $.post(this.base + "/tokens/create/").then(function (response) {
+    return response.token;
+  });
+  return promise;
 };
 
 function showTOS() {
-    var buttons = {};
-    buttons[MESSAGES.CLOSE_TOS] = function () {
-        $(this).dialog("close");
-    };
-    $.ajax(chrome.extension.getURL('terms_of_service.html')).done(function (tos) {
-        $('<div>')
-        // TODO: real RTL
-        .attr('dir', 'rtl').html(tos).dialog({
-            autoOpen: true,
-            modal: true,
-            buttons: buttons,
-            width: '600',
-            height: '600',
-            overflow: 'auto'
-        });
+  var buttons = {};
+  buttons[MESSAGES.CLOSE_TOS] = function () {
+    $(this).dialog("close");
+  };
+  $.ajax(chrome.extension.getURL('terms_of_service.html')).done(function (tos) {
+    $('<div>')
+    // TODO: real RTL
+    .attr('dir', 'rtl').html(tos).dialog({
+      autoOpen: true,
+      modal: true,
+      buttons: buttons,
+      width: '600',
+      height: '600',
+      overflow: 'auto'
     });
+  });
 }
 
 Authenticator.prototype.getToken = function () {
-    console.log("getToken****");
-    var r = $.Deferred();
-    var dia = $('<div>');
-    dia.append($('<p>').text(MESSAGES.ENTER_USER_TOKEN));
-    dia.append($('<p>').append($('<input type="text" style="width: 100%;"></p>')));
-    dia.append($('<p>').text(MESSAGES.AGREE_TO_TOS).append($('<a>').attr('href', '#').text(MESSAGES.TOS_LINK).on('click', showTOS)));
-    var buttons = $('<p>');
-    // TODO: real rtl support instead of flipped button order
-    buttons.append($('<button>').text(MESSAGES.SUBMIT_WITH_TOKEN).on('click', function (event) {
-        event.preventDefault();
-        buttons.find('button').prop('disabled', true);
-        var promise = $.get(this.base + '/tokens/from-user-token/' + dia.find(':text').val() + '/');
-        waitFor(promise, MESSAGES.ERROR_INVALID_TOKEN);
-    }.bind(this)));
-    dia.append(buttons);
+  console.log("getToken****");
+  var r = $.Deferred();
+  var dia = $('<div>');
+  dia.append($('<p>').text(MESSAGES.ENTER_USER_TOKEN));
+  dia.append($('<p>').append($('<input type="text" style="width: 100%;"></p>')));
+  dia.append($('<p>').text(MESSAGES.AGREE_TO_TOS).append($('<a>').attr('href', '#').text(MESSAGES.TOS_LINK).on('click', showTOS)));
+  var buttons = $('<p>');
+  // TODO: real rtl support instead of flipped button order
+  buttons.append($('<button>').text(MESSAGES.SUBMIT_WITH_TOKEN).on('click', function (event) {
+    event.preventDefault();
+    buttons.find('button').prop('disabled', true);
+    var promise = $.get(this.base + '/tokens/from-user-token/' + dia.find(':text').val() + '/');
+    waitFor(promise, MESSAGES.ERROR_INVALID_TOKEN);
+  }.bind(this)));
+  dia.append(buttons);
 
-    function waitFor(promise, errorMsg) {
-        promise.then(function (response) {
-            if (response.token) {
-                r.resolve(response.token);
-                dia.dialog('close');
-            } else {
-                dia.append($('<p>').text(errorMsg));
-                buttons.find('button').prop('disabled', false);
-            }
-        }, function (error) {
-            dia.append($('<p>').text(errorMsg));
-            buttons.find('button').prop('disabled', false);
-        });
-    }
-    dia.dialog({ autoOpen: true, height: 'auto', width: 'auto' });
-    return r;
+  function waitFor(promise, errorMsg) {
+    promise.then(function (response) {
+      if (response.token) {
+        r.resolve(response.token);
+        dia.dialog('close');
+      } else {
+        dia.append($('<p>').text(errorMsg));
+        buttons.find('button').prop('disabled', false);
+      }
+    }, function (error) {
+      dia.append($('<p>').text(errorMsg));
+      buttons.find('button').prop('disabled', false);
+    });
+  }
+  dia.dialog({ autoOpen: true, height: 'auto', width: 'auto' });
+  return r;
 };
 
 Authenticator.prototype.register = function (user) {
-    console.log('register by mail)');
-    var res = $.post(this.base + '/tokens/register/', user, function (res) {
-        return res;
-    });
+  console.log('register by mail)');
+  var res = $.post(this.base + '/tokens/register/', user, function (res) {
     return res;
+  });
+  return res;
 };
 
 Authenticator.prototype.validate = function (user) {
-    emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/, tips = $('#eo-login-msg');
-    allFields = $([]).add(user.email).add(user.password);
-    allFields.removeClass('ui-state-error');
-
-    function checkLength(o, n, min, max) {
-        if (o.val().length > max) {
-            o.addClass("ui-state-error");
-            updateTips("Max length for " + n + " is: " + max);
-            return false;
-        }
-        if (o.val().length < min) {
-            o.addClass("ui-state-error");
-            updateTips("Min length for " + n + " is: " + min);
-            return false;
-        } else {
-            return true;
-        }
+  emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+  //tips = $('#eo-login-msg');
+  allFields = $([]).add(user.email).add(user.password);
+  errors = $([]).add(user.email_msg).add(user.password_msg);
+  errors.text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+  //user.password_msg.text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+  allFields.removeClass('ui-state-error');
+  //allFields.on('input',function(){})
+  function checkLength(o, n, min, max) {
+    if (o.val().length > max) {
+      o.addClass("ui-state-error");
+      updateTips("Max length for " + n + " is: " + max, n);
+      return false;
     }
-
-    function checkRegexp(o, regexp, n) {
-        if (!regexp.test(o.val())) {
-            o.addClass("ui-state-error");
-            updateTips(n);
-            return false;
-        } else {
-            return true;
-        }
+    if (o.val().length < min) {
+      o.addClass("ui-state-error");
+      updateTips("Min length for " + n + " is: " + min, n);
+      return false;
+    } else {
+      return true;
     }
+  }
 
-    function updateTips(t) {
-        tips.text(t).addClass("ui-state-highlight");
-
-        tips.parent().removeClass('hidden');
-        setTimeout(function () {
-            tips.removeClass("ui-state-highlight", 1500);
-        }, 500);
+  function checkRegexp(o, regexp, t) {
+    if (!regexp.test(o.val())) {
+      o.addClass("ui-state-error");
+      updateTips(t, o.attr('id').substring(9));
+      return false;
+    } else {
+      return true;
     }
+  }
 
-    var valid = true;
-    //valid = valid && checkLength( name, "username", 3, 16 );
-    valid = valid && checkLength(user.email, "email", 6, 80);
-    valid = valid && checkLength(user.password, "password", 5, 16);
+  function updateTips(t, n) {
+    element = $('#login-' + n + '-msg');
+    element.text(t);
+    //.addClass("ui-state-highlight");
 
-    //valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
-    valid = valid && checkRegexp(user.email, emailRegex, "eg. user_name@gmail.com");
-    valid = valid && checkRegexp(user.password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9");
+    element.parent().removeClass('hidden');
+    setTimeout(function () {
+      element.removeClass("ui-state-highlight", 1500);
+    }, 500);
+  }
 
-    return valid;
+  var valid = true;
+  //valid = valid && checkLength( name, "username", 3, 16 );
+  valid = valid && checkLength(user.email, "email", 6, 80);
+  valid = valid && checkLength(user.password, "password", 5, 16);
+
+  //valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
+  valid = valid && checkRegexp(user.email, emailRegex, "eg. user_name@gmail.com");
+  //valid = valid && checkRegexp(user.password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9");
+
+  return valid;
 };
 Authenticator.prototype.login = function (token) {
-    if (token !== null) {
-        console.log('Authenticator.prototype.login****Token is existing already. Didnt create a new one');
-        return $.Deferred().resolve(token);
-    }
-    console.log('Authenticator.prototype.login****There is no token. Create a new one for guest');
-    return this.getTokenForGuest();
+  if (token !== null) {
+    console.log('Authenticator.prototype.login****Token is existing already. Didnt create a new one');
+    return $.Deferred().resolve(token);
+  }
+  console.log('Authenticator.prototype.login****There is no token. Create a new one for guest');
+  return this.getTokenForGuest();
 };
 //
 HerokuBackend = function (base, token) {
@@ -6864,989 +6870,989 @@ HerokuBackend.prototype.is_new_session = function () {
 };
 //
 Editor = function (overlay) {
-    this.paragraphs = $([overlay.subtitle, overlay.bodytext]);
-    this.overlay = overlay;
-    var lines = document.internal_id.split("\n");
-    var internal_dic = {};
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i].split(" ");
-        internal_dic[line[0]] = [];
-        for (var j = 1; j < line.length; j++) {
-            internal_dic[line[0]].push(line[j]);
-        }
+  this.paragraphs = $([overlay.subtitle, overlay.bodytext]);
+  this.overlay = overlay;
+  var lines = document.internal_id.split("\n");
+  var internal_dic = {};
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].split(" ");
+    internal_dic[line[0]] = [];
+    for (var j = 1; j < line.length; j++) {
+      internal_dic[line[0]].push(line[j]);
     }
-    this.internal_id = internal_dic;
-    this.ps = [];
+  }
+  this.internal_id = internal_dic;
+  this.ps = [];
 };
 
 Editor.prototype.createAutoQuestion = function (event) {
-    event.preventDefault();
-    var span = $(event.target).parent();
-    console.log('createAutoQuestion***** span is: ' + span);
-    var ctx = this.autoContext(span);
+  event.preventDefault();
+  var span = $(event.target).parent();
+  console.log('createAutoQuestion***** span is: ' + span);
+  var ctx = this.autoContext(span);
 
-    //var ctx = this.autoContext(span);
-    if (!ctx) {
-        alert("No suitable context found");
-        span.removeClass('auto-editor-candidate_inne').addClass('eo-editor-irrelevant').off('click');
-        return;
-    }
+  //var ctx = this.autoContext(span);
+  if (!ctx) {
+    alert("No suitable context found");
+    span.removeClass('auto-editor-candidate_inne').addClass('eo-editor-irrelevant').off('click');
+    return;
+  }
 
-    var replaced = span.data('word');
-    var correct = span.find(".correct_answer").val();
-    if (correct == "Don't create") {
-        span.removeClass('auto-editor-candidate_inner').addClass('eo-editor-irrelevant').off('click');
-        return;
-    }
-    var word_location = 2;
-    if (!ctx) {
-        alert("No suitable context found");
-        span.removeClass('auto-editor-candidate_inner').addClass('eo-editor-irrelevant').off('click');
-        return;
-    }
+  var replaced = span.data('word');
+  var correct = span.find(".correct_answer").val();
+  if (correct == "Don't create") {
+    span.removeClass('auto-editor-candidate_inner').addClass('eo-editor-irrelevant').off('click');
+    return;
+  }
+  var word_location = 2;
+  if (!ctx) {
+    alert("No suitable context found");
+    span.removeClass('auto-editor-candidate_inner').addClass('eo-editor-irrelevant').off('click');
+    return;
+  }
 
-    //Creating a list of 4 Distractions randomaly, using the word buffer of the internal id
-    var wrong = [];
-    internal_id_keys = Object.keys(this.internal_id);
-    while (wrong.length < 3) {
-        // candidate=this.internal_id[internal_id_keys[Math.floor((Math.random() * internal_id_keys.length) + 0) ]][0];
-        translation = internal_id_keys[Math.floor(Math.random() * internal_id_keys.length + 0)];
-        arrayOfCandidate = this.internal_id[translation];
-        candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
-        if (wrong.indexOf(candidate) == -1 && candidate != correct) wrong.push({ word: candidate, translation: translation });
-    }
-    var question = {
-        'context': ctx,
-        'replaced': replaced,
-        'hint': replaced,
-        'correct_answers': [correct],
-        'wrong_answers': wrong,
-        'word_location': word_location,
-        'hint_language': 'he',
-        'answer_language': 'en'
-    };
-    console.log("Finished create the object in createAutoquestion");
-    var res = document.englishonBackend.createQuestion(question);
-    span.data('context', ctx).removeClass('auto-editor-candidate_inner').addClass('eo-editor-question').off('click', 'onClick');
-    // .on('click', this.question_onClick.bind(this));
-    span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
-        e.stopPropagation();
-    });
+  //Creating a list of 4 Distractions randomaly, using the word buffer of the internal id
+  var wrong = [];
+  internal_id_keys = Object.keys(this.internal_id);
+  while (wrong.length < 3) {
+    // candidate=this.internal_id[internal_id_keys[Math.floor((Math.random() * internal_id_keys.length) + 0) ]][0];
+    translation = internal_id_keys[Math.floor(Math.random() * internal_id_keys.length + 0)];
+    arrayOfCandidate = this.internal_id[translation];
+    candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
+    if (wrong.indexOf(candidate) == -1 && candidate != correct) wrong.push({ word: candidate, translation: translation });
+  }
+  var question = {
+    'context': ctx,
+    'replaced': replaced,
+    'hint': replaced,
+    'correct_answers': [correct],
+    'wrong_answers': wrong,
+    'word_location': word_location,
+    'hint_language': 'he',
+    'answer_language': 'en'
+  };
+  console.log("Finished create the object in createAutoquestion");
+  var res = document.englishonBackend.createQuestion(question);
+  span.data('context', ctx).removeClass('auto-editor-candidate_inner').addClass('eo-editor-question').off('click', 'onClick');
+  // .on('click', this.question_onClick.bind(this));
+  span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
+    e.stopPropagation();
+  });
 };
 
 Editor.prototype.question_onClick = function (event) {
-    var test = this;
-    event.preventDefault();
-    var span = $(event.target);
-    //var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
-    var word = span.data('word');
-    var context = span.data('context');
-    var question = {
-        'word': word,
-        'ctx': context
-    };
-    var q_dialog = $('<div  align="left" dir="ltr">');
-    q_dialog.append($('<h3>').text('You are deleting this word: ' + word));
-    q_dialog.append($('<h3>').text('With this context: ' + context));
-    q_dialog.append($('<button>').text("Delete Question").click(function (event) {
-        span.removeClass('eo-editor-question').addClass('eo-editor-candidate');
-        span.off('click');
-        document.englishonBackend.deleteQuestion(question);
-        span.on('click', this.onClick.bind(this));
-        q_dialog.dialog('close');
-    }.bind(this)));
+  var test = this;
+  event.preventDefault();
+  var span = $(event.target);
+  //var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
+  var word = span.data('word');
+  var context = span.data('context');
+  var question = {
+    'word': word,
+    'ctx': context
+  };
+  var q_dialog = $('<div  align="left" dir="ltr">');
+  q_dialog.append($('<h3>').text('You are deleting this word: ' + word));
+  q_dialog.append($('<h3>').text('With this context: ' + context));
+  q_dialog.append($('<button>').text("Delete Question").click(function (event) {
+    span.removeClass('eo-editor-question').addClass('eo-editor-candidate');
+    span.off('click');
+    document.englishonBackend.deleteQuestion(question);
+    span.on('click', this.onClick.bind(this));
+    q_dialog.dialog('close');
+  }.bind(this)));
 
-    q_dialog.dialog();
+  q_dialog.dialog();
 };
 Editor.prototype.onClick = function (event) {
+  event.preventDefault();
+  var span = $(event.target);
+  var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
+  var word = span.data('word');
+
+  if (!ctx) {
+    alert("No suitable context found");
+    span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click');
+    return;
+  }
+  span.data('context', ctx);
+  var dia = $('<div align="left">');
+  var acc = $('<div>');
+  var tabs = [];
+  acc.append($('<h3>').text("Hebrew -> English"));
+  tabs.push(this.h2eui(span));
+  acc.append(tabs[0]);
+  /*acc.append($('<h3>').text("English -> Hebrew"));
+  tabs.push(this.e2hui(span))
+  acc.append(tabs[1]);*/
+  acc.accordion({ heightStyle: 'content' });
+  dia.append(acc);
+  dia.append($('<button>').text("Create Question").click(function (event) {
     event.preventDefault();
-    var span = $(event.target);
-    var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
-    var word = span.data('word');
+    var question = tabs[acc.accordion('option', 'active')].data('extractor')();
+    if (question) {
+      question.context = ctx;
 
-    if (!ctx) {
-        alert("No suitable context found");
-        span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click');
-        return;
+      document.englishonBackend.createQuestion(question);
+      span.off('click').removeClass('eo-editor-candidate').addClass('eo-editor-question').on('click', this.question_onClick.bind(this));
+      dia.dialog('close');
     }
-    span.data('context', ctx);
-    var dia = $('<div align="left">');
-    var acc = $('<div>');
-    var tabs = [];
-    acc.append($('<h3>').text("Hebrew -> English"));
-    tabs.push(this.h2eui(span));
-    acc.append(tabs[0]);
-    /*acc.append($('<h3>').text("English -> Hebrew"));
-    tabs.push(this.e2hui(span))
-    acc.append(tabs[1]);*/
-    acc.accordion({ heightStyle: 'content' });
-    dia.append(acc);
-    dia.append($('<button>').text("Create Question").click(function (event) {
-        event.preventDefault();
-        var question = tabs[acc.accordion('option', 'active')].data('extractor')();
-        if (question) {
-            question.context = ctx;
+  }.bind(this)));
+  dia.append($('<button>').text("Mark Irrelevant").click(function (event) {
+    event.preventDefault();
+    span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click');
+    dia.dialog('close');
+  }));
+  dia.append($('<button>').text('Close').click(function (event) {
+    event.preventDefault();
+    dia.dialog('close');
+  }));
 
-            document.englishonBackend.createQuestion(question);
-            span.off('click').removeClass('eo-editor-candidate').addClass('eo-editor-question').on('click', this.question_onClick.bind(this));
-            dia.dialog('close');
-        }
-    }.bind(this)));
-    dia.append($('<button>').text("Mark Irrelevant").click(function (event) {
-        event.preventDefault();
-        span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click');
-        dia.dialog('close');
-    }));
-    dia.append($('<button>').text('Close').click(function (event) {
-        event.preventDefault();
-        dia.dialog('close');
-    }));
-
-    dia.dialog({ autoOpen: true, height: 'auto', width: 'auto' });
-    $(".wrd").text(word);
+  dia.dialog({ autoOpen: true, height: 'auto', width: 'auto' });
+  $(".wrd").text(word);
 };
 
 Editor.prototype.generateUI = function () {
-    return $('<div>').append($('<div>').addClass('language_specific')).append($('<div>').append($('<label>').text("Word:")).append($('<span>', { class: 'wrd' })))
-    //.append($('<input>', {type: 'text', id: 'wrd'})))
-    .append($('<div>').append($('<label>').text("Additional correct answers:")).append($('<input>', { type: 'text', name: 'additional' }))).append($('<div>').append($('<label>').text("Wrong answers:")).append($('<input>', { type: 'text', name: 'wrong' })));
+  return $('<div>').append($('<div>').addClass('language_specific')).append($('<div>').append($('<label>').text("Word:")).append($('<span>', { class: 'wrd' })))
+  //.append($('<input>', {type: 'text', id: 'wrd'})))
+  .append($('<div>').append($('<label>').text("Additional correct answers:")).append($('<input>', { type: 'text', name: 'additional' }))).append($('<div>').append($('<label>').text("Wrong answers:")).append($('<input>', { type: 'text', name: 'wrong' })));
 };
 
 Editor.prototype.h2eui = function (span) {
-    var div = this.generateUI();
-    var languageSpecific = div.find('.language_specific');
+  var div = this.generateUI();
+  var languageSpecific = div.find('.language_specific');
 
-    div.data('extractor', function () {
-        //guy
-        // var replaced = div.find(':radio:checked').data('heb');
-        // var correct = div.find(':checkbox:checked').toArray().map(
-        //   function(cb) { return $(cb).data('eng'); });
-        var replaced = div.find('.wrd').text();
-        var additional = parseCommaSeparated(div.find('input[name="additional"]').val());
-        //correct = correct.concat(additional);
-        correct = additional;
-        var wrong = parseCommaSeparated(div.find('input[name="wrong"]').val());
-        var wrong_answers = wrong.map(function (wrong) {
-            return { word: wrong };
-        });
-        if (!replaced) {
-            alert("Choose correct breakdown");
-            return;
-        }
-        if (correct.length === 0) {
-            alert("No correct answers chosen");
-            return;
-        }
-        var question = {
-            'replaced': replaced,
-            'hint': replaced,
-            'correct_answers': correct,
-            'wrong_answers': wrong_answers,
-            'hint_language': 'he',
-            'answer_language': 'en'
-        };
-
-        return question;
+  div.data('extractor', function () {
+    //guy
+    // var replaced = div.find(':radio:checked').data('heb');
+    // var correct = div.find(':checkbox:checked').toArray().map(
+    //   function(cb) { return $(cb).data('eng'); });
+    var replaced = div.find('.wrd').text();
+    var additional = parseCommaSeparated(div.find('input[name="additional"]').val());
+    //correct = correct.concat(additional);
+    correct = additional;
+    var wrong = parseCommaSeparated(div.find('input[name="wrong"]').val());
+    var wrong_answers = wrong.map(function (wrong) {
+      return { word: wrong };
     });
+    if (!replaced) {
+      alert("Choose correct breakdown");
+      return;
+    }
+    if (correct.length === 0) {
+      alert("No correct answers chosen");
+      return;
+    }
+    var question = {
+      'replaced': replaced,
+      'hint': replaced,
+      'correct_answers': correct,
+      'wrong_answers': wrong_answers,
+      'hint_language': 'he',
+      'answer_language': 'en'
+    };
 
-    return div;
+    return question;
+  });
+
+  return div;
 };
 
 function parseCommaSeparated(commaSeparated) {
-    return commaSeparated.split(',').map(function (word) {
-        return word.trim();
-    }).filter(function (word) {
-        return word !== '';
-    });
+  return commaSeparated.split(',').map(function (word) {
+    return word.trim();
+  }).filter(function (word) {
+    return word !== '';
+  });
 }
 
 Editor.prototype.e2hui = function (span) {
-    var dict = this.lookup(span.data('word'));
-    var h1 = Object.keys(dict).length === 1;
-    var h1e1 = h1 && dict[Object.keys(dict)[0]].length === 1;
+  var dict = this.lookup(span.data('word'));
+  var h1 = Object.keys(dict).length === 1;
+  var h1e1 = h1 && dict[Object.keys(dict)[0]].length === 1;
 
-    var div = this.generateUI();
-    var languageSpecific = div.find('.language_specific');
-    $.each(dict, function (orig, engs) {
-        $.each(engs, function (ix, eng) {
-            languageSpecific.append($('<input type="radio" name="eo-editor-eng">').prop('checked', h1e1).data('orig', orig).data('eng', eng)).append($('<label>').text(eng));
-            $.each(document.dictionary.get(eng), function (jx, heb) {
-                languageSpecific.append($('<input type="checkbox">').data('heb', heb)).append($('<label>').text(heb));
-            });
-        });
+  var div = this.generateUI();
+  var languageSpecific = div.find('.language_specific');
+  $.each(dict, function (orig, engs) {
+    $.each(engs, function (ix, eng) {
+      languageSpecific.append($('<input type="radio" name="eo-editor-eng">').prop('checked', h1e1).data('orig', orig).data('eng', eng)).append($('<label>').text(eng));
+      $.each(document.dictionary.get(eng), function (jx, heb) {
+        languageSpecific.append($('<input type="checkbox">').data('heb', heb)).append($('<label>').text(heb));
+      });
     });
+  });
 
-    div.data('extractor', function () {
-        var replaced = div.find(':radio:checked').data('orig');
-        var hint = div.find(':radio:checked').data('eng');
-        var correct = div.find(':checkbox:checked').toArray().map(function (cb) {
-            return $(cb).data('heb');
-        });
-        var additional = parseCommaSeparated(div.find('input[name="additional"]').val());
-        correct = correct.concat(additional);
-        var wrong = parseCommaSeparated(div.find('input[name="wrong"]').val());
-        var wrong_answers = wrong.map(function (wrong) {
-            return { word: wrong };
-        });
-        if (!replaced || !hint) {
-            alert("Choose correct breakdown");
-            return;
-        }
-
-        if (correct.indexOf(replaced) === -1) correct.push(replaced);
-
-        var question = {
-            'replaced': replaced,
-            'hint': hint,
-            'correct_answers': correct,
-            'wrong_answers': wrong_answers,
-            'answer_language': 'he'
-        };
-
-        return question;
+  div.data('extractor', function () {
+    var replaced = div.find(':radio:checked').data('orig');
+    var hint = div.find(':radio:checked').data('eng');
+    var correct = div.find(':checkbox:checked').toArray().map(function (cb) {
+      return $(cb).data('heb');
     });
+    var additional = parseCommaSeparated(div.find('input[name="additional"]').val());
+    correct = correct.concat(additional);
+    var wrong = parseCommaSeparated(div.find('input[name="wrong"]').val());
+    var wrong_answers = wrong.map(function (wrong) {
+      return { word: wrong };
+    });
+    if (!replaced || !hint) {
+      alert("Choose correct breakdown");
+      return;
+    }
 
-    return div;
+    if (correct.indexOf(replaced) === -1) correct.push(replaced);
+
+    var question = {
+      'replaced': replaced,
+      'hint': hint,
+      'correct_answers': correct,
+      'wrong_answers': wrong_answers,
+      'answer_language': 'he'
+    };
+
+    return question;
+  });
+
+  return div;
 };
 
 Editor.prototype.autoContext = function (span) {
-    var text = span.data('text');
-    var word = span.data('word');
-    var start = span.data('start');
-    var end = span.data('end');
-    //console.log("start value: "+start+" and end value: "+ end);
-    var len = 5;
-    while (true) {
-        //debugger;
-        var ctx = text.slice(Math.max(0, start - len), Math.min(text.length, end + len));
-        // is the context ambiguous?
-        if (ctx.indexOf(word) !== ctx.lastIndexOf(word)) {
-            console.log("The context is ambiguous. context is: " + ctx);
-            break;
-        }
-        // is the context unique?
-        // console.log('autocontext****'+this)
-        // console.log('autocontext****'+this.internal_id)
-        // console.log('autocontext****'+this.paragraphs)
-        // console.log('autocontext****'+this.ps)
-        if (this.ps.filter(function (p) {
-            return p.indexOf(ctx) !== -1;
-        }).length === 1) {
-            return ctx; //success!
-        } else {
-            // context isn't unique.
-            // try again with a longer context.
-            console.log("try again with a longer context.context: " + ctx);
-            len += 5;
-            continue;
-        }
-        // is this the largest candidate context?
-        if (ctx === span.data('text')) break;
+  var text = span.data('text');
+  var word = span.data('word');
+  var start = span.data('start');
+  var end = span.data('end');
+  //console.log("start value: "+start+" and end value: "+ end);
+  var len = 5;
+  while (true) {
+    //debugger;
+    var ctx = text.slice(Math.max(0, start - len), Math.min(text.length, end + len));
+    // is the context ambiguous?
+    if (ctx.indexOf(word) !== ctx.lastIndexOf(word)) {
+      console.log("The context is ambiguous. context is: " + ctx);
+      break;
     }
+    // is the context unique?
+    // console.log('autocontext****'+this)
+    // console.log('autocontext****'+this.internal_id)
+    // console.log('autocontext****'+this.paragraphs)
+    // console.log('autocontext****'+this.ps)
+    if (this.ps.filter(function (p) {
+      return p.indexOf(ctx) !== -1;
+    }).length === 1) {
+      return ctx; //success!
+    } else {
+      // context isn't unique.
+      // try again with a longer context.
+      console.log("try again with a longer context.context: " + ctx);
+      len += 5;
+      continue;
+    }
+    // is this the largest candidate context?
+    if (ctx === span.data('text')) break;
+  }
 };
 
 Editor.prototype.fetchQuestions = function () {
-    console.log("url: " + this.overlay.url);
-    return document.englishonBackend.getArticle(this.overlay.url).then(function (questions) {
-        this.questions = questions;
-        // console.log("fetchQuestions***paragraphs: "+this.overlay.paragraphs);
-        console.log("fetchQuestions*** I brought questions for editor");
-    }.bind(this));
+  console.log("url: " + this.overlay.url);
+  return document.englishonBackend.getArticle(this.overlay.url).then(function (questions) {
+    this.questions = questions;
+    // console.log("fetchQuestions***paragraphs: "+this.overlay.paragraphs);
+    console.log("fetchQuestions*** I brought questions for editor");
+  }.bind(this));
 };
 
 Editor.prototype.highlight = function () {
-    var questions = this.questions;
-    var prefix = ["ל", "ב", "ה", "ש", "מ", "כ", "ו"];
-    var question_dict = {};
-    for (var i = 0; i < questions.length; i++) {
-        if (!(questions[i].replaced in question_dict)) {
-            question_dict[questions[i].replaced] = [questions[i].context];
-        } else {
-            question_dict[questions[i].replaced].push(questions[i].context);
-        }
+  var questions = this.questions;
+  var prefix = ["ל", "ב", "ה", "ש", "מ", "כ", "ו"];
+  var question_dict = {};
+  for (var i = 0; i < questions.length; i++) {
+    if (!(questions[i].replaced in question_dict)) {
+      question_dict[questions[i].replaced] = [questions[i].context];
+    } else {
+      question_dict[questions[i].replaced].push(questions[i].context);
     }
-    this.ps = [];
-    this.paragraphs.each(function (i, p) {
-        p = $(p);
-        $('.artText a').text('HERE IS A LINK!!!!!!');
-        var text = p.text();
-        this.ps.push(text);
-        p.empty();
-        var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
-        var match = [];
-        var lastIndex = 0;
-        while ((match = re.exec(text)) !== null) {
-            var isExist = false;
-            //TODO: The code is duplicate. Fix it
-            if (match[0] in question_dict) {
-                for (var i = 0; i < question_dict[match[0]].length; i++) {
-                    var context = question_dict[match[0]][i];
-                    var start_index = match.index - context.slice(0, context.indexOf(match[0])).length;
-                    var end_index = re.lastIndex + context.slice(context.indexOf(match[0]) + match[0].length, context.length).length;
+  }
+  this.ps = [];
+  this.paragraphs.each(function (i, p) {
+    p = $(p);
+    $('.artText a').text('HERE IS A LINK!!!!!!');
+    var text = p.text();
+    this.ps.push(text);
+    p.empty();
+    var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
+    var match = [];
+    var lastIndex = 0;
+    while ((match = re.exec(text)) !== null) {
+      var isExist = false;
+      //TODO: The code is duplicate. Fix it
+      if (match[0] in question_dict) {
+        for (var i = 0; i < question_dict[match[0]].length; i++) {
+          var context = question_dict[match[0]][i];
+          var start_index = match.index - context.slice(0, context.indexOf(match[0])).length;
+          var end_index = re.lastIndex + context.slice(context.indexOf(match[0]) + match[0].length, context.length).length;
 
-                    if (text.slice(start_index, end_index) == context) {
-                        console.log("Find a ready question!!! " + text.slice(start_index, end_index));
-                        isExist = true;
-                        p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-                        p.append($('<span>').addClass('eo-editor-question').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).data('context', context)
-                        //.off('click',Editor.prototype.onClick())
-                        .on('click', this.question_onClick.bind(this)));
-                    }
-                }
-            } else if (match[0].slice(1) in question_dict && prefix.indexOf(match[0].slice(0, 1)) != -1) {
-                for (var i = 0; i < question_dict[match[0].slice(1)].length; i++) {
-                    var context = question_dict[match[0].slice(1)][i];
-                    var start_index = match.index + 1 - context.slice(0, context.indexOf(match[0].slice(1))).length;
-                    var end_index = re.lastIndex + context.slice(context.indexOf(match[0].slice(1)) + match[0].slice(1).length, context.length).length;
-
-                    if (text.slice(start_index, end_index) == context) {
-                        console.log("Find a ready question!!! " + text.slice(start_index, end_index));
-                        isExist = true;
-                        p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index + 1)));
-                        p.append($('<span>').addClass('eo-editor-question').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).data('context', context)
-                        //.off('click',Editor.prototype.onClick())
-                        .on('click', this.question_onClick.bind(this)));
-                    }
-                }
-            }
-
-            if (isExist == false) {
-
-                if (match[0] in this.internal_id) {
-                    // console.log("found id candidte: "+match[0]);
-                    p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-
-                    var select = $('<select>').addClass('correct_answer');
-                    //.on('click',this.createQuestion.bind(this))
-                    //.on('change',this.createQuestion.bind(span))
-                    var span = $('<span>').addClass('auto-editor-candidate_inner').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).append(select);
-                    span.find('select').append($('<option>').text('').addClass('hide')).on('change', this.createAutoQuestion.bind(this));
-                    for (var i = 0; i < this.internal_id[match[0]].length; i++) {
-                        select.append($('<option>').text(this.internal_id[match[0]][i]));
-                    }
-
-                    p.append(span);
-                } else if (match[0].slice(1) in this.internal_id && prefix.indexOf(match[0].slice(0, 1)) != -1) {
-                    console.log("I found a candidate with prefix: " + match[0].slice(1));
-                    p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index + 1)));
-
-                    var select = $('<select>').addClass('correct_answer').on('change', this.createAutoQuestion.bind(this));
-                    select.append($('<option>').text('').addClass('hide'));
-                    for (var i = 0; i < this.internal_id[match[0].slice(1)].length; i++) {
-                        select.append($('<option>').text(this.internal_id[match[0].slice(1)][i]));
-                    }
-                    p.append($('<span>').addClass('auto-editor-candidate_inner').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).append(select));
-                } else {
-                    p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-                    p.append($('<span>').addClass('eo-editor-candidate').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
-                }
-            }
-            lastIndex = re.lastIndex;
+          if (text.slice(start_index, end_index) == context) {
+            console.log("Find a ready question!!! " + text.slice(start_index, end_index));
+            isExist = true;
+            p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+            p.append($('<span>').addClass('eo-editor-question').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).data('context', context)
+            //.off('click',Editor.prototype.onClick())
+            .on('click', this.question_onClick.bind(this)));
+          }
         }
-        p.get(0).appendChild(document.createTextNode(text.slice(lastIndex)));
-    }.bind(this));
+      } else if (match[0].slice(1) in question_dict && prefix.indexOf(match[0].slice(0, 1)) != -1) {
+        for (var i = 0; i < question_dict[match[0].slice(1)].length; i++) {
+          var context = question_dict[match[0].slice(1)][i];
+          var start_index = match.index + 1 - context.slice(0, context.indexOf(match[0].slice(1))).length;
+          var end_index = re.lastIndex + context.slice(context.indexOf(match[0].slice(1)) + match[0].slice(1).length, context.length).length;
+
+          if (text.slice(start_index, end_index) == context) {
+            console.log("Find a ready question!!! " + text.slice(start_index, end_index));
+            isExist = true;
+            p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index + 1)));
+            p.append($('<span>').addClass('eo-editor-question').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).data('context', context)
+            //.off('click',Editor.prototype.onClick())
+            .on('click', this.question_onClick.bind(this)));
+          }
+        }
+      }
+
+      if (isExist == false) {
+
+        if (match[0] in this.internal_id) {
+          // console.log("found id candidte: "+match[0]);
+          p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+
+          var select = $('<select>').addClass('correct_answer');
+          //.on('click',this.createQuestion.bind(this))
+          //.on('change',this.createQuestion.bind(span))
+          var span = $('<span>').addClass('auto-editor-candidate_inner').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).append(select);
+          span.find('select').append($('<option>').text('').addClass('hide')).on('change', this.createAutoQuestion.bind(this));
+          for (var i = 0; i < this.internal_id[match[0]].length; i++) {
+            select.append($('<option>').text(this.internal_id[match[0]][i]));
+          }
+
+          p.append(span);
+        } else if (match[0].slice(1) in this.internal_id && prefix.indexOf(match[0].slice(0, 1)) != -1) {
+          console.log("I found a candidate with prefix: " + match[0].slice(1));
+          p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index + 1)));
+
+          var select = $('<select>').addClass('correct_answer').on('change', this.createAutoQuestion.bind(this));
+          select.append($('<option>').text('').addClass('hide'));
+          for (var i = 0; i < this.internal_id[match[0].slice(1)].length; i++) {
+            select.append($('<option>').text(this.internal_id[match[0].slice(1)][i]));
+          }
+          p.append($('<span>').addClass('auto-editor-candidate_inner').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).append(select));
+        } else {
+          p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+          p.append($('<span>').addClass('eo-editor-candidate').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
+        }
+      }
+      lastIndex = re.lastIndex;
+    }
+    p.get(0).appendChild(document.createTextNode(text.slice(lastIndex)));
+  }.bind(this));
 };
 //
 jQuery.fn.extend({
-    toggleText: function (a, b) {
-        var that = this;
-        if (that.text() != a && that.text() != b) {
-            that.text(a);
-        } else if (that.text() == a) {
-            that.text(b);
-        } else if (that.text() == b) {
-            that.text(a);
-        }
-        return this;
-    },
-    //for toggle text which containing html entities
-    toggleHtml: function (a, b) {
-        a = a.replace('_', '&#160;');
-        if (b) b = b.replace('_', '&#160;');
-        var that = this;
-        if (that.html() != a && that.html() != b) {
-            that.html(a);
-        } else if (that.html() == a) {
-            that.html(b);
-        } else if (that.html() == b) {
-            that.html(a);
-        }
-        return this;
+  toggleText: function (a, b) {
+    var that = this;
+    if (that.text() != a && that.text() != b) {
+      that.text(a);
+    } else if (that.text() == a) {
+      that.text(b);
+    } else if (that.text() == b) {
+      that.text(a);
     }
+    return this;
+  },
+  //for toggle text which containing html entities
+  toggleHtml: function (a, b) {
+    a = a.replace('_', '&#160;');
+    if (b) b = b.replace('_', '&#160;');
+    var that = this;
+    if (that.html() != a && that.html() != b) {
+      that.html(a);
+    } else if (that.html() == a) {
+      that.html(b);
+    } else if (that.html() == b) {
+      that.html(a);
+    }
+    return this;
+  }
 });
 Injector = function (paragraphs) {
-    var interacted = false;
+  var interacted = false;
 
-    function report(msg, data) {
-        if (!data) data = {};
-        if (msg === "StartedQuestion" && !interacted) {
-            interacted = true;
-            report("StartedQuiz");
-            is_new_session = document.englishonBackend.is_new_session();
-            if (is_new_session) {
-                console.log('reporting StartedSession.... ..... ...... ');
-                report("StartedSession");
-            }
-        }
-        document.englishonBackend.report(msg, data);
-        if (msg === "CompletedQuestion" && $('.eo-question:not(.eo-answered)').length === 0) {
-            report("CompletedQuiz");
-        }
+  function report(msg, data) {
+    if (!data) data = {};
+    if (msg === "StartedQuestion" && !interacted) {
+      interacted = true;
+      report("StartedQuiz");
+      is_new_session = document.englishonBackend.is_new_session();
+      if (is_new_session) {
+        console.log('reporting StartedSession.... ..... ...... ');
+        report("StartedSession");
+      }
     }
+    document.englishonBackend.report(msg, data);
+    if (msg === "CompletedQuestion" && $('.eo-question:not(.eo-answered)').length === 0) {
+      report("CompletedQuiz");
+    }
+  }
 
-    this.elements = [];
+  this.elements = [];
+  this.isActive = false;
+
+  this.toggle = function (value) {
+    if (value) {
+      this.on();
+    } else {
+      this.off();
+    }
+  };
+
+  this.off = function () {
+    if (!this.isActive) {
+      return;
+    }
+    $(this.elements).each(function (i, q) {
+      q.replacement.replaceWith(q.original);
+    });
     this.isActive = false;
+    console.log("hide questions now");
+  };
+  this.on = function () {
+    if (this.isActive) {
+      return;
+    }
+    if (this.elements.length) $('.artText').last().css('line-height', '150%');
+    $(this.elements).each(function (i, q) {
+      console.log('Injector****find edge questions: ' + q.original);
+      q.replacement = q.qobj.replacement();
+      q.original.replaceWith(q.replacement);
+    });
+    this.isActive = true;
+  };
 
-    this.toggle = function (value) {
-        if (value) {
-            this.on();
-        } else {
-            this.off();
-        }
-    };
+  this.setQuestions = function (questions, toggleSound) {
+    this.isBatch = true;
+    for (var i = 0; i < questions.length; i++) {
+      this.addQuestion(questions[i], toggleSound);
+    }
+    this.isBatch = false;
+    updateProgressBars();
+  };
 
-    this.off = function () {
-        if (!this.isActive) {
-            return;
-        }
-        $(this.elements).each(function (i, q) {
-            q.replacement.replaceWith(q.original);
-        });
-        this.isActive = false;
-        console.log("hide questions now");
-    };
-    this.on = function () {
-        if (this.isActive) {
-            return;
-        }
-        if (this.elements.length) $('.artText').last().css('line-height', '150%');
-        $(this.elements).each(function (i, q) {
-            console.log('Injector****find edge questions: ' + q.original);
-            q.replacement = q.qobj.replacement();
-            q.original.replaceWith(q.replacement);
-        });
-        this.isActive = true;
-    };
-
-    this.setQuestions = function (questions, toggleSound) {
-        this.isBatch = true;
-        for (var i = 0; i < questions.length; i++) {
-            this.addQuestion(questions[i], toggleSound);
-        }
-        this.isBatch = false;
-        updateProgressBars();
-    };
-
-    this.addQuestion = function (question, toggleSound) {
-        var target = this.findTarget(question.context, question.replaced);
-        if (!target) {
-            console.log("addQuestion***Could not find question: ", question);
-            return;
-        }
-
-        var q = new Question(question, toggleSound);
-        this.elements.push({ qobj: q, original: target });
-
-        if (!this.isBatch) {
-            updateProgressBars();
-        }
-    };
-
-    function Question(question, toggleSound) {
-        var isExpired = question.tried && question.tried.length > 0;
-        var isMultipleChoice = question.wrong_answers && question.wrong_answers.length !== 0;
-        var r;
-        if (isExpired) {
-            if (isMultipleChoice) {
-                r = new ExpiredMultipleChoiceQuestion(question);
-            } else {
-                r = new ExpiredOpenQuestion(question);
-            }
-        } else if (isMultipleChoice) {
-            r = new MultipleChoice(question, toggleSound);
-        } else {
-            r = new OpenQuestion(question, toggleSound);
-        }
-        r.report = report;
-        return r;
+  this.addQuestion = function (question, toggleSound) {
+    var target = this.findTarget(question.context, question.replaced);
+    if (!target) {
+      console.log("addQuestion***Could not find question: ", question);
+      return;
     }
 
-    this.findTarget = function (ctx, replaced) {
+    var q = new Question(question, toggleSound);
+    this.elements.push({ qobj: q, original: target });
 
-        var found;
-        // paragraphs.each(function(i, p) {
-        $.each(paragraphs, function (i, p) {
+    if (!this.isBatch) {
+      updateProgressBars();
+    }
+  };
 
-            findAndReplaceDOMText(p, {
-                find: ctx,
-                replace: function (portion, match) {
-                    if (found && portion.text.indexOf(replaced) !== -1) {
-                        console.log("Ambiguous match", replaced, portion.text);
-                        return portion.text;
-                    }
-                    var ix = portion.text.indexOf(replaced);
-                    if (ix === -1) return portion.text;
-                    var before = document.createTextNode(portion.text.slice(0, ix));
-                    var target = $('<span>').addClass('eo-injection-target').text(portion.text.slice(ix, ix + replaced.length));
-                    var after = document.createTextNode(portion.text.slice(ix + replaced.length));
-                    var frag = document.createDocumentFragment();
-                    frag.appendChild(before);
-                    frag.appendChild(target.get(0));
-                    frag.appendChild(after);
-                    found = target;
-                    return frag;
-                }
-            });
-        });
-        return found;
-    };
+  function Question(question, toggleSound) {
+    var isExpired = question.tried && question.tried.length > 0;
+    var isMultipleChoice = question.wrong_answers && question.wrong_answers.length !== 0;
+    var r;
+    if (isExpired) {
+      if (isMultipleChoice) {
+        r = new ExpiredMultipleChoiceQuestion(question);
+      } else {
+        r = new ExpiredOpenQuestion(question);
+      }
+    } else if (isMultipleChoice) {
+      r = new MultipleChoice(question, toggleSound);
+    } else {
+      r = new OpenQuestion(question, toggleSound);
+    }
+    r.report = report;
+    return r;
+  }
+
+  this.findTarget = function (ctx, replaced) {
+
+    var found;
+    // paragraphs.each(function(i, p) {
+    $.each(paragraphs, function (i, p) {
+
+      findAndReplaceDOMText(p, {
+        find: ctx,
+        replace: function (portion, match) {
+          if (found && portion.text.indexOf(replaced) !== -1) {
+            console.log("Ambiguous match", replaced, portion.text);
+            return portion.text;
+          }
+          var ix = portion.text.indexOf(replaced);
+          if (ix === -1) return portion.text;
+          var before = document.createTextNode(portion.text.slice(0, ix));
+          var target = $('<span>').addClass('eo-injection-target').text(portion.text.slice(ix, ix + replaced.length));
+          var after = document.createTextNode(portion.text.slice(ix + replaced.length));
+          var frag = document.createDocumentFragment();
+          frag.appendChild(before);
+          frag.appendChild(target.get(0));
+          frag.appendChild(after);
+          found = target;
+          return frag;
+        }
+      });
+    });
+    return found;
+  };
 };
 
 updateProgressBars = function () {
-    // you'd think activating the current one would be enough... but since we want them to animate
-    // from the previous state and not from 0, the easiest way is to update all of them always.
-    var all = $('.eo-question').length;
-    var answered = $('.eo-question.eo-answered').length;
-    $('.eo-progress-inner').css('width', (100 * answered / all).toString() + '%');
+  // you'd think activating the current one would be enough... but since we want them to animate
+  // from the previous state and not from 0, the easiest way is to update all of them always.
+  var all = $('.eo-question').length;
+  var answered = $('.eo-question.eo-answered').length;
+  $('.eo-progress-inner').css('width', (100 * answered / all).toString() + '%');
 };
 
 var AbstractQuestion = function (qdata, toggleSound) {
-    this.data = qdata;
-    if (typeof this.data.correct_answer === 'string') this.correct = [this.data.correct_answer];else // multiple correct answers
-        this.correct = this.data.correct_answers.map(function (a) {
-            return a.answer;
-        });
+  this.data = qdata;
+  if (typeof this.data.correct_answer === 'string') this.correct = [this.data.correct_answer];else // multiple correct answers
+    this.correct = this.data.correct_answers.map(function (a) {
+      return a.answer;
+    });
 
-    this.practicedWord = this.data.hint_language === document.config.targetLanguage ? this.data.hint : this.correct[0];
+  this.practicedWord = this.data.hint_language === document.config.targetLanguage ? this.data.hint : this.correct[0];
 
-    this.toggleSound = toggleSound;
-    this.tried = [];
-    this.maxtime = 40;
-    this.maxattempts = 3;
-    this.touched = false;
+  this.toggleSound = toggleSound;
+  this.tried = [];
+  this.maxtime = 40;
+  this.maxattempts = 3;
+  this.touched = false;
 };
 
 AbstractQuestion.prototype.replacement = function () {
-    if (!this.element) {
-        this.element = this.createElement();
-    }
-    this.bindInput();
-    return this.element;
+  if (!this.element) {
+    this.element = this.createElement();
+  }
+  this.bindInput();
+  return this.element;
 };
 
 AbstractQuestion.prototype.createElement = function () {
-    return $('<div style="margin-bottom:0">').addClass('eo-question').addClass(this.languageOrderClass()).append($('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append($('<span>').addClass('eo-hint').text(this.data.hint))
-    // .append($('<span>')
-    //   .addClass('eo-mute_button')
-    //   .click(function () { this.toggleSound(); }.bind(this)))
-    .append($('<span>').addClass('eo-progress').append($('<span>').addClass('eo-progress-inner')));
+  return $('<div style="margin-bottom:0">').addClass('eo-question').addClass(this.languageOrderClass()).append($('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append($('<span>').addClass('eo-hint').text(this.data.hint))
+  // .append($('<span>')
+  //   .addClass('eo-mute_button')
+  //   .click(function () { this.toggleSound(); }.bind(this)))
+  .append($('<span>').addClass('eo-progress').append($('<span>').addClass('eo-progress-inner')));
 };
 
 AbstractQuestion.prototype.bindInput = function () {
-    this.element.find('.eo-hint').click(this.questionOnClick.bind(this));
+  this.element.find('.eo-hint').click(this.questionOnClick.bind(this));
 };
 
 AbstractQuestion.prototype.questionOnClick = function (e) {
-    e.preventDefault();
-    if (this.element.hasClass('eo-answered')) {
-        return;
-    }
-    this.touch();
-    if (this.element.hasClass('eo-active')) {
-        this.closeUnanswered();
-    } else {
-        this.open();
-        var handler = function (e) {
-            if (this.element.has(e.target).length === 0) {
-                if (this.element.hasClass('eo-active')) {
-                    this.closeUnanswered();
-                }
-                $(document).off('click', handler);
-            }
-        }.bind(this);
-        $(document).on('click', handler);
-    }
+  e.preventDefault();
+  if (this.element.hasClass('eo-answered')) {
+    return;
+  }
+  this.touch();
+  if (this.element.hasClass('eo-active')) {
+    this.closeUnanswered();
+  } else {
+    this.open();
+    var handler = function (e) {
+      if (this.element.has(e.target).length === 0) {
+        if (this.element.hasClass('eo-active')) {
+          this.closeUnanswered();
+        }
+        $(document).off('click', handler);
+      }
+    }.bind(this);
+    $(document).on('click', handler);
+  }
 };
 
 AbstractQuestion.prototype.open = function () {
-    // placeholder, you probably want to call not super() but animateStateChange() directly
-    this.element.addClass('eo-active');
-    console.log("EVENT AbstractQuestion.prototype.open ");
+  // placeholder, you probably want to call not super() but animateStateChange() directly
+  this.element.addClass('eo-active');
+  console.log("EVENT AbstractQuestion.prototype.open ");
 };
 
 AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesToRemove, finalWidth) {
-    var offset = this.element.offset().left;
-    var future_point = offset - (finalWidth - Number(this.element.css('width').replace(/[^\d\.\-]/g, '')));
-    var parentoffset = this.element.parent().offset().left;
-    //console.log( "animateStateChange*****left of parent: " + parentoffset.left + ", top: " + parentoffset.top );
+  var offset = this.element.offset().left;
+  var future_point = offset - (finalWidth - Number(this.element.css('width').replace(/[^\d\.\-]/g, '')));
+  var parentoffset = this.element.parent().offset().left;
+  //console.log( "animateStateChange*****left of parent: " + parentoffset.left + ", top: " + parentoffset.top );
 
-    // explicitly set initial width
-    // +1 because rounding down makes the text sometimes not fit, and one pixel is a small price for solving it
-    this.element.css('width', this.element.outerWidth() + 1);
-    // force repaint
-    this.element.width();
-    // change state
-    this.element.addClass(classesToAdd);
-    this.element.removeClass(classesToRemove);
-    // force repaint
-    this.element.width();
-    // explicitly set target width
-    if (future_point < parentoffset) console.log('edge question!');else this.element.css('width', finalWidth + 1);
+  // explicitly set initial width
+  // +1 because rounding down makes the text sometimes not fit, and one pixel is a small price for solving it
+  this.element.css('width', this.element.outerWidth() + 1);
+  // force repaint
+  this.element.width();
+  // change state
+  this.element.addClass(classesToAdd);
+  this.element.removeClass(classesToRemove);
+  // force repaint
+  this.element.width();
+  // explicitly set target width
+  if (future_point < parentoffset) console.log('edge question!');else this.element.css('width', finalWidth + 1);
 };
 
 AbstractQuestion.prototype.closeUnanswered = function () {
-    this.animateStateChange(null, 'eo-active', this.element.find('.eo-hint').outerWidth());
+  this.animateStateChange(null, 'eo-active', this.element.find('.eo-hint').outerWidth());
 };
 
 AbstractQuestion.prototype.closeAnswered = function () {
-    this.animateStateChange('eo-answered', 'eo-active', this.element.find('.eo-correct').outerWidth());
+  this.animateStateChange('eo-answered', 'eo-active', this.element.find('.eo-correct').outerWidth());
 };
 
 AbstractQuestion.prototype.isCorrect = function (answer) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
 
-    try {
-        for (var _iterator = this.correct[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var ans = _step.value;
+  try {
+    for (var _iterator = this.correct[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var ans = _step.value;
 
-            if (ans.toLowerCase() === answer.toLowerCase()) return true;
-        }
-    } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-            }
-        } finally {
-            if (_didIteratorError) {
-                throw _iteratorError;
-            }
-        }
+      if (ans.toLowerCase() === answer.toLowerCase()) return true;
     }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
 
-    return false;
+  return false;
 };
 
 AbstractQuestion.prototype.touch = function (event) {
-    if (!this.touched) {
-        this.report('StartedQuestion', {
-            question: this.data.id
-        });
-        var language = document.config.targetLanguage;
-        if (this.practicedWord === this.data.hint) {
-            Speaker.fetch(language, this.practicedWord);
-        } else {
-            Speaker.fetch(language, this.correct[0]);
-            for (i = 0; i < this.data.wrong_answers.length; i++) {
-                Speaker.fetch(language, this.data.wrong_answers[i].answer);
-            }
-        }
-        this.touched = true;
+  if (!this.touched) {
+    this.report('StartedQuestion', {
+      question: this.data.id
+    });
+    var language = document.config.targetLanguage;
+    if (this.practicedWord === this.data.hint) {
+      Speaker.fetch(language, this.practicedWord);
+    } else {
+      Speaker.fetch(language, this.correct[0]);
+      for (i = 0; i < this.data.wrong_answers.length; i++) {
+        Speaker.fetch(language, this.data.wrong_answers[i].answer);
+      }
     }
+    this.touched = true;
+  }
 };
 
 AbstractQuestion.prototype.guess = function (answer, target) {
-    //console.log("EVENT guess ");
-    var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
-    if (isAnswerInTargetLanguage) {
-        Speaker.speak(document.config.targetLanguage, answer.replace('_', ' '));
+  //console.log("EVENT guess ");
+  var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
+  if (isAnswerInTargetLanguage) {
+    Speaker.speak(document.config.targetLanguage, answer.replace('_', ' '));
+  }
+  var isCorrect = this.isCorrect(answer);
+  if (isCorrect) {
+    if (!isAnswerInTargetLanguage) {
+      //Speaker.speak(document.config.targetLanguage, this.practicedWord);
+      Speaker.speak(document.config.targetLanguage, this.practicedWord.replace('_', ' '));
     }
-    var isCorrect = this.isCorrect(answer);
-    if (isCorrect) {
-        if (!isAnswerInTargetLanguage) {
-            //Speaker.speak(document.config.targetLanguage, this.practicedWord);
-            Speaker.speak(document.config.targetLanguage, this.practicedWord.replace('_', ' '));
-        }
-        this.closeAnswered();
-        updateProgressBars();
-    } else {
-        this.element.addClass('eo-show_solution');
-        //this is not the right place for that code. pass it to multipleChoiseQuestion
-        $(target).toggleHtml($(target).data('translate'), $(target).data('word'));
-    }
+    this.closeAnswered();
+    updateProgressBars();
+  } else {
+    this.element.addClass('eo-show_solution');
+    //this is not the right place for that code. pass it to multipleChoiseQuestion
+    $(target).toggleHtml($(target).data('translate'), $(target).data('word'));
+  }
 
-    // don't count the same answer multiple times.
-    if (this.tried.indexOf(answer) !== -1) return;
-    this.tried.push(answer);
+  // don't count the same answer multiple times.
+  if (this.tried.indexOf(answer) !== -1) return;
+  this.tried.push(answer);
 
-    this.report('TriedAnswer', {
-        question: this.data.id,
-        answer: answer
+  this.report('TriedAnswer', {
+    question: this.data.id,
+    answer: answer
+  });
+
+  if (isCorrect) {
+    this.report('CompletedQuestion', {
+      question: this.data.id,
+      reason: 'correct'
     });
-
-    if (isCorrect) {
-        this.report('CompletedQuestion', {
-            question: this.data.id,
-            reason: 'correct'
-        });
-    }
+  }
 };
 
 AbstractQuestion.prototype.languageOrderClass = function () {
-    return this.practicedWord !== this.data.hint ? 'eo-dest_hint' : 'eo-source_hint';
+  return this.practicedWord !== this.data.hint ? 'eo-dest_hint' : 'eo-source_hint';
 };
 
 AbstractQuestion.prototype.markAnswered = function () {
-    var correct = this.element.find('.eo-correct');
-    var finalWidth = correct.outerWidth();
-    // explicitly set initial width
-    // +1 because rounding makes it sometimes not fit, and one pixel is a small price for solving it
-    this.element.css('width', this.element.outerWidth() + 1);
-    // force repaint
-    this.element.width();
-    // change state
-    this.element.removeClass('eo-active');
-    this.element.addClass('eo-answered');
+  var correct = this.element.find('.eo-correct');
+  var finalWidth = correct.outerWidth();
+  // explicitly set initial width
+  // +1 because rounding makes it sometimes not fit, and one pixel is a small price for solving it
+  this.element.css('width', this.element.outerWidth() + 1);
+  // force repaint
+  this.element.width();
+  // change state
+  this.element.removeClass('eo-active');
+  this.element.addClass('eo-answered');
 
-    // force repaint
-    correct.width();
-    // explicitly set target and width
-    this.element.css('width', finalWidth + 1);
+  // force repaint
+  correct.width();
+  // explicitly set target and width
+  this.element.css('width', finalWidth + 1);
 };
 
 var OpenQuestion = function (question, toggleSound) {
-    AbstractQuestion.call(this, question, toggleSound);
-    this.lang = languageOf(this.correct[0].charCodeAt(0));
+  AbstractQuestion.call(this, question, toggleSound);
+  this.lang = languageOf(this.correct[0].charCodeAt(0));
 };
 
 OpenQuestion.prototype = Object.create(AbstractQuestion.prototype);
 OpenQuestion.prototype.constructor = OpenQuestion;
 
 OpenQuestion.prototype.createElement = function () {
-    console.log("EVENT OpenQuestion.prototype.createElement ??");
-    var element = AbstractQuestion.prototype.createElement.call(this);
-    element.addClass('eo-open');
-    this.input = $('<input>').addClass('eo-input');
-    element.find('.eo-hint').after(this.input);
-    return element;
+  console.log("EVENT OpenQuestion.prototype.createElement ??");
+  var element = AbstractQuestion.prototype.createElement.call(this);
+  element.addClass('eo-open');
+  this.input = $('<input>').addClass('eo-input');
+  element.find('.eo-hint').after(this.input);
+  return element;
 };
 
 OpenQuestion.prototype.bindInput = function () {
-    AbstractQuestion.prototype.bindInput.call(this);
+  AbstractQuestion.prototype.bindInput.call(this);
 
-    this.input.on('keypress', this.onKeyPress.bind(this)).on('focus', this.touch.bind(this)).on('blur', function (event) {
-        if (this.langWarning) this.langWarning.hide();
-    }.bind(this)).autocomplete({ source: document.wordlist }).on('autocompleteselect', this.onSelect.bind(this));
+  this.input.on('keypress', this.onKeyPress.bind(this)).on('focus', this.touch.bind(this)).on('blur', function (event) {
+    if (this.langWarning) this.langWarning.hide();
+  }.bind(this)).autocomplete({ source: document.wordlist }).on('autocompleteselect', this.onSelect.bind(this));
 };
 
 OpenQuestion.prototype.onKeyPress = function (event) {
-    var key = event.keyCode;
-    if (key === 13 || key === 10) {
-        event.preventDefault();
-        this.guess(this.input.val());
-        return false;
-    }
-    var lang = languageOf(event.charCode);
-    if (!lang) {
-        return;
-    } else if (lang !== this.lang) {
-        if (!this.langWarning) {
-            this.langWarning = $('<div>').addClass('eo-layout-warning').addClass('eo-box').append($('<p dir="ltr">').text(MESSAGES.WRONG_KEYBOARD_LAYOUT)).append($('<p>').append($('<strong>').text(MESSAGES.WRONG_KEYBOARD_LAYOUT_HINT)));
-            this.element.prepend(this.langWarning);
+  var key = event.keyCode;
+  if (key === 13 || key === 10) {
+    event.preventDefault();
+    this.guess(this.input.val());
+    return false;
+  }
+  var lang = languageOf(event.charCode);
+  if (!lang) {
+    return;
+  } else if (lang !== this.lang) {
+    if (!this.langWarning) {
+      this.langWarning = $('<div>').addClass('eo-layout-warning').addClass('eo-box').append($('<p dir="ltr">').text(MESSAGES.WRONG_KEYBOARD_LAYOUT)).append($('<p>').append($('<strong>').text(MESSAGES.WRONG_KEYBOARD_LAYOUT_HINT)));
+      this.element.prepend(this.langWarning);
 
-            this.guess = function (answer) {
-                if (this.langWarning) this.langWarning.hide();
-                AbstractQuestion.prototype.guess.call(this, answer);
-            };
-        }
-        this.langWarning.show();
-    } else if (lang === this.lang) {
+      this.guess = function (answer) {
         if (this.langWarning) this.langWarning.hide();
+        AbstractQuestion.prototype.guess.call(this, answer);
+      };
     }
+    this.langWarning.show();
+  } else if (lang === this.lang) {
+    if (this.langWarning) this.langWarning.hide();
+  }
 };
 
 OpenQuestion.prototype.onSelect = function (event, ui) {
-    this.input.val(ui.item.value);
-    this.guess(this.input.val());
+  this.input.val(ui.item.value);
+  this.guess(this.input.val());
 };
 
 OpenQuestion.prototype.open = function () {
-    //console.log("EVENT open question ??");
-    this.animateStateChange('eo-active', null, this.element.outerWidth() + this.input.outerWidth());
-    this.input.focus();
+  //console.log("EVENT open question ??");
+  this.animateStateChange('eo-active', null, this.element.outerWidth() + this.input.outerWidth());
+  this.input.focus();
 };
 
 OpenQuestion.prototype.closeUnanswered = function () {
-    AbstractQuestion.prototype.closeUnanswered.call(this);
-    if (!this.element.hasClass('eo-answered')) {
-        if (this.element.hasClass('eo-open') && this.input.val()) {
-            this.guess(this.input.val());
-        }
+  AbstractQuestion.prototype.closeUnanswered.call(this);
+  if (!this.element.hasClass('eo-answered')) {
+    if (this.element.hasClass('eo-open') && this.input.val()) {
+      this.guess(this.input.val());
     }
+  }
 };
 
 OpenQuestion.prototype.guess = function (answer) {
-    var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
-    if (isAnswerInTargetLanguage) {
-        Speaker.speak(document.config.targetLanguage, this.correct[0]);
-    } else {
-        Speaker.speak(document.config.targetLanguage, this.practicedWord);
-    }
-    this.closeAnswered();
-    updateProgressBars();
-    var isCorrect = this.isCorrect(answer);
+  var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
+  if (isAnswerInTargetLanguage) {
+    Speaker.speak(document.config.targetLanguage, this.correct[0]);
+  } else {
+    Speaker.speak(document.config.targetLanguage, this.practicedWord);
+  }
+  this.closeAnswered();
+  updateProgressBars();
+  var isCorrect = this.isCorrect(answer);
 
-    // don't count the same answer multiple times.
-    if (this.tried.indexOf(answer) !== -1) return;
-    this.tried.push(answer);
+  // don't count the same answer multiple times.
+  if (this.tried.indexOf(answer) !== -1) return;
+  this.tried.push(answer);
 
-    this.report('TriedAnswer', {
-        question: this.data.id,
-        answer: answer
+  this.report('TriedAnswer', {
+    question: this.data.id,
+    answer: answer
+  });
+
+  if (isCorrect) {
+    this.element.addClass('eo-correct_answer');
+    this.report('CompletedQuestion', {
+      question: this.data.id,
+      reason: 'correct'
     });
-
-    if (isCorrect) {
-        this.element.addClass('eo-correct_answer');
-        this.report('CompletedQuestion', {
-            question: this.data.id,
-            reason: 'correct'
-        });
-    } else {
-        this.element.addClass('eo-wrong_answer');
-        this.report('CompletedQuestion', {
-            question: this.data.id,
-            reason: 'ran out of attempts'
-        });
-    }
+  } else {
+    this.element.addClass('eo-wrong_answer');
+    this.report('CompletedQuestion', {
+      question: this.data.id,
+      reason: 'ran out of attempts'
+    });
+  }
 };
 
 var MultipleChoice = function (question, toggleSound) {
-    AbstractQuestion.call(this, question, toggleSound);
+  AbstractQuestion.call(this, question, toggleSound);
 };
 
 MultipleChoice.prototype = Object.create(AbstractQuestion.prototype);
 MultipleChoice.prototype.constructor = MultipleChoice;
 
 MultipleChoice.prototype.createElement = function () {
-    // var answers = this.data.wrong_answers.map(function(x) {
-    //   return x.trim(); }).concat(this.correct);
-    // shuffle(answers);
-    var answers = this.data.wrong_answers;
-    shuffle(answers);
-    option_elements = answers.map(function (answer) {
-        var li = $('<li>').addClass('eo-option')
-        //replacing '_' with none breakable HTML ENTITY, so the word will not displayed in two lines
-        .append($('<span>').html(answer.answer.replace('_', '&#160;')).data('translate', answer.translation).data('word', answer.answer));
-        return li;
-    }.bind(this));
-    option_elements.push($('<li>').addClass('eo-option eo-correct_option').append($('<span>').html(this.correct[0].replace('_', '&#160;')).data('word', this.correct[0])));
-    shuffle(option_elements);
-    var element = AbstractQuestion.prototype.createElement.call(this);
-    element.addClass('eo-multiple_choice');
-    this.options = $('<ul>').addClass('eo-options').append(option_elements);
-    element.find('.eo-hint').after(this.options);
-    return element;
+  // var answers = this.data.wrong_answers.map(function(x) {
+  //   return x.trim(); }).concat(this.correct);
+  // shuffle(answers);
+  var answers = this.data.wrong_answers;
+  shuffle(answers);
+  option_elements = answers.map(function (answer) {
+    var li = $('<li>').addClass('eo-option')
+    //replacing '_' with none breakable HTML ENTITY, so the word will not displayed in two lines
+    .append($('<span>').html(answer.answer.replace('_', '&#160;')).data('translate', answer.translation).data('word', answer.answer));
+    return li;
+  }.bind(this));
+  option_elements.push($('<li>').addClass('eo-option eo-correct_option').append($('<span>').html(this.correct[0].replace('_', '&#160;')).data('word', this.correct[0])));
+  shuffle(option_elements);
+  var element = AbstractQuestion.prototype.createElement.call(this);
+  element.addClass('eo-multiple_choice');
+  this.options = $('<ul>').addClass('eo-options').append(option_elements);
+  element.find('.eo-hint').after(this.options);
+  return element;
 };
 
 function shuffle(arr) {
-    var i = arr.length,
-        j,
-        temp;
-    if (i === 0) return;
-    while (--i) {
-        j = Math.floor(Math.random() * (i + 1));
-        temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
-    }
+  var i = arr.length,
+      j,
+      temp;
+  if (i === 0) return;
+  while (--i) {
+    j = Math.floor(Math.random() * (i + 1));
+    temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
 };
 
 MultipleChoice.prototype.bindInput = function () {
-    AbstractQuestion.prototype.bindInput.call(this);
-    this.element.find('.eo-option').click(this.optionOnClick.bind(this));
+  AbstractQuestion.prototype.bindInput.call(this);
+  this.element.find('.eo-option').click(this.optionOnClick.bind(this));
 };
 
 MultipleChoice.prototype.optionOnClick = function (e) {
-    e.preventDefault();
-    this.guess($(e.target).data('word'), e.target);
+  e.preventDefault();
+  this.guess($(e.target).data('word'), e.target);
 };
 
 MultipleChoice.prototype.open = function () {
-    var width = Math.max(this.element.outerWidth(), this.options.outerWidth());
-    // // see super() for explanation of +1
-    this.options.width(this.element.outerWidth() + 1);
-    this.animateStateChange('eo-active', null, width);
-    this.options.width(width + 1);
+  var width = Math.max(this.element.outerWidth(), this.options.outerWidth());
+  // // see super() for explanation of +1
+  this.options.width(this.element.outerWidth() + 1);
+  this.animateStateChange('eo-active', null, width);
+  this.options.width(width + 1);
 };
 
 MultipleChoice.prototype.closeUnanswered = function () {
-    AbstractQuestion.prototype.closeUnanswered.call(this);
-    if (!this.element.hasClass('eo-answered')) {
-        if (this.element.hasClass('eo-show_solution')) {
-            this.guess(this.correct[0]);
-        }
+  AbstractQuestion.prototype.closeUnanswered.call(this);
+  if (!this.element.hasClass('eo-answered')) {
+    if (this.element.hasClass('eo-show_solution')) {
+      this.guess(this.correct[0]);
     }
+  }
 };
 
 MultipleChoice.prototype.closeAnswered = function () {
-    // see super for more documentation
-    var correctOption = this.element.find('.eo-option.eo-correct_option span');
-    var initialTop = correctOption.offset().top - this.element.offset().top;
-    var correct = this.element.find('.eo-correct');
+  // see super for more documentation
+  var correctOption = this.element.find('.eo-option.eo-correct_option span');
+  var initialTop = correctOption.offset().top - this.element.offset().top;
+  var correct = this.element.find('.eo-correct');
 
-    correct.css('top', initialTop);
-    // force repaint
-    correct.width();
-    var org = this.data.hint;
-    var answer = this.data.correct_answers[0].answer;
-    // this.element.data('org',this.data.hint)
-    // this.element.data('answer',this.data.correct_answers[0].answer)
-    //window.localStorage.setItem('', );
-    //this is the point! check here to fix the correct answer bug
-    this.element.on('click', function (e) {
-        e.preventDefault();
-        var target = $(e.target);
-        target.toggleHtml(org, answer);
-        Speaker.speak(document.config.targetLanguage, target.text());
-    });
-    AbstractQuestion.prototype.closeAnswered.call(this);
+  correct.css('top', initialTop);
+  // force repaint
+  correct.width();
+  var org = this.data.hint;
+  var answer = this.data.correct_answers[0].answer;
+  // this.element.data('org',this.data.hint)
+  // this.element.data('answer',this.data.correct_answers[0].answer)
+  //window.localStorage.setItem('', );
+  //this is the point! check here to fix the correct answer bug
+  this.element.on('click', function (e) {
+    e.preventDefault();
+    var target = $(e.target);
+    target.toggleHtml(org, answer);
+    Speaker.speak(document.config.targetLanguage, target.text());
+  });
+  AbstractQuestion.prototype.closeAnswered.call(this);
 
-    correct.css('top', 0);
+  correct.css('top', 0);
 };
 
 // completely non-interactive
 var AbstractExpiredQuestion = function (question) {
-    AbstractQuestion.call(this, question);
+  AbstractQuestion.call(this, question);
 };
 
 AbstractExpiredQuestion.prototype = Object.create(AbstractQuestion.prototype);
 AbstractExpiredQuestion.prototype.constructor = AbstractExpiredQuestion;
 
 AbstractExpiredQuestion.prototype.createElement = function () {
-    var element = AbstractQuestion.prototype.createElement.call(this).addClass('eo-answered').addClass('eo-expired');
+  var element = AbstractQuestion.prototype.createElement.call(this).addClass('eo-answered').addClass('eo-expired');
 
-    return element;
+  return element;
 };
 
 AbstractExpiredQuestion.prototype.bindInput = function () {};
 
 var ExpiredOpenQuestion = function (question) {
-    AbstractExpiredQuestion.call(this, question);
+  AbstractExpiredQuestion.call(this, question);
 };
 
 ExpiredOpenQuestion.prototype = Object.create(AbstractExpiredQuestion.prototype);
 ExpiredOpenQuestion.prototype.constructor = ExpiredOpenQuestion;
 
 ExpiredOpenQuestion.prototype.createElement = function () {
-    var element = AbstractExpiredQuestion.prototype.createElement.call(this);
+  var element = AbstractExpiredQuestion.prototype.createElement.call(this);
 
-    var tried = this.data.tried.slice();
-    var lastAnswer = tried.pop();
-    if (this.isCorrect(lastAnswer)) {
-        element.addClass('eo-correct_answer');
-    } else {
-        element.addClass('eo-wrong_answer');
-    }
+  var tried = this.data.tried.slice();
+  var lastAnswer = tried.pop();
+  if (this.isCorrect(lastAnswer)) {
+    element.addClass('eo-correct_answer');
+  } else {
+    element.addClass('eo-wrong_answer');
+  }
 
-    return element;
+  return element;
 };
 
 var ExpiredMultipleChoiceQuestion = function (question) {
-    AbstractExpiredQuestion.call(this, question);
+  AbstractExpiredQuestion.call(this, question);
 };
 
 ExpiredMultipleChoiceQuestion.prototype = Object.create(AbstractExpiredQuestion.prototype);
@@ -7958,68 +7964,68 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
 var BHOL_ROOT_URL = 'http://www.bhol.co.il/';
 
 function normalizeBholLink(path) {
-    var linicom = path.match(/http:\/\/linicom.*&a=(http%3A[^&]*)&/);
-    if (linicom) {
-        path = unescape(linicom[1]);
-    }
-    if (!path.startsWith('http://') && !path.startsWith('https://')) {
-        path = BHOL_ROOT_URL + (path.startsWith('/') ? path.substr(1) : path);
-    }
-    var res = path.match(/^(https?:\/\/www.bhol.co.il)\/(?:|column|or_)article(?:|_old).aspx\?(?:|.*&)id=(\d+)/i);
-    if (res) {
-        path = res[1].toLowerCase() + '$' + res[2];
-    }
-    return path;
+  var linicom = path.match(/http:\/\/linicom.*&a=(http%3A[^&]*)&/);
+  if (linicom) {
+    path = unescape(linicom[1]);
+  }
+  if (!path.startsWith('http://') && !path.startsWith('https://')) {
+    path = BHOL_ROOT_URL + (path.startsWith('/') ? path.substr(1) : path);
+  }
+  var res = path.match(/^(https?:\/\/www.bhol.co.il)\/(?:|column|or_)article(?:|_old).aspx\?(?:|.*&)id=(\d+)/i);
+  if (res) {
+    path = res[1].toLowerCase() + '$' + res[2];
+  }
+  return path;
 }
 
 Scraper = new function () {
-    function dispatch(location) {
-        if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
-            if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
-            if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper(location.host);
-        }
-        if (location.host === 'www.englishon.org') {
-            if (location.pathname === '/hidden/shturem.html' || location.pathname === '/index.php' && location.search === '') return new ShturemArticleScraper(location.host);
-            if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper(location.host);
-        }
+  function dispatch(location) {
+    if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
+      if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
+      if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper(location.host);
+    }
+    if (location.host === 'www.englishon.org') {
+      if (location.pathname === '/hidden/shturem.html' || location.pathname === '/index.php' && location.search === '') return new ShturemArticleScraper(location.host);
+      if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper(location.host);
+    }
+  }
+
+  this.scrape = function () {
+    var scraper = dispatch(location);
+    if (!scraper) {
+      console.log("EnglishOn: unknown website");
+      return;
     }
 
-    this.scrape = function () {
-        var scraper = dispatch(location);
-        if (!scraper) {
-            console.log("EnglishOn: unknown website");
-            return;
-        }
-
-        return scraper.scrape();
-    };
+    return scraper.scrape();
+  };
 }();
 
 var ShturemArticleScraper = function (host) {
 
-    this.scrape = function () {
-        url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
-        if (host == 'www.englishon.org') url = ('http://www.englishon.org' + location.pathname + location.search).replace(/#.*$/, '');
-        var subtitle = $('span.artSubtitle')[0];
-        var bodytext = $('div.artText')[0];
-        // Shturem article bodies are not divided internally to <p>s.
-        // they're just blobs of text with the occasional double <br>.
-        return new ShturemArticleOverlay(url, subtitle, bodytext);
-    };
+  this.scrape = function () {
+    url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
+    if (host == 'www.englishon.org') url = ('http://www.englishon.org' + location.pathname + location.search).replace(/#.*$/, '');
+    var subtitle = $('span.artSubtitle')[0];
+    var bodytext = $('div.artText')[0];
+    // Shturem article bodies are not divided internally to <p>s.
+    // they're just blobs of text with the occasional double <br>.
+    return new ShturemArticleOverlay(url, subtitle, bodytext);
+  };
 };
 
 var ShturemFrontPageScraper = function () {
-    console.log('option 4');
-    this.scrape = function () {
-        var parts = {};
-        $('td.mainpn_text').each(function (i, para) {
-            var url = $(para).closest('table').find('td.mainpn_bottom a')[0].href;
-            parts[url] = para;
-            // hack to make answers visible
-            $(para).attr('style', 'overflow: visible;');
-        });
-        return new ShturemFrontpageOverlay(parts);
-    };
+  console.log('option 4');
+  this.scrape = function () {
+    var parts = {};
+    $('td.mainpn_text').each(function (i, para) {
+      var url = $(para).closest('table').find('td.mainpn_bottom a')[0].href;
+      parts[url] = para;
+      // hack to make answers visible
+      $(para).attr('style', 'overflow: visible;');
+    });
+    return new ShturemFrontpageOverlay(parts);
+  };
 };
 //
 /* Speaks target-language phrases aloud.
@@ -8237,11 +8243,14 @@ document.LOGIN_DLG = "<div class='hidden' id='eo-dlg-login'>\
             <div class='Grid-cell eo-row6'>\
                 <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' />\
             </div>\
+            <div class='Grid-cell hidden eo-row8'>\
+                <div id='login-email-msg' class='error'></div>\
+            </div>\
             <div class='Grid-cell eo-row6'>\
                 <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' />\
             </div>\
             <div class='Grid-cell hidden eo-row8'>\
-                <div id='eo-login-msg'></div>\
+                <div id='login-password-msg' class='error'></div>\
             </div>\
             <div class='Grid-cell v-align right-align eo-row9'>\
                 <div class='v-align right-align eo-menu-footer'>\
@@ -8300,129 +8309,129 @@ document.resources_promise = $.Deferred();
 document.loaded_promise = $.Deferred();
 
 function englishon() {
-    var staticUrl = undefined;
+  var staticUrl = undefined;
 
-    if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
-        staticUrl = function (resource) {
-            return 'http://localhost:8080/static/ex/' + resource;
-        };
-    } else {
-        staticUrl = function (resource) {
-            return 'http://www.englishon.org/v1/' + resource;
-        };
-    }
-    //function to retriave info about the browser
-    browserInfo = function () {
-        var ua = navigator.userAgent,
-            tem,
-            M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-        if (/trident/i.test(M[1])) {
-            tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-            return 'IE ' + (tem[1] || '');
-        }
-        if (M[1] === 'Chrome') {
-            tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
-            if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
-        }
-        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
-        if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
-        return { 'browser': M[0], 'version': M[1] };
-    }();
-    document.browserInfo = browserInfo;
-    //Restrict none chrome browsers or chrome versions older than 49
-    if (browserInfo.browser != 'Chrome' && (browserInfo.browser != 'Firefox' || !window.matchMedia("(min-width:1050px)").matches)) {
-        console.log('BROWSER NOT SUPPORTED.');
-        return;
-    }
-
-    //THIS LINE IS TEMP
-    //TEMPORARY THE CODE IS RUN JUST IN THIS SPECIFIC ARTICLE
-    if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.englishon.org/hidden/shturem.html') {
-        return;
-    }
-    console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
-    //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
-    //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
-    var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
-
-    if (document.__englishon__) {
-        console.log("EnglishOn already loaded");
-        return;
-    }
-    document.__englishon__ = true;
-
-    var defaults = {
-        'token': null,
-        'backendUrl': DEFAULT_BACKEND_URL,
-        'isActive': true,
-        'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
-        'enableSound': true,
-        'volume': 100,
-        'enableTutorial': true,
-        'editor': false,
-        'isUser': false,
-        'siteLanguage': I18N.SITE_LANGUAGE
+  if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
+    staticUrl = function (resource) {
+      return 'http://localhost:8080/static/ex/' + resource;
     };
-    // Store
-    configStorage.get(defaults).then(function (config) {
-        document.config = config;
-        console.log('initial content script*****: ' + document.config.isActive);
-        $('body').addClass('eo-language-' + config.targetLanguage);
-        if (config.enableTutorial) {
-            //startTutorial();
-        }
+  } else {
+    staticUrl = function (resource) {
+      return 'http://www.englishon.org/v1/' + resource;
+    };
+  }
+  //function to retriave info about the browser
+  browserInfo = function () {
+    var ua = navigator.userAgent,
+        tem,
+        M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+    if (/trident/i.test(M[1])) {
+      tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+      return 'IE ' + (tem[1] || '');
+    }
+    if (M[1] === 'Chrome') {
+      tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
+      if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+    }
+    M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+    if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
+    return { 'browser': M[0], 'version': M[1] };
+  }();
+  document.browserInfo = browserInfo;
+  //Restrict none chrome browsers or chrome versions older than 49
+  if (browserInfo.browser != 'Chrome' && (browserInfo.browser != 'Firefox' || !window.matchMedia("(min-width:1050px)").matches)) {
+    console.log('BROWSER NOT SUPPORTED.');
+    return;
+  }
 
-        if (document.config.isUser) {
-            var auth = new Authenticator(config.backendUrl);
-            return auth.login(config.token).then(function (token) {
-                configStorage.set({ token: token });
-                return new HerokuBackend(config.backendUrl, token);
-            });
-        } else {
-            return new HerokuBackend(config.backendUrl, 'NON_USER');
-        }
+  //THIS LINE IS TEMP
+  //TEMPORARY THE CODE IS RUN JUST IN THIS SPECIFIC ARTICLE
+  if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.englishon.org/hidden/shturem.html') {
+    return;
+  }
+  console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
+  //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
+  //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
+  var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
 
-        return backend;
-    }).then(function (backend) {
-        document.englishonBackend = backend;
-        console.log('********************document.englishonBackend set');
-        if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') $($('.newsHead')[1]).css('background-color', '#e6e6e6');
-    }).then(function () {
+  if (document.__englishon__) {
+    console.log("EnglishOn already loaded");
+    return;
+  }
+  document.__englishon__ = true;
 
-        if (document.config.editor) {
-            return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
-                console.log('**********************Fetched internal id');
-                document.internal_id = internal_id;
-            });
-        }
-    }).then(function () {
-        // document.overlay.showButtons();
-        document.resources_promise.resolve();
-    });
+  var defaults = {
+    'token': null,
+    'backendUrl': DEFAULT_BACKEND_URL,
+    'isActive': true,
+    'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
+    'enableSound': true,
+    'volume': 100,
+    'enableTutorial': true,
+    'editor': false,
+    'isUser': false,
+    'siteLanguage': I18N.SITE_LANGUAGE
+  };
+  // Store
+  configStorage.get(defaults).then(function (config) {
+    document.config = config;
+    console.log('initial content script*****: ' + document.config.isActive);
+    $('body').addClass('eo-language-' + config.targetLanguage);
+    if (config.enableTutorial) {
+      //startTutorial();
+    }
+
+    if (document.config.isUser) {
+      var auth = new Authenticator(config.backendUrl);
+      return auth.login(config.token).then(function (token) {
+        configStorage.set({ token: token });
+        return new HerokuBackend(config.backendUrl, token);
+      });
+    } else {
+      return new HerokuBackend(config.backendUrl, 'NON_USER');
+    }
+
+    return backend;
+  }).then(function (backend) {
+    document.englishonBackend = backend;
+    console.log('********************document.englishonBackend set');
+    if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') $($('.newsHead')[1]).css('background-color', '#e6e6e6');
+  }).then(function () {
+
+    if (document.config.editor) {
+      return $.get(staticUrl('Gates1HebToEng.txt')).then(function (internal_id) {
+        console.log('**********************Fetched internal id');
+        document.internal_id = internal_id;
+      });
+    }
+  }).then(function () {
+    // document.overlay.showButtons();
+    document.resources_promise.resolve();
+  });
 }
 
 var startTutorial = function () {
-    $('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
-    var onPickLanguage = function () {
-        $('.eo-language_picker-option').off('click', onPickLanguage);
-        $('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
+  $('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
+  var onPickLanguage = function () {
+    $('.eo-language_picker-option').off('click', onPickLanguage);
+    $('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
 
-        // in case questions are still hidden, keep trying
-        var timer = setInterval(function () {
-            var questions = $('.eo-question');
-            if (questions.length > 0) {
-                questions.first().addClass('eo-first_question');
-                var onOpenQuestion = function () {
-                    $('.eo-hint').off('click', onOpenQuestion);
-                    $('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
-                    configStorage.set({ enableTutorial: false });
-                };
-                $('.eo-hint').click(onOpenQuestion);
-                clearInterval(timer);
-            }
-        }, 100);
-    };
-    $('.eo-language_picker-option').click(onPickLanguage);
+    // in case questions are still hidden, keep trying
+    var timer = setInterval(function () {
+      var questions = $('.eo-question');
+      if (questions.length > 0) {
+        questions.first().addClass('eo-first_question');
+        var onOpenQuestion = function () {
+          $('.eo-hint').off('click', onOpenQuestion);
+          $('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
+          configStorage.set({ enableTutorial: false });
+        };
+        $('.eo-hint').click(onOpenQuestion);
+        clearInterval(timer);
+      }
+    }, 100);
+  };
+  $('.eo-language_picker-option').click(onPickLanguage);
 };
 
 // **********
@@ -8430,40 +8439,40 @@ var startTutorial = function () {
 // **********
 
 function languageOf(char) {
-    if (typeof char == 'string') {
-        char = char.charCodeAt(0);
-    }
-    if (char >= 65 && char <= 90) return 'en';
-    if (char >= 97 && char <= 122) return 'en';
-    if (char >= 1488 && char <= 1514) return 'he';
+  if (typeof char == 'string') {
+    char = char.charCodeAt(0);
+  }
+  if (char >= 65 && char <= 90) return 'en';
+  if (char >= 97 && char <= 122) return 'en';
+  if (char >= 1488 && char <= 1514) return 'he';
 }
 
 function parseDictionary(data) {
-    var dict = buckets.MultiDictionary();
-    var lines = data.split('\r\n');
-    $(lines).each(function (ix, line) {
-        var parts = line.split(' ').map(function (part) {
-            return part.trim().replace('_', ' ');
-        });
-        var heb = [];
-        var eng = [];
-        $(parts).each(function (ix, part) {
-            if (part === '') {
-                // do nothing, there was a bunch of adjacent whitespace chars.
-            } else {
-                var lang = languageOf(part.charCodeAt(0));
-                if (lang === 'en') eng.push(part);
-                if (lang === 'he') heb.push(part);
-            }
-        });
-        $(heb).each(function (ix, h) {
-            $(eng).each(function (jx, e) {
-                dict.set(h, e);
-                dict.set(e, h);
-            });
-        });
+  var dict = buckets.MultiDictionary();
+  var lines = data.split('\r\n');
+  $(lines).each(function (ix, line) {
+    var parts = line.split(' ').map(function (part) {
+      return part.trim().replace('_', ' ');
     });
-    return dict;
+    var heb = [];
+    var eng = [];
+    $(parts).each(function (ix, part) {
+      if (part === '') {
+        // do nothing, there was a bunch of adjacent whitespace chars.
+      } else {
+        var lang = languageOf(part.charCodeAt(0));
+        if (lang === 'en') eng.push(part);
+        if (lang === 'he') heb.push(part);
+      }
+    });
+    $(heb).each(function (ix, h) {
+      $(eng).each(function (jx, e) {
+        dict.set(h, e);
+        dict.set(e, h);
+      });
+    });
+  });
+  return dict;
 }
 
 // this line must be last!
@@ -8473,407 +8482,409 @@ $(englishon);
 // Button
 // ******
 var englishon_btn_func = function (e) {
-    e.preventDefault();
-    // $('#eo-menu').toggleClass('hidden');
-    // $('#modal').toggleClass('hidden');
-    $('#eo-menu').removeClass('hidden');
-    $('#modal').removeClass('hidden');
-    window.history.pushState({ 'screen_name': 'eo_main_menu' }, '', 'englishon_menu');
+  e.preventDefault();
+  // $('#eo-menu').toggleClass('hidden');
+  // $('#modal').toggleClass('hidden');
+  $('#eo-menu').removeClass('hidden');
+  $('#modal').removeClass('hidden');
+  window.history.pushState({ 'screen_name': 'eo_main_menu' }, '', 'englishon_menu');
 };
 
 var EnglishOnButton = new function () {
-    this.currentState = 'eo-button-on';
-    this.element = $('<div>').addClass('eo-button').addClass(this.currentState).on('click', englishon_btn_func);
+  this.currentState = 'eo-button-on';
+  this.element = $('<div>').addClass('eo-button').addClass(this.currentState).on('click', englishon_btn_func);
 
-    this.changeState = function (state) {
-        this.element.removeClass(this.currentState);
-        this.currentState = state;
-        this.element.addClass(this.currentState);
-    };
+  this.changeState = function (state) {
+    this.element.removeClass(this.currentState);
+    this.currentState = state;
+    this.element.addClass(this.currentState);
+  };
 
-    this.on = function () {
-        this.changeState('eo-button-on');
-    };
+  this.on = function () {
+    this.changeState('eo-button-on');
+  };
 
-    this.unavailable = function () {
-        this.changeState('eo-button-unavailable');
-    };
+  this.unavailable = function () {
+    this.changeState('eo-button-unavailable');
+  };
 
-    this.off = function () {
-        this.changeState('eo-button-off');
-    };
+  this.off = function () {
+    this.changeState('eo-button-off');
+  };
 }();
 $(document).mouseup(function (e) {
-    var button = $('.eo-button');
-    if (button.is(e.target)) return;
-    var menu = $('#eo-menu');
+  var button = $('.eo-button');
+  if (button.is(e.target)) return;
+  var menu = $('#eo-menu');
 
-    var login_dlg = $('#eo-dlg-login');
-    var signout_dlg = $('#eo-dlg-signout');
+  var login_dlg = $('#eo-dlg-login');
+  var signout_dlg = $('#eo-dlg-signout');
 
-    if (!menu.is(e.target) // if the target of the click isn't the menu..
-    && menu.has(e.target).length === 0 // ... nor a descendant of the menu
-    && !login_dlg.is(e.target) && login_dlg.has(e.target).length === 0 && !signout_dlg.is(e.target) && signout_dlg.has(e.target).length === 0) {
-        hide_dialogs(0);
-        window.history.pushState({ 'screen_name': 'shturem' }, '', document.overlay.url.substring(document.overlay.url.indexOf('index.php')));
-    }
+  if (!menu.is(e.target) // if the target of the click isn't the menu..
+  && menu.has(e.target).length === 0 // ... nor a descendant of the menu
+  && !login_dlg.is(e.target) && login_dlg.has(e.target).length === 0 && !signout_dlg.is(e.target) && signout_dlg.has(e.target).length === 0) {
+    hide_dialogs(0);
+    window.history.pushState({ 'screen_name': 'shturem' }, '', document.overlay.url.substring(document.overlay.url.indexOf('index.php')));
+  }
 });
 display_menu_messages = function () {
-    var messages = document.MESSAGES[document.config.siteLanguage];
-    $('#eo-account-name').text(messages.MENU_TITLE);
-    $('#eo-language_header').text(messages.LANGUAGES_PICKER_TITLE);
-    $('#help').text(messages.HELP);
-    $('#contact').text(messages.CONTACT);
-    $('#dlg-sign-in-header').text(messages.LOGIN_SIGN_IN_TITLE);
-    $('#dlg-sign-up-header').text(messages.LOGIN_SIGN_UP_TITLE);
-    $('#subtitle').text(messages.LOGIN_SUBTITLE);
-    $('#or').text(messages.OR);
-    $('#tos').text(messages.AGREE_TO_TOS);
-    $('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);
-    $('#eo-mail-login-btn').text(messages.LOGIN_BUTTON);
-    $('#eo-picker-tittle').css({ direction: messages.DIRECTION });
-    $('#eo-choose-lang').text(messages.SITE_LANGUAGE);
-    $('#get-started').text(messages.GET_STARTED);
-    $('#signout_btn').text(messages.SIGN_OUT);
+  var messages = document.MESSAGES[document.config.siteLanguage];
+  $('#eo-account-name').text(messages.MENU_TITLE);
+  $('#eo-language_header').text(messages.LANGUAGES_PICKER_TITLE);
+  $('#help').text(messages.HELP);
+  $('#contact').text(messages.CONTACT);
+  $('#dlg-sign-in-header').text(messages.LOGIN_SIGN_IN_TITLE);
+  $('#dlg-sign-up-header').text(messages.LOGIN_SIGN_UP_TITLE);
+  $('#subtitle').text(messages.LOGIN_SUBTITLE);
+  $('#or').text(messages.OR);
+  $('#tos').text(messages.AGREE_TO_TOS);
+  $('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);
+  $('#eo-mail-login-btn').text(messages.LOGIN_BUTTON);
+  $('#eo-picker-tittle').css({ direction: messages.DIRECTION });
+  $('#eo-choose-lang').text(messages.SITE_LANGUAGE);
+  $('#get-started').text(messages.GET_STARTED);
+  $('#signout_btn').text(messages.SIGN_OUT);
 };
 var toggle_login_dialog = function () {
-    $("#eo-dlg-login").toggleClass('hidden');
-    $("#eo-dlg-signout").addClass('hidden');
-    $('#djDebug').css({ 'display': 'none' });
-    $('#eo-login-msg').text('').removeClass('ui-state-highlight');
-    window.history.pushState({ 'screen_name': 'eo_login' }, '', 'eo_login');
+  $("#eo-dlg-login").toggleClass('hidden');
+  $("#eo-dlg-signout").addClass('hidden');
+  $('#djDebug').css({ 'display': 'none' });
+  $('#login-email-msg').text('').removeClass('ui-state-highlight');
+  $('#login-password-msg').text('').removeClass('ui-state-highlight');
+  window.history.pushState({ 'screen_name': 'eo_login' }, '', 'eo_login');
 };
 
 var toggle_options_dialog = function () {
-    var offset = $('.eo-button').offset();
-    $("#eo-dlg-signout").removeAttr('style').toggleClass('hidden');
-    if (window.matchMedia("(min-width:1050px)").matches) {
-        //$("#eo-dlg-signout").css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' })
-        $('#eo-dlg-signout').css({ top: (screen.height - 540) / 2 + 51 + 'px', left: (screen.width - 360) / 2 + 'px' });
-    };
-    window.history.pushState({ 'screen_name': 'eo_options' }, '', 'eo_options');
+  var offset = $('.eo-button').offset();
+  $("#eo-dlg-signout").removeAttr('style').toggleClass('hidden');
+  if (window.matchMedia("(min-width:1050px)").matches) {
+    //$("#eo-dlg-signout").css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' })
+    $('#eo-dlg-signout').css({ top: (screen.height - 540) / 2 + 51 + 'px', left: (screen.width - 360) / 2 + 'px' });
+  };
+  window.history.pushState({ 'screen_name': 'eo_options' }, '', 'eo_options');
 };
 var display_message = function (msg, element) {
-    element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
+  element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
 };
 var hide_dialogs = function (milisec) {
-    setTimeout(function () {
-        $('#modal').addClass('hidden');
-        $('#eo-dlg-login').addClass('hidden');
-        $('#eo-dlg-signout').addClass('hidden');
-        $('#eo-menu').addClass('hidden');
-        $('#eo-signout-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
-        $('#eo-login-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
-        $('#eo-google-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
-    }, milisec);
+  setTimeout(function () {
+    $('#modal').addClass('hidden');
+    $('#eo-dlg-login').addClass('hidden');
+    $('#eo-dlg-signout').addClass('hidden');
+    $('#eo-menu').addClass('hidden');
+    $('#eo-signout-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+    $('#login-email-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+    $('#login-password-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+    $('#eo-google-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+  }, milisec);
 };
 // ****
 // Menu
 // ****
 document.EnglishOnMenu = function () {
-    /* returns a toggler function that both updates `configEntry`
-       and calls the given `toggle()` function, useful when you want
-       your saved configuration to always match what's on screen
-     */
+  /* returns a toggler function that both updates `configEntry`
+     and calls the given `toggle()` function, useful when you want
+     your saved configuration to always match what's on screen
+   */
 
-    var toggler = function (cls, configEntry, toggle_func) {
-        // initialize
-        var initial = JSON.parse(document.config[configEntry]);
-        toggle_func(initial);
-        $('body').toggleClass(cls, initial);
-        return function () {
-            enabled = !JSON.parse(document.config[configEntry]);
-            var config = {};
-            config[configEntry] = enabled;
-            configStorage.set(config);
-            toggle_func(enabled);
-            $('body').toggleClass(cls, enabled);
-        };
+  var toggler = function (cls, configEntry, toggle_func) {
+    // initialize
+    var initial = JSON.parse(document.config[configEntry]);
+    toggle_func(initial);
+    $('body').toggleClass(cls, initial);
+    return function () {
+      enabled = !JSON.parse(document.config[configEntry]);
+      var config = {};
+      config[configEntry] = enabled;
+      configStorage.set(config);
+      toggle_func(enabled);
+      $('body').toggleClass(cls, enabled);
     };
+  };
 
-    var login_with_mail = function () {
-        var email = $('#eo-login-email');
-        var password = $('#eo-login-password');
-        var auth = new Authenticator(document.config.backendUrl);
-        if (auth.validate({ email: email, password: password })) {
-            auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
-                if (res.status == 'error') {
-                    display_message(res.message, $('#eo-login-msg'));
-                    $('#eo-dlg-login').css({ 'height': '100%' });
-                    $('#eo-menu').css({ 'height': '100%' });
-                    return;
-                }
-                $('#eo-account-area').removeClass('guest');
-                $('#eo-dlg-login').addClass('valid');
-                configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val(), 'isActive': true });
-                $('#eo-power-switch-text').text('On');
-                //refracting: replace it with togglepower
-                $('body').toggleClass('eo-active', true);
-                $('#eo-account-name').text(email.val());
-                $('#eo-account-name').off('click').on('click', toggle_options_dialog);
-                document.overlay.showQuestions();
-                $('body').addClass('logged').removeClass('guest');
-                if (res.status == 'logged_in') {
-                    display_message(res.message, $('#eo-login-msg'));
-                    hide_dialogs(1000);
-                } else if (res.status == 'registered') {
-                    message = 'Thank you for registering! A confirmation message sent to the given email.';
-                    display_message(message, $('#eo-login-msg'));
-                    $('#eo-login-msg').parent().css('height', '55px');
-                    hide_dialogs(3500);
-                    $('#eo-account-img').addClass('no-iamge');
-                }
-            });
+  var login_with_mail = function () {
+    var email = $('#eo-login-email');
+    var password = $('#eo-login-password');
+    var email_msg = $('#login-email-msg');
+    var password_msg = $('#login-password-msg');
+    var auth = new Authenticator(document.config.backendUrl);
+    if (auth.validate({ email: email, password: password, email_msg: email_msg, password_msg: password_msg })) {
+      auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
+        if (res.status == 'error') {
+          //$('#eo-dlg-login').css({ 'height': '100%' })
+          //$('#eo-menu').css({ 'height': '100%' })
+          return;
         }
-    };
-    var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
-    var togglePower = toggler('eo-active', 'isActive', function (enable) {
-        elem = $('#eo-power-switch-text');
-        elem.toggleText('On', 'Off');
-        if (JSON.parse(enable)) {
-            document.overlay.showQuestions();
-            $('.eo-answered').on('click', function (e) {
-                var target = $(e.target);
-                //answer=target.data.correct_answers[0].answer;
-                //org=target.data.hint;
-                //target.toggleText(org,answer);
-                //target.toggleText('aaaa','bbbb');
-                //Speaker.speak(document.config.targetLanguage, target.text());
-            });
-            if (!document.config.isUser) {
-                console.log('a none user execute englishon for the first time...well done!');
-                configStorage.set({ 'isUser': true });
-                window.location.reload();
-            }
-        } else {
-            document.overlay.hideQuestions();
-        }
-    });
-
-    var signout = function () {
-        var popup = $('#eo-iframe')[0].contentWindow;
-        popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
-        configStorage.set({ 'isActive': false });
-        $('#eo-power-switch-text').text('OFF');
-        localStorage.removeItem('email');
-        localStorage.removeItem('eo-user-name');
-        var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
-        document.config.token = null; //Isn't it unneeded???
-        auth.login(document.config.token).then(function (token) {
-            configStorage.set({ token: token });
-            document.overlay.hideQuestions();
-            document.englishonBackend.token = token; //Isn't it unneeded???
-            //Give englishon the new guest token
-            popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
-            $('body').removeClass('eo-active');
-            $('#eo-account-area').addClass('guest');
-            $('#eo-account-name').text(document.MESSAGES[document.config.siteLanguage].MENU_TITLE);
-            $('#eo-account-name').off('click').on('click', toggle_login_dialog);
-            message = document.MESSAGES[document.config.siteLanguage].SIGN_OUT_FIDBACK;
-
-            display_message(message, $('#eo-signout-msg'));
-            $('#eo-menu').addClass('hidden');
-            $('#modal').addClass('hidden');
-            $("#eo-dlg-signout").fadeOut(1600, "linear", function () {
-                $("#eo-dlg-signout").removeAttr('style').addClass('hidden');
-                $('body').addClass('guest').removeClass('logged');
-                $('#eo-signout-msg').text('');
-            });
-        });
-    };
-
-    document.signout = signout;
-    this.menu_string = document.MENU_HTML;
-    this.container = $(this.menu_string);
-    this.login_dlg = $(document.LOGIN_DLG);
-    this.signout_dlg = $(document.SIGNOUT_DLG);
-    this.container.insertBefore($($('table')[0]));
-    this.login_dlg.insertBefore($($('table')[0]));
-    this.signout_dlg.insertBefore($($('table')[0]));
-    $("#slider").slider({ range: "min" });
-    display_menu_messages();
-    $('#djDebug').css({ 'display': 'none' });
-    //var offset = $('#top_menu_block').offset().top
-    if (window.matchMedia("(min-width:1050px)").matches) {
-        console.log('DESKTOP');
-
-        var offset = $('.eo-button').offset();
-        //top left values to display dialogs near button
-        //$('#eo-menu').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' })
-        //$('#eo-dlg-login').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' })
-        //$('#eo-dlg-signout').css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' })
-        //top left values to display centered dialogs 
-        $('#eo-menu').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
-        $('#eo-dlg-login').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
-        $('#eo-dlg-signout').css({ top: (screen.height - 540) / 2 + 51 + 'px', left: (screen.width - 360) / 2 + 'px' });
-    } else {
-        console.log('MOBILE');
-        // $('#eo-menu').find('.eo-row').css({ 'height': screen.height / 8 + 'px', 'font-size': '16px' })
-    };
-
-    $('#eo-power-switch').on('click', togglePower);
-    switch_text = JSON.parse(document.config.isActive) ? 'On' : 'Off';
-    $('#eo-power-switch-text').text(switch_text);
-    $('#eo-speaker-res').on('click', function () {
-        toggleSound();
-        vol = JSON.parse(document.config.enableSound) ? document.config.volume : '0';
-        $('#eo-slider').val(vol);
-    });
-    //initializing volume slider
-    //$('#eo-slider').attr('max', 50);
-    if (JSON.parse(document.config.enableSound)) {
-        $('#eo-slider').val(document.config.volume);
-    } else {
-        $('#eo-slider').val(0);
-    };
-
-    $('#eo-slider').on('change', function (e) {
-        configStorage.set({ volume: e.target.value });
-        Speaker.changeVolume(e.target.value);
-        if (e.target.value == '0') {
-            toggleSound();
-        } else if (!JSON.parse(localStorage.getItem('enableSound'))) {
-            toggleSound();
-        }
-    });
-
-    $('#signout_btn').on('click', signout);
-    if (JSON.parse(!localStorage.getItem('email'))) {
-        $('body').addClass('guest').removeClass('logged');
-        $('#eo-account-area').addClass('guest');
-        $('#eo-account-img').addClass('no-image');
-        $('#eo-account-name').on('click', toggle_login_dialog);
-        $('#eo-account-name').text(document.MESSAGES[document.config.siteLanguage].MENU_TITLE);
-    } else {
+        $('#eo-account-area').removeClass('guest');
+        $('#eo-dlg-login').addClass('valid');
+        configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val(), 'isActive': true });
+        $('#eo-power-switch-text').text('On');
+        //refracting: replace it with togglepower
+        $('body').toggleClass('eo-active', true);
+        $('#eo-account-name').text(email.val());
+        $('#eo-account-name').off('click').on('click', toggle_options_dialog);
+        document.overlay.showQuestions();
         $('body').addClass('logged').removeClass('guest');
-        $('#eo-account-name').on('click', toggle_options_dialog);
-        $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
-        $('#eo-account-img').addClass('no-image');
-    }
-    if (JSON.parse(document.config.editor)) {
-        $('#eo-menu').addClass('menu-editor');
-        $('#eo-editor-btn').parent().removeClass('hidden').addClass('vertical-container');
-        var _editor = new Editor(document.overlay);
-        $('#eo-editor-btn').on('click', function (event) {
-            console.log("Editor enters");
-            document.overlay.hideQuestions();
-
-            event.preventDefault();
-            // after you've loaded the editor, there's no going back.
-            // (for now. this should be fixed.)
-            EnglishOnButton.element.off('click');
-            $('#eo-editor-btn').off('click');
-            _editor.fetchQuestions().then(function () {
-                _editor.highlight();
-            });
-        });
-    }
-    //OPTIONS MENU HANDLERS
-    $('#account-triangle').on('click', toggle_options_dialog);
-    $('#eo-choose-lang').on('click', function () {
-        $('#eo-site-languages').removeClass('hidden');
-        $('#eo-dlg-signout-main').addClass('hidden');
-    });
-    $('#option-dlg-signin').on('click', toggle_login_dialog);
-    $('.eo-site-option').on('click', function (e) {
-        configStorage.set({ siteLanguage: e.target.textContent.toLowerCase() });
-        display_menu_messages();
-        $('#eo-site-languages').addClass('hidden');
-        $('#eo-dlg-signout-main').removeClass('hidden');
-    });
-    //LOGIN DIALOG
-    var token = encodeURIComponent(document.englishonBackend.token);
-    if (document.config.isUser) var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
-    $('#google-iframe').append(google_login);
-    $('#eo-iframe').on('load', function () {
-        var popup = this.contentWindow;
-
-        $('#djDebug').css({
-            display: 'none'
-        });
-
-        popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
-    });
-    $('#eo-login-password').on('keydown', function (e) {
-        if (e.keyCode == 13) {
-            $('#eo-mail-login-btn').click();
+        if (res.status == 'logged_in') {
+          //display_message(res.message, $('#login-email-msg'));
+          hide_dialogs(1000);
+        } else if (res.status == 'registered') {
+          message = 'Thank you for registering! A confirmation message sent to the given email.';
+          display_message(message, $('#subtitle'));
+          hide_dialogs(3500);
+          $('#eo-account-img').addClass('no-iamge');
         }
+      });
+    }
+  };
+  var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
+  var togglePower = toggler('eo-active', 'isActive', function (enable) {
+    elem = $('#eo-power-switch-text');
+    elem.toggleText('On', 'Off');
+    if (JSON.parse(enable)) {
+      document.overlay.showQuestions();
+      $('.eo-answered').on('click', function (e) {
+        var target = $(e.target);
+        //answer=target.data.correct_answers[0].answer;
+        //org=target.data.hint;
+        //target.toggleText(org,answer);
+        //target.toggleText('aaaa','bbbb');
+        //Speaker.speak(document.config.targetLanguage, target.text());
+      });
+      if (!document.config.isUser) {
+        console.log('a none user execute englishon for the first time...well done!');
+        configStorage.set({ 'isUser': true });
+        window.location.reload();
+      }
+    } else {
+      document.overlay.hideQuestions();
+    }
+  });
+
+  var signout = function () {
+    var popup = $('#eo-iframe')[0].contentWindow;
+    popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
+    configStorage.set({ 'isActive': false });
+    $('#eo-power-switch-text').text('OFF');
+    localStorage.removeItem('email');
+    localStorage.removeItem('eo-user-name');
+    var auth = new Authenticator(document.config.backendUrl); //Create a new guest token
+    document.config.token = null; //Isn't it unneeded???
+    auth.login(document.config.token).then(function (token) {
+      configStorage.set({ token: token });
+      document.overlay.hideQuestions();
+      document.englishonBackend.token = token; //Isn't it unneeded???
+      //Give englishon the new guest token
+      popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+      $('body').removeClass('eo-active');
+      $('#eo-account-area').addClass('guest');
+      $('#eo-account-name').text(document.MESSAGES[document.config.siteLanguage].MENU_TITLE);
+      $('#eo-account-name').off('click').on('click', toggle_login_dialog);
+      message = document.MESSAGES[document.config.siteLanguage].SIGN_OUT_FIDBACK;
+
+      display_message(message, $('#eo-signout-msg'));
+      $('#eo-menu').addClass('hidden');
+      $('#modal').addClass('hidden');
+      $("#eo-dlg-signout").fadeOut(1600, "linear", function () {
+        $("#eo-dlg-signout").removeAttr('style').addClass('hidden');
+        $('body').addClass('guest').removeClass('logged');
+        $('#eo-signout-msg').text('');
+      });
     });
-    $('#eo-mail-login-btn').on('click', login_with_mail);
-    var _originalSize = $(window).width() + $(window).height();
-    $(window).resize(function () {
-        if ($(window).width() + $(window).height() != _originalSize) {
-            console.log("keyboard show up");
-            element = document.getElementById('eo-login-email');
-            element.scrollIntoView(true);
-        }
-        // else {
-        //     console.log("keyboard closed");
-        // }
+  };
+
+  document.signout = signout;
+  this.menu_string = document.MENU_HTML;
+  this.container = $(this.menu_string);
+  this.login_dlg = $(document.LOGIN_DLG);
+  this.signout_dlg = $(document.SIGNOUT_DLG);
+  this.container.insertBefore($($('table')[0]));
+  this.login_dlg.insertBefore($($('table')[0]));
+  this.signout_dlg.insertBefore($($('table')[0]));
+  $("#eo-slider").slider({ range: "min" });
+  display_menu_messages();
+  $('#djDebug').css({ 'display': 'none' });
+  //var offset = $('#top_menu_block').offset().top
+  if (window.matchMedia("(min-width:1050px)").matches) {
+    console.log('DESKTOP');
+
+    var offset = $('.eo-button').offset();
+    //top left values to display dialogs near button
+    //$('#eo-menu').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' })
+    //$('#eo-dlg-login').css({ top: offset.top - 50 + 'px', left: offset.left + 100 + 'px' })
+    //$('#eo-dlg-signout').css({ top: offset.top + 1 + 'px', left: offset.left + 100 + 'px' })
+    //top left values to display centered dialogs 
+    $('#eo-menu').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
+    $('#eo-dlg-login').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
+    $('#eo-dlg-signout').css({ top: (screen.height - 540) / 2 + 51 + 'px', left: (screen.width - 360) / 2 + 'px' });
+  } else {
+    console.log('MOBILE');
+    // $('#eo-menu').find('.eo-row').css({ 'height': screen.height / 8 + 'px', 'font-size': '16px' })
+  };
+
+  $('#eo-power-switch').on('click', togglePower);
+  switch_text = JSON.parse(document.config.isActive) ? 'On' : 'Off';
+  $('#eo-power-switch-text').text(switch_text);
+  $('#eo-speaker-res').on('click', function () {
+    toggleSound();
+    vol = JSON.parse(document.config.enableSound) ? document.config.volume : '0';
+    $('#eo-slider').val(vol);
+  });
+  //initializing volume slider
+  //$('#eo-slider').attr('max', 50);
+  if (JSON.parse(document.config.enableSound)) {
+    $('#eo-slider').val(document.config.volume);
+  } else {
+    $('#eo-slider').val(0);
+  };
+
+  $('#eo-slider').on('change', function (e) {
+    configStorage.set({ volume: e.target.value });
+    Speaker.changeVolume(e.target.value);
+    if (e.target.value == '0') {
+      toggleSound();
+    } else if (!JSON.parse(localStorage.getItem('enableSound'))) {
+      toggleSound();
+    }
+  });
+
+  $('#signout_btn').on('click', signout);
+  if (JSON.parse(!localStorage.getItem('email'))) {
+    $('body').addClass('guest').removeClass('logged');
+    $('#eo-account-area').addClass('guest');
+    $('#eo-account-img').addClass('no-image');
+    $('#eo-account-name').on('click', toggle_login_dialog);
+    $('#eo-account-name').text(document.MESSAGES[document.config.siteLanguage].MENU_TITLE);
+  } else {
+    $('body').addClass('logged').removeClass('guest');
+    $('#eo-account-name').on('click', toggle_options_dialog);
+    $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
+    $('#eo-account-img').addClass('no-image');
+  }
+  if (JSON.parse(document.config.editor)) {
+    $('#eo-menu').addClass('menu-editor');
+    $('#eo-editor-btn').parent().removeClass('hidden').addClass('vertical-container');
+    var _editor = new Editor(document.overlay);
+    $('#eo-editor-btn').on('click', function (event) {
+      console.log("Editor enters");
+      document.overlay.hideQuestions();
+
+      event.preventDefault();
+      // after you've loaded the editor, there's no going back.
+      // (for now. this should be fixed.)
+      EnglishOnButton.element.off('click');
+      $('#eo-editor-btn').off('click');
+      _editor.fetchQuestions().then(function () {
+        _editor.highlight();
+      });
     });
-    $('#eo-login-email').on('click', function (e) {
-        //causing the keyboard to open 
-        e.target.focus();
-        //Shturem is misiing <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        //This is causing chrome to compute the body width as 980px anycase, in inspector too
+  }
+  //OPTIONS MENU HANDLERS
+  $('#account-triangle').on('click', toggle_options_dialog);
+  $('#eo-choose-lang').on('click', function () {
+    $('#eo-site-languages').removeClass('hidden');
+    $('#eo-dlg-signout-main').addClass('hidden');
+  });
+  $('#option-dlg-signin').on('click', toggle_login_dialog);
+  $('.eo-site-option').on('click', function (e) {
+    configStorage.set({ siteLanguage: e.target.textContent.toLowerCase() });
+    display_menu_messages();
+    $('#eo-site-languages').addClass('hidden');
+    $('#eo-dlg-signout-main').removeClass('hidden');
+  });
+  //LOGIN DIALOG
+  var token = encodeURIComponent(document.englishonBackend.token);
+  if (document.config.isUser) var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
+  $('#google-iframe').append(google_login);
+  $('#eo-iframe').on('load', function () {
+    var popup = this.contentWindow;
+
+    $('#djDebug').css({
+      display: 'none'
     });
-    window.history.pushState({ 'screen_name': 'shturem' }, '', document.overlay.url.substring(document.overlay.url.indexOf('index.php')));
+
+    popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+  });
+  $('#eo-login-password').on('keydown', function (e) {
+    if (e.keyCode == 13) {
+      $('#eo-mail-login-btn').click();
+    }
+  });
+  $('#eo-mail-login-btn').on('click', login_with_mail);
+  var _originalSize = $(window).width() + $(window).height();
+  $(window).resize(function () {
+    if ($(window).width() + $(window).height() != _originalSize) {
+      console.log("keyboard show up");
+      element = document.getElementById('eo-login-email');
+      element.scrollIntoView(true);
+    }
+    // else {
+    //     console.log("keyboard closed");
+    // }
+  });
+  $('#eo-login-email').on('click', function (e) {
+    //causing the keyboard to open 
+    e.target.focus();
+    //Shturem is misiing <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    //This is causing chrome to compute the body width as 980px anycase, in inspector too
+  });
+  window.history.pushState({ 'screen_name': 'shturem' }, '', document.overlay.url.substring(document.overlay.url.indexOf('index.php')));
 };
 
 $(function () {
 
-    //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
-    console.log('********************window onload');
-    document.loaded_promise.resolve();
-    window.addEventListener("message", receiveMessage, false);
+  //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
+  console.log('********************window onload');
+  document.loaded_promise.resolve();
+  window.addEventListener("message", receiveMessage, false);
 });
 
 $.when(document.resources_promise, document.loaded_promise).done(function () {
-    //register the handler for backspace/forward
-    window.onpopstate = function (e) {
-        if (e.state) {
-            console.log('i know you want to see: ' + e.state.screen_name);
-            if (e.state.screen_name == 'shturem') hide_dialogs(0);else if (e.state.screen_name == 'eo_main_menu') {
-                $('#eo-menu').removeClass('hidden');
-                $('#eo-dlg-login').addClass('hidden');
-                $('#eo-dlg-signout').addClass('hidden');
-            } else if (e.state.screen_name == 'eo_login') {
-                $('#eo-dlg-login').removeClass('hidden');
-                $('#eo-dlg-signout').addClass('hidden');
-            } else if (e.state.screen_name == 'eo_options') {
-                $('#eo-dlg-signout').removeClass('hidden');
-                $('#eo-dlg-login').addClass('hidden');
-            }
-        }
-    };
-    console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********');
-    $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
-
-    var overlay = Scraper.scrape();
-
-    document.overlay = overlay;
-    document.overlay.showButtons();
-    upgrade_dialog = $('<div id="eo-upgrade-dialog" title="englishon">').append($('<div>').text(document.MESSAGES.UPGRADE_MESSAGE)).append($('<div>').append($('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('Press here to upgrade chrome'))).append($('<div>').append($('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('Press here to upgrade firefox')));
-    upgrade_dialog.insertBefore($($('table')[0]));
-    $('#eo-upgrade-dialog').dialog({
-        autoOpen: false,
-        modal: true
-    });
-
-    browserInfo = document.browserInfo;
-    if (browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) <= 46 ||
-    //if ((browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) > 46) ||
-    browserInfo.browser == 'Firefox' && parseInt(browserInfo.version) < 49) {
-        $('.eo-button').off('click').on('click', function () {
-            $('#eo-upgrade-dialog').dialog('open');
-        });
+  //register the handler for backspace/forward
+  window.onpopstate = function (e) {
+    if (e.state) {
+      console.log('i know you want to see: ' + e.state.screen_name);
+      if (e.state.screen_name == 'shturem') hide_dialogs(0);else if (e.state.screen_name == 'eo_main_menu') {
+        $('#eo-menu').removeClass('hidden');
+        $('#eo-dlg-login').addClass('hidden');
+        $('#eo-dlg-signout').addClass('hidden');
+      } else if (e.state.screen_name == 'eo_login') {
+        $('#eo-dlg-login').removeClass('hidden');
+        $('#eo-dlg-signout').addClass('hidden');
+      } else if (e.state.screen_name == 'eo_options') {
+        $('#eo-dlg-signout').removeClass('hidden');
+        $('#eo-dlg-login').addClass('hidden');
+      }
     }
-    if (document.config.isUser) {
-        document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
-        document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
-            document.EnglishOnMenu();
-        });
-    } else document.EnglishOnMenu();
+  };
+  console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********');
+  $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
+
+  var overlay = Scraper.scrape();
+
+  document.overlay = overlay;
+  document.overlay.showButtons();
+  upgrade_dialog = $('<div id="eo-upgrade-dialog" title="englishon">').append($('<div>').text(document.MESSAGES.UPGRADE_MESSAGE)).append($('<div>').append($('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('Press here to upgrade chrome'))).append($('<div>').append($('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('Press here to upgrade firefox')));
+  upgrade_dialog.insertBefore($($('table')[0]));
+  $('#eo-upgrade-dialog').dialog({
+    autoOpen: false,
+    modal: true
+  });
+
+  browserInfo = document.browserInfo;
+  if (browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) <= 46 ||
+  //if ((browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) > 46) ||
+  browserInfo.browser == 'Firefox' && parseInt(browserInfo.version) < 49) {
+    $('.eo-button').off('click').on('click', function () {
+      $('#eo-upgrade-dialog').dialog('open');
+    });
+  }
+  if (document.config.isUser) {
+    document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
+    document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
+      document.EnglishOnMenu();
+    });
+  } else document.EnglishOnMenu();
 });
 
 // ***************
@@ -8881,32 +8892,32 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
 // ***************
 
 function createLanguagePicker(overlay, toggle) {
-    var picker = $('<div>').addClass('eo-language_picker');
+  var picker = $('<div>').addClass('eo-language_picker');
 
-    function addLanguage(text, languageCode) {
-        picker.append($('<div>').addClass('eo-language_picker-option').addClass('eo-language_picker-' + languageCode).text(" " + text)
-        // .click(function(e) {
-        //   e.preventDefault();
-        //   if (languageCode !== document.config.targetLanguage /* || !injector.isActive */) {
-        //     configStorage.set({targetLanguage: languageCode})
-        //       .done(function() {
-        //         if (/* injector.isActive */ true) {
-        //           // we switched language, this requires getArticle() again etc' etc'...
-        //           // for now lets just reload
-        //           location.reload();
-        //         } else {
-        //           toggle();
-        //         }
-        //       });
-        //   }
-        // })
-        );
-    }
-    addLanguage(MESSAGES.EN, 'en');
-    addLanguage(MESSAGES.ES, 'es');
-    addLanguage(MESSAGES.FR, 'fr');
-    addLanguage(MESSAGES.ZH, 'zh');
-    return picker;
+  function addLanguage(text, languageCode) {
+    picker.append($('<div>').addClass('eo-language_picker-option').addClass('eo-language_picker-' + languageCode).text(" " + text)
+    // .click(function(e) {
+    //   e.preventDefault();
+    //   if (languageCode !== document.config.targetLanguage /* || !injector.isActive */) {
+    //     configStorage.set({targetLanguage: languageCode})
+    //       .done(function() {
+    //         if (/* injector.isActive */ true) {
+    //           // we switched language, this requires getArticle() again etc' etc'...
+    //           // for now lets just reload
+    //           location.reload();
+    //         } else {
+    //           toggle();
+    //         }
+    //       });
+    //   }
+    // })
+    );
+  }
+  addLanguage(MESSAGES.EN, 'en');
+  addLanguage(MESSAGES.ES, 'es');
+  addLanguage(MESSAGES.FR, 'fr');
+  addLanguage(MESSAGES.ZH, 'zh');
+  return picker;
 }
 
 // **************
@@ -8914,59 +8925,59 @@ function createLanguagePicker(overlay, toggle) {
 // **************
 
 function createSuperMenu(overlay) {
-    var _editor = new Editor(overlay);
-    var create_btn = $('<button>').text("Create all questions").on('click', function (event) {
-        _editor.createAll();
+  var _editor = new Editor(overlay);
+  var create_btn = $('<button>').text("Create all questions").on('click', function (event) {
+    _editor.createAll();
+  });
+
+  var editor = $('<button>').text(" Edit questions").on('click', function (event) {
+    console.log("Editor enters");
+    overlay.hideQuestions();
+
+    event.preventDefault();
+    EnglishOnButton.off();
+    // after you've loaded the editor, there's no going back.
+    // (for now. this should be fixed.)
+    EnglishOnButton.element.off('click');
+
+    editor.off('click');
+    _editor.fetchQuestions().then(function () {
+      _editor.highlight();
     });
+  });
 
-    var editor = $('<button>').text(" Edit questions").on('click', function (event) {
-        console.log("Editor enters");
-        overlay.hideQuestions();
-
-        event.preventDefault();
-        EnglishOnButton.off();
-        // after you've loaded the editor, there's no going back.
-        // (for now. this should be fixed.)
-        EnglishOnButton.element.off('click');
-
-        editor.off('click');
-        _editor.fetchQuestions().then(function () {
-            _editor.highlight();
-        });
+  var token = $('<button>').text(" Reset Token").on('click', function (event) {
+    event.preventDefault();
+    configStorage.set({ token: null }).then(function () {
+      location.reload();
     });
+  });
 
-    var token = $('<button>').text(" Reset Token").on('click', function (event) {
-        event.preventDefault();
-        configStorage.set({ token: null }).then(function () {
-            location.reload();
-        });
+  var reset = $('<button>').text(" Reset User").on('click', function (event) {
+    event.preventDefault();
+    document.englishonBackend.resetUser().then(function () {
+      location.reload();
     });
+  });
 
-    var reset = $('<button>').text(" Reset User").on('click', function (event) {
-        event.preventDefault();
-        document.englishonBackend.resetUser().then(function () {
-            location.reload();
-        });
-    });
+  var backendUrl = $('<button>').text(" Backend").on('click', function (event) {
+    event.preventDefault();
+    var url = prompt("Enter new URL", "https://englishon.herokuapp.com");
+    if (url !== null) {
+      configStorage.set({ backendUrl: url }).then(function () {
+        location.reload();
+      });
+    }
+  });
 
-    var backendUrl = $('<button>').text(" Backend").on('click', function (event) {
-        event.preventDefault();
-        var url = prompt("Enter new URL", "https://englishon.herokuapp.com");
-        if (url !== null) {
-            configStorage.set({ backendUrl: url }).then(function () {
-                location.reload();
-            });
-        }
-    });
+  var url = document.config.backendUrl;
+  url = /:\/\/([^/]*)/.exec(url)[1];
+  var menu = $('<div>').addClass('eo-superuser').append($('<button>').addClass('eo-superuser-button').text('Admin').click(function () {
+    $('.eo-superuser-menu').show();
+    $('.eo-superuser-button').hide();
+  })).append($('<div>').addClass('eo-superuser-menu').hide().append($('<h2>').text("Superuser")).append($('<p>').css('width', '10em').text(url)).append($('<div>').append(editor)).append($('<div>').append(token)).append($('<div>').append(reset)).append($('<div>').append(backendUrl)).append($('<div>').append(create_btn)));
 
-    var url = document.config.backendUrl;
-    url = /:\/\/([^/]*)/.exec(url)[1];
-    var menu = $('<div>').addClass('eo-superuser').append($('<button>').addClass('eo-superuser-button').text('Admin').click(function () {
-        $('.eo-superuser-menu').show();
-        $('.eo-superuser-button').hide();
-    })).append($('<div>').addClass('eo-superuser-menu').hide().append($('<h2>').text("Superuser")).append($('<p>').css('width', '10em').text(url)).append($('<div>').append(editor)).append($('<div>').append(token)).append($('<div>').append(reset)).append($('<div>').append(backendUrl)).append($('<div>').append(create_btn)));
-
-    return menu;
+  return menu;
 }
 
 // ***********************
@@ -8974,35 +8985,35 @@ function createSuperMenu(overlay) {
 // ***********************
 
 function receiveMessage(event) {
-    // Do we trust the sender of this message?  (might be
-    // different from what we originally opened, for example). 
-    var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
-    if (origin !== document.englishonBackend.base) return;
-    // event.source is popup
-    console.log('receiveMessage from englishon');
+  // Do we trust the sender of this message?  (might be
+  // different from what we originally opened, for example). 
+  var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
+  if (origin !== document.englishonBackend.base) return;
+  // event.source is popup
+  console.log('receiveMessage from englishon');
 
-    var django_token = event.data.token;
-    var img = event.data.image;
-    var email = event.data.email;
-    var user_name = event.data.name;
-    console.log('Google event***Is it a new google user? ' + event.data.is_new + '. Token: ' + django_token);
-    $('#eo-account-img').css("background-image", "url(" + img + ")").removeClass('no-image');
-    $('#eo-account-name').text(user_name);
-    $('#eo-account-area').removeClass('guest');
-    if (!localStorage.getItem('email')) {
-        console.log("THIS IS A REAL LOGIN");
-        configStorage.set({ token: django_token, 'isActive': true, 'eo-user-name': user_name });
-        document.englishonBackend.token = django_token;
-        $('body').toggleClass('eo-active', true);
-        $('body').addClass('logged').removeClass('guest');
-        $('#eo-power-switch-text').text('On');
-        document.overlay.showQuestions();
-        localStorage.setItem('email', email);
-        $('#eo-account-name').off('click').on('click', toggle_options_dialog);
-        message = document.MESSAGES[document.config.siteLanguage].LOGGED_IN_FIDBACK;
-        display_message(message, $('#eo-google-msg'));
-        hide_dialogs(1000);
-    }
+  var django_token = event.data.token;
+  var img = event.data.image;
+  var email = event.data.email;
+  var user_name = event.data.name;
+  console.log('Google event***Is it a new google user? ' + event.data.is_new + '. Token: ' + django_token);
+  $('#eo-account-img').css("background-image", "url(" + img + ")").removeClass('no-image');
+  $('#eo-account-name').text(user_name);
+  $('#eo-account-area').removeClass('guest');
+  if (!localStorage.getItem('email')) {
+    console.log("THIS IS A REAL LOGIN");
+    configStorage.set({ token: django_token, 'isActive': true, 'eo-user-name': user_name });
+    document.englishonBackend.token = django_token;
+    $('body').toggleClass('eo-active', true);
+    $('body').addClass('logged').removeClass('guest');
+    $('#eo-power-switch-text').text('On');
+    document.overlay.showQuestions();
+    localStorage.setItem('email', email);
+    $('#eo-account-name').off('click').on('click', toggle_options_dialog);
+    message = document.MESSAGES[document.config.siteLanguage].LOGGED_IN_FIDBACK;
+    display_message(message, $('#eo-google-msg'));
+    hide_dialogs(1000);
+  }
 }
 //end of recieve message
 //

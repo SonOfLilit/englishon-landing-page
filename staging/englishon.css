@@ -5856,7 +5856,7 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 
 /* Site specific */
 #top_menu_block {
-  margin-top: 102px !important;
+  margin-top: 90px !important;
 }
 
 #top_menu_block > img {
@@ -5864,7 +5864,7 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 #date_block {
-  padding-top: 19px;
+  padding-top: 31px;
 }
 
 body.www-bhol-co-il .eo-layout-warning {
@@ -6903,6 +6903,11 @@ eo-signout-layout .signout {
   #eo-dlg-signout .Grid-cell .subtitle {
     font-size: 15px;
   }
+  #eo-menu .Grid-cell .error,
+  #eo-dlg-login .Grid-cell .error,
+  #eo-dlg-signout .Grid-cell .error {
+    font-size: 11px;
+  }
   #eo-menu .eo-menu-footer,
   #eo-dlg-login .eo-menu-footer,
   #eo-dlg-signout .eo-menu-footer {
@@ -7019,7 +7024,9 @@ eo-signout-layout .signout {
   }
 
   .eo-row8 {
-    height: 20px;
+    height: 10px;
+    font-family: Roboto-Light;
+    font-size: 11px;
   }
 
   .eo-dlg-header {
