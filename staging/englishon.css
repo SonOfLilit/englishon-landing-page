@@ -2059,7 +2059,7 @@ body .ui-tooltip {
 /*!
  * jQuery UI CSS Framework 1.11.4
  * http://jqueryui.com
- *hello are you happt today?33333333
+ *
  * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
@@ -5856,7 +5856,7 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 
 /* Site specific */
 #top_menu_block {
-  margin-top: 90px !important;
+  margin-top: 102px !important;
 }
 
 #top_menu_block > img {
@@ -5864,7 +5864,7 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 #date_block {
-  padding-top: 31px;
+  padding-top: 19px;
 }
 
 body.www-bhol-co-il .eo-layout-warning {
@@ -6089,7 +6089,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
     margin-left: 20%;
   }
 
-  #eo-dlg-signout-grid > .large-Grid--offset {
+  #eo-dlg-options-grid > .large-Grid--offset {
     margin-left: 20%;
   }
 }
@@ -6674,7 +6674,7 @@ eo-signout-layout .signout {
   overflow-y: auto;
 }
 
-#eo-dlg-signout {
+#eo-dlg-options {
   background-color: #eceff1;
   font-family: Roboto;
   top: 180px;
@@ -6686,7 +6686,7 @@ eo-signout-layout .signout {
   z-index: 3;
   overflow-y: auto;
 }
-#eo-dlg-signout .Grid-cell {
+#eo-dlg-options .Grid-cell {
   border-top: 1px solid #d7dee3;
   height: 280px;
 }
@@ -6873,64 +6873,64 @@ eo-signout-layout .signout {
     font-size: 14px;
   }
 
-  #eo-dlg-signout {
+  #eo-dlg-options {
     height: 250px;
   }
-  #eo-dlg-signout .Grid-cell {
+  #eo-dlg-options .Grid-cell {
     height: 83px;
   }
 
   #eo-menu,
   #eo-dlg-login,
-  #eo-dlg-signout {
+  #eo-dlg-options {
     width: 240px;
     overflow-y: hidden;
     /*firefox need a smaller font at menu footer*/
   }
   #eo-menu .eo-row,
   #eo-dlg-login .eo-row,
-  #eo-dlg-signout .eo-row {
+  #eo-dlg-options .eo-row {
     height: 51px;
   }
   #eo-menu .Grid-cell,
   #eo-dlg-login .Grid-cell,
-  #eo-dlg-signout .Grid-cell {
+  #eo-dlg-options .Grid-cell {
     font-size: 16px;
     line-height: 1.3;
   }
   #eo-menu .Grid-cell .subtitle,
   #eo-dlg-login .Grid-cell .subtitle,
-  #eo-dlg-signout .Grid-cell .subtitle {
+  #eo-dlg-options .Grid-cell .subtitle {
     font-size: 15px;
   }
   #eo-menu .Grid-cell .error,
   #eo-dlg-login .Grid-cell .error,
-  #eo-dlg-signout .Grid-cell .error {
+  #eo-dlg-options .Grid-cell .error {
     font-size: 11px;
   }
   #eo-menu .eo-menu-footer,
   #eo-dlg-login .eo-menu-footer,
-  #eo-dlg-signout .eo-menu-footer {
+  #eo-dlg-options .eo-menu-footer {
     font-size: 11px;
     line-height: 1.3;
   }
   @-moz-document url-prefix() {
     #eo-menu .eo-menu-footer,
     #eo-dlg-login .eo-menu-footer,
-    #eo-dlg-signout .eo-menu-footer {
+    #eo-dlg-options .eo-menu-footer {
       font-size: 10px;
     }
   }
   #eo-menu .flag, #eo-menu #eo-account-img,
   #eo-dlg-login .flag,
   #eo-dlg-login #eo-account-img,
-  #eo-dlg-signout .flag,
-  #eo-dlg-signout #eo-account-img {
+  #eo-dlg-options .flag,
+  #eo-dlg-options #eo-account-img {
     background-size: 32px;
   }
   #eo-menu #eo-power-switch,
   #eo-dlg-login #eo-power-switch,
-  #eo-dlg-signout #eo-power-switch {
+  #eo-dlg-options #eo-power-switch {
     height: 20px;
     width: 46.66px;
     border-radius: 10px;
@@ -6940,13 +6940,13 @@ eo-signout-layout .signout {
   }
   #eo-menu #eo-power-switch #eo-power-switch-text,
   #eo-dlg-login #eo-power-switch #eo-power-switch-text,
-  #eo-dlg-signout #eo-power-switch #eo-power-switch-text {
+  #eo-dlg-options #eo-power-switch #eo-power-switch-text {
     top: 4px;
     left: 23px;
   }
   #eo-menu #eo-power-switch-circle,
   #eo-dlg-login #eo-power-switch-circle,
-  #eo-dlg-signout #eo-power-switch-circle {
+  #eo-dlg-options #eo-power-switch-circle {
     height: 22px;
     width: 22px;
     top: -2px;
@@ -6954,33 +6954,33 @@ eo-signout-layout .signout {
   }
   #eo-menu #eo-picker-footer,
   #eo-dlg-login #eo-picker-footer,
-  #eo-dlg-signout #eo-picker-footer {
+  #eo-dlg-options #eo-picker-footer {
     height: 29px;
   }
   #eo-menu #eo-picker-footer .Grid-cell,
   #eo-dlg-login #eo-picker-footer .Grid-cell,
-  #eo-dlg-signout #eo-picker-footer .Grid-cell {
+  #eo-dlg-options #eo-picker-footer .Grid-cell {
     height: 100%;
   }
   #eo-menu #englishon-bottom,
   #eo-dlg-login #englishon-bottom,
-  #eo-dlg-signout #englishon-bottom {
+  #eo-dlg-options #englishon-bottom {
     margin-top: 4px;
     height: 30px;
   }
   #eo-menu #eo-picker-tittle,
   #eo-dlg-login #eo-picker-tittle,
-  #eo-dlg-signout #eo-picker-tittle {
+  #eo-dlg-options #eo-picker-tittle {
     height: 45px;
   }
   #eo-menu #eo-speaker-res,
   #eo-dlg-login #eo-speaker-res,
-  #eo-dlg-signout #eo-speaker-res {
+  #eo-dlg-options #eo-speaker-res {
     background-size: 19px;
   }
   #eo-menu #eo-speaker-res:hover,
   #eo-dlg-login #eo-speaker-res:hover,
-  #eo-dlg-signout #eo-speaker-res:hover {
+  #eo-dlg-options #eo-speaker-res:hover {
     background-size: 24px;
   }
 
@@ -7062,7 +7062,7 @@ eo-signout-layout .signout {
     font-size: 26px;
   }
 
-  #modal {
+  #eo-area-container {
     /* Hidden by default */
     position: fixed;
     /* Stay in place */
@@ -7083,12 +7083,12 @@ eo-signout-layout .signout {
   }
 }
 /*@media (max-width: 981px) {
-  #modal {
+  #eo-area-container {
     background-color: #eceff1;
   }
   #eo-menu,
   #eo-dlg-login,
-  #eo-dlg-signout {
+  #eo-dlg-options {
     transform: scale(4);
     top: 550px;
     left: 360px;
