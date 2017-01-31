@@ -8624,11 +8624,11 @@ var EnglishOnMenu = function () {
         $('body').addClass('logged').removeClass('guest');
         if (res.status == 'logged_in') {
           //displayMessage(res.message, $('#login-email-msg'));
-          this.hideDialogs(1000);
+          document.menu.hideDialogs(1000);
         } else if (res.status == 'registered') {
           message = 'Thank you for registering! A confirmation message sent to the given email.';
-          this.displayMessage(message, $('#subtitle'));
-          this.hideDialogs(3500);
+          document.menu.displayMessage(message, $('#subtitle'));
+          document.menu.hideDialogs(3500);
           $('#eo-account-img').addClass('no-iamge');
         }
       });
@@ -8777,7 +8777,7 @@ var EnglishOnMenu = function () {
   $('#option-dlg-signin').on('click', this.toggleLoginDialog);
   $('.eo-site-option').on('click', function (e) {
     configStorage.set({ siteLanguage: e.target.textContent.toLowerCase() });
-    this.displayMenuMessages();
+    document.menu.displayMenuMessages();
     $('#eo-site-languages').addClass('hidden');
     $('#eo-dlg-options-main').removeClass('hidden');
   });
