@@ -6432,6 +6432,10 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   font-family: Roboto-Light;
 }
 
+#eo-dlg-login .eo-input.eo-state-error {
+  border: 1px solid #d0021b;
+}
+
 .v-align {
   display: flex;
   align-items: center;
@@ -6722,6 +6726,12 @@ eo-signout-layout .signout {
 
 .eo-row8 {
   height: 80px;
+  padding-top: 12px;
+  color: #d0021b;
+}
+
+.eo-state-error {
+  border: 1px solid #d0021b;
 }
 
 .eo-row9 {
@@ -7027,6 +7037,7 @@ eo-signout-layout .signout {
     height: 10px;
     font-family: Roboto-Light;
     font-size: 11px;
+    padding-top: 3px;
   }
 
   .eo-dlg-header {

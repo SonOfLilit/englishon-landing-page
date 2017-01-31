@@ -5816,40 +5816,6 @@ el.animate(animation,{queue:false,duration:o.duration,easing:o.easing,complete:f
  * http://api.jqueryui.com/transfer-effect/
  */var effectTransfer=$.effects.effect.transfer=function(o,done){var elem=$(this),target=$(o.to),targetFixed=target.css("position")==="fixed",body=$("body"),fixTop=targetFixed?body.scrollTop():0,fixLeft=targetFixed?body.scrollLeft():0,endPosition=target.offset(),animation={top:endPosition.top-fixTop,left:endPosition.left-fixLeft,height:target.innerHeight(),width:target.innerWidth()},startPosition=elem.offset(),transfer=$("<div class='ui-effects-transfer'></div>").appendTo(document.body).addClass(o.className).css({top:startPosition.top-fixTop,left:startPosition.left-fixLeft,height:elem.innerHeight(),width:elem.innerWidth(),position:targetFixed?"fixed":"absolute"}).animate(animation,o.duration,o.easing,function(){transfer.remove();done();});};});
 //
-/*!
- * jQuery UI Touch Punch 0.2.3
- *
- * Copyright 2011–2014, Dave Furfero
- * Dual licensed under the MIT or GPL Version 2 licenses.
- *
- * Depends:
- *  jquery.ui.widget.js
- *  jquery.ui.mouse.js
- */
-!function (a) {
-  function f(a, b) {
-    if (!(a.originalEvent.touches.length > 1)) {
-      a.preventDefault();var c = a.originalEvent.changedTouches[0],
-          d = document.createEvent("MouseEvents");d.initMouseEvent(b, !0, !0, window, 1, c.screenX, c.screenY, c.clientX, c.clientY, !1, !1, !1, !1, 0, null), a.target.dispatchEvent(d);
-    }
-  }if (a.support.touch = "ontouchend" in document, a.support.touch) {
-    var e,
-        b = a.ui.mouse.prototype,
-        c = b._mouseInit,
-        d = b._mouseDestroy;b._touchStart = function (a) {
-      var b = this;!e && b._mouseCapture(a.originalEvent.changedTouches[0]) && (e = !0, b._touchMoved = !1, f(a, "mouseover"), f(a, "mousemove"), f(a, "mousedown"));
-    }, b._touchMove = function (a) {
-      e && (this._touchMoved = !0, f(a, "mousemove"));
-    }, b._touchEnd = function (a) {
-      e && (f(a, "mouseup"), f(a, "mouseout"), this._touchMoved || f(a, "click"), e = !1);
-    }, b._mouseInit = function () {
-      var b = this;b.element.bind({ touchstart: a.proxy(b, "_touchStart"), touchmove: a.proxy(b, "_touchMove"), touchend: a.proxy(b, "_touchEnd") }), c.call(b);
-    }, b._mouseDestroy = function () {
-      var b = this;b.element.unbind({ touchstart: a.proxy(b, "_touchStart"), touchmove: a.proxy(b, "_touchMove"), touchend: a.proxy(b, "_touchEnd") }), d.call(b);
-    };
-  }
-}(jQuery);
-//
 /**
  * findAndReplaceDOMText v 0.4.3
  * @author James Padolsey http://james.padolsey.com
@@ -6674,16 +6640,16 @@ Authenticator.prototype.validate = function (user) {
   errors = $([]).add(user.email_msg).add(user.password_msg);
   errors.text('').removeClass('ui-state-highlight').parent().addClass('hidden');
   //user.password_msg.text('').removeClass('ui-state-highlight').parent().addClass('hidden');
-  allFields.removeClass('ui-state-error');
+  allFields.removeClass('eo-state-error');
   //allFields.on('input',function(){})
   function checkLength(o, n, min, max) {
     if (o.val().length > max) {
-      o.addClass("ui-state-error");
+      o.addClass("eo-state-error");
       updateTips("Max length for " + n + " is: " + max, n);
       return false;
     }
     if (o.val().length < min) {
-      o.addClass("ui-state-error");
+      o.addClass("eo-state-error");
       updateTips("Min length for " + n + " is: " + min, n);
       return false;
     } else {
@@ -6693,7 +6659,7 @@ Authenticator.prototype.validate = function (user) {
 
   function checkRegexp(o, regexp, t) {
     if (!regexp.test(o.val())) {
-      o.addClass("ui-state-error");
+      o.addClass("eo-state-error");
       updateTips(t, o.attr('id').substring(9));
       return false;
     } else {
@@ -8338,7 +8304,9 @@ function englishon() {
   }();
   document.browserInfo = browserInfo;
   //Restrict none chrome browsers or chrome versions older than 49
-  if (browserInfo.browser != 'Chrome' && (browserInfo.browser != 'Firefox' || !window.matchMedia("(min-width:1050px)").matches)) {
+  if (browserInfo.browser != 'Chrome' && (
+  //(browserInfo.browser != 'Firefox' || !window.matchMedia("(min-width:1050px)").matches)) {
+  browserInfo.browser != 'Firefox' || !document.media == 'desktop')) {
     console.log('BROWSER NOT SUPPORTED.');
     return;
   }
@@ -8358,7 +8326,11 @@ function englishon() {
     return;
   }
   document.__englishon__ = true;
-
+  var check_media = function () {
+    if (window.matchMedia("(min-width:1050px)").matches) return 'desktop';
+    return 'mobile';
+  };
+  var media = check_media();
   var defaults = {
     'token': null,
     'backendUrl': DEFAULT_BACKEND_URL,
@@ -8369,7 +8341,8 @@ function englishon() {
     'enableTutorial': true,
     'editor': false,
     'isUser': false,
-    'siteLanguage': I18N.SITE_LANGUAGE
+    'siteLanguage': I18N.SITE_LANGUAGE,
+    'media': media
   };
   // Store
   configStorage.get(defaults).then(function (config) {
@@ -8483,11 +8456,10 @@ $(englishon);
 var EnglishOnButton = new function () {
   this.showMainMenu = function (e) {
     e.preventDefault();
-
-    // $('#eo-menu').toggleClass('hidden');
-    // $('#modal').toggleClass('hidden');
     $('#eo-menu').removeClass('hidden');
     $('#eo-area-container').removeClass('hidden');
+    //elements = $([]).add($('#eo-menu'))
+    //document.menu.hideDialogs2(elements);
     window.history.pushState({ 'screen_name': 'eo_main_menu' }, '');
     $(document).mouseup(function (e) {
       e.preventDefault();
@@ -8495,6 +8467,7 @@ var EnglishOnButton = new function () {
       if (button.is(e.target)) return;
       if (!$(e.target).hasClass('eo-area') && !$(e.target).parents().hasClass('eo-area')) {
         document.menu.hideDialogs(0);
+        //document.menu.hideDialogs2();
         window.history.pushState({ 'screen_name': 'shturem' }, '');
         $(document).off('mouseup');
       }
@@ -8527,9 +8500,10 @@ var EnglishOnButton = new function () {
 // ****
 var EnglishOnMenu = function () {
   this.displayMessage = function (msg, element) {
-    element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
+    //element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
+    element.text(msg).parent().removeClass('hidden');
   };
-  this.hideDialogs = function (milli_seconds) {
+  this.hideDialogs = function (milliseconds) {
     setTimeout(function () {
       $('#eo-area-container').addClass('hidden');
       // $('#eo-dlg-login').addClass('hidden');
@@ -8541,7 +8515,16 @@ var EnglishOnMenu = function () {
       // $('#login-password-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
       // $('#eo-google-msg').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
       $('.eo-message').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
-    }, milli_seconds);
+    }, milliseconds);
+  };
+  this.hideDialogs2 = function (dialogsToToggle) {
+    if (!dialogsToToggle) {
+      $('#eo-area-container').addClass('hidden');
+      $('.eo-area').addClass('hidden');
+      return;
+    }
+    $(dialogsToToggle).toggleClass('hidden');
+    $('.eo-message').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
   };
   this.displayMenuMessages = function () {
     var messages = document.MESSAGES[document.config.siteLanguage];
@@ -8573,7 +8556,8 @@ var EnglishOnMenu = function () {
     $("#eo-dlg-options").toggleClass('hidden');
     //$("#eo-dlg-options").removeAttr('style').toggleClass('hidden');
     //REMOVE IT FROM CODE!!!!
-    if (window.matchMedia("(min-width:1050px)").matches) {
+    //if (window.matchMedia("(min-width:1050px)").matches) {
+    if (document.config.media == 'desktop') {
       $('#eo-dlg-options').css({ top: (screen.height - 540) / 2 + 51 + 'px', left: (screen.width - 360) / 2 + 'px' });
     };
     window.history.pushState({ 'screen_name': 'eo_options' }, '');
@@ -8625,10 +8609,12 @@ var EnglishOnMenu = function () {
         if (res.status == 'logged_in') {
           //displayMessage(res.message, $('#login-email-msg'));
           document.menu.hideDialogs(1000);
+          //document.menu.hideDialogs2();
         } else if (res.status == 'registered') {
           message = 'Thank you for registering! A confirmation message sent to the given email.';
           document.menu.displayMessage(message, $('#subtitle'));
-          document.menu.hideDialogs(3500);
+          //document.menu.hideDialogs(3500);
+          document.menu.hideDialogs2();
           $('#eo-account-img').addClass('no-iamge');
         }
       });
@@ -8676,10 +8662,11 @@ var EnglishOnMenu = function () {
       $('body').removeClass('eo-active');
       $('#eo-account-area').addClass('guest');
       $('#eo-account-name').text(document.MESSAGES[document.config.siteLanguage].MENU_TITLE);
-      $('#eo-account-name').off('click').on('click', document.menu.toggleLoginDialog);
+      //$('#eo-account-name').off('click')
+      $('#eo-account-name').off('click', document.menu.toggleOptionDialog).on('click', document.menu.toggleLoginDialog);
       message = document.MESSAGES[document.config.siteLanguage].SIGN_OUT_FIDBACK;
 
-      document.menu.displayMessage(message, $('#eo-signout-msg'));
+      //document.menu.displayMessage(message, $('#eo-signout-msg'));
       $('#eo-menu').addClass('hidden');
       $('#eo-area-container').addClass('hidden');
       $("#eo-dlg-options").fadeOut(1600, "linear", function () {
@@ -8690,7 +8677,6 @@ var EnglishOnMenu = function () {
     });
   };
 
-  //remove this!document.signout = signout;
   this.menu_string = document.MENU_HTML;
   this.container = $(this.menu_string);
   this.login_dlg = $(document.LOGIN_DLG);
@@ -8698,16 +8684,50 @@ var EnglishOnMenu = function () {
   this.container.insertBefore($($('table')[0]));
   this.login_dlg.insertBefore($($('table')[0]));
   this.options_dlg.insertBefore($($('table')[0]));
-  $("#eo-slider").slider({ range: "min" });
+
+  function refreshSwatch() {
+    var red = $("#red").slider("value"),
+        green = $("#green").slider("value"),
+        blue = $("#blue").slider("value"),
+        hex = hexFromRGB(red, green, blue);
+    $("#swatch").css("background-color", "#" + hex);
+  }
+
+  $("#red, #green, #blue").slider({
+    orientation: "horizontal",
+    range: "min",
+    max: 255,
+    value: 127,
+    slide: refreshSwatch,
+    change: refreshSwatch
+  });
+
+  function changeVolume() {
+    console.log('change event');
+    var val = $('#eo-slider').slider('value');
+    configStorage.set({ volume: val });
+    Speaker.changeVolume(val);
+    if (val == '0') {
+      toggleSound();
+    } else if (!JSON.parse(localStorage.getItem('enableSound'))) {
+      toggleSound();
+    }
+  }
+  $("#eo-slider").slider({
+    range: "min",
+    stop: changeVolume.bind(this),
+    value: document.config.volume
+    //slide: changeVolume
+  });
+  //$("#eo-slider").slider({ range: "min", change: function(){console.log('sdfsrthfxdcbxcghdtyr');} });
   this.displayMenuMessages();
-  if (window.matchMedia("(min-width:1050px)").matches) {
-    console.log('DESKTOP');
+  if (document.config.media == 'desktop') {
+
     //top left values to display centered dialogs 
     $('#eo-menu').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
     $('#eo-dlg-login').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
     $('#eo-dlg-options').css({ top: (screen.height - 540) / 2 + 51 + 'px', left: (screen.width - 360) / 2 + 'px' });
   } else {
-    console.log('MOBILE');
     // $('#eo-menu').find('.eo-row').css({ 'height': screen.height / 8 + 'px', 'font-size': '16px' })
   };
   // ***********************
@@ -8719,23 +8739,17 @@ var EnglishOnMenu = function () {
   $('#eo-speaker-res').on('click', function () {
     toggleSound();
     vol = JSON.parse(document.config.enableSound) ? document.config.volume : '0';
-    $('#eo-slider').val(vol);
+    $('#eo-slider').slider('value', vol);
   });
   //initializing volume slider
-  if (JSON.parse(document.config.enableSound)) {
-    $('#eo-slider').val(document.config.volume);
-  } else {
-    $('#eo-slider').val(0);
-  };
-  $('#eo-slider').on('change', function (e) {
-    configStorage.set({ volume: e.target.value });
-    Speaker.changeVolume(e.target.value);
-    if (e.target.value == '0') {
-      toggleSound();
-    } else if (!JSON.parse(localStorage.getItem('enableSound'))) {
-      toggleSound();
-    }
-  });
+  if (!JSON.parse(document.config.enableSound)) {
+    $('#eo-slider').slider('value', 0);
+  }
+  // $('#eo-slider').on('change', function(e) {
+  //   configStorage.set({ volume: e.target.value })
+  //   Speaker.changeVolume(e.target.value);
+  //   if (e.target.value == '0') { toggleSound(); } else if (!JSON.parse(localStorage.getItem('enableSound'))) { toggleSound(); }
+  // })
 
   $('#signout_btn').on('click', this.signout);
   if (!localStorage.getItem('email')) {
@@ -8767,7 +8781,7 @@ var EnglishOnMenu = function () {
         _editor.highlight();
       });
     });
-  }
+  } else $('#eo-menu').removeClass('menu-editor');
   //OPTIONS MENU HANDLERS
   $('#account-triangle').on('click', this.toggleOptionsDialog);
   $('#eo-choose-lang').on('click', function () {
@@ -8828,7 +8842,8 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
   window.onpopstate = function (e) {
     if (e.state) {
       console.log('i know you want to see: ' + e.state.screen_name);
-      if (e.state.screen_name == 'shturem') document.menu.hideDialogs(0);else if (e.state.screen_name == 'eo_main_menu') {
+      //if (e.state.screen_name == 'shturem') document.menu.hideDialogs(0);
+      if (e.state.screen_name == 'shturem') document.menu.hideDialogs2();else if (e.state.screen_name == 'eo_main_menu') {
         $('#eo-menu').removeClass('hidden');
         $('#eo-dlg-login').addClass('hidden');
         $('#eo-dlg-options').addClass('hidden');
@@ -8898,9 +8913,10 @@ function receiveMessage(event) {
     document.overlay.showQuestions();
     localStorage.setItem('email', email);
     $('#eo-account-name').off('click').on('click', document.menu.toggleOptionsDialog);
-    message = document.MESSAGES[document.config.siteLanguage].LOGGED_IN_FIDBACK;
-    document.menu.displayMessage(message, $('#eo-google-msg'));
+    //message = document.MESSAGES[document.config.siteLanguage].LOGGED_IN_FIDBACK;
+    //document.menu.displayMessage(message, $('#eo-google-msg'));
     document.menu.hideDialogs(1000);
+    //document.menu.hideDialogs2();
   }
 }
 //
