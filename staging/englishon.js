@@ -6486,7 +6486,7 @@ var MESSAGES = {
     ES: "Spanish",
     FR: "French",
     ZH: "Chinese",
-    HELP: 'צריך עזרה?',
+    HELP: '?צריך עזרה',
     CONTACT: 'צור קשר',
     OR: 'או',
     // Login dialog
