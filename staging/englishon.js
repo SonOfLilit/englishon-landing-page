@@ -8241,24 +8241,24 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
         <div class='Grid-cell option-dlg-guest'>\
             <div id='option-dlg-signin' >sign in</div>\
         </div>\
-        <div class='Grid-cell v-align h-align option-dlg-guest'>\
+        <div class='Grid-cell option-dlg-guest'>\
             <div id='get-started'>get started</div>\
         </div>\
-        <div class='Grid-cell v-align h-align option'>\
+        <div class='Grid-cell option'>\
             <div id='eo-choose-lang'>Choose site language</div>\
         </div>\
-        <div class='Grid-cell v-align h-align option-dlg-logged'>\
+        <div class='Grid-cell option-dlg-logged'>\
             <div id='signout_btn'>Sign out</div>\
         </div>\
         <div class='Grid-cell v-align h-align'>\
             <div id='eo-signout-msg'></div>\
         </div>\
     </div>\
-    <div id='eo-site-languages' class='hidden'>\
-        <div class='Grid-cell v-align h-align option'>\
+    <div id='eo-site-languages' class='hidden Grid Grid--full'>\
+        <div class='Grid-cell option'>\
             <div class='eo-site-option'>English</div>\
         </div>\
-        <div class='Grid-cell v-align h-align option'>\
+        <div class='Grid-cell option'>\
             <div class='eo-site-option'>Hebrew</div>\
         </div>\
     </div>    \
