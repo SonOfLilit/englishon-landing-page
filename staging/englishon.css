@@ -6538,8 +6538,25 @@ eo-signout-layout .signout {
   background-color: #b8c6cf;
 }
 
+#eo-dlg-options .Grid--full .Grid-cell > div {
+  height: 100%;
+  width: 100%;
+  line-height: 300px;
+}
+
+.checked-language {
+  background-color: #b8c6cf;
+}
+
 #signout_btn {
   cursor: pointer;
+}
+
+#eo-dlg-options {
+  cursor: pointer;
+}
+#eo-dlg-options .option-dlg-guest:hover, #eo-dlg-options .option-dlg-logged:hover, #eo-dlg-options .option:hover, #eo-dlg-options .option:hover {
+  background-color: #b8c6cf;
 }
 
 #eo-editor-btn {
@@ -6810,6 +6827,12 @@ eo-signout-layout .signout {
 }
 
 @media (min-width: 1050px) {
+  #eo-dlg-options .Grid--full .Grid-cell > div {
+    height: 100%;
+    width: 100%;
+    line-height: 80px;
+  }
+
   #eo-picker-tittle,
   #eo-last-option {
     border-bottom: 1px solid #d7dee3;

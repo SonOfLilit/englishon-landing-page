@@ -8238,13 +8238,13 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
 //
 document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
     <div class='Grid Grid--full' id ='eo-dlg-options-main'>\
-        <div class='Grid-cell v-align h-align option-dlg-guest'>\
+        <div class='Grid-cell option-dlg-guest'>\
             <div id='option-dlg-signin' >sign in</div>\
         </div>\
         <div class='Grid-cell v-align h-align option-dlg-guest'>\
             <div id='get-started'>get started</div>\
         </div>\
-        <div class='Grid-cell v-align h-align'>\
+        <div class='Grid-cell v-align h-align option'>\
             <div id='eo-choose-lang'>Choose site language</div>\
         </div>\
         <div class='Grid-cell v-align h-align option-dlg-logged'>\
@@ -8255,10 +8255,10 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
         </div>\
     </div>\
     <div id='eo-site-languages' class='hidden'>\
-        <div class='Grid-cell v-align h-align'>\
+        <div class='Grid-cell v-align h-align option'>\
             <div class='eo-site-option'>English</div>\
         </div>\
-        <div class='Grid-cell v-align h-align'>\
+        <div class='Grid-cell v-align h-align option'>\
             <div class='eo-site-option'>Hebrew</div>\
         </div>\
     </div>    \
@@ -8459,7 +8459,6 @@ var EnglishOnButton = new function () {
     $('#eo-menu').removeClass('hidden');
     $('#eo-area-container').removeClass('hidden');
     //elements = $([]).add($('#eo-menu'))
-    //document.menu.hideDialogs2(elements);
     window.history.pushState({ 'screen_name': 'eo_main_menu' }, '');
     $(document).mouseup(function (e) {
       e.preventDefault();
@@ -8467,7 +8466,6 @@ var EnglishOnButton = new function () {
       if (button.is(e.target)) return;
       if (!$(e.target).hasClass('eo-area') && !$(e.target).parents().hasClass('eo-area')) {
         document.menu.hideDialogs(0);
-        //document.menu.hideDialogs2();
         window.history.pushState({ 'screen_name': 'shturem' }, '');
         $(document).off('mouseup');
       }
@@ -8517,15 +8515,7 @@ var EnglishOnMenu = function () {
       $('.eo-message').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
     }, milliseconds);
   };
-  this.hideDialogs2 = function (dialogsToToggle) {
-    if (!dialogsToToggle) {
-      $('#eo-area-container').addClass('hidden');
-      $('.eo-area').addClass('hidden');
-      return;
-    }
-    $(dialogsToToggle).toggleClass('hidden');
-    $('.eo-message').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
-  };
+
   this.displayMenuMessages = function () {
     var messages = document.MESSAGES[document.config.siteLanguage];
     if (!localStorage.getItem('email')) $('#eo-account-name').text(messages.MENU_TITLE);
@@ -8557,9 +8547,9 @@ var EnglishOnMenu = function () {
     //$("#eo-dlg-options").removeAttr('style').toggleClass('hidden');
     //REMOVE IT FROM CODE!!!!
     //if (window.matchMedia("(min-width:1050px)").matches) {
-    if (document.config.media == 'desktop') {
-      $('#eo-dlg-options').css({ top: (screen.height - 540) / 2 + 51 + 'px', left: (screen.width - 360) / 2 + 'px' });
-    };
+    // if (document.config.media == 'desktop') {
+    //   $('#eo-dlg-options').css({ top: (screen.height - 540) / 2 + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' })
+    // };
     window.history.pushState({ 'screen_name': 'eo_options' }, '');
   };
 
@@ -8603,18 +8593,16 @@ var EnglishOnMenu = function () {
         //refracting: replace it with togglepower
         $('body').toggleClass('eo-active', true);
         $('#eo-account-name').text(email.val());
-        $('#eo-account-name').off('click').on('click', this.toggleOptionsDialog);
+        $('#eo-account-name').off('click').on('click', document.menu.toggleOptionsDialog);
         document.overlay.showQuestions();
         $('body').addClass('logged').removeClass('guest');
         if (res.status == 'logged_in') {
           //displayMessage(res.message, $('#login-email-msg'));
           document.menu.hideDialogs(1000);
-          //document.menu.hideDialogs2();
         } else if (res.status == 'registered') {
           message = 'Thank you for registering! A confirmation message sent to the given email.';
           document.menu.displayMessage(message, $('#subtitle'));
-          //document.menu.hideDialogs(3500);
-          document.menu.hideDialogs2();
+          document.menu.hideDialogs(3500);
           $('#eo-account-img').addClass('no-iamge');
         }
       });
@@ -8665,15 +8653,8 @@ var EnglishOnMenu = function () {
       //$('#eo-account-name').off('click')
       $('#eo-account-name').off('click', document.menu.toggleOptionDialog).on('click', document.menu.toggleLoginDialog);
       message = document.MESSAGES[document.config.siteLanguage].SIGN_OUT_FIDBACK;
-
-      //document.menu.displayMessage(message, $('#eo-signout-msg'));
-      $('#eo-menu').addClass('hidden');
-      $('#eo-area-container').addClass('hidden');
-      $("#eo-dlg-options").fadeOut(1600, "linear", function () {
-        $("#eo-dlg-options").removeAttr('style').addClass('hidden');
-        $('body').addClass('guest').removeClass('logged');
-        $('#eo-signout-msg').text('');
-      });
+      document.menu.hideDialogs();
+      $('body').addClass('guest').removeClass('logged');
     });
   };
 
@@ -8684,23 +8665,6 @@ var EnglishOnMenu = function () {
   this.container.insertBefore($($('table')[0]));
   this.login_dlg.insertBefore($($('table')[0]));
   this.options_dlg.insertBefore($($('table')[0]));
-
-  function refreshSwatch() {
-    var red = $("#red").slider("value"),
-        green = $("#green").slider("value"),
-        blue = $("#blue").slider("value"),
-        hex = hexFromRGB(red, green, blue);
-    $("#swatch").css("background-color", "#" + hex);
-  }
-
-  $("#red, #green, #blue").slider({
-    orientation: "horizontal",
-    range: "min",
-    max: 255,
-    value: 127,
-    slide: refreshSwatch,
-    change: refreshSwatch
-  });
 
   function changeVolume() {
     console.log('change event');
@@ -8726,13 +8690,16 @@ var EnglishOnMenu = function () {
     //top left values to display centered dialogs 
     $('#eo-menu').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
     $('#eo-dlg-login').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
-    $('#eo-dlg-options').css({ top: (screen.height - 540) / 2 + 51 + 'px', left: (screen.width - 360) / 2 + 'px' });
+    $('#eo-dlg-options').css({ top: (screen.height - 540) / 2 + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' });
   } else {
     // $('#eo-menu').find('.eo-row').css({ 'height': screen.height / 8 + 'px', 'font-size': '16px' })
   };
   // ***********************
   // Register Event Handlers
   // ***********************
+  $('.available').on('click', function (e) {
+    $(e.target).parents().find('.available').addClass('checked-language');
+  });
   $('#eo-power-switch').on('click', togglePower);
   switch_text = JSON.parse(document.config.isActive) ? 'On' : 'Off';
   $('#eo-power-switch-text').text(switch_text);
@@ -8787,6 +8754,7 @@ var EnglishOnMenu = function () {
   $('#eo-choose-lang').on('click', function () {
     $('#eo-site-languages').removeClass('hidden');
     $('#eo-dlg-options-main').addClass('hidden');
+    window.history.pushState({ 'screen_name': 'site_languages' }, '');
   });
   $('#option-dlg-signin').on('click', this.toggleLoginDialog);
   $('.eo-site-option').on('click', function (e) {
@@ -8842,18 +8810,33 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
   window.onpopstate = function (e) {
     if (e.state) {
       console.log('i know you want to see: ' + e.state.screen_name);
-      //if (e.state.screen_name == 'shturem') document.menu.hideDialogs(0);
-      if (e.state.screen_name == 'shturem') document.menu.hideDialogs2();else if (e.state.screen_name == 'eo_main_menu') {
-        $('#eo-menu').removeClass('hidden');
+      if (e.state.screen_name == 'shturem') {
+        document.menu.hideDialogs(0);
+        return;
+      }
+      // $('#eo-area-container').removeClass('hidden');
+      // $('#eo-menu').removeClass('hidden');
+      $('#eo-menu , #eo-area-container').removeClass('hidden');
+      if (e.state.screen_name == 'eo_main_menu') {
         $('#eo-dlg-login').addClass('hidden');
         $('#eo-dlg-options').addClass('hidden');
-      } else if (e.state.screen_name == 'eo_login') {
+        return;
+      }
+      if (e.state.screen_name == 'eo_login') {
         $('#eo-dlg-login').removeClass('hidden');
         $('#eo-dlg-options').addClass('hidden');
-      } else if (e.state.screen_name == 'eo_options') {
+        return;
+      }
+      if (e.state.screen_name == 'eo_options') {
         $('#eo-dlg-options').removeClass('hidden');
-        $('#eo-menu').removeClass('hidden');
         $('#eo-dlg-login').addClass('hidden');
+        $('#eo-site-languages').addClass('hidden');
+        $('#eo-dlg-options-main').removeClass('hidden');
+        return;
+      }
+      if (e.state.screen_name == 'site_languages') {
+        $('#eo-site-languages').removeClass('hidden');
+        $('#eo-dlg-options-main').addClass('hidden');
       }
     }
   };
@@ -8915,8 +8898,7 @@ function receiveMessage(event) {
     $('#eo-account-name').off('click').on('click', document.menu.toggleOptionsDialog);
     //message = document.MESSAGES[document.config.siteLanguage].LOGGED_IN_FIDBACK;
     //document.menu.displayMessage(message, $('#eo-google-msg'));
-    document.menu.hideDialogs(1000);
-    //document.menu.hideDialogs2();
+    document.menu.hideDialogs(0);
   }
 }
 //
