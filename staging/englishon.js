@@ -2549,7 +2549,8 @@ var MESSAGES = {
     LOGIN_AS: "Log in as:",
     LOGIN_BUTTON: "LEARN FOR FREE",
     SIGN_OUT: 'Sign out',
-    UPGRADE_MESSAGE: 'It is a good time for upgrading...',
+
+    UPGRADE_MESSAGE: 'Your browswer_name browser is outdated</br>.Please press here to update..',
     SIGN_OUT_FIDBACK: "You've Signed Out",
     LOGGED_IN_FIDBACK: 'You signed in',
     GET_STARTED: 'Get Started',
@@ -2823,6 +2824,8 @@ HerokuBackend.prototype.mergeTokens = function (oldToken, newToken) {
 
 HerokuBackend.prototype.getArticle = function (address) {
   this.url = encodeURIComponent(address) + '/';
+  console.log('backend!!!!!!token: ' + this.token);
+
   console.log('backend console *****token: ' + this.token);
   return this.ajax("GET", "/quiz/page/" + this.url).then(function (data) {
     this.pageid = data.id;
@@ -2922,10 +2925,12 @@ Editor = function (overlay) {
   var lines = document.eo_dictionary.split("\n");
   var internal_dic = {};
   for (var i = 0; i < lines.length; i++) {
-    var line = lines[i].split(" ");
-    internal_dic[line[0]] = [];
-    for (var j = 1; j < line.length; j++) {
-      internal_dic[line[0]].push(line[j]);
+    var line = lines[i].trim().split(/\s+/);
+    if (line != "") {
+      internal_dic[line[0]] = [];
+      for (var j = 1; j < line.length; j++) {
+        internal_dic[line[0]].push(line[j]);
+      }
     }
   }
   this.eo_dictionary = internal_dic;
@@ -4002,71 +4007,61 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   }.bind(this);
 };
 //
-var BHOL_ROOT_URL = 'http://www.bhol.co.il/';
-
-function normalizeBholLink(path) {
-  var linicom = path.match(/http:\/\/linicom.*&a=(http%3A[^&]*)&/);
-  if (linicom) {
-    path = unescape(linicom[1]);
-  }
-  if (!path.startsWith('http://') && !path.startsWith('https://')) {
-    path = BHOL_ROOT_URL + (path.startsWith('/') ? path.substr(1) : path);
-  }
-  var res = path.match(/^(https?:\/\/www.bhol.co.il)\/(?:|column|or_)article(?:|_old).aspx\?(?:|.*&)id=(\d+)/i);
-  if (res) {
-    path = res[1].toLowerCase() + '$' + res[2];
-  }
-  return path;
-}
-
-Scraper = new function () {
-  function dispatch(location) {
+ScraperFactory = function (location) {
     if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
-      if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
-      if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper(location.host);
+        if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
+        if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
     }
     if (location.host === 'www.englishon.org') {
-      if (location.pathname === '/hidden/shturem.html' || location.pathname === '/index.php' && location.search === '') return new ShturemArticleScraper(location.host);
-      if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper(location.host);
+        if (location.pathname === '/hidden/shturem.html') return new EnglishonArticleScraper();
     }
-  }
+};
 
-  this.scrape = function () {
-    var scraper = dispatch(location);
-    if (!scraper) {
-      console.log("EnglishOn: unknown website");
-      return;
-    }
+var ShturemArticleScraper = function () {
+    this.getHost = function () {
+        return 'www.shturem.net';
+    };
 
-    return scraper.scrape();
-  };
-}();
-
-var ShturemArticleScraper = function (host) {
-
-  this.scrape = function () {
-    url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
-    if (host == 'www.englishon.org') url = ('http://www.englishon.org' + location.pathname + location.search).replace(/#.*$/, '');
-    var subtitle = $('span.artSubtitle')[0];
-    var bodytext = $('div.artText')[0];
-    // Shturem article bodies are not divided internally to <p>s.
-    // they're just blobs of text with the occasional double <br>.
-    return new ShturemArticleOverlay(url, subtitle, bodytext);
-  };
+    this.scrape = function () {
+        url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
+        var subtitle = $('span.artSubtitle')[0];
+        var bodytext = $('div.artText')[0];
+        // Shturem article bodies are not divided internally to <p>s.
+        // they're just blobs of text with the occasional double <br>.
+        return new ShturemArticleOverlay(url, subtitle, bodytext);
+    };
 };
 
 var ShturemFrontPageScraper = function () {
-  console.log('option 4');
-  this.scrape = function () {
-    var parts = {};
-    $('td.mainpn_text').each(function (i, para) {
-      var url = $(para).closest('table').find('td.mainpn_bottom a')[0].href;
-      parts[url] = para;
-      // hack to make answers visible
-      $(para).attr('style', 'overflow: visible;');
-    });
-    return new ShturemFrontpageOverlay(parts);
-  };
+    this.getHost = function () {
+        return 'www.shturem.net';
+    };
+
+    this.scrape = function () {
+        var parts = {};
+        $('td.mainpn_text').each(function (i, para) {
+            var url = $(para).closest('table').find('td.mainpn_bottom a')[0].href;
+            parts[url] = para;
+            // hack to make answers visible
+            $(para).attr('style', 'overflow: visible;');
+        });
+        return new ShturemFrontpageOverlay(parts);
+    };
+};
+
+var EnglishonArticleScraper = function () {
+    this.getHost = function () {
+        return 'www.englishon.org';
+    };
+
+    this.scrape = function () {
+        url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
+        var subtitle = $('span.artSubtitle')[0];
+        var bodytext = $('div.artText')[0];
+        // Shturem article bodies are not divided internally to <p>s.
+        // they're just blobs of text with the occasional double <br>.
+        return new ShturemArticleOverlay(url, subtitle, bodytext);
+    };
 };
 //
 /* Speaks target-language phrases aloud.
@@ -4239,7 +4234,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
             </div>\
         </div>\
         <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
-            <div class='Grid-cell hidden v-align h-align'>\
+            <div class='Grid-cell v-align h-align'>\
                 <div id='eo-editor-btn' class='v-align h-align'>edit questions</div>\
             </div>\
         </div>\
@@ -4298,7 +4293,7 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
                 </div>\
             </div>\
             <div class='Grid-cell eo-row12'>\
-                <div class='v-align eo-menu-footer' id='tos'>\
+                <div class='eo-menu-footer' id='tos'>\
                     <a href='http://localhost:8080/tokens/terms_of_use'>Terms of use</a>\
                 </div>\
             </div>\
@@ -4437,7 +4432,6 @@ function englishon() {
   }).then(function (backend) {
     document.englishonBackend = backend;
     console.log('********************document.englishonBackend set');
-    if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') $('body').addClass('heroku-staging');
   }).then(function () {
     if (document.config.editor) {
       return $.get(staticUrl('Gates1HebToEng.txt')).then(function (eo_dictionary) {
@@ -4525,6 +4519,10 @@ $(englishon);
 var EnglishOnButton = new function () {
   this.showMainMenu = function (e) {
     e.preventDefault();
+    if (!$('#eo-menu').length) {
+      EnglishOnButton.loading();
+      return;
+    }
     $('#eo-menu').removeClass('hidden');
     $('#eo-area-container').removeClass('hidden');
     //elements = $([]).add($('#eo-menu'))
@@ -4559,6 +4557,9 @@ var EnglishOnButton = new function () {
 
   this.off = function () {
     this.changeState('eo-button-off');
+  };
+  this.loading = function () {
+    this.changeState('eo-button-loading');
   };
 }();
 
@@ -4595,8 +4596,9 @@ var EnglishOnMenu = function () {
     $('#dlg-sign-up-header').text(messages.LOGIN_SIGN_UP_TITLE);
     $('#subtitle').html(messages.LOGIN_SUBTITLE);
     $('#or').text(messages.OR);
-    url = document.config.backendUrl + "/tokens/terms_of_use";
-    $('#tos').find('a').text(messages.AGREE_TO_TOS).attr("href", url);
+    tos_link = "<a href='" + document.config.backendUrl + "/tokens/terms_of_use'>Terms of Use</a>";
+    privacy_link = "<a href='" + document.config.backendUrl + "/tokens/privacy_policy'>Privacy Policy</a>";
+    $('#tos').html(messages.AGREE_TO_TOS.replace('Terms of Use', tos_link).replace('Privacy Policy', privacy_link));
     $('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);
     $('#eo-mail-login-btn').text(messages.LOGIN_BUTTON);
     $('#eo-picker-tittle').css({ direction: messages.DIRECTION });
@@ -4734,6 +4736,7 @@ var EnglishOnMenu = function () {
   this.container.insertBefore($($('table')[0]));
   this.login_dlg.insertBefore($($('table')[0]));
   this.options_dlg.insertBefore($($('table')[0]));
+  EnglishOnButton.on();
 
   function changeVolume() {
     console.log('change event');
@@ -4802,7 +4805,7 @@ var EnglishOnMenu = function () {
   }
   if (JSON.parse(document.config.editor)) {
     $('#eo-menu').addClass('menu-editor');
-    $('#eo-editor-btn').parent().removeClass('hidden').addClass('vertical-container');
+    $('#editor-row').removeClass('hidden');
     var _editor = new Editor(document.overlay);
     $('#eo-editor-btn').on('click', function (event) {
       console.log("Editor enters");
@@ -4911,13 +4914,21 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     }
   };
   console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********');
-  $('body').addClass(location.host.replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
+  var scraper = ScraperFactory(location);
+  if (!scraper) {
+    console.log("EnglishOn: unknown website");
+    return;
+  }
+  $('body').addClass(scraper.getHost().replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
 
-  var overlay = Scraper.scrape();
+  var overlay = scraper.scrape();
 
   document.overlay = overlay;
   document.overlay.showButtons();
-  upgrade_dialog = $('<div id="eo-upgrade-dialog" title="englishon">').append($('<div>').text(document.MESSAGES.UPGRADE_MESSAGE)).append($('<div>').append($('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('Press here to upgrade chrome'))).append($('<div>').append($('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('Press here to upgrade firefox')));
+  if (browserInfo.browser == "Chrome")
+    //upgrade_link = $('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('here');
+    upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";else if (browserInfo.browser == "Firefox") upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";
+  upgrade_dialog = $('<div id="eo-upgrade-dialog" title="englishON">').append($('<div>').addClass('upgrade-dlg').append($('<div>').html(document.MESSAGES[document.config.siteLanguage].UPGRADE_MESSAGE.replace('browswer_name', document.browserInfo.browser).replace('here', upgrade_link))));
   upgrade_dialog.insertBefore($($('table')[0]));
   $('#eo-upgrade-dialog').dialog({
     autoOpen: false,

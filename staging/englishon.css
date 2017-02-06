@@ -209,7 +209,7 @@ div.eo-question {
   border-radius: 3px;
   -webkit-user-select: none;
   margin: 0;
-        /*
+    /*
     width: auto transitions
 
     We would like to animate width from auto to auto, but the CSS spec doesn't like us
@@ -383,7 +383,7 @@ div.eo-question.eo-answered > .eo-correct {
   padding-right: 22px;
 }
 div.eo-question:not(.eo-expired) > .eo-correct {
-        /* There's strange behavior where if .eo-correct has higher z-index than .eo-options,
+    /* There's strange behavior where if .eo-correct has higher z-index than .eo-options,
        which is above will depend on whether the .eo-correct was there from the beginning or
        not... or something.
 
@@ -754,6 +754,14 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   padding-top: 19px;
 }
 
+body.www-shturem-net .eo-button,
+body.www-englishon-org .eo-button {
+  position: absolute;
+  padding-right: 30px;
+  left: 50px;
+  bottom: 24px;
+}
+
 body.www-bhol-co-il .eo-layout-warning {
   top: -16ex;
 }
@@ -903,6 +911,7 @@ That is the reason to determine 980px as the media queries breakpoint */
 #editor-row {
   background-color: #4b5a66;
   color: white;
+  margin-top: 15px;
 }
 
 @media (--break-sm) {
@@ -1694,7 +1703,15 @@ eo-signout-layout .signout {
   color: #c7d1d5;
   cursor: pointer;
 }
-.eo-menu-footer:hover {
+
+#tos:hover {
+  color: #93a0a8;
+}
+#tos a:hover {
+  color: #2cc6a8;
+}
+
+#eo-menu .eo-menu-footer:hover {
   color: #2cc6a8;
 }
 
@@ -1702,6 +1719,12 @@ eo-signout-layout .signout {
   background-color: #eceff1;
   font-family: Roboto-Light;
   font-size: 16px;
+}
+#eo-upgrade-dialog > div {
+  margin-top: 20px;
+}
+#eo-upgrade-dialog a {
+  color: #2cc6a8;
 }
 
 #eo-dlg-icon {
