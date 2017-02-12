@@ -2824,8 +2824,6 @@ HerokuBackend.prototype.mergeTokens = function (oldToken, newToken) {
 
 HerokuBackend.prototype.getArticle = function (address) {
   this.url = encodeURIComponent(address) + '/';
-  console.log('backend!!!!!!token: ' + this.token);
-
   console.log('backend console *****token: ' + this.token);
   return this.ajax("GET", "/quiz/page/" + this.url).then(function (data) {
     this.pageid = data.id;
@@ -2900,6 +2898,17 @@ HerokuBackend.prototype.getTextToSpeechLink = function (language, phrase) {
   });
 };
 
+HerokuBackend.prototype.fetchDictionary = function () {
+  return this.ajax('GET', '/quiz/editor/dictionary/');
+};
+
+HerokuBackend.prototype.dictionary = function (new_word) {
+
+  var post = this.ajax('POST', '/quiz/editor/dictionary/add/', new_word);
+  post.done(function () {
+    console.log("A new word added to dictionary");
+  });
+};
 HerokuBackend.prototype.create_all_questions = function (address, question) {
   console.log("backend///create_all_questions before ajax action ");
   url = encodeURIComponent(address) + '/';
@@ -2943,7 +2952,6 @@ Editor.prototype.createAutoQuestion = function (event) {
   console.log('createAutoQuestion***** span is: ' + span);
   var ctx = this.autoContext(span);
 
-  //var ctx = this.autoContext(span);
   if (!ctx) {
     alert("No suitable context found");
     span.removeClass('auto-editor-candidate_inne').addClass('eo-editor-irrelevant').off('click');
@@ -2952,14 +2960,21 @@ Editor.prototype.createAutoQuestion = function (event) {
 
   var replaced = span.data('word');
   var correct = span.find(".correct_answer").val();
-  if (correct == "Don't create") {
-    span.removeClass('auto-editor-candidate_inner').addClass('eo-editor-irrelevant').off('click');
-    return;
-  }
-  var word_location = 2;
-  if (!ctx) {
-    alert("No suitable context found");
-    span.removeClass('auto-editor-candidate_inner').addClass('eo-editor-irrelevant').off('click');
+  if (correct == "Edit meanings") {
+    var delimiter = ' ';
+    span.find('option').slice(2).each(function () {
+      $(this).prepend(delimiter);
+    });
+    var old_meanings = span.find('option').slice(2).text();
+    console.log('meaning: ' + span.find('option').text());
+    edit_meanings_dlg = $('<div id="dictionary_edit_dlg">').append($('<div id="edit-meanings-dlg-content">').append($('<div>').text('Edit meanings for the word: ' + replaced)).append($('<input type="text" id="meanings">').val(old_meanings)).append($('<button>').text('Save').on('click', function () {
+      console.log('EDIT MEANINGS NOW.');
+      var new_word = { 'word': replaced + ' ' + edit_meanings_dlg.find('#meanings').val(), 'action': 'edit' };
+      document.englishonBackend.dictionary(new_word);
+      edit_meanings_dlg.dialog('close');
+      edit_meanings_dlg.dialog('destroy');
+    })));
+    edit_meanings_dlg.dialog({ modal: true });
     return;
   }
 
@@ -2978,13 +2993,12 @@ Editor.prototype.createAutoQuestion = function (event) {
     'hint': replaced,
     'correct_answers': [correct],
     'wrong_answers': wrong,
-    'word_location': word_location,
     'hint_language': 'he',
     'answer_language': 'en'
   };
   console.log("Finished create the object in createAutoquestion");
   var res = document.englishonBackend.createQuestion(question);
-  span.data('context', ctx).removeClass('auto-editor-candidate_inner').addClass('eo-editor-question').off('click', 'onClick');
+  span.data('context', ctx).removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click', 'onClick');
   // .on('click', this.question_onClick.bind(this));
   span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
     e.stopPropagation();
@@ -3029,37 +3043,28 @@ Editor.prototype.onClick = function (event) {
   span.data('context', ctx);
   var dia = $('<div align="left">');
   var acc = $('<div>');
-  var tabs = [];
   acc.append($('<h3>').text("Hebrew -> English"));
-  tabs.push(this.h2eui(span));
-  acc.append(tabs[0]);
-  /*acc.append($('<h3>').text("English -> Hebrew"));
-  tabs.push(this.e2hui(span))
-  acc.append(tabs[1]);*/
-  acc.accordion({ heightStyle: 'content' });
+  acc.append($('<h3>').text("Adding: " + word));
+  acc.append($('<span>').text("optional meanings"));
+  acc.append($('<input type="text" id="new_meanings">'));
   dia.append(acc);
-  dia.append($('<button>').text("Create Question").click(function (event) {
+  dia.append($('<button>').text("Add to dictionary").click(function (event) {
     event.preventDefault();
-    var question = tabs[acc.accordion('option', 'active')].data('extractor')();
-    if (question) {
-      question.context = ctx;
-
-      document.englishonBackend.createQuestion(question);
-      span.off('click').removeClass('eo-editor-candidate').addClass('eo-editor-question').on('click', this.question_onClick.bind(this));
-      dia.dialog('close');
-    }
-  }.bind(this)));
-  dia.append($('<button>').text("Mark Irrelevant").click(function (event) {
-    event.preventDefault();
-    span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click');
+    //var new_word = { 'word': word + ' ' + $('#new_meanings').val(), 'action': 'add' };
+    var new_word = { 'word': word + ' ' + dia.find('#new_meanings').val(), 'action': 'add' };
+    document.englishonBackend.dictionary(new_word);
     dia.dialog('close');
+    dia.dialog('destroy');
+    span.addClass('eo-editor-candidate');
   }));
+
   dia.append($('<button>').text('Close').click(function (event) {
     event.preventDefault();
     dia.dialog('close');
+    dia.dialog('destroy');
   }));
 
-  dia.dialog({ autoOpen: true, height: 'auto', width: 'auto' });
+  dia.dialog({ autoOpen: true, height: 'auto', width: 'auto', modal: 'true' });
   $(".wrd").text(word);
 };
 
@@ -3271,8 +3276,8 @@ Editor.prototype.highlight = function () {
           var select = $('<select>').addClass('correct_answer');
           //.on('click',this.createQuestion.bind(this))
           //.on('change',this.createQuestion.bind(span))
-          var span = $('<span>').addClass('auto-editor-candidate_inner').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).append(select);
-          span.find('select').append($('<option>').text('').addClass('hide')).on('change', this.createAutoQuestion.bind(this));
+          var span = $('<span>').addClass('eo-editor-candidate').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).append(select);
+          span.find('select').append($('<option>').text('').addClass('hide')).append($('<option>').text('Edit meanings').addClass('editor-btn')).on('change', this.createAutoQuestion.bind(this));
           for (var i = 0; i < this.eo_dictionary[match[0]].length; i++) {
             select.append($('<option>').text(this.eo_dictionary[match[0]][i]));
           }
@@ -3284,13 +3289,16 @@ Editor.prototype.highlight = function () {
 
           var select = $('<select>').addClass('correct_answer').on('change', this.createAutoQuestion.bind(this));
           select.append($('<option>').text('').addClass('hide'));
+          select.append($('<option>').text('Edit meanings').addClass('editor-btn'));
           for (var i = 0; i < this.eo_dictionary[match[0].slice(1)].length; i++) {
             select.append($('<option>').text(this.eo_dictionary[match[0].slice(1)][i]));
           }
-          p.append($('<span>').addClass('auto-editor-candidate_inner').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).append(select));
+          p.append($('<span>').addClass('eo-editor-candidate').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).append(select));
         } else {
           p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-          p.append($('<span>').addClass('eo-editor-candidate').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
+          p.append($('<span>')
+          // .addClass('eo-editor-candidate')
+          .text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
         }
       }
       lastIndex = re.lastIndex;
@@ -4434,9 +4442,11 @@ function englishon() {
     console.log('********************document.englishonBackend set');
   }).then(function () {
     if (document.config.editor) {
-      return $.get(staticUrl('Gates1HebToEng.txt')).then(function (eo_dictionary) {
+      return document.englishonBackend.fetchDictionary().then(function (eo_dictionary) {
+        //return $.get(document.config.backendUrl+'/static/dictionaryHTE.txt').then(function(eo_dictionary) {
+        //return $.get(staticUrl('Gates1HebToEng.txt')).then(function(eo_dictionary) {
         console.log('**********************Fetched internal id');
-        document.eo_dictionary = eo_dictionary;
+        document.eo_dictionary = eo_dictionary.dictionary;
       });
     }
   }).then(function () {
@@ -4656,6 +4666,7 @@ var EnglishOnMenu = function () {
         if (res.status == 'error') {
           //$('#eo-dlg-login').css({ 'height': '100%' })
           //$('#eo-menu').css({ 'height': '100%' })
+          document.menu.displayMessage(res.message, $('#login-password-msg'));
           return;
         }
         $('#eo-account-area').removeClass('guest');
@@ -4763,9 +4774,12 @@ var EnglishOnMenu = function () {
     $('#eo-menu').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
     $('#eo-dlg-login').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
     $('#eo-dlg-options').css({ top: (screen.height - 540) / 2 + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' });
+    // $('#eo-menu').css({ top: '0px', left: (screen.width - 360) / 2 + 'px' })
+    // $('#eo-dlg-login').css({ top: '0px', left: (screen.width - 360) / 2 + 'px' })
+    // $('#eo-dlg-options').css({ top: '0px', left: (screen.width - 360) / 2 + 1 + 'px' })
   } else {
-    // $('#eo-menu').find('.eo-row').css({ 'height': screen.height / 8 + 'px', 'font-size': '16px' })
-  };
+      // $('#eo-menu').find('.eo-row').css({ 'height': screen.height / 8 + 'px', 'font-size': '16px' })
+    };
   // ***********************
   // Register Event Handlers
   // ***********************
@@ -4810,7 +4824,7 @@ var EnglishOnMenu = function () {
     $('#eo-editor-btn').on('click', function (event) {
       console.log("Editor enters");
       document.overlay.hideQuestions();
-
+      document.menu.hideDialogs();
       event.preventDefault();
       // after you've loaded the editor, there's no going back.
       // (for now. this should be fixed.)
@@ -4930,7 +4944,7 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";else if (browserInfo.browser == "Firefox") upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";
   upgrade_dialog = $('<div id="eo-upgrade-dialog" title="englishON">').append($('<div>').addClass('upgrade-dlg').append($('<div>').html(document.MESSAGES[document.config.siteLanguage].UPGRADE_MESSAGE.replace('browswer_name', document.browserInfo.browser).replace('here', upgrade_link))));
   upgrade_dialog.insertBefore($($('table')[0]));
-  $('#eo-upgrade-dialog').dialog({
+  upgrade_dialog.dialog({
     autoOpen: false,
     modal: true
   });

@@ -689,7 +689,8 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 
 /* Editor */
 .eo-editor-candidate {
-  color: orange;
+  background-color: yellow;
+  border: none;
 }
 
 .auto-editor-suspended {
@@ -699,11 +700,6 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 
 .auto-editor-question {
   background-color: blue;
-  border: none;
-}
-
-.auto-editor-candidate_inner {
-  background-color: yellow;
   border: none;
 }
 
@@ -1615,6 +1611,11 @@ eo-signout-layout .signout {
   height: 280px;
 }
 
+.editor-btn {
+  background-color: #4b5a66;
+  color: white;
+}
+
 .eo-row2 {
   height: 163px;
   margin-top: 48px;
@@ -1648,6 +1649,7 @@ eo-signout-layout .signout {
   height: 80px;
   padding-top: 12px;
   color: #d0021b;
+  font-family: Roboto-Light;
 }
 
 .eo-state-error {
@@ -1975,7 +1977,6 @@ eo-signout-layout .signout {
 
   .eo-row8 {
     height: 10px;
-    font-family: Roboto-Light;
     font-size: 11px;
     padding-top: 3px;
   }
