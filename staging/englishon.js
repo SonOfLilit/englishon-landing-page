@@ -3232,73 +3232,69 @@ Editor.prototype.highlight = function () {
     var match = [];
     var lastIndex = 0;
     while ((match = re.exec(text)) !== null) {
-      var isExist = false;
+      var wordAndCotextMatch = false;
+      var wordMatch = false;
       //TODO: The code is duplicate. Fix it
       if (match[0] in question_dict) {
-        for (var i = 0; i < question_dict[match[0]].length; i++) {
-          var context = question_dict[match[0]][i];
+        //current word is exist in question_dict
+        var currentWord = match[0];
+        wordMatch = true;
+      } else if (match[0].slice(1) in question_dict && prefix.indexOf(match[0].slice(0, 1)) != -1) {
+        //the current word without prefix is exist in question_dict
+        var currentWord = match[0].slice(1);
+        wordMatch = true;
+      }
+      if (wordMatch) {
+        //run over all ready questions context and check it there is a match to current context
+        for (var i = 0; i < question_dict[currentWord].length; i++) {
+          var context = question_dict[currentWord][i];
           var start_index = match.index - context.slice(0, context.indexOf(match[0])).length;
           var end_index = re.lastIndex + context.slice(context.indexOf(match[0]) + match[0].length, context.length).length;
 
           if (text.slice(start_index, end_index) == context) {
-            console.log("Find a ready question!!! " + text.slice(start_index, end_index));
-            isExist = true;
+            //current word AND current context is match to one of the ready questions
+            wordAndCotextMatch = true;
+            console.log('found a ready question! word: ' + currentWord + ' context: ' + context);
             p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
             p.append($('<span>').addClass('eo-editor-question').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).data('context', context)
             //.off('click',Editor.prototype.onClick())
             .on('click', this.question_onClick.bind(this)));
           }
         }
-      } else if (match[0].slice(1) in question_dict && prefix.indexOf(match[0].slice(0, 1)) != -1) {
-        for (var i = 0; i < question_dict[match[0].slice(1)].length; i++) {
-          var context = question_dict[match[0].slice(1)][i];
-          var start_index = match.index + 1 - context.slice(0, context.indexOf(match[0].slice(1))).length;
-          var end_index = re.lastIndex + context.slice(context.indexOf(match[0].slice(1)) + match[0].slice(1).length, context.length).length;
-
-          if (text.slice(start_index, end_index) == context) {
-            console.log("Find a ready question!!! " + text.slice(start_index, end_index));
-            isExist = true;
-            p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index + 1)));
-            p.append($('<span>').addClass('eo-editor-question').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).data('context', context)
-            //.off('click',Editor.prototype.onClick())
-            .on('click', this.question_onClick.bind(this)));
-          }
-        }
       }
-
-      if (isExist == false) {
-
+      if (!wordAndCotextMatch) {
+        wordMatch = false;
         if (match[0] in this.eo_dictionary) {
-          // console.log("found id candidte: "+match[0]);
+          //the current word is exist in internal dictionary
+          currentWord = match[0];
+          wordMatch = true;
+        } else if (match[0].slice(1) in this.eo_dictionary && prefix.indexOf(match[0].slice(0, 1)) != -1) {
+          //the current word without prefix is exist in internal dictionary
+          currentWord = match[0].slice(1);
+          wordMatch = true;
+          lastIndex = lastIndex + 1;
+        }
+        if (wordMatch) {
+          console.log("I found a candidate: " + match[0] + ' currentWord: ' + currentWord);
           p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
 
           var select = $('<select>').addClass('correct_answer');
           //.on('click',this.createQuestion.bind(this))
           //.on('change',this.createQuestion.bind(span))
-          var span = $('<span>').addClass('eo-editor-candidate').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).append(select);
+          var span = $('<span>').addClass('eo-editor-candidate').text(currentWord).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).append(select);
           span.find('select').append($('<option>').text('').addClass('hide')).append($('<option>').text('Edit meanings').addClass('editor-btn')).on('change', this.createAutoQuestion.bind(this));
-          for (var i = 0; i < this.eo_dictionary[match[0]].length; i++) {
-            select.append($('<option>').text(this.eo_dictionary[match[0]][i]));
+          for (var i = 0; i < this.eo_dictionary[currentWord].length; i++) {
+            select.append($('<option>').text(this.eo_dictionary[currentWord][i]));
           }
 
           p.append(span);
-        } else if (match[0].slice(1) in this.eo_dictionary && prefix.indexOf(match[0].slice(0, 1)) != -1) {
-          console.log("I found a candidate with prefix: " + match[0].slice(1));
-          p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index + 1)));
-
-          var select = $('<select>').addClass('correct_answer').on('change', this.createAutoQuestion.bind(this));
-          select.append($('<option>').text('').addClass('hide'));
-          select.append($('<option>').text('Edit meanings').addClass('editor-btn'));
-          for (var i = 0; i < this.eo_dictionary[match[0].slice(1)].length; i++) {
-            select.append($('<option>').text(this.eo_dictionary[match[0].slice(1)][i]));
+        } else //the current word is unrecognized word
+          {
+            p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+            p.append($('<span>')
+            // .addClass('eo-editor-candidate')
+            .text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
           }
-          p.append($('<span>').addClass('eo-editor-candidate').text(match[0].slice(1)).data('text', text).data('start', match.index + 1).data('end', re.lastIndex).data('word', match[0].slice(1)).append(select));
-        } else {
-          p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-          p.append($('<span>')
-          // .addClass('eo-editor-candidate')
-          .text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
-        }
       }
       lastIndex = re.lastIndex;
     }
@@ -4434,7 +4430,6 @@ function englishon() {
   // Store
   configStorage.get(defaults).then(function (config) {
     document.englishonConfig = config;
-    console.log('initial content script*****: ' + document.englishonConfig.isActive);
     $('body').addClass('eo-language-' + config.targetLanguage);
     if (config.enableTutorial) {
       startTutorial();
@@ -4450,18 +4445,13 @@ function englishon() {
     }
   }).then(function (backend) {
     document.englishonBackend = backend;
-    console.log('********************document.englishonBackend set');
   }).then(function () {
     if (document.englishonConfig.editor) {
       return document.englishonBackend.fetchDictionary().then(function (eo_dictionary) {
-        //return $.get(document.englishonConfig.backendUrl+'/static/dictionaryHTE.txt').then(function(eo_dictionary) {
-        //return $.get(staticUrl('Gates1HebToEng.txt')).then(function(eo_dictionary) {
-        console.log('**********************Fetched internal id');
         document.eo_dictionary = eo_dictionary.dictionary;
       });
     }
   }).then(function () {
-    // document.overlay.showButtons();
     document.resources_promise.resolve();
   });
 }
@@ -4546,10 +4536,8 @@ var EnglishOnButton = new function () {
     }
     $('#eo-menu').removeClass('hidden');
     $('#eo-area-container').removeClass('hidden');
-    console.log('pushstate eo-menu');
     window.history.pushState({ 'elementToShow': 'eo-menu' }, '');
     $(document).mouseup(function (e) {
-      console.log('mouseup');
       e.preventDefault();
       e.stopPropagation();
       var button = $('.eo-button');
@@ -4595,14 +4583,12 @@ var EnglishOnMenu = function () {
     element.text(msg).parent().removeClass('hidden');
   };
   this.hideDialogs = function (milliseconds) {
-    console.log('hideDialogs#########');
     $('#eo-area-container').addClass('hidden');
     $('.eo-area').addClass('hidden');
     $('.eo-message').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
   };
   this.toggleDialog = function (element, action) {
     this.hideDialogs(0);
-    console.log('toggleDialog');
     $('#eo-area-container').removeClass('hidden');
     $('#eo-menu').removeClass('hidden'); //becouse it serves as container, giving the header and footer
     var elementObj = $('#' + element);
@@ -4621,7 +4607,6 @@ var EnglishOnMenu = function () {
   };
   this.toggleDialogTrigger = function (e) {
     e.preventDefault();
-    console.log('toggleDialogTrigger');
     var element = $(e.target).data('elementToShowOnClick');
     if ($('#' + element).hasClass('hidden')) {
       this.toggleDialog(element, 'show');
@@ -4719,7 +4704,6 @@ var EnglishOnMenu = function () {
     if (JSON.parse(enable)) {
       document.overlay.showQuestions();
       if (!document.englishonConfig.isUser) {
-        console.log('a none user execute englishon for the first time...well done!');
         configStorage.set({ 'isUser': true });
         window.location.reload();
       }
@@ -4736,11 +4720,11 @@ var EnglishOnMenu = function () {
     localStorage.removeItem('email');
     localStorage.removeItem('eo-user-name');
     var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
-    document.englishonConfig.token = null; //Isn't it unneeded???
+    document.englishonConfig.token = null;
     auth.login(document.englishonConfig.token).then(function (token) {
       configStorage.set({ token: token });
       document.overlay.hideQuestions();
-      document.englishonBackend.token = token; //Isn't it unneeded???
+      document.englishonBackend.token = token;
       //Give englishon the new guest token
       popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
       $('body').removeClass('eo-active');
@@ -4762,7 +4746,6 @@ var EnglishOnMenu = function () {
   EnglishOnButton.on();
   this.volume = new function () {
     this.changeVolume = function () {
-      console.log('change event');
       var val = $('#eo-slider').slider('value');
       configStorage.set({ volume: val });
       Speaker.changeVolume(val);
@@ -4773,7 +4756,6 @@ var EnglishOnMenu = function () {
       }
     };
     this.syncWithSpeaker = function () {
-      console.log('syncWithSpeaker');
       vol = JSON.parse(document.englishonConfig.enableSound) ? document.englishonConfig.volume : '0';
       $('#eo-slider').slider('value', vol);
     };
@@ -4789,12 +4771,12 @@ var EnglishOnMenu = function () {
   if (document.englishonConfig.media == 'desktop') {
 
     //top left values to display centered dialogs 
-    // $('#eo-menu').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' })
-    // $('#eo-dlg-login').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' })
-    // $('#eo-dlg-options').css({ top: (screen.height - 540) / 2 + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' })
-    $('#eo-menu').css({ top: '0px', left: (screen.width - 360) / 2 + 'px' });
-    $('#eo-dlg-login').css({ top: '0px', left: (screen.width - 360) / 2 + 'px' });
-    $('#eo-dlg-options').css({ top: '55px', left: (screen.width - 360) / 2 + 1 + 'px' });
+    $('#eo-menu').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
+    $('#eo-dlg-login').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
+    $('#eo-dlg-options').css({ top: (screen.height - 540) / 2 + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' });
+    // $('#eo-menu').css({ top: '0px', left: (screen.width - 360) / 2 + 'px' })
+    // $('#eo-dlg-login').css({ top: '0px', left: (screen.width - 360) / 2 + 'px' })
+    // $('#eo-dlg-options').css({ top: '55px', left: (screen.width - 360) / 2 + 1 + 'px' })
   }
   // ***********************
   // Register Event Handlers
@@ -4836,7 +4818,6 @@ var EnglishOnMenu = function () {
     $('#editor-row').removeClass('hidden');
     var _editor = new Editor(document.overlay);
     $('#eo-editor-btn').on('click', function (event) {
-      console.log("Editor enters");
       document.overlay.hideQuestions();
       document.menu.hideDialogs();
       event.preventDefault();
@@ -4901,7 +4882,6 @@ var EnglishOnMenu = function () {
 $(function () {
 
   //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
-  console.log('********************window onload');
   document.loaded_promise.resolve();
 });
 
@@ -4911,7 +4891,6 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
   //register the handler for backspace/forward
   window.onpopstate = function (e) {
     if (e.state) {
-      console.log('i know you want to see: ' + e.state.elementToShow);
       if (e.state.elementToShow == 'shturem') {
         document.menu.hideDialogs(0);
         //window.history.pushState({ 'elementToShow': 'shturem' }, '');
@@ -4920,7 +4899,6 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
       document.menu.toggleDialog(e.state.elementToShow, 'show');
     }
   };
-  console.log('*******AFTER ONLOAD AND AFTER SCRIPTS***********');
   var scraper = ScraperFactory(location);
   if (!scraper) {
     console.log("EnglishOn: unknown website");
@@ -4963,18 +4941,15 @@ function receiveMessage(event) {
   var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
   if (origin !== document.englishonBackend.base) return;
   // event.source is popup
-  console.log('receiveMessage from englishon');
 
   var django_token = event.data.token;
   var img = event.data.image;
   var email = event.data.email;
   var user_name = event.data.name;
-  console.log('Google event***Is it a new google user? ' + event.data.is_new + '. Token: ' + django_token);
   $('#eo-account-img').css("background-image", "url(" + img + ")").removeClass('no-image');
   $('#eo-account-name').text(user_name);
   $('#eo-account-area').removeClass('guest');
   if (!localStorage.getItem('email')) {
-    console.log("THIS IS A REAL LOGIN");
     configStorage.set({ token: django_token, 'isActive': true, 'eo-user-name': user_name });
     document.englishonBackend.token = django_token;
     $('body').toggleClass('eo-active', true);
