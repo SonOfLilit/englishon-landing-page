@@ -1,5 +1,5 @@
-<div id='modal' class='hidden'>
-<div id='eo-menu' class='hidden'>
+<div id='eo-area-container' class='hidden'>
+<div id='eo-menu' class='hidden eo-area'>
     <div class='header'>
         <div id='eo-account-area'>
             <div class='Grid u-textCenter eo-row eo-menu-inner'>
@@ -10,7 +10,7 @@
                     <div id='eo-account-name'></div>
                 </div>
                 <div class='Grid-cell v-align u-1of10 right-align'>
-                    <div id='account-triangle'>&#9662;</div>
+                    <div id='account-dropdown'>&#9662;</div>
                 </div>
             </div>
         </div>
@@ -29,8 +29,8 @@
                     <div class='Grid-cell u-1of3 v-align h-align'>
                         <div id='eo-speaker-res'></div>
                     </div>
-                    <div class='Grid-cell v-align h-align'>
-                        <input type='range' value='0' id='eo-slider' />
+                    <div class='Grid-cell v-align right-align'>
+                        <div id='eo-slider'></div>
                     </div>
                 </div>
             </div>
@@ -41,12 +41,12 @@
             <div class='Grid-cell v-align eo-menu-inner' id='eo-picker-tittle'>
                 <div id='eo-language_header'>Pick a language</div>
             </div>
-            <div class='Grid-cell eo-menu-inner'>
+            <div class='Grid-cell eo-menu-inner available'>
                 <div class='Grid eo-row'>
                     <div class='Grid-cell u-1of6'>
                         <div class='flag us-flag'></div>
                     </div>
-                    <div class='Grid-cell v-align'>
+                    <div class='Grid-cell v-align '>
                         <div class='eo-language-option-res'>English (US)</div>
                     </div>
                 </div>
@@ -85,8 +85,8 @@
                 <div class='Grid-cell v-align eo-menu-footer' id='contact'>Contact Us</div>
             </div>
         </div>
-        <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner' id='editor-row'>
-            <div class='Grid-cell hidden v-align h-align'>
+        <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>
+            <div class='Grid-cell v-align h-align'>
                 <div id='eo-editor-btn' class='v-align h-align'>edit questions</div>
             </div>
         </div>

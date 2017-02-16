@@ -132,8 +132,3 @@
 ילדים children
 שנה year
 כינוס Convention
-test test
-
-
-
-

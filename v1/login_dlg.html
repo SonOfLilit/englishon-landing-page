@@ -1,4 +1,4 @@
-<div class='hidden' id='eo-dlg-login'>
+<div class='hidden eo-area' id='eo-dlg-login'>
     <div id='eo-dlg-inner'>
         <div class='Grid Grid--full'>
             <div class='Grid-cell eo-row2'>
@@ -19,7 +19,7 @@
                 <div id='google-iframe'></div>
             </div>
             <div class='Grid-cell hidden'>
-                <div id='eo-google-msg'></div>
+                <div id='eo-google-msg' class='eo-message'></div>
             </div>
             <div class='Grid-cell eo-row5'>
                 <div class='Grid'>
@@ -33,20 +33,23 @@
             <div class='Grid-cell eo-row6'>
                 <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' />
             </div>
+            <div class='Grid-cell hidden eo-row8'>
+                <div id='login-email-msg' class='error eo-message'></div>
+            </div>
             <div class='Grid-cell eo-row6'>
                 <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' />
             </div>
             <div class='Grid-cell hidden eo-row8'>
-                <div id='eo-login-msg'></div>
+                <div id='login-password-msg' class='error eo-message'></div>
             </div>
-            <div class='Grid-cell eo-row9'>
-                <div class='Grid'>
-                    <div class='Grid-cell v-align eo-menu-footer' id='tos'>
-                        <div>Terms of service</div>
-                    </div>
-                    <div class='Grid-cell v-align eo-menu-footer'>
-                        <a href='http://localhost:8080/recover' id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>
-                    </div>
+            <div class='Grid-cell v-align right-align eo-row9'>
+                <div class='v-align right-align eo-menu-footer'>
+                    <a href='http://localhost:8080/recover' id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>
+                </div>
+            </div>
+            <div class='Grid-cell eo-row12'>
+                <div class='eo-menu-footer' id='tos'>
+                    <a href='http://localhost:8080/tokens/terms_of_use'>Terms of use</a>
                 </div>
             </div>
             <div class='Grid-cell eo-row7 v-align h-align'>
