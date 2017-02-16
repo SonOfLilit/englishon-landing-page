@@ -1465,7 +1465,7 @@ eo-signout-layout .signout {
 }
 
 #eo-account-name:hover,
-#account-triangle:hover {
+#account-dropdown:hover {
   color: #2cc6a8;
 }
 
@@ -1491,7 +1491,7 @@ eo-signout-layout .signout {
   background-image: url(http://www.englishon.org/v1/img/button-on-zh.svg);
 }
 
-#account-triangle {
+#account-dropdown {
   font-size: 104px;
 }
 
@@ -2010,7 +2010,7 @@ eo-signout-layout .signout {
     height: 40px;
   }
 
-  #account-triangle {
+  #account-dropdown {
     font-size: 26px;
   }
 
@@ -2046,3 +2046,6 @@ eo-signout-layout .signout {
     left: 360px;
   }
 }*/
+.editor-div {
+  padding: 5px;
+}
