@@ -4430,6 +4430,44 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 \
 ";
 //
+document.alive_actions = "<div class='hidden' id='eo-alive'>\
+    <div class='Grid'>\
+        <div class='Grid-cell'>\
+            <div id='persistence' class='alive-part'>\
+                <div class='Grid'>\
+                    <div id='days-pannel'>\
+                        <div class='Grid-cell'>\
+                            <div class='day-bar'>1</div>\
+                        </div>\
+                        <div class='Grid-cell'>\
+                            <div class='day-bar'>2</div>\
+                        </div>\
+                        <div class='Grid-cell'>\
+                            <div class='day-bar'>3</div>\
+                        </div>\
+                        <div class='Grid-cell'>\
+                            <div class='day-bar'>4</div>\
+                        </div>\
+                        <div class='Grid-cell'>\
+                            <div class='day-bar'>5</div>\
+                        </div>\
+                        <div class='Grid-cell'>\
+                            <div class='day-bar'>6</div>\
+                        </div>\
+                        <div class='Grid-cell'>\
+                            <div class='day-bar'>7</div>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+        </div>\
+        <div class='Grid-cell'>\
+            <div id='sr' class='alive-part'>sr</div>\
+        </div>\
+    </div>\
+</div>\
+";
+//
 // **************
 // Initialization
 // **************
@@ -4476,11 +4514,9 @@ function englishon() {
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN THIS SPECIFIC ARTICLE
   if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.englishon.org/hidden/shturem.html') {
-    return;
+    //return;
   }
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
-  //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
-  //var DEFAULT_BACKEND_URL = 'http://localhost:8080';
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
 
   if (document.__englishon__) {
@@ -4819,6 +4855,7 @@ var EnglishOnMenu = function () {
   document.overlay.insertContent($(document.MENU_HTML));
   document.overlay.insertContent($(document.LOGIN_DLG));
   document.overlay.insertContent($(document.OPTIONS_DLG));
+  document.overlay.insertContent($(document.alive_actions));
   EnglishOnButton.on();
   this.volume = new function () {
     this.changeVolume = function () {

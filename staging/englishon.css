@@ -2067,3 +2067,30 @@ eo-signout-layout .signout {
 .editor-div {
   padding: 5px;
 }
+
+#eo-alive {
+  background-color: rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  border: solid transparent;
+  border-width: 1px 1px 1px 6px;
+  min-height: 28px;
+  resize: both;
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  height: 140px;
+  width: 300px;
+  overflow: auto;
+}
+#eo-alive > .Grid {
+  height: 100%;
+}
+#eo-alive > .Grid > .Grid-cell {
+  height: 100%;
+}
+#eo-alive > .Grid > .Grid-cell > .alive-part {
+  border-radius: 25px;
+  background-color: white;
+  margin: 20px;
+  font-size: 30px;
+}
