@@ -2574,7 +2574,7 @@ var MESSAGES = {
     // Login dialog
     LOGIN_SIGN_IN_TITLE: 'התחבר',
     LOGIN_SIGN_UP_TITLE: 'הירשם',
-    LOGIN_SUBTITLE: 'ברוכים הבאים לאינגלישון שפר את המיומנות שלך בשפה שניה בקלי קלות',
+    LOGIN_SUBTITLE: 'שפר את המיומנות שלך באנגלית </br>בכייף בקלות ובחינם',
     AGREE_TO_TOS: "אני מסכים לתנאי השימוש ולתנאי הפרטיות ",
     FORGOT_PASSWORD: '?שכחת סיסמה',
 
@@ -2596,7 +2596,7 @@ var MESSAGES = {
     SIGN_OUT_FEEDBACK: 'התנתקת מאינגלישאון...',
     LOGGED_IN_FIDBACK: 'התחברת לאינגלשיאון',
     GET_STARTED: 'התחל ללמוד שפות',
-    SITE_LANGUAGE: 'בחר שפה'
+    SITE_LANGUAGE: 'שפת התפריט'
   }
 
 };
@@ -2822,6 +2822,30 @@ HerokuBackend.prototype.mergeTokens = function (oldToken, newToken) {
   return this.report('MergeTokens', { guest: oldToken, registered: newToken });
 };
 
+HerokuBackend.prototype.checkPersistance = function () {
+  console.log('HerokuBackend.prototype.score');
+  var post = this.ajax("POST", "/quiz/score/checkpersistance/", { 'token': this.token });
+};
+
+HerokuBackend.prototype.score = function (score_num) {
+  console.log('HerokuBackend.prototype.score');
+  var post = this.ajax("POST", "/quiz/score/score/", { 'token': this.token, 'scores_num': score_num });
+  post.done(function () {
+    console.log('user got scores');
+  });
+  post.fail(function () {
+    console.log('error give scores to user!');
+  });
+};
+HerokuBackend.prototype.getUnAnsweredSR = function (address) {
+  console.log('HerokuBackend.prototype.getUnAnsweredSR');
+  return this.ajax("POST", "/quiz/getUnAnsweredSR/", { 'token': this.token });
+};
+HerokuBackend.prototype.getAnsweredSR = function (address) {
+  console.log('HerokuBackend.prototype.getCompletedSR');
+  return this.ajax("POST", "/quiz/getAnsweredSR/", { 'token': this.token });
+};
+
 HerokuBackend.prototype.getArticle = function (address) {
   this.url = encodeURIComponent(address) + '/';
   console.log('backend console *****token: ' + this.token);
@@ -2923,7 +2947,7 @@ HerokuBackend.prototype.create_all_questions = function (address, question) {
 };
 
 HerokuBackend.prototype.is_new_session = function () {
-  return this.ajax('GET', '/quiz/GetLast/').then(function (data) {
+  return this.ajax('GET', '/quiz/IsNewSession/').then(function (data) {
     return data.last;
   });
 };
@@ -3256,7 +3280,7 @@ Editor.prototype.highlight = function () {
             wordAndCotextMatch = true;
             console.log('found a ready question! word: ' + currentWord + ' context: ' + context);
             p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-            p.append($('<span>').addClass('eo-editor-question').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).data('context', context)
+            p.append($('<span>').addClass('eo-editor-question').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).data('context', context)
             //.off('click',Editor.prototype.onClick())
             .on('click', this.question_onClick.bind(this)));
           }
@@ -3268,15 +3292,18 @@ Editor.prototype.highlight = function () {
           //the current word is exist in internal dictionary
           currentWord = match[0];
           wordMatch = true;
+          var matchIndex = match.index;
         } else if (match[0].slice(1) in this.eo_dictionary && prefix.indexOf(match[0].slice(0, 1)) != -1) {
           //the current word without prefix is exist in internal dictionary
           currentWord = match[0].slice(1);
           wordMatch = true;
-          lastIndex = lastIndex + 1;
+          // lastIndex = lastIndex + 1;
+          var matchIndex = match.index + 1;
         }
         if (wordMatch) {
           console.log("I found a candidate: " + match[0] + ' currentWord: ' + currentWord);
-          p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+          console.log('slice: ' + text.slice(lastIndex, match.index));
+          p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, matchIndex)));
 
           var select = $('<select>').addClass('correct_answer');
           //.on('click',this.createQuestion.bind(this))
@@ -3300,6 +3327,34 @@ Editor.prototype.highlight = function () {
     }
     p.get(0).appendChild(document.createTextNode(text.slice(lastIndex)));
   }.bind(this));
+};
+//
+UserInfo = function (token) {
+  this.scoreValue = { 'correct': 200, 'persistance': 300 };
+  this.getUnAnsweredSR = function () {
+    document.englishonBackend.getUnAnsweredSR().then(function (data) {
+      console.log('getUnAnsweredSR*******8data from server: ' + data);
+      //i tried to do it with bind, but don't know how.
+      document.eo_user.unAnswered = data;
+    });
+  };
+  this.getAnsweredSR = function () {
+    document.englishonBackend.getAnsweredSR().then(function (data) {
+      document.eo_user.answered = data;
+    });
+  };
+  this.displaySRStatus = function () {
+    var generall_sr = this.unAnswered.sr_questions.length + this.answered.sr_questions.length;
+    console.log('you answered ' + this.answered.sr_questions.length + ' from: ' + generall_sr);
+  };
+  this.scoreCorrect = function () {
+    scores_num = this.scoreValue['correct'];
+    document.englishonBackend.score(scores_num);
+  };
+  this.checkPersistance = function () {
+    console.log('checkPersistance');
+    document.englishonBackend.checkPersistance();
+  };
 };
 //
 jQuery.fn.extend({
@@ -3331,11 +3386,16 @@ jQuery.fn.extend({
 });
 Injector = function (paragraphs) {
   var interacted = false;
+  var userAnswered = false;
 
   function report(msg, data) {
     if (!data) data = {};
+    if (msg === 'TriedAnswer' && !userAnswered) {
+      userAnswered = true;
+      document.eo_user.checkPersistance();
+    }
     if (msg === "StartedQuestion" && !interacted) {
-      interacted = true;
+      var interacted = true;
       report("StartedQuiz");
       is_new_session = document.englishonBackend.is_new_session();
       if (is_new_session) {
@@ -3462,6 +3522,8 @@ updateProgressBars = function () {
   // from the previous state and not from 0, the easiest way is to update all of them always.
   var all = $('.eo-question').length;
   var answered = $('.eo-question.eo-answered').length;
+  //when update $('.eo-progress').text the inner element became hidden. don't know why
+  //$('.eo-progress').text(Math.ceil(100 * answered / all).toString() + '%');
   $('.eo-progress-inner').css('width', (100 * answered / all).toString() + '%');
 };
 
@@ -3605,7 +3667,6 @@ AbstractQuestion.prototype.touch = function (event) {
 };
 
 AbstractQuestion.prototype.guess = function (answer, target) {
-  //console.log("EVENT guess ");
   var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
   if (isAnswerInTargetLanguage) {
     Speaker.speak(document.englishonConfig.targetLanguage, answer.replace('_', ' '));
@@ -3627,17 +3688,27 @@ AbstractQuestion.prototype.guess = function (answer, target) {
   // don't count the same answer multiple times.
   if (this.tried.indexOf(answer) !== -1) return;
   this.tried.push(answer);
-
-  this.report('TriedAnswer', {
-    question: this.data.id,
-    answer: answer
-  });
+  if (!this.element.hasClass('lost_focus')) {
+    this.report('TriedAnswer', {
+      question: this.data.id,
+      answer: answer
+    });
+  }
 
   if (isCorrect) {
-    this.report('CompletedQuestion', {
-      question: this.data.id,
-      reason: 'correct'
-    });
+    if (!this.element.hasClass('lost_focus')) {
+      this.report('CompletedQuestion', {
+        question: this.data.id,
+        reason: 'correct'
+      });
+    } else {
+      this.report('CompletedQuestion', {
+        question: this.data.id,
+        reason: 'lost focus'
+      });
+    }
+
+    document.eo_user.scoreCorrect();
   }
 };
 
@@ -3775,11 +3846,18 @@ var MultipleChoice = function (question, toggleSound) {
 
 MultipleChoice.prototype = Object.create(AbstractQuestion.prototype);
 MultipleChoice.prototype.constructor = MultipleChoice;
-
+MultipleChoice.prototype.replacement = function () {
+  //jquery replaceWith() removes all data associated with the removed nodes. 
+  //so we need to call createElement again
+  //if (!this.element) {
+  this.element = this.createElement();
+  //}
+  this.bindInput();
+  return this.element;
+};
 MultipleChoice.prototype.createElement = function () {
-  // var answers = this.data.wrong_answers.map(function(x) {
-  //   return x.trim(); }).concat(this.correct);
-  // shuffle(answers);
+  var element = AbstractQuestion.prototype.createElement.call(this);
+  element.addClass('eo-multiple_choice');
   var answers = this.data.wrong_answers;
   shuffle(answers);
   option_elements = answers.map(function (answer) {
@@ -3790,8 +3868,7 @@ MultipleChoice.prototype.createElement = function () {
   }.bind(this));
   option_elements.push($('<li>').addClass('eo-option eo-correct_option').append($('<span>').html(this.correct[0].replace('_', '&#160;')).data('word', this.correct[0])));
   shuffle(option_elements);
-  var element = AbstractQuestion.prototype.createElement.call(this);
-  element.addClass('eo-multiple_choice');
+
   this.options = $('<ul>').addClass('eo-options').append(option_elements);
   element.find('.eo-hint').after(this.options);
   return element;
@@ -3832,6 +3909,7 @@ MultipleChoice.prototype.closeUnanswered = function () {
   AbstractQuestion.prototype.closeUnanswered.call(this);
   if (!this.element.hasClass('eo-answered')) {
     if (this.element.hasClass('eo-show_solution')) {
+      this.element.addClass('lost_focus');
       this.guess(this.correct[0]);
     }
   }
@@ -4023,60 +4101,61 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
 };
 //
 ScraperFactory = function (location) {
-    if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
-        if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
-        if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
-    }
-    if (location.host === 'www.englishon.org') {
-        if (location.pathname === '/hidden/shturem.html') return new EnglishonArticleScraper();
-    }
+  if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
+    if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
+    if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
+  }
+  if (location.host === 'www.englishon.org') {
+    if (location.pathname === '/hidden/shturem.html') return new EnglishonArticleScraper();
+  }
 };
 
 var ShturemArticleScraper = function () {
-    this.getHost = function () {
-        return 'www.shturem.net';
-    };
+  this.getHost = function () {
+    return 'www.shturem.net';
+  };
 
-    this.scrape = function () {
-        url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
-        var subtitle = $('span.artSubtitle')[0];
-        var bodytext = $('div.artText')[0];
-        // Shturem article bodies are not divided internally to <p>s.
-        // they're just blobs of text with the occasional double <br>.
-        return new ShturemArticleOverlay(url, subtitle, bodytext);
-    };
+  this.scrape = function () {
+    url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
+    var subtitle = $('span.artSubtitle')[0];
+    var bodytext = $('div.artText')[0];
+    // Shturem article bodies are not divided internally to <p>s.
+    // they're just blobs of text with the occasional double <br>.
+    return new ShturemArticleOverlay(url, subtitle, bodytext);
+  };
 };
 
 var ShturemFrontPageScraper = function () {
-    this.getHost = function () {
-        return 'www.shturem.net';
-    };
+  this.getHost = function () {
+    return 'www.shturem.net';
+  };
 
-    this.scrape = function () {
-        var parts = {};
-        $('td.mainpn_text').each(function (i, para) {
-            var url = $(para).closest('table').find('td.mainpn_bottom a')[0].href;
-            parts[url] = para;
-            // hack to make answers visible
-            $(para).attr('style', 'overflow: visible;');
-        });
-        return new ShturemFrontpageOverlay(parts);
-    };
+  this.scrape = function () {
+    var parts = {};
+    $('td.mainpn_text').each(function (i, para) {
+      var url = $(para).closest('table').find('td.mainpn_bottom a')[0].href;
+      var fixed_url = 'http://www.shturem.net' + url.substr(url.indexOf('/index.php'));
+      parts[fixed_url] = para;
+      // hack to make answers visible
+      $(para).attr('style', 'overflow: visible;');
+    });
+    return new ShturemFrontpageOverlay(parts);
+  };
 };
 
 var EnglishonArticleScraper = function () {
-    this.getHost = function () {
-        return 'www.englishon.org';
-    };
+  this.getHost = function () {
+    return 'www.englishon.org';
+  };
 
-    this.scrape = function () {
-        url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
-        var subtitle = $('span.artSubtitle')[0];
-        var bodytext = $('div.artText')[0];
-        // Shturem article bodies are not divided internally to <p>s.
-        // they're just blobs of text with the occasional double <br>.
-        return new ShturemArticleOverlay(url, subtitle, bodytext);
-    };
+  this.scrape = function () {
+    url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
+    var subtitle = $('span.artSubtitle')[0];
+    var bodytext = $('div.artText')[0];
+    // Shturem article bodies are not divided internally to <p>s.
+    // they're just blobs of text with the occasional double <br>.
+    return new ShturemArticleOverlay(url, subtitle, bodytext);
+  };
 };
 //
 /* Speaks target-language phrases aloud.
@@ -4162,99 +4241,99 @@ var Speaker = new function () {
 // source.playbackRate.value = 1.5;
 //
 document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
-<div id='eo-menu' class='hidden eo-area'>\
-    <div class='header'>\
-        <div id='eo-account-area'>\
+    <div id='eo-menu' class='hidden eo-area'>\
+        <div class='header'>\
+            <div id='eo-account-area'>\
+                <div class='Grid u-textCenter eo-row eo-menu-inner'>\
+                    <div class='Grid-cell u-2of10'>\
+                        <div id='eo-account-img'></div>\
+                    </div>\
+                    <div class='Grid-cell u-7of10  v-align h-align'>\
+                        <div id='eo-account-name'></div>\
+                    </div>\
+                    <div class='Grid-cell v-align u-1of10 right-align'>\
+                        <div id='account-dropdown'>&#9662;</div>\
+                    </div>\
+                </div>\
+            </div>\
             <div class='Grid u-textCenter eo-row eo-menu-inner'>\
-                <div class='Grid-cell u-2of10'>\
-                    <div id='eo-account-img'></div>\
+                <div class='Grid-cell u-1of3 v-align'>\
+                    <div id='eo-power-switch'>\
+                        <span id='eo-power-switch-text'></span>\
+                        <div id='eo-power-switch-circle'></div>\
+                    </div>\
                 </div>\
-                <div class='Grid-cell u-7of10  v-align h-align'>\
-                    <div id='eo-account-name'></div>\
+                <div class='Grid-cell delimiter'>\
+                    <div class='eo-line'></div>\
                 </div>\
-                <div class='Grid-cell v-align u-1of10 right-align'>\
-                    <div id='account-dropdown'>&#9662;</div>\
+                <div class='Grid-cell'>\
+                    <div class='Grid'>\
+                        <div class='Grid-cell u-1of3 v-align h-align'>\
+                            <div id='eo-speaker-res'></div>\
+                        </div>\
+                        <div class='Grid-cell v-align right-align'>\
+                            <div id='eo-slider'></div>\
+                        </div>\
+                    </div>\
                 </div>\
             </div>\
         </div>\
-        <div class='Grid u-textCenter eo-row eo-menu-inner'>\
-            <div class='Grid-cell u-1of3 v-align'>\
-                <div id='eo-power-switch'>\
-                    <span id='eo-power-switch-text'></span>\
-                    <div id='eo-power-switch-circle'></div>\
+        <div class='languages_picker'>\
+            <div class='Grid Grid--full'>\
+                <div class='Grid-cell v-align eo-menu-inner' id='eo-picker-tittle'>\
+                    <div id='eo-language_header'>Pick a language</div>\
+                </div>\
+                <div class='Grid-cell eo-menu-inner available'>\
+                    <div class='Grid eo-row'>\
+                        <div class='Grid-cell u-1of6'>\
+                            <div class='flag us-flag'></div>\
+                        </div>\
+                        <div class='Grid-cell v-align '>\
+                            <div class='eo-language-option-res'>English (US)</div>\
+                        </div>\
+                    </div>\
                 </div>\
             </div>\
-            <div class='Grid-cell delimiter'>\
-                <div class='eo-line'></div>\
+            <div id='coming_soon'>\
+                <div class='Grid-cell eo-row eo-menu-inner'>\
+                    <div class='Grid'>\
+                        <span class='tooltip'>Coming soon</span>\
+                        <div class='Grid-cell u-1of6 eo-low-layer'>\
+                            <div class='flag sp-flag'></div>\
+                        </div>\
+                        <div class='Grid-cell v-align eo-low-layer'>\
+                            <div class='eo-language-option-res'>Spanish</div>\
+                        </div>\
+                    </div>\
+                </div>\
+                <div class='Grid-cell eo-row eo-menu-inner' id='eo-last-option'>\
+                    <div class='Grid'>\
+                        <span class='tooltip'>Coming soon</span>\
+                        <div class='Grid-cell u-1of6 eo-low-layer'>\
+                            <div class='flag fr-flag'></div>\
+                        </div>\
+                        <div class='Grid-cell v-align eo-low-layer'>\
+                            <div class='eo-language-option-res'>French</div>\
+                        </div>\
+                    </div>\
+                </div>\
             </div>\
-            <div class='Grid-cell'>\
+            <div class='Grid-cell eo-row11 h-align'>\
+                <div id='englishon-bottom'></div>\
+            </div>\
+            <div class='Grid-cell eo-row10 eo-menu-inner'>\
                 <div class='Grid'>\
-                    <div class='Grid-cell u-1of3 v-align h-align'>\
-                        <div id='eo-speaker-res'></div>\
-                    </div>\
-                    <div class='Grid-cell v-align right-align'>\
-                        <div id='eo-slider'></div>\
-                    </div>\
+                    <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='http://englishon.desk.com/'>Need Help?</a></div>\
+                    <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='http://englishon.desk.com/'>Contact Us</a></div>\
+                </div>\
+            </div>\
+            <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
+                <div class='Grid-cell v-align h-align'>\
+                    <div id='eo-editor-btn' class='v-align h-align'>edit questions</div>\
                 </div>\
             </div>\
         </div>\
     </div>\
-    <div class='languages_picker'>\
-        <div class='Grid Grid--full'>\
-            <div class='Grid-cell v-align eo-menu-inner' id='eo-picker-tittle'>\
-                <div id='eo-language_header'>Pick a language</div>\
-            </div>\
-            <div class='Grid-cell eo-menu-inner available'>\
-                <div class='Grid eo-row'>\
-                    <div class='Grid-cell u-1of6'>\
-                        <div class='flag us-flag'></div>\
-                    </div>\
-                    <div class='Grid-cell v-align '>\
-                        <div class='eo-language-option-res'>English (US)</div>\
-                    </div>\
-                </div>\
-            </div>\
-        </div>\
-        <div id='coming_soon'>\
-            <div class='Grid-cell eo-row eo-menu-inner'>\
-                <div class='Grid'>\
-                    <span class='tooltip'>Coming soon</span>\
-                    <div class='Grid-cell u-1of6 eo-low-layer'>\
-                        <div class='flag sp-flag'></div>\
-                    </div>\
-                    <div class='Grid-cell v-align eo-low-layer'>\
-                        <div class='eo-language-option-res'>Spanish</div>\
-                    </div>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row eo-menu-inner' id='eo-last-option'>\
-                <div class='Grid'>\
-                    <span class='tooltip'>Coming soon</span>\
-                    <div class='Grid-cell u-1of6 eo-low-layer'>\
-                        <div class='flag fr-flag'></div>\
-                    </div>\
-                    <div class='Grid-cell v-align eo-low-layer'>\
-                        <div class='eo-language-option-res'>French</div>\
-                    </div>\
-                </div>\
-            </div>\
-        </div>\
-        <div class='Grid-cell eo-row11 h-align'>\
-            <div id='englishon-bottom'></div>\
-        </div>\
-        <div class='Grid-cell eo-row10 eo-menu-inner'>\
-            <div class='Grid'>\
-                <div class='Grid-cell v-align right-align eo-menu-footer' id='help'>Need Help?</div>\
-                <div class='Grid-cell v-align eo-menu-footer' id='contact'>Contact Us</div>\
-            </div>\
-        </div>\
-        <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
-            <div class='Grid-cell v-align h-align'>\
-                <div id='eo-editor-btn' class='v-align h-align'>edit questions</div>\
-            </div>\
-        </div>\
-    </div>\
-</div>\
 </div>\
 ";
 //
@@ -4344,7 +4423,7 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
             <div class='eo-site-option'>English</div>\
         </div>\
         <div class='Grid-cell option'>\
-            <div class='eo-site-option'>Hebrew</div>\
+            <div class='eo-site-option'>עברית</div>\
         </div>\
     </div>    \
 </div>\
@@ -4599,11 +4678,8 @@ var EnglishOnMenu = function () {
       var elementParent = elementObj.parent()[0];
       elementsArray = [elementObj[0], elementParent]; //looking after a normal syntax... $([]).add doesn't work
     };
-    if (action == 'show') {
-      $(elementsArray).removeClass('hidden');
-    } else {
-      $(elementsArray).addClass('hidden');
-    }
+
+    $(elementsArray).toggleClass('hidden', action == 'hide');
   };
   this.toggleDialogTrigger = function (e) {
     e.preventDefault();
@@ -4624,8 +4700,8 @@ var EnglishOnMenu = function () {
     $('#eo-picker-tittle').css({ direction: messages.DIRECTION });
     if (!localStorage.getItem('email')) $('#eo-account-name').text(messages.MENU_TITLE);
     $('#eo-language_header').text(messages.LANGUAGES_PICKER_TITLE);
-    $('#help').text(messages.HELP);
-    $('#contact').text(messages.CONTACT);
+    $('#eo-help').find('a').text(messages.HELP);
+    $('#eo-contact').find('a').text(messages.CONTACT);
     $('#dlg-sign-in-header').text(messages.LOGIN_SIGN_IN_TITLE);
     $('#dlg-sign-up-header').text(messages.LOGIN_SIGN_UP_TITLE);
     $('#subtitle').html(messages.LOGIN_SUBTITLE);
@@ -4771,12 +4847,15 @@ var EnglishOnMenu = function () {
   if (document.englishonConfig.media == 'desktop') {
 
     //top left values to display centered dialogs 
-    $('#eo-menu').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
-    $('#eo-dlg-login').css({ top: (screen.height - 540) / 2 + 'px', left: (screen.width - 360) / 2 + 'px' });
-    $('#eo-dlg-options').css({ top: (screen.height - 540) / 2 + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' });
-    // $('#eo-menu').css({ top: '0px', left: (screen.width - 360) / 2 + 'px' })
-    // $('#eo-dlg-login').css({ top: '0px', left: (screen.width - 360) / 2 + 'px' })
-    // $('#eo-dlg-options').css({ top: '55px', left: (screen.width - 360) / 2 + 1 + 'px' })
+    if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
+      var menuTop = -0;
+      //$('#eo-menu').css({ height: 650 });
+    } else {
+      var menuTop = (screen.height - 540) / 2 + 'px';
+    }
+    $('#eo-menu').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
+    $('#eo-dlg-login').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
+    $('#eo-dlg-options').css({ top: menuTop + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' });
   }
   // ***********************
   // Register Event Handlers
@@ -4832,7 +4911,6 @@ var EnglishOnMenu = function () {
   } else {
     $('#eo-menu').removeClass('menu-editor');
   }
-
   //OPTIONS MENU HANDLERS
   $('#account-dropdown').data('elementToShowOnClick', 'eo-dlg-options-main');
   $('#account-dropdown').on('click', this.toggleDialogTrigger.bind(this));
@@ -4880,8 +4958,6 @@ var EnglishOnMenu = function () {
 };
 
 $(function () {
-
-  //if (!document.englishonBackend) alert('document.englishonBackend is not defined yet!');
   document.loaded_promise.resolve();
 });
 
@@ -4931,6 +5007,9 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
     document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
       document.menu = new EnglishOnMenu();
+      document.eo_user = new UserInfo(document.englishonConfig.token);
+      var res = document.eo_user.getUnAnsweredSR();
+      var res2 = document.eo_user.getAnsweredSR();
     });
   } else document.menu = new EnglishOnMenu();
 });

@@ -173,7 +173,7 @@ div.eo-question .eo-options > .eo-option.eo-correct_option::after {
   background-repeat: no-repeat;
   background-position: center;
   visibility: hidden;
-  transition: opacity 0.5s;
+  transition: opacity 5s;
   opacity: 0;
 }
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option::after {
@@ -395,6 +395,7 @@ div.eo-question:not(.eo-expired) > .eo-correct {
 div.eo-question.eo-answered:not(.eo-expired) {
   perspective: 300px;
   transform-style: preserve-3d;
+  /*animation: tilt-to-show-progress (2 * $animation-beat) $animation-beat ease-out;*/
   animation: tilt-to-show-progress 1s 0.5s ease-out;
 }
 @keyframes tilt-to-show-progress {
@@ -420,15 +421,24 @@ div.eo-question > .eo-progress {
   overflow: hidden;
   transform: rotateX(-90deg);
   transform-origin: 50% 0%;
-  background: #aee5e1;
+  background: #fff;
   border-radius: 3px;
+  border: 1px solid #2cc6a8;
+  text-align: center;
+  line-height: 0.9;
+  direction: rtl;
+  z-index: 1000;
+  color: #78909c;
 }
 div.eo-question > .eo-progress > .eo-progress-inner {
-  display: inline-block;
   height: 100%;
   width: 0;
-  transition: width 1s 1s;
-  background: #37d38d;
+  transition: width 0.5s 0.5s;
+  background: #2cc6a8;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
 }
 
 /* in open questions, when you have the wrong keyboard language */
@@ -1492,22 +1502,30 @@ eo-signout-layout .signout {
 }
 
 #account-dropdown {
-  font-size: 104px;
+  font-size: 144px;
 }
 
-#eo-dlg-login #djDebug {
-  display: hidden;
-}
-
-#help {
+#eo-help {
   flex: 0 1 47%;
   padding-right: 3%;
   border-right: 1px solid #d7dee3;
 }
+#eo-help a {
+  color: #c7d1d5;
+}
+#eo-help a:hover {
+  color: #2cc6a8;
+}
 
-#contact {
+#eo-contact {
   flex: 0 1 47%;
   padding-left: 2%;
+}
+#eo-contact a {
+  color: #c7d1d5;
+}
+#eo-contact a:hover {
+  color: #2cc6a8;
 }
 
 .flag,
@@ -2011,7 +2029,7 @@ eo-signout-layout .signout {
   }
 
   #account-dropdown {
-    font-size: 26px;
+    font-size: 36px;
   }
 
   #eo-area-container {
