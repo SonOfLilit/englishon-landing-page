@@ -423,14 +423,21 @@ div.eo-question > .eo-progress {
   transform-origin: 50% 0%;
   background: #fff;
   border-radius: 3px;
-  border: 1px solid #78909c;
+  border: 1px solid #2cc6a8;
+  text-align: center;
+  direction: rtl;
+  z-index: 1000;
+  color: #78909c;
 }
 div.eo-question > .eo-progress > .eo-progress-inner {
-  display: inline-block;
   height: 100%;
   width: 0;
   transition: width 0.5s 0.5s;
   background: #2cc6a8;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: -1;
 }
 
 /* in open questions, when you have the wrong keyboard language */

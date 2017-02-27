@@ -3556,7 +3556,7 @@ AbstractQuestion.prototype.createElement = function () {
   // .append($('<span>')
   //   .addClass('eo-mute_button')
   //   .click(function () { this.toggleSound(); }.bind(this)))
-  .append($('<span>').addClass('eo-progress').append($('<span>').addClass('eo-progress-inner')));
+  .append($('<span>').addClass('eo-progress').text('perce.').append($('<span>').addClass('eo-progress-inner')));
 };
 
 AbstractQuestion.prototype.bindInput = function () {
