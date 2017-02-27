@@ -4845,13 +4845,11 @@ var EnglishOnMenu = function () {
   }();
   this.displayMenuMessages();
   if (document.englishonConfig.media == 'desktop') {
-
     //top left values to display centered dialogs 
     if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
       var menuTop = -0;
-      //$('#eo-menu').css({ height: 650 });
     } else {
-      var menuTop = (screen.height - 540) / 2 + 'px';
+      var menuTop = (screen.height - 540) / 2;
     }
     $('#eo-menu').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
     $('#eo-dlg-login').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });

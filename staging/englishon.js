@@ -4420,10 +4420,10 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
     </div>\
     <div id='eo-site-languages' class='hidden Grid Grid--full eo-inner-area'>\
         <div class='Grid-cell option'>\
-            <div class='eo-site-option'>English</div>\
+            <div class='eo-site-option' id='english'>English</div>\
         </div>\
         <div class='Grid-cell option'>\
-            <div class='eo-site-option'>עברית</div>\
+            <div class='eo-site-option' id='hebrew'>עברית</div>\
         </div>\
     </div>    \
 </div>\
@@ -4476,7 +4476,7 @@ function englishon() {
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN THIS SPECIFIC ARTICLE
   if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.englishon.org/hidden/shturem.html') {
-    //return;
+    return;
   }
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   //var DEFAULT_BACKEND_URL = 'http://127.0.42.1:8080';
@@ -4845,13 +4845,11 @@ var EnglishOnMenu = function () {
   }();
   this.displayMenuMessages();
   if (document.englishonConfig.media == 'desktop') {
-
     //top left values to display centered dialogs 
     if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
       var menuTop = -0;
-      //$('#eo-menu').css({ height: 650 });
     } else {
-      var menuTop = (screen.height - 540) / 2 + 'px';
+      var menuTop = (screen.height - 540) / 2;
     }
     $('#eo-menu').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
     $('#eo-dlg-login').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
@@ -4920,7 +4918,7 @@ var EnglishOnMenu = function () {
   $('#option-dlg-signin').on('click', this.toggleDialogTrigger.bind(this));
   $('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
   $('.eo-site-option').on('click', function (e) {
-    configStorage.set({ siteLanguage: e.target.textContent.toLowerCase() });
+    configStorage.set({ siteLanguage: $(e.target).attr('id') });
     document.menu.displayMenuMessages();
     document.menu.toggleDialogTrigger(e);
   });
