@@ -4420,10 +4420,10 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
     </div>\
     <div id='eo-site-languages' class='hidden Grid Grid--full eo-inner-area'>\
         <div class='Grid-cell option'>\
-            <div class='eo-site-option'>English</div>\
+            <div class='eo-site-option' id='english'>English</div>\
         </div>\
         <div class='Grid-cell option'>\
-            <div class='eo-site-option'>עברית</div>\
+            <div class='eo-site-option' id='hebrew'>עברית</div>\
         </div>\
     </div>    \
 </div>\
@@ -4920,7 +4920,7 @@ var EnglishOnMenu = function () {
   $('#option-dlg-signin').on('click', this.toggleDialogTrigger.bind(this));
   $('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
   $('.eo-site-option').on('click', function (e) {
-    configStorage.set({ siteLanguage: e.target.textContent.toLowerCase() });
+    configStorage.set({ siteLanguage: $(e.target).attr('id') });
     document.menu.displayMenuMessages();
     document.menu.toggleDialogTrigger(e);
   });
