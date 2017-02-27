@@ -3522,7 +3522,7 @@ updateProgressBars = function () {
   // from the previous state and not from 0, the easiest way is to update all of them always.
   var all = $('.eo-question').length;
   var answered = $('.eo-question.eo-answered').length;
-  //the questions are cloesed unanswered are computed as 'answered'
+  //when update $('.eo-progress').text the inner element became hidden. don't know why
   //$('.eo-progress').text(Math.ceil(100 * answered / all).toString() + '%');
   $('.eo-progress-inner').css('width', (100 * answered / all).toString() + '%');
 };
@@ -3556,7 +3556,7 @@ AbstractQuestion.prototype.createElement = function () {
   // .append($('<span>')
   //   .addClass('eo-mute_button')
   //   .click(function () { this.toggleSound(); }.bind(this)))
-  .append($('<span>').addClass('eo-progress').text('perce.').append($('<span>').addClass('eo-progress-inner')));
+  .append($('<span>').addClass('eo-progress').append($('<span>').addClass('eo-progress-inner')));
 };
 
 AbstractQuestion.prototype.bindInput = function () {

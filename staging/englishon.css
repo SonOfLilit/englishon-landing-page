@@ -425,6 +425,7 @@ div.eo-question > .eo-progress {
   border-radius: 3px;
   border: 1px solid #2cc6a8;
   text-align: center;
+  line-height: 0.9;
   direction: rtl;
   z-index: 1000;
   color: #78909c;
@@ -436,7 +437,7 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   background: #2cc6a8;
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   z-index: -1;
 }
 
