@@ -3976,6 +3976,7 @@ Editor.prototype.highlight = function () {
 //
 UserInfo = function () {
   this.scoreValue = { 'correct': 200, 'persistence': 300 };
+
   this.getUnAnsweredSR = function () {
     document.englishonBackend.getUnAnsweredSR().then(function (data) {
       console.log('getUnAnsweredSR*******data from server: ' + data);
@@ -4015,14 +4016,16 @@ UserInfo = function () {
       document.eo_user.sr_progress.animate(val);
     });
   };
-  this.showAliveActions = function () {
+  this.showLiveActions = function () {
 
     this.checkWeeklyPresence();
     this.checkSRProgress();
-    $('#eo-alive').removeClass('hidden');
+    $('#eo-live').removeClass('hidden');
     this.milotrage();
   };
   this.initial = function () {
+    document.eo_user.unAnswered = { 'sr_questions': [] };
+    document.eo_user.answered = { 'sr_questions': [] };
     this.sr_progress = new ProgressBar.Circle(srProgress, {
       color: '#aaa',
       // This has to be the same size as the maximum width to
@@ -4040,13 +4043,13 @@ UserInfo = function () {
       step: function (state, circle) {
         circle.path.setAttribute('stroke', state.color);
         circle.path.setAttribute('stroke-width', state.width);
+        text = document.eo_user.unAnswered.sr_questions.length + document.eo_user.answered.sr_questions.length;
 
         var value = Math.round(circle.value() * 100);
-        if (value === 0) {
-          circle.setText('');
-        } else {
-          circle.setText('10');
-        }
+
+        circle.setText('0');
+
+        circle.setText(text);
       }
     });
     this.bar2 = new ProgressBar.Circle(progress2, {
@@ -4085,9 +4088,11 @@ UserInfo = function () {
       value: 0,
       format: 'd'
     });
+    //this.showLiveActions();
+
   };
-  this.hideAliveActions = function () {
-    $('#eo-alive').addClass('hidden');
+  this.hideLiveActions = function () {
+    $('#eo-live').addClass('hidden');
   };
 
   this.checkWeeklyPresence = function () {
@@ -4097,7 +4102,7 @@ UserInfo = function () {
       console.log('checkWeeklyPresence. got from server: ' + data);
       for (var day in data) {
         if (data.hasOwnProperty(day)) {
-          console.log(day + ': ' + data[day].len + ' weekday: ' + data[day].weekday);
+          console.log(day + ': weekday: ' + data[day].weekday + data[day].len);
           if (data[day].len) {
             $($(".day-bar").get(day - 1)).addClass('eo-persistence');
           }
@@ -4154,9 +4159,12 @@ Injector = function (paragraphs) {
     post.done(function () {
       if (msg === 'TriedAnswer') {
         document.eo_user.milotrage();
+        //document.eo_user.scoreCorrect();
+        document.eo_user.checkSRProgress();
         if (!document.overlay.injector.userAnswered) {
           document.overlay.injector.userAnswered = true;
           console.log('msg === TriedAnswer && !userAnswered. checkWeeklyPresence fired!');
+          //score user if coming day after day
           document.eo_user.checkpersistence();
           document.eo_user.checkWeeklyPresence();
         }
@@ -4166,8 +4174,7 @@ Injector = function (paragraphs) {
         document.overlay.injector.interacted = true;
         report("StartedQuiz");
         console.log('msg === TriedAnswer && !userAnswered. checkWeeklyPresence fired!');
-        document.eo_user.showAliveActions();
-        document.eo_user.checkWeeklyPresence();
+        document.eo_user.showLiveActions();
         is_new_session = document.englishonBackend.is_new_session();
         if (is_new_session) {
           console.log('reporting StartedSession.... ..... ...... ');
@@ -4484,9 +4491,6 @@ AbstractQuestion.prototype.guess = function (answer, target) {
         reason: 'lost focus'
       });
     }
-
-    document.eo_user.scoreCorrect();
-    document.eo_user.checkSRProgress();
   }
 };
 
@@ -5208,21 +5212,21 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 \
 ";
 //
-document.alive_actions = "<div class='hidden' id='eo-alive'>\
+document.live_actions = "<div class='hidden' id='eo-live'>\
     <div class='Grid Grid--full'>\
         <div class='Grid-cell'>\
-            <div id='milotrage' class='alive-part v-align h-align'>\
+            <div id='milotrage' class='live-part v-align h-align'>\
                 <div id='eo-odometer' class='odometer'>1234567</div>\
             </div>\
         </div>\
         <div class='Grid-cell'>\
-            <div id='sr' class='alive-part v-align h-align'>\
+            <div id='sr' class='live-part v-align h-align'>\
                 <div id='srProgress'></div>\
                 <div id='progress2'></div>\
             </div>\
         </div>\
         <div class='Grid-cell'>\
-            <div id='persistence' class='alive-part'>\
+            <div id='persistence' class='live-part'>\
                 <div class='Grid' id='days-pannel'>\
                     <div class='Grid-cell'>\
                         <div class='day-bar v-align h-align' id='eo-day1'>1</div>\
@@ -5566,8 +5570,6 @@ var EnglishOnMenu = function () {
     if (auth.validate({ email: email, password: password, email_msg: email_msg, password_msg: password_msg })) {
       auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
         if (res.status == 'error') {
-          //$('#eo-dlg-login').css({ 'height': '100%' })
-          //$('#eo-menu').css({ 'height': '100%' })
           document.menu.displayMessage(res.message, $('#login-password-msg'));
           return;
         }
@@ -5575,18 +5577,12 @@ var EnglishOnMenu = function () {
         $('#eo-account-area').removeClass('guest');
         $('#eo-dlg-login').addClass('valid');
         configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
-        //refracting: replace it with togglepower
-        // $('#eo-power-switch-text').text('On');
-        // $('body').toggleClass('eo-active', true);
-        document.menu.togglePower();
+        document.menu.powerOn();
         $('#eo-account-name').text(email.val());
         $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
-        document.overlay.showQuestions();
         $('body').addClass('logged').removeClass('guest');
         if (res.status == 'logged_in') {
-          //displayMessage(res.message, $('#login-email-msg'));
           document.menu.hideDialogs(1000);
-          document.eo_user.showAliveActions();
         } else if (res.status == 'registered') {
           message = 'Thank you for registering! A confirmation message sent to the given email.';
           document.menu.displayMessage(message, $('#subtitle'));
@@ -5608,24 +5604,41 @@ var EnglishOnMenu = function () {
       }
     } else {
       document.overlay.hideQuestions();
+      if (document.eo_user) document.eo_user.hideLiveActions();
     }
   });
+
+  this.powerOn = function () {
+    console.log('POWER ON#########');
+    configStorage.set({ 'isActive': true });
+    $('#eo-power-switch-text').text('On');
+    $('body').addClass('eo-active', true);
+    document.overlay.showQuestions();
+    document.eo_user.showLiveActions();
+    if (!document.englishonConfig.isUser) {
+      configStorage.set({ 'isUser': true });
+      window.location.reload();
+    }
+  };
+  this.powerOff = function () {
+    configStorage.set({ 'isActive': false });
+    $('#eo-power-switch-text').text('OFF');
+    $('body').removeClass('eo-active');
+    document.overlay.hideQuestions();
+    document.eo_user.hideLiveActions();
+  };
 
   this.signout = function () {
     var popup = $('#eo-iframe')[0].contentWindow;
     popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
-    configStorage.set({ 'isActive': false });
-    $('#eo-power-switch-text').text('OFF');
-    $('body').removeClass('eo-active');
-    //togglePower didn't work.check why
-    //document.menu.togglePower();
+    document.menu.powerOff();
     localStorage.removeItem('email');
     localStorage.removeItem('eo-user-name');
     var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
     document.englishonConfig.token = null;
     auth.login(document.englishonConfig.token).then(function (token) {
       configStorage.set({ token: token });
-      document.overlay.hideQuestions();
+
       document.englishonBackend.token = token;
       //Give englishon the new guest token
       popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
@@ -5636,7 +5649,6 @@ var EnglishOnMenu = function () {
       message = document.MESSAGES[document.englishonConfig.siteLanguage].SIGN_OUT_FEEDBACK;
       document.menu.hideDialogs();
       $('body').addClass('guest').removeClass('logged');
-      document.eo_user.hideAliveActions();
     });
   };
 
@@ -5646,7 +5658,7 @@ var EnglishOnMenu = function () {
   document.overlay.insertContent($(document.MENU_HTML));
   document.overlay.insertContent($(document.LOGIN_DLG));
   document.overlay.insertContent($(document.OPTIONS_DLG));
-  document.overlay.insertContent($(document.alive_actions));
+  document.overlay.insertContent($(document.live_actions));
   EnglishOnButton.on();
   this.volume = new function () {
     this.changeVolume = function () {
@@ -5740,6 +5752,7 @@ var EnglishOnMenu = function () {
   } else {
     $('#eo-menu').removeClass('menu-editor');
   }
+
   //OPTIONS MENU HANDLERS
   $('#account-dropdown').data('elementToShowOnClick', 'eo-dlg-options-main');
   $('#account-dropdown').on('click', this.toggleDialogTrigger.bind(this));
@@ -5857,19 +5870,15 @@ function receiveMessage(event) {
   $('#eo-account-name').text(user_name);
   $('#eo-account-area').removeClass('guest');
   if (!localStorage.getItem('email')) {
-    configStorage.set({ token: django_token, 'isActive': true, 'eo-user-name': user_name });
+    //this is a real login, as google made many fictive logins
+    configStorage.set({ token: django_token, 'eo-user-name': user_name });
     document.englishonBackend.token = django_token;
 
     $('body').addClass('logged').removeClass('guest');
-    $('#eo-power-switch-text').text('On');
-    $('body').toggleClass('eo-active', true);
-    //can't use togglePower(). i think the reason it receive message fired many times, making 'fictive logins'
-    //document.menu.togglePower();
-    document.overlay.showQuestions();
+    document.menu.powerOn();
     localStorage.setItem('email', email);
     $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
     document.menu.hideDialogs(0);
-    document.eo_user.showAliveActions();
   }
 }
 //

@@ -567,7 +567,6 @@ div.eo-question:not(.eo-expired) > .eo-correct {
 div.eo-question.eo-answered:not(.eo-expired) {
   perspective: 300px;
   transform-style: preserve-3d;
-  /*animation: tilt-to-show-progress (2 * $animation-beat) $animation-beat ease-out;*/
   animation: tilt-to-show-progress 1s 0.5s ease-out;
 }
 @keyframes tilt-to-show-progress {
@@ -2240,7 +2239,7 @@ eo-signout-layout .signout {
   padding: 5px;
 }
 
-#eo-alive {
+#eo-live {
   background-color: rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
   border: solid transparent;
@@ -2254,21 +2253,21 @@ eo-signout-layout .signout {
   width: 300px;
   overflow: auto;
 }
-#eo-alive #srProgress,
-#eo-alive #progress2 {
+#eo-live #srProgress,
+#eo-live #progress2 {
   margin: 3px 30px 3px 30px;
   width: 50px;
   height: 50px;
   position: relative;
 }
-#eo-alive #sr {
+#eo-live #sr {
   height: 65px;
 }
-#eo-alive #sr #eo-progress {
+#eo-live #sr #eo-progress {
   height: 90%;
   width: 90%;
 }
-#eo-alive .day-bar {
+#eo-live .day-bar {
   border-radius: 25px;
   background-color: gray;
   margin: 5px;
@@ -2277,19 +2276,19 @@ eo-signout-layout .signout {
   font-size: 12px;
   color: white;
 }
-#eo-alive .day-bar.eo-persistence {
+#eo-live .day-bar.eo-persistence {
   background-color: #2cc6a8;
 }
-#eo-alive > .Grid > .Grid-cell {
+#eo-live > .Grid > .Grid-cell {
   height: 100%;
 }
-#eo-alive > .Grid > .Grid-cell > .alive-part {
+#eo-live > .Grid > .Grid-cell > .live-part {
   border-radius: 12px;
   background-color: white;
   margin: 4px 20px 4px 20px;
   font-size: 30px;
 }
-#eo-alive > .Grid > .Grid-cell > .alive-part .Grid .Grid-cell {
+#eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
   font-size: 16px;
 }
 
