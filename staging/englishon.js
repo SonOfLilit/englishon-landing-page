@@ -3656,6 +3656,8 @@ Editor.prototype.createAutoQuestion = function (event) {
     candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
     if (wrong.indexOf(candidate) == -1 && candidate != correct) wrong.push({ word: candidate, translation: translation });
   }
+  wrong.push({ word: 'buttle', translation: 'איזה_יום_יפה_ונהדר' });
+  wrong.push({ word: 'niceday', translation: 'איזהיוםיפהונהדרטובלצחוק' });
   var question = {
     'context': ctx,
     'replaced': replaced,
@@ -4046,40 +4048,12 @@ UserInfo = function () {
         text = document.eo_user.unAnswered.sr_questions.length + document.eo_user.answered.sr_questions.length;
 
         var value = Math.round(circle.value() * 100);
-
-        circle.setText('0');
-
         circle.setText(text);
       }
     });
-    this.bar2 = new ProgressBar.Circle(progress2, {
-      color: '#aaa',
-      // This has to be the same size as the maximum width to
-      // prevent clipping
-      strokeWidth: 18,
-      trailWidth: 18,
-      easing: 'easeInOut',
-      duration: 1400,
-      text: {
-        autoStyleContainer: false
-      },
-      from: { color: '#2fb299', width: 18 },
-      to: { color: '#2fb299', width: 18 },
-      // Set default step function for all animate calls
-      step: function (state, circle) {
-        circle.path.setAttribute('stroke', state.color);
-        circle.path.setAttribute('stroke-width', state.width);
 
-        var value = Math.round(circle.value() * 100);
-        if (value === 0) {
-          circle.setText('');
-        } else {
-          circle.setText('29');
-        }
-      }
-    });
     this.sr_progress.text.style.fontSize = '12px';
-    this.bar2.text.style.fontSize = '12px';
+    this.sr_progress.text.style.fontFamily = 'arial';
 
     var el = document.querySelector('#eo-odometer');
 
@@ -4466,7 +4440,7 @@ AbstractQuestion.prototype.guess = function (answer, target) {
   } else {
     this.element.addClass('eo-show_solution');
     //this is not the right place for that code. pass it to multipleChoiseQuestion
-    $(target).toggleHtml($(target).data('translate'), $(target).data('word'));
+    if ($(target).data('translate')) $(target).toggleHtml($(target).data('translate'), $(target).data('word'));
   }
 
   // don't count the same answer multiple times.
@@ -4475,7 +4449,8 @@ AbstractQuestion.prototype.guess = function (answer, target) {
   if (!this.element.hasClass('lost_focus')) {
     this.report('TriedAnswer', {
       question: this.data.id,
-      answer: answer
+      answer: answer,
+      trial_num: this.tried.length
     });
   }
 
@@ -4604,7 +4579,8 @@ OpenQuestion.prototype.guess = function (answer) {
 
   this.report('TriedAnswer', {
     question: this.data.id,
-    answer: answer
+    answer: answer,
+    trial_num: this.tried.length
   });
 
   if (isCorrect) {
@@ -5222,7 +5198,6 @@ document.live_actions = "<div class='hidden' id='eo-live'>\
         <div class='Grid-cell'>\
             <div id='sr' class='live-part v-align h-align'>\
                 <div id='srProgress'></div>\
-                <div id='progress2'></div>\
             </div>\
         </div>\
         <div class='Grid-cell'>\

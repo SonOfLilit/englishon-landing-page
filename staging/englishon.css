@@ -119,7 +119,9 @@
   -moz-border-radius: 0.34em;
   -webkit-border-radius: 0.34em;
   border-radius: 0.34em;
-  font-family: "Arimo", monospace;
+  /*font-family: "Arimo", monospace;*/
+  font-family: "arial";
+  /*font-size:30px;*/
   padding: 0.15em;
   background: #000;
   color: #eee0d3;
@@ -2290,6 +2292,9 @@ eo-signout-layout .signout {
 }
 #eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
   font-size: 16px;
+}
+#eo-live > .Grid > .Grid-cell #milotrage {
+  background-color: black;
 }
 
 .Grid#days-pannel {
