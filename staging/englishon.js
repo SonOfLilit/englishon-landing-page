@@ -3656,7 +3656,7 @@ Editor.prototype.createAutoQuestion = function (event) {
     candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
     if (wrong.indexOf(candidate) == -1 && candidate != correct) wrong.push({ word: candidate, translation: translation });
   }
-  wrong.push({ word: 'buttle', translation: 'איזה_יום_יפה_ונהדר' });
+  wrong.push({ word: 'buttle', translation: 'תתתתתתתתאיזה_יוםדגדגדג' });
   wrong.push({ word: 'niceday', translation: 'איזהיוםיפהונהדרטובלצחוק' });
   var question = {
     'context': ctx,
@@ -4713,7 +4713,14 @@ AbstractExpiredQuestion.prototype.createElement = function () {
   return element;
 };
 
-AbstractExpiredQuestion.prototype.bindInput = function () {};
+AbstractExpiredQuestion.prototype.bindInput = function () {
+  this.element.on('click', function (e) {
+    e.preventDefault();
+    var target = $(e.target);
+    target.toggleHtml(this.data.hint, this.practicedWord);
+    Speaker.speak(document.englishonConfig.targetLanguage, target.text());
+  }.bind(this));
+};
 
 var ExpiredOpenQuestion = function (question) {
   AbstractExpiredQuestion.call(this, question);
@@ -4839,6 +4846,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.fetchQuestions = function (backend) {
     // TODO: these are questions for the subtitle.
     // ask for questions for the body text too.
+    this.questions = []; //to enable fetch again after login
     return backend.getArticle(this.url).then(function (questions) {
       this.questions = questions;
       console.log("Num questions: " + questions.length);
@@ -5552,7 +5560,9 @@ var EnglishOnMenu = function () {
         $('#eo-account-area').removeClass('guest');
         $('#eo-dlg-login').addClass('valid');
         configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
-        document.menu.powerOn();
+        document.overlay.fetchQuestions(document.englishonBackend).then(function () {
+          document.menu.powerOn();
+        });
         $('#eo-account-name').text(email.val());
         $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
         $('body').addClass('logged').removeClass('guest');
@@ -5826,6 +5836,9 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
       document.menu = new EnglishOnMenu();
       document.eo_user = new UserInfo(document.englishonConfig.token);
       document.eo_user.initial();
+      if ($('.eo-expired').length) {
+        document.eo_user.showLiveActions();
+      }
     });
   } else document.menu = new EnglishOnMenu();
 });
@@ -5850,7 +5863,9 @@ function receiveMessage(event) {
     document.englishonBackend.token = django_token;
 
     $('body').addClass('logged').removeClass('guest');
-    document.menu.powerOn();
+    document.overlay.fetchQuestions(document.englishonBackend).then(function () {
+      document.menu.powerOn();
+    });
     localStorage.setItem('email', email);
     $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
     document.menu.hideDialogs(0);
