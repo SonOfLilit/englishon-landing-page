@@ -3656,8 +3656,8 @@ Editor.prototype.createAutoQuestion = function (event) {
     candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
     if (wrong.indexOf(candidate) == -1 && candidate != correct) wrong.push({ word: candidate, translation: translation });
   }
-  wrong.push({ word: 'buttle', translation: 'תתתתתתתתאיזה_יוםדגדגדג' });
-  wrong.push({ word: 'niceday', translation: 'איזהיוםיפהונהדרטובלצחוק' });
+  //wrong.push({word:'buttle',translation:'המילההכיארוכה_בכלהשפההעברית'});
+  //wrong.push({word:'niceday',translation:'איזהיוםיפהונהדרטובלצחוק'});
   var question = {
     'context': ctx,
     'replaced': replaced,
@@ -4097,27 +4097,25 @@ UserInfo = function () {
 //
 jQuery.fn.extend({
   toggleText: function (a, b) {
-    var that = this;
-    if (that.text() != a && that.text() != b) {
-      that.text(a);
-    } else if (that.text() == a) {
-      that.text(b);
-    } else if (that.text() == b) {
-      that.text(a);
+    if (this.text() != a && this.text() != b) {
+      this.text(a);
+    } else if (this.text() == a) {
+      this.text(b);
+    } else if (this.text() == b) {
+      this.text(a);
     }
     return this;
   },
   //for toggle text which containing html entities
   toggleHtml: function (a, b) {
-    a = a.replace('_', '&#160;');
-    if (b) b = b.replace('_', '&#160;');
-    var that = this;
-    if (that.html() != a && that.html() != b) {
-      that.html(a);
-    } else if (that.html() == a) {
-      that.html(b);
-    } else if (that.html() == b) {
-      that.html(a);
+    a = a.replace('_', '&nbsp;');
+    if (b) b = b.replace('_', '&nbsp;');
+    if (this.html() != a && this.html() != b) {
+      this.html(a);
+    } else if (this.html() == a) {
+      this.html(b);
+    } else if (this.html() == b) {
+      this.html(a);
     }
     return this;
   }
@@ -4132,6 +4130,7 @@ Injector = function (paragraphs) {
     post = document.englishonBackend.report(msg, data);
     post.done(function () {
       if (msg === 'TriedAnswer') {
+        //debugger;
         document.eo_user.milotrage();
         //document.eo_user.scoreCorrect();
         document.eo_user.checkSRProgress();
@@ -4439,7 +4438,7 @@ AbstractQuestion.prototype.guess = function (answer, target) {
     updateProgressBars();
   } else {
     this.element.addClass('eo-show_solution');
-    //this is not the right place for that code. pass it to multipleChoiseQuestion
+    //this is not the right place for this code. pass it to multipleChoiseQuestion
     if ($(target).data('translate')) $(target).toggleHtml($(target).data('translate'), $(target).data('word'));
   }
 
@@ -4621,10 +4620,10 @@ MultipleChoice.prototype.createElement = function () {
   option_elements = answers.map(function (answer) {
     var li = $('<li>').addClass('eo-option')
     //replacing '_' with none breakable HTML ENTITY, so the word will not displayed in two lines
-    .append($('<span>').html(answer.answer.replace('_', '&#160;')).data('translate', answer.translation).data('word', answer.answer));
+    .append($('<span>').html(answer.answer.replace('_', '&nbsp;')).data('translate', answer.translation).data('word', answer.answer));
     return li;
   }.bind(this));
-  option_elements.push($('<li>').addClass('eo-option eo-correct_option').append($('<span>').html(this.correct[0].replace('_', '&#160;')).data('word', this.correct[0])));
+  option_elements.push($('<li>').addClass('eo-option eo-correct_option').append($('<span>').html(this.correct[0].replace('_', '&nbsp;')).data('word', this.correct[0])));
   shuffle(option_elements);
 
   this.options = $('<ul>').addClass('eo-options').append(option_elements);
@@ -4656,7 +4655,15 @@ MultipleChoice.prototype.optionOnClick = function (e) {
 };
 
 MultipleChoice.prototype.open = function () {
-  var width = Math.max(this.element.outerWidth(), this.options.outerWidth());
+  this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
+    $(option).find('span').toggleHtml($(option).find('span').data('word'), $(option).find('span').data('translate'));
+  });
+  options_width_when_show_translations = this.options.outerWidth();
+  this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
+    $(option).find('span').toggleHtml($(option).find('span').data('word'), $(option).find('span').data('translate'));
+  });
+  var width = Math.max(this.element.outerWidth(), this.options.outerWidth(), options_width_when_show_translations);
+  //var width = Math.max(this.element.outerWidth(), this.options.outerWidth());
   // // see super() for explanation of +1
   this.options.width(this.element.outerWidth() + 1);
   this.animateStateChange('eo-active', null, width);
@@ -5726,6 +5733,7 @@ var EnglishOnMenu = function () {
       document.overlay.hideQuestions();
       document.menu.hideDialogs();
       event.preventDefault();
+      document.eo_user.hideLiveActions();
       // after you've loaded the editor, there's no going back.
       // (for now. this should be fixed.)
 
