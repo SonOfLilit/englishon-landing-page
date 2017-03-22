@@ -876,6 +876,10 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   border: none;
 }
 
+.eo-editor-dictionary-candidate {
+  color: orange;
+}
+
 .auto-editor-suspended {
   background-color: grey;
   border: none;
@@ -1936,6 +1940,79 @@ eo-signout-layout .signout {
   border-radius: 50%;
 }
 
+/*LIVE ACTIONS FOR MOBILE*/
+#eo-live {
+  background-color: rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  border: solid transparent;
+  border-width: 1px 1px 1px 6px;
+  min-height: 28px;
+  resize: both;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 960px;
+  height: 250px;
+  overflow: auto;
+}
+#eo-live.eo-live-maximize {
+  height: 690px;
+}
+#eo-live.eo-live-maximize .day-bar {
+  margin: 11px;
+}
+#eo-live #srProgress,
+#eo-live #progress2 {
+  margin: 12px 120px 12px 120px;
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+#eo-live #sr {
+  height: 260px;
+}
+#eo-live #sr #eo-progress {
+  height: 90%;
+  width: 90%;
+}
+#eo-live .day-bar {
+  border-radius: 25px;
+  background-color: gray;
+  margin: 20px;
+  width: 92px;
+  height: 92px;
+  font-size: 48px;
+  color: white;
+}
+#eo-live .day-bar.eo-persistence {
+  background-color: #2cc6a8;
+}
+#eo-live > .Grid > .Grid-cell {
+  height: 100%;
+}
+#eo-live > .Grid > .Grid-cell > .live-part {
+  border-radius: 12px;
+  background-color: white;
+  margin: 16px 80px 16px 80px;
+  font-size: 120px;
+}
+#eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
+  font-size: 64px;
+}
+#eo-live > .Grid > .Grid-cell #milotrage {
+  background-color: black;
+}
+
+.Grid#days-pannel {
+  direction: rtl;
+}
+
+.sr-complete {
+  background-color: #2cc6a8;
+  border-radius: 25px;
+}
+
+/*CSS FOR DESK TOP*/
 @media (min-width: 1050px) {
   #eo-dlg-options .Grid--full .Grid-cell > div {
     height: 100%;
@@ -2224,79 +2301,70 @@ eo-signout-layout .signout {
     background-color: rgba(80, 80, 80, 0.75);
     /* Black w/ opacity */
   }
+
+  #eo-live {
+    background-color: rgba(0, 0, 0, 0.2);
+    background-clip: padding-box;
+    border: solid transparent;
+    border-width: 1px 1px 1px 6px;
+    min-height: 28px;
+    resize: both;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    height: 200px;
+    width: 300px;
+    overflow: auto;
+  }
+  #eo-live #srProgress,
+  #eo-live #progress2 {
+    margin: 3px 30px 3px 30px;
+    width: 50px;
+    height: 50px;
+    position: relative;
+  }
+  #eo-live #sr {
+    height: 65px;
+  }
+  #eo-live #sr #eo-progress {
+    height: 90%;
+    width: 90%;
+  }
+  #eo-live .day-bar {
+    border-radius: 25px;
+    background-color: gray;
+    margin: 5px;
+    width: 23px;
+    height: 23px;
+    font-size: 12px;
+    color: white;
+  }
+  #eo-live .day-bar.eo-persistence {
+    background-color: #2cc6a8;
+  }
+  #eo-live > .Grid > .Grid-cell {
+    height: 100%;
+  }
+  #eo-live > .Grid > .Grid-cell > .live-part {
+    border-radius: 12px;
+    background-color: white;
+    margin: 4px 20px 4px 20px;
+    font-size: 30px;
+  }
+  #eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
+    font-size: 16px;
+  }
+  #eo-live > .Grid > .Grid-cell #milotrage {
+    background-color: black;
+  }
+
+  .Grid#days-pannel {
+    direction: rtl;
+  }
 }
 /*@media (max-width: 981px) {
-  #eo-area-container {
-    background-color: #eceff1;
-  }
-  #eo-menu,
-  #eo-dlg-login,
-  #eo-dlg-options {
-    transform: scale(4);
-    top: 550px;
-    left: 360px;
-  }
+
 }*/
 .editor-div {
   padding: 5px;
-}
-
-#eo-live {
-  background-color: rgba(0, 0, 0, 0.2);
-  background-clip: padding-box;
-  border: solid transparent;
-  border-width: 1px 1px 1px 6px;
-  min-height: 28px;
-  resize: both;
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  height: 200px;
-  width: 300px;
-  overflow: auto;
-}
-#eo-live #srProgress,
-#eo-live #progress2 {
-  margin: 3px 30px 3px 30px;
-  width: 50px;
-  height: 50px;
-  position: relative;
-}
-#eo-live #sr {
-  height: 65px;
-}
-#eo-live #sr #eo-progress {
-  height: 90%;
-  width: 90%;
-}
-#eo-live .day-bar {
-  border-radius: 25px;
-  background-color: gray;
-  margin: 5px;
-  width: 23px;
-  height: 23px;
-  font-size: 12px;
-  color: white;
-}
-#eo-live .day-bar.eo-persistence {
-  background-color: #2cc6a8;
-}
-#eo-live > .Grid > .Grid-cell {
-  height: 100%;
-}
-#eo-live > .Grid > .Grid-cell > .live-part {
-  border-radius: 12px;
-  background-color: white;
-  margin: 4px 20px 4px 20px;
-  font-size: 30px;
-}
-#eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
-  font-size: 16px;
-}
-#eo-live > .Grid > .Grid-cell #milotrage {
-  background-color: black;
-}
-
-.Grid#days-pannel {
-  direction: rtl;
 }

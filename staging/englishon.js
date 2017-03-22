@@ -3965,9 +3965,7 @@ Editor.prototype.highlight = function () {
         } else //the current word is unrecognized word
           {
             p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-            p.append($('<span>')
-            // .addClass('eo-editor-candidate')
-            .text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
+            p.append($('<span>').addClass('eo-editor-dictionary-candidate').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
           }
       }
       lastIndex = re.lastIndex;
@@ -4012,9 +4010,20 @@ UserInfo = function () {
     this.getUnAnsweredSR();
     $.when(this.answered_promise, this.unAnswered_promise).done(function () {
       val = document.eo_user.answered.sr_questions.length / (document.eo_user.answered.sr_questions.length + document.eo_user.unAnswered.sr_questions.length);
+      //positive feedback if user doesn't get sr questions for today
+      if (!(document.eo_user.answered.sr_questions.length + document.eo_user.unAnswered.sr_questions.length)) {
+        val = 1;
+      }
       if (!val) {
         val = 0;
       };
+      if (val == 1) {
+        //adding success styles to progress bar 
+        $('#srProgress').addClass('sr-complete');
+        document.eo_user.sr_progress.text.style.fontSize = '30px';
+        document.eo_user.sr_progress.text.style.color = 'white';
+      }
+
       document.eo_user.sr_progress.animate(val);
     });
   };
@@ -4026,34 +4035,40 @@ UserInfo = function () {
     this.milotrage();
   };
   this.initial = function () {
-    document.eo_user.unAnswered = { 'sr_questions': [] };
-    document.eo_user.answered = { 'sr_questions': [] };
-    this.sr_progress = new ProgressBar.Circle(srProgress, {
-      color: '#aaa',
-      // This has to be the same size as the maximum width to
-      // prevent clipping
-      strokeWidth: 18,
-      trailWidth: 18,
-      easing: 'easeInOut',
-      duration: 1400,
-      text: {
-        autoStyleContainer: false
-      },
-      from: { color: '#2cc6a8', width: 18 },
-      to: { color: '#2cc6a8', width: 18 },
-      // Set default step function for all animate calls
-      step: function (state, circle) {
-        circle.path.setAttribute('stroke', state.color);
-        circle.path.setAttribute('stroke-width', state.width);
-        text = document.eo_user.unAnswered.sr_questions.length + document.eo_user.answered.sr_questions.length;
+    this.unAnswered = { 'sr_questions': [] };
+    this.answered = { 'sr_questions': [] };
+    if (!this.sr_progress) {
+      this.sr_progress = new ProgressBar.Circle(srProgress, {
+        color: '#aaa',
+        //color: '#2cc6a8',
+        // This has to be the same size as the maximum width to
+        // prevent clipping
+        strokeWidth: 18,
+        trailWidth: 18,
+        easing: 'easeInOut',
+        duration: 1400,
+        text: {
+          autoStyleContainer: false
+        },
+        from: { color: '#2cc6a8', width: 18 },
+        to: { color: '#2cc6a8', width: 18 },
+        // Set default step function for all animate calls
+        step: function (state, circle) {
+          circle.path.setAttribute('stroke', state.color);
+          circle.path.setAttribute('stroke-width', state.width);
+          text = document.eo_user.unAnswered.sr_questions.length + document.eo_user.answered.sr_questions.length;
+          if (!text || text == document.eo_user.answered.sr_questions.length) {
+            text = '&#10004;';
+          };
+          //var value = Math.round(circle.value() * 100);
 
-        var value = Math.round(circle.value() * 100);
-        circle.setText(text);
-      }
-    });
-
+          circle.setText(text);
+        }
+      });
+    }
+    $('#srProgress').removeClass('sr-complete');
     this.sr_progress.text.style.fontSize = '12px';
-    this.sr_progress.text.style.fontFamily = 'arial';
+    this.sr_progress.text.style.color = '#aaa';
 
     var el = document.querySelector('#eo-odometer');
 
@@ -4063,7 +4078,18 @@ UserInfo = function () {
       format: 'd'
     });
     //this.showLiveActions();
-
+    if (document.englishonConfig.media) {
+      $('#eo-live').on('click', function (e) {
+        $('#eo-live').addClass('eo-live-maximize');
+        $($(document).on('click', function (e) {
+          if ($('#eo-live').has(e.target).length === 0) {
+            console.log('NOW MINIMIZE!!!');
+            $('#eo-live').removeClass('eo-live-maximize');
+            $(document).off('click');
+          }
+        }));
+      });
+    }
   };
   this.hideLiveActions = function () {
     $('#eo-live').addClass('hidden');
@@ -5641,6 +5667,7 @@ var EnglishOnMenu = function () {
       message = document.MESSAGES[document.englishonConfig.siteLanguage].SIGN_OUT_FEEDBACK;
       document.menu.hideDialogs();
       $('body').addClass('guest').removeClass('logged');
+      document.eo_user.initial();
     });
   };
 
