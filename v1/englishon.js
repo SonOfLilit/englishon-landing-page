@@ -3649,12 +3649,17 @@ Editor.prototype.createAutoQuestion = function (event) {
 
   //Creating a list of 4 Distractions randomaly, using the word buffer of the internal id
   var wrong = [];
+  var wrong_words = [];
+
   internal_id_keys = Object.keys(this.eo_dictionary);
   while (wrong.length < 3) {
     translation = internal_id_keys[Math.floor(Math.random() * internal_id_keys.length + 0)];
     arrayOfCandidate = this.eo_dictionary[translation];
     candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
-    if (wrong.indexOf(candidate) == -1 && candidate != correct) wrong.push({ word: candidate, translation: translation });
+    if (wrong_words.indexOf(candidate) == -1 && candidate != correct) {
+      wrong.push({ word: candidate, translation: translation });
+      wrong_words.push(candidate);
+    }
   }
   //wrong.push({word:'buttle',translation:'המילההכיארוכה_בכלהשפההעברית'});
   //wrong.push({word:'niceday',translation:'איזהיוםיפהונהדרטובלצחוק'});
