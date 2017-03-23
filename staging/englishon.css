@@ -1952,14 +1952,8 @@ eo-signout-layout .signout {
   bottom: 10px;
   right: 10px;
   width: 960px;
-  height: 250px;
+  height: 125px;
   overflow: auto;
-}
-#eo-live.eo-live-maximize {
-  height: 690px;
-}
-#eo-live.eo-live-maximize .day-bar {
-  margin: 11px;
 }
 #eo-live #srProgress,
 #eo-live #progress2 {
@@ -1976,7 +1970,7 @@ eo-signout-layout .signout {
   width: 90%;
 }
 #eo-live .day-bar {
-  border-radius: 25px;
+  border-radius: 50px;
   background-color: gray;
   margin: 20px;
   width: 92px;
@@ -1996,11 +1990,28 @@ eo-signout-layout .signout {
   margin: 16px 80px 16px 80px;
   font-size: 120px;
 }
+#eo-live > .Grid > .Grid-cell > .live-part #eo-odometer {
+  font-size: 90px;
+}
 #eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
   font-size: 64px;
 }
-#eo-live > .Grid > .Grid-cell #milotrage {
+#eo-live #milotrage {
   background-color: black;
+  margin: 0px;
+}
+#eo-live.eo-live-maximize {
+  height: 690px;
+}
+#eo-live.eo-live-maximize #milotrage {
+  background-color: black;
+  margin: 16px 80px 16px 80px;
+}
+#eo-live.eo-live-maximize #milotrage #eo-odometer {
+  font-size: 120px;
+}
+#eo-live.eo-live-maximize .day-bar {
+  margin: 11px;
 }
 
 .Grid#days-pannel {
@@ -2009,7 +2020,7 @@ eo-signout-layout .signout {
 
 .sr-complete {
   background-color: #2cc6a8;
-  border-radius: 25px;
+  border-radius: 100px;
 }
 
 /*CSS FOR DESK TOP*/
@@ -2326,6 +2337,10 @@ eo-signout-layout .signout {
   #eo-live #sr {
     height: 65px;
   }
+  #eo-live #sr.sr-complete {
+    background-color: #2cc6a8;
+    border-radius: 25px;
+  }
   #eo-live #sr #eo-progress {
     height: 90%;
     width: 90%;
@@ -2351,11 +2366,15 @@ eo-signout-layout .signout {
     margin: 4px 20px 4px 20px;
     font-size: 30px;
   }
+  #eo-live > .Grid > .Grid-cell > .live-part #eo-odometer {
+    font-size: 30px;
+  }
   #eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
     font-size: 16px;
   }
   #eo-live > .Grid > .Grid-cell #milotrage {
     background-color: black;
+    margin: 4px 20px 4px 20px;
   }
 
   .Grid#days-pannel {

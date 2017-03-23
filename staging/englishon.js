@@ -4083,7 +4083,6 @@ UserInfo = function () {
         $('#eo-live').addClass('eo-live-maximize');
         $($(document).on('click', function (e) {
           if ($('#eo-live').has(e.target).length === 0) {
-            console.log('NOW MINIMIZE!!!');
             $('#eo-live').removeClass('eo-live-maximize');
             $(document).off('click');
           }
@@ -5594,6 +5593,7 @@ var EnglishOnMenu = function () {
         $('#eo-dlg-login').addClass('valid');
         configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
         document.overlay.fetchQuestions(document.englishonBackend).then(function () {
+          document.eo_user.initial();
           document.menu.powerOn();
         });
         $('#eo-account-name').text(email.val());
