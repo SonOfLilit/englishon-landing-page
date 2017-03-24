@@ -4025,8 +4025,6 @@ UserInfo = function () {
       if (val == 1) {
         //adding success styles to progress bar 
         $('#srProgress').addClass('sr-complete');
-        document.eo_user.sr_progress.text.style.fontSize = '30px';
-        document.eo_user.sr_progress.text.style.color = 'white';
       }
 
       document.eo_user.sr_progress.animate(val);
@@ -4072,8 +4070,6 @@ UserInfo = function () {
       });
     }
     $('#srProgress').removeClass('sr-complete');
-    this.sr_progress.text.style.fontSize = '12px';
-    this.sr_progress.text.style.color = '#aaa';
 
     var el = document.querySelector('#eo-odometer');
 
