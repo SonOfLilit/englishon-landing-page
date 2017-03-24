@@ -1970,16 +1970,16 @@ eo-signout-layout .signout {
   width: 90%;
 }
 #eo-live #sr .progressbar-text {
-  font-size: '48px';
-  color: '#aaa';
+  font-size: 48px;
+  color: #aaa;
 }
-#eo-live #sr.sr-complete {
+#eo-live #sr .sr-complete {
   background-color: #2cc6a8;
   border-radius: 100px;
 }
-#eo-live #sr.sr-complete .progressbar-text {
-  font-size: '120px';
-  color: 'white';
+#eo-live #sr .sr-complete .progressbar-text {
+  font-size: 120px;
+  color: white;
 }
 #eo-live .day-bar {
   border-radius: 50px;
@@ -2345,14 +2345,14 @@ eo-signout-layout .signout {
     height: 65px;
   }
   #eo-live #sr .progressbar-text {
-    fontSize: '12px';
-    color: '#aaa';
+    font-size: 12px;
+    color: #aaa;
   }
-  #eo-live #sr.sr-complete {
+  #eo-live #sr .sr-complete {
     border-radius: 25px;
   }
-  #eo-live #sr.sr-complete .progressbar-text {
-    font-size: '30px';
+  #eo-live #sr .sr-complete .progressbar-text {
+    font-size: 30px;
   }
   #eo-live #sr #eo-progress {
     height: 90%;
