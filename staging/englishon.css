@@ -1969,6 +1969,18 @@ eo-signout-layout .signout {
   height: 90%;
   width: 90%;
 }
+#eo-live #sr .progressbar-text {
+  font-size: 48px;
+  color: #aaa;
+}
+#eo-live #sr .sr-complete {
+  background-color: #2cc6a8;
+  border-radius: 100px;
+}
+#eo-live #sr .sr-complete .progressbar-text {
+  font-size: 120px;
+  color: white;
+}
 #eo-live .day-bar {
   border-radius: 50px;
   background-color: gray;
@@ -2011,16 +2023,11 @@ eo-signout-layout .signout {
   font-size: 120px;
 }
 #eo-live.eo-live-maximize .day-bar {
-  margin: 11px;
+  margin: 10px;
 }
 
 .Grid#days-pannel {
   direction: rtl;
-}
-
-.sr-complete {
-  background-color: #2cc6a8;
-  border-radius: 100px;
 }
 
 /*CSS FOR DESK TOP*/
@@ -2337,9 +2344,16 @@ eo-signout-layout .signout {
   #eo-live #sr {
     height: 65px;
   }
-  #eo-live #sr.sr-complete {
-    background-color: #2cc6a8;
+  #eo-live #sr .progressbar-text {
+    font-size: 12px;
+    color: #aaa;
+  }
+  #eo-live #sr .sr-complete {
     border-radius: 25px;
+  }
+  #eo-live #sr .sr-complete .progressbar-text {
+    font-size: 30px;
+    color: white;
   }
   #eo-live #sr #eo-progress {
     height: 90%;

@@ -3649,12 +3649,17 @@ Editor.prototype.createAutoQuestion = function (event) {
 
   //Creating a list of 4 Distractions randomaly, using the word buffer of the internal id
   var wrong = [];
+  var wrong_words = [];
+
   internal_id_keys = Object.keys(this.eo_dictionary);
   while (wrong.length < 3) {
     translation = internal_id_keys[Math.floor(Math.random() * internal_id_keys.length + 0)];
     arrayOfCandidate = this.eo_dictionary[translation];
     candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
-    if (wrong.indexOf(candidate) == -1 && candidate != correct) wrong.push({ word: candidate, translation: translation });
+    if (wrong_words.indexOf(candidate) == -1 && candidate != correct) {
+      wrong.push({ word: candidate, translation: translation });
+      wrong_words.push(candidate);
+    }
   }
   //wrong.push({word:'buttle',translation:'המילההכיארוכה_בכלהשפההעברית'});
   //wrong.push({word:'niceday',translation:'איזהיוםיפהונהדרטובלצחוק'});
@@ -4020,8 +4025,6 @@ UserInfo = function () {
       if (val == 1) {
         //adding success styles to progress bar 
         $('#srProgress').addClass('sr-complete');
-        document.eo_user.sr_progress.text.style.fontSize = '30px';
-        document.eo_user.sr_progress.text.style.color = 'white';
       }
 
       document.eo_user.sr_progress.animate(val);
@@ -4039,7 +4042,8 @@ UserInfo = function () {
     this.answered = { 'sr_questions': [] };
     if (!this.sr_progress) {
       this.sr_progress = new ProgressBar.Circle(srProgress, {
-        color: '#aaa',
+        //prevent css style tag to overide class settings
+        color: 'invalidProperty',
         //color: '#2cc6a8',
         // This has to be the same size as the maximum width to
         // prevent clipping
@@ -4067,8 +4071,6 @@ UserInfo = function () {
       });
     }
     $('#srProgress').removeClass('sr-complete');
-    this.sr_progress.text.style.fontSize = '12px';
-    this.sr_progress.text.style.color = '#aaa';
 
     var el = document.querySelector('#eo-odometer');
 
@@ -4216,6 +4218,7 @@ Injector = function (paragraphs) {
     if (this.isActive) {
       return;
     }
+    //a touch in shruerm css...
     if (this.elements.length) $('.artText').last().css('line-height', '150%');
     $(this.elements).each(function (i, q) {
       console.log('Injector****find edge questions: ' + q.original);
@@ -4226,6 +4229,7 @@ Injector = function (paragraphs) {
   };
 
   this.setQuestions = function (questions, toggleSound) {
+    this.elements = [];
     this.isBatch = true;
     for (var i = 0; i < questions.length; i++) {
       this.addQuestion(questions[i], toggleSound);
@@ -4879,12 +4883,15 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     // TODO: these are questions for the subtitle.
     // ask for questions for the body text too.
     this.questions = []; //to enable fetch again after login
+    if (this.injector) {
+      this.injector.off();
+    }
     return backend.getArticle(this.url).then(function (questions) {
       this.questions = questions;
       console.log("Num questions: " + questions.length);
       this.injector = new Injector(this.paragraphs);
       this.injector.setQuestions(questions);
-      document.overlay.injector.setQuestions(questions);
+      //document.overlay.injector.setQuestions(questions);
       return questions;
     }.bind(this));
   };
@@ -4982,54 +4989,55 @@ Technically, `fetch()` returns a `Deferred` that return an `AudioBuffer`, and ke
 get the benefit of work already done. `speak()` simply calls `fetch()` and plays the result.
  */
 var Speaker = new function () {
-    var audioContext = new AudioContext();
-    var gainNode = audioContext.createGain();
-    gainNode.connect(audioContext.destination);
-    this.cache = {};
+  var AudioContext = window.AudioContext || window.webkitAudioContext;
+  var audioContext = new AudioContext();
+  var gainNode = audioContext.createGain();
+  gainNode.connect(audioContext.destination);
+  this.cache = {};
 
-    this.toggle = function (enable) {
-        gainNode.gain.value = enable ? 1 : 0;
-    };
+  this.toggle = function (enable) {
+    gainNode.gain.value = enable ? 1 : 0;
+  };
 
-    this.changeVolume = function (value) {
-        gainNode.gain.value = value;
-    };
+  this.changeVolume = function (value) {
+    gainNode.gain.value = value;
+  };
 
-    this.fetch = function (language, phrase) {
-        var key = language + '/' + phrase;
-        if (this.cache[key]) {
-            return this.cache[key];
-        }
-        var r = $.Deferred();
-        document.englishonBackend.getTextToSpeechLink(language, phrase).then(function (url) {
-            // can't use jQuery because it doesn't support arraybuffer yet
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, true);
-            xhr.responseType = 'arraybuffer';
-            xhr.onload = function (e) {
-                audioContext.decodeAudioData(xhr.response, r.resolve.bind(r));
-            };
-            xhr.onerror = function (e) {
-                console.log('Error pronouncing phrase "' + key + '": ' + e.error);
-                console.log(e);
-            };
-            xhr.send();
-        });
-        this.cache[key] = r;
-        return r;
-    };
+  this.fetch = function (language, phrase) {
+    var key = language + '/' + phrase;
+    if (this.cache[key]) {
+      return this.cache[key];
+    }
+    var r = $.Deferred();
+    document.englishonBackend.getTextToSpeechLink(language, phrase).then(function (url) {
+      // can't use jQuery because it doesn't support arraybuffer yet
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.responseType = 'arraybuffer';
+      xhr.onload = function (e) {
+        audioContext.decodeAudioData(xhr.response, r.resolve.bind(r));
+      };
+      xhr.onerror = function (e) {
+        console.log('Error pronouncing phrase "' + key + '": ' + e.error);
+        console.log(e);
+      };
+      xhr.send();
+    });
+    this.cache[key] = r;
+    return r;
+  };
 
-    this.speak = function (language, phrase) {
-        this.fetch(language, phrase).then(this.playBuffer.bind(this));
-    };
+  this.speak = function (language, phrase) {
+    this.fetch(language, phrase).then(this.playBuffer.bind(this));
+  };
 
-    this.playBuffer = function (audioBuffer) {
-        var audioSourceNode = audioContext.createBufferSource();
-        audioSourceNode.buffer = audioBuffer;
-        audioSourceNode.playbackRate.value = 0.9;
-        audioSourceNode.connect(gainNode);
-        audioSourceNode.start();
-    };
+  this.playBuffer = function (audioBuffer) {
+    var audioSourceNode = audioContext.createBufferSource();
+    audioSourceNode.buffer = audioBuffer;
+    audioSourceNode.playbackRate.value = 0.9;
+    audioSourceNode.connect(gainNode);
+    audioSourceNode.start();
+  };
 }();
 
 // var context = AudioContext();
@@ -5315,9 +5323,16 @@ function englishon() {
     return;
   }
   //THIS LINE IS TEMP
-  //TEMPORARY THE CODE IS RUN JUST IN THIS SPECIFIC ARTICLE
-  if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.englishon.org/hidden/shturem.html') {
+  //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES
+  url = window.location.toString().substr(0, window.location.toString().indexOf("id=") + 3);
+  if (url != 'http://shturem.net/index.php?section=news&id=' && url != 'http://www.shturem.net/index.php?section=news&id=' && url != 'http://www.englishon.org/hidden/shturem.html') {
     return;
+  }
+  if (url != 'http://www.englishon.org/hidden/shturem.html') {
+    article_id = Number(window.location.search.substr(window.location.search.indexOf('id=') + 3));
+    if (article_id < 91251 || article_id > 91551) {
+      return;
+    }
   }
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
@@ -5621,6 +5636,7 @@ var EnglishOnMenu = function () {
         window.location.reload();
       }
     } else {
+
       document.overlay.hideQuestions();
       if (document.eo_user) document.eo_user.hideLiveActions();
     }
@@ -5642,6 +5658,7 @@ var EnglishOnMenu = function () {
     configStorage.set({ 'isActive': false });
     $('#eo-power-switch-text').text('OFF');
     $('body').removeClass('eo-active');
+    //debugger;
     document.overlay.hideQuestions();
     document.eo_user.hideLiveActions();
   };
@@ -5667,7 +5684,10 @@ var EnglishOnMenu = function () {
       message = document.MESSAGES[document.englishonConfig.siteLanguage].SIGN_OUT_FEEDBACK;
       document.menu.hideDialogs();
       $('body').addClass('guest').removeClass('logged');
-      document.eo_user.initial();
+      //prepare questions for guest
+      document.overlay.fetchQuestions(document.englishonBackend).then(function () {
+        document.eo_user.initial();
+      });
     });
   };
 
@@ -5899,6 +5919,7 @@ function receiveMessage(event) {
 
     $('body').addClass('logged').removeClass('guest');
     document.overlay.fetchQuestions(document.englishonBackend).then(function () {
+      document.eo_user.initial();
       document.menu.powerOn();
     });
     localStorage.setItem('email', email);

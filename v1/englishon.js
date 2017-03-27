@@ -4042,7 +4042,8 @@ UserInfo = function () {
     this.answered = { 'sr_questions': [] };
     if (!this.sr_progress) {
       this.sr_progress = new ProgressBar.Circle(srProgress, {
-        color: '#aaa',
+        //prevent css style tag to overide class settings
+        color: 'invalidProperty',
         //color: '#2cc6a8',
         // This has to be the same size as the maximum width to
         // prevent clipping
@@ -4988,54 +4989,55 @@ Technically, `fetch()` returns a `Deferred` that return an `AudioBuffer`, and ke
 get the benefit of work already done. `speak()` simply calls `fetch()` and plays the result.
  */
 var Speaker = new function () {
-    var audioContext = new AudioContext();
-    var gainNode = audioContext.createGain();
-    gainNode.connect(audioContext.destination);
-    this.cache = {};
+  var AudioContext = window.AudioContext || window.webkitAudioContext;
+  var audioContext = new AudioContext();
+  var gainNode = audioContext.createGain();
+  gainNode.connect(audioContext.destination);
+  this.cache = {};
 
-    this.toggle = function (enable) {
-        gainNode.gain.value = enable ? 1 : 0;
-    };
+  this.toggle = function (enable) {
+    gainNode.gain.value = enable ? 1 : 0;
+  };
 
-    this.changeVolume = function (value) {
-        gainNode.gain.value = value;
-    };
+  this.changeVolume = function (value) {
+    gainNode.gain.value = value;
+  };
 
-    this.fetch = function (language, phrase) {
-        var key = language + '/' + phrase;
-        if (this.cache[key]) {
-            return this.cache[key];
-        }
-        var r = $.Deferred();
-        document.englishonBackend.getTextToSpeechLink(language, phrase).then(function (url) {
-            // can't use jQuery because it doesn't support arraybuffer yet
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, true);
-            xhr.responseType = 'arraybuffer';
-            xhr.onload = function (e) {
-                audioContext.decodeAudioData(xhr.response, r.resolve.bind(r));
-            };
-            xhr.onerror = function (e) {
-                console.log('Error pronouncing phrase "' + key + '": ' + e.error);
-                console.log(e);
-            };
-            xhr.send();
-        });
-        this.cache[key] = r;
-        return r;
-    };
+  this.fetch = function (language, phrase) {
+    var key = language + '/' + phrase;
+    if (this.cache[key]) {
+      return this.cache[key];
+    }
+    var r = $.Deferred();
+    document.englishonBackend.getTextToSpeechLink(language, phrase).then(function (url) {
+      // can't use jQuery because it doesn't support arraybuffer yet
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.responseType = 'arraybuffer';
+      xhr.onload = function (e) {
+        audioContext.decodeAudioData(xhr.response, r.resolve.bind(r));
+      };
+      xhr.onerror = function (e) {
+        console.log('Error pronouncing phrase "' + key + '": ' + e.error);
+        console.log(e);
+      };
+      xhr.send();
+    });
+    this.cache[key] = r;
+    return r;
+  };
 
-    this.speak = function (language, phrase) {
-        this.fetch(language, phrase).then(this.playBuffer.bind(this));
-    };
+  this.speak = function (language, phrase) {
+    this.fetch(language, phrase).then(this.playBuffer.bind(this));
+  };
 
-    this.playBuffer = function (audioBuffer) {
-        var audioSourceNode = audioContext.createBufferSource();
-        audioSourceNode.buffer = audioBuffer;
-        audioSourceNode.playbackRate.value = 0.9;
-        audioSourceNode.connect(gainNode);
-        audioSourceNode.start();
-    };
+  this.playBuffer = function (audioBuffer) {
+    var audioSourceNode = audioContext.createBufferSource();
+    audioSourceNode.buffer = audioBuffer;
+    audioSourceNode.playbackRate.value = 0.9;
+    audioSourceNode.connect(gainNode);
+    audioSourceNode.start();
+  };
 }();
 
 // var context = AudioContext();
@@ -5321,9 +5323,16 @@ function englishon() {
     return;
   }
   //THIS LINE IS TEMP
-  //TEMPORARY THE CODE IS RUN JUST IN THIS SPECIFIC ARTICLE
-  if (window.location != 'http://shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.shturem.net/index.php?section=news&id=91551' && window.location != 'http://www.englishon.org/hidden/shturem.html') {
+  //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES
+  url = window.location.toString().substr(0, window.location.toString().indexOf("id=") + 3);
+  if (url != 'http://shturem.net/index.php?section=news&id=' && url != 'http://www.shturem.net/index.php?section=news&id=' && url != 'http://www.englishon.org/hidden/shturem.html') {
     return;
+  }
+  if (url != 'http://www.englishon.org/hidden/shturem.html') {
+    article_id = Number(window.location.search.substr(window.location.search.indexOf('id=') + 3));
+    if (article_id < 91251 || article_id > 91551) {
+      return;
+    }
   }
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
@@ -5910,6 +5919,7 @@ function receiveMessage(event) {
 
     $('body').addClass('logged').removeClass('guest');
     document.overlay.fetchQuestions(document.englishonBackend).then(function () {
+      document.eo_user.initial();
       document.menu.powerOn();
     });
     localStorage.setItem('email', email);
