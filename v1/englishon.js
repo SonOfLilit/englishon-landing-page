@@ -4034,7 +4034,10 @@ UserInfo = function () {
 
     this.checkWeeklyPresence();
     this.checkSRProgress();
-    $('#eo-live').removeClass('hidden');
+    $('#eo-live').removeClass('hidden').addClass('eo-live-maximize');
+    setTimeout(function () {
+      $('#eo-live').removeClass('eo-live-maximize');
+    }, 10000);
     this.milotrage();
   };
   this.initial = function () {
@@ -4079,18 +4082,17 @@ UserInfo = function () {
       value: 0,
       format: 'd'
     });
-    //this.showLiveActions();
-    if (document.englishonConfig.media == 'mobile') {
-      $('#eo-live').on('click', function (e) {
-        e.stopPropagation();
-        $('#eo-live').toggleClass('eo-live-maximize');
-        $($(document).on('click', function (e) {
+    //if (document.englishonConfig.media == 'mobile') {
+    $('#eo-live').on('click', function (e) {
+      e.stopPropagation();
+      $('#eo-live').toggleClass('eo-live-maximize');
+      $($(document).on('click', function (e) {
 
-          $('#eo-live').removeClass('eo-live-maximize');
-          $(document).off('click');
-        }));
-      });
-    }
+        $('#eo-live').removeClass('eo-live-maximize');
+        $(document).off('click');
+      }));
+    });
+    //}
   };
   this.hideLiveActions = function () {
     $('#eo-live').addClass('hidden');
@@ -4174,6 +4176,7 @@ Injector = function (paragraphs) {
         report("StartedQuiz");
         console.log('msg === TriedAnswer && !userAnswered. checkWeeklyPresence fired!');
         document.eo_user.showLiveActions();
+
         is_new_session = document.englishonBackend.is_new_session();
         if (is_new_session) {
           console.log('reporting StartedSession.... ..... ...... ');

@@ -1785,7 +1785,7 @@ eo-signout-layout .signout {
   left: 0px;
   width: 100%;
   height: 100%;
-  z-index: 3;
+  z-index: 12;
   overflow-y: auto;
 }
 
@@ -1798,7 +1798,7 @@ eo-signout-layout .signout {
   left: 0px;
   width: 100%;
   height: 1000px;
-  z-index: 3;
+  z-index: 12;
   overflow-y: auto;
 }
 #eo-dlg-options .Grid-cell {
@@ -1954,6 +1954,7 @@ eo-signout-layout .signout {
   width: 960px;
   height: 125px;
   overflow: auto;
+  z-index: 11;
 }
 #eo-live #srProgress,
 #eo-live #progress2 {
@@ -2020,7 +2021,7 @@ eo-signout-layout .signout {
   margin: 16px 80px 16px 80px;
 }
 #eo-live.eo-live-maximize #milotrage #eo-odometer {
-  font-size: 120px;
+  font-size: 30px;
 }
 #eo-live.eo-live-maximize .day-bar {
   margin: 10px;
@@ -2030,7 +2031,7 @@ eo-signout-layout .signout {
   direction: rtl;
 }
 
-/*CSS FOR DESK TOP*/
+/*CSS FOR DESKTOP*/
 @media (min-width: 1050px) {
   #eo-dlg-options .Grid--full .Grid-cell > div {
     height: 100%;
@@ -2318,6 +2319,7 @@ eo-signout-layout .signout {
     /* Fallback color */
     background-color: rgba(80, 80, 80, 0.75);
     /* Black w/ opacity */
+    z-index: 12;
   }
 
   #eo-live {
@@ -2330,9 +2332,19 @@ eo-signout-layout .signout {
     position: fixed;
     top: 10px;
     right: 10px;
-    height: 200px;
+    height: 60px;
     width: 300px;
     overflow: auto;
+  }
+  #eo-live.eo-live-maximize {
+    height: 200px;
+  }
+  #eo-live.eo-live-maximize #milotrage {
+    background-color: black;
+    margin: 0px;
+  }
+  #eo-live.eo-live-maximize .day-bar {
+    margin: 5px;
   }
   #eo-live #srProgress,
   #eo-live #progress2 {
