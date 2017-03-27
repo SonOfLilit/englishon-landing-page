@@ -1954,6 +1954,7 @@ eo-signout-layout .signout {
   width: 960px;
   height: 125px;
   overflow: auto;
+  z-index: 11;
 }
 #eo-live #srProgress,
 #eo-live #progress2 {

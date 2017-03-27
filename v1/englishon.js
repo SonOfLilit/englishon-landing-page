@@ -4080,14 +4080,14 @@ UserInfo = function () {
       format: 'd'
     });
     //this.showLiveActions();
-    if (document.englishonConfig.media) {
+    if (document.englishonConfig.media == 'mobile') {
       $('#eo-live').on('click', function (e) {
-        $('#eo-live').addClass('eo-live-maximize');
+        e.stopPropagation();
+        $('#eo-live').toggleClass('eo-live-maximize');
         $($(document).on('click', function (e) {
-          if ($('#eo-live').has(e.target).length === 0) {
-            $('#eo-live').removeClass('eo-live-maximize');
-            $(document).off('click');
-          }
+
+          $('#eo-live').removeClass('eo-live-maximize');
+          $(document).off('click');
         }));
       });
     }
@@ -4115,8 +4115,7 @@ UserInfo = function () {
   this.milotrage = function () {
     document.englishonBackend.milotrage().then(function (data) {
       console.log('data.#words: ' + data['#words']);
-      //$('#milotrage').text('milotrage: ' + data['#words']);
-      //$('#eo-odometer').text(100000 + Number(data['#words']) * 100 + 1);
+      //'1000000' is a hack to display trailing zero... till not supported with format
       $('#eo-odometer').text(1000000 + data['#words'] * 10);
     });
   };
@@ -4218,7 +4217,7 @@ Injector = function (paragraphs) {
     if (this.isActive) {
       return;
     }
-    //a touch in shruerm css...
+    //a touch in shruerm css... increase space between lines
     if (this.elements.length) $('.artText').last().css('line-height', '150%');
     $(this.elements).each(function (i, q) {
       console.log('Injector****find edge questions: ' + q.original);
@@ -4636,8 +4635,10 @@ MultipleChoice.prototype.replacement = function () {
   //jquery replaceWith() removes all data associated with the removed nodes. 
   //so we need to call createElement again
   //if (!this.element) {
-  this.element = this.createElement();
-  //}
+  if (!this.element || !this.element.hasClass('eo-answered')) {
+    this.element = this.createElement();
+  }
+
   this.bindInput();
   return this.element;
 };
@@ -4676,6 +4677,16 @@ function shuffle(arr) {
 MultipleChoice.prototype.bindInput = function () {
   AbstractQuestion.prototype.bindInput.call(this);
   this.element.find('.eo-option').click(this.optionOnClick.bind(this));
+  //jquery replaceWith() removing all event handlers associated with element. rebind them.
+  //maybe it should be a part of AbstractQuestion.prototype.bindInput
+  if (this.element.hasClass('eo-answered')) {
+    this.element.on('click', function (e) {
+      e.preventDefault();
+      var target = $(e.target);
+      target.toggleHtml(this.data.hint, this.practicedWord);
+      Speaker.speak(document.englishonConfig.targetLanguage, target.text());
+    }.bind(this));
+  }
 };
 
 MultipleChoice.prototype.optionOnClick = function (e) {
