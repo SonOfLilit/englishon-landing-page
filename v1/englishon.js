@@ -4034,11 +4034,13 @@ UserInfo = function () {
 
     this.checkWeeklyPresence();
     this.checkSRProgress();
-    $('#eo-live').removeClass('hidden').addClass('eo-live-maximize');
-    setTimeout(function () {
-      $('#eo-live').removeClass('eo-live-maximize');
-    }, 10000);
     this.milotrage();
+    if (document.englishonConfig.media == 'desktop') {
+      $('#eo-live').removeClass('hidden').addClass('eo-live-maximize');
+      setTimeout(function () {
+        $('#eo-live').removeClass('eo-live-maximize');
+      }, 10000);
+    }
   };
   this.initial = function () {
     this.unAnswered = { 'sr_questions': [] };
