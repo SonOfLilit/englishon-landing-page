@@ -4035,8 +4035,9 @@ UserInfo = function () {
     this.checkWeeklyPresence();
     this.checkSRProgress();
     this.milotrage();
+    $('#eo-live').removeClass('hidden');
     if (document.englishonConfig.media == 'desktop') {
-      $('#eo-live').removeClass('hidden').addClass('eo-live-maximize');
+      $('#eo-live').addClass('eo-live-maximize');
       setTimeout(function () {
         $('#eo-live').removeClass('eo-live-maximize');
       }, 10000);

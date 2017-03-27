@@ -2392,7 +2392,7 @@ eo-signout-layout .signout {
     margin: 4px 20px 4px 20px;
     font-size: 30px;
   }
-  #eo-live > .Grid > .Grid-cell > .live-part #eo-odometer {
+  #eo-live > .Grid > .Grid-cell > .live-part #milotrage #eo-odometer {
     font-size: 30px;
   }
   #eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
