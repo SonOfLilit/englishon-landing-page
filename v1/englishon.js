@@ -4085,7 +4085,6 @@ UserInfo = function () {
       value: 0,
       format: 'd'
     });
-    //if (document.englishonConfig.media == 'mobile') {
     $('#eo-live').on('click', function (e) {
       e.stopPropagation();
       $('#eo-live').toggleClass('eo-live-maximize');
@@ -4204,9 +4203,11 @@ Injector = function (paragraphs) {
   };
 
   this.off = function () {
+
     if (!this.isActive) {
       return;
     }
+    $('.eo-spaces').remove();
     $(this.elements).each(function (i, q) {
       q.replacement.replaceWith(q.original);
       //check if this is the right place!!!! 
@@ -4226,9 +4227,20 @@ Injector = function (paragraphs) {
     //a touch in shruerm css... increase space between lines
     if (this.elements.length) $('.artText').last().css('line-height', '150%');
     $(this.elements).each(function (i, q) {
-      console.log('Injector****find edge questions: ' + q.original);
+      var hint = q.qobj.data.hint;
       q.replacement = q.qobj.replacement();
       q.original.replaceWith(q.replacement);
+      //if the question after answering is too long - add spaces
+      var width = q.replacement.outerWidth();
+      var parentoffset = q.replacement.parent().offset().left;
+      var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width;
+      q.replacement.find('.eo-hint').text(q.qobj.practicedWord);
+      var widthAfterAnswering = q.replacement.outerWidth();
+      q.replacement.find('.eo-hint').text(q.qobj.data.hint);
+      if (widthAfterAnswering > spaceInCurrentLine) {
+        console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
+        $('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').insertBefore(q.replacement);
+      }
     });
     this.isActive = true;
   };
@@ -4399,7 +4411,15 @@ AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesT
   // force repaint
   this.element.width();
   // explicitly set target width
-  if (future_point < parentoffset) console.log('edge question!');else this.element.css('width', finalWidth + 1);
+  if (future_point < parentoffset) {
+    console.log('edge question!');
+    //if (classesToAdd.indexOf('eo-answered') != -1) {this.element.css('width', finalWidth + 1);}
+  } else {
+    this.element.css('width', finalWidth + 1);
+  }
+  // if (!(future_point < parentoffset) || classesToAdd.indexOf('eo-answered') != -1) {
+  //   this.element.css('width', finalWidth + 1);
+  // }
 };
 
 AbstractQuestion.prototype.closeUnanswered = function () {
@@ -4737,10 +4757,6 @@ MultipleChoice.prototype.closeAnswered = function () {
   correct.width();
   var org = this.data.hint;
   var answer = this.data.correct_answers[0].answer;
-  // this.element.data('org',this.data.hint)
-  // this.element.data('answer',this.data.correct_answers[0].answer)
-  //window.localStorage.setItem('', );
-  //this is the point! check here to fix the correct answer bug
   this.element.on('click', function (e) {
     e.preventDefault();
     var target = $(e.target);
@@ -4904,6 +4920,12 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
       this.injector.off();
     }
     return backend.getArticle(this.url).then(function (questions) {
+      for (var i = 0; i < questions.length; i++) {
+        questions[i].word_location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context));
+      }
+      questions.sort(function (q1, q2) {
+        return q1.location - q2.location;
+      });
       this.questions = questions;
       console.log("Num questions: " + questions.length);
       this.injector = new Injector(this.paragraphs);
