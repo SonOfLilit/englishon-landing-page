@@ -3854,7 +3854,6 @@ Editor.prototype.autoContext = function (span) {
   //console.log("start value: "+start+" and end value: "+ end);
   var len = 5;
   while (true) {
-    //debugger;
     var ctx = text.slice(Math.max(0, start - len), Math.min(text.length, end + len));
     // is the context ambiguous?
     if (ctx.indexOf(word) !== ctx.lastIndexOf(word)) {
@@ -3981,7 +3980,6 @@ Editor.prototype.highlight = function () {
 //
 UserInfo = function () {
   this.scoreValue = { 'correct': 200, 'persistence': 300 };
-
   this.getUnAnsweredSR = function () {
     document.englishonBackend.getUnAnsweredSR().then(function (data) {
       console.log('getUnAnsweredSR*******data from server: ' + data);
@@ -4025,6 +4023,8 @@ UserInfo = function () {
       if (val == 1) {
         //adding success styles to progress bar 
         $('#srProgress').addClass('sr-complete');
+        document.eo_user.sr_progress.text.style.fontSize = '30px';
+        document.eo_user.sr_progress.text.style.color = 'white';
       }
 
       document.eo_user.sr_progress.animate(val);
@@ -4151,8 +4151,6 @@ jQuery.fn.extend({
   }
 });
 Injector = function (paragraphs) {
-  this.interacted = false;
-  this.userAnswered = false;
 
   function report(msg, data) {
     if (!data) data = {};
@@ -4160,12 +4158,11 @@ Injector = function (paragraphs) {
     post = document.englishonBackend.report(msg, data);
     post.done(function () {
       if (msg === 'TriedAnswer') {
-        //debugger;
         document.eo_user.milotrage();
         //document.eo_user.scoreCorrect();
         document.eo_user.checkSRProgress();
-        if (!document.overlay.injector.userAnswered) {
-          document.overlay.injector.userAnswered = true;
+        if (!document.overlay.userAnswered) {
+          document.overlay.userAnswered = true;
           console.log('msg === TriedAnswer && !userAnswered. checkWeeklyPresence fired!');
           //score user if coming day after day
           document.eo_user.checkpersistence();
@@ -4173,12 +4170,11 @@ Injector = function (paragraphs) {
         }
       }
 
-      if (msg === "StartedQuestion" && !document.overlay.injector.interacted) {
-        document.overlay.injector.interacted = true;
+      if (msg === "StartedQuestion" && !document.overlay.interacted) {
+        document.overlay.interacted = true;
         report("StartedQuiz");
         console.log('msg === TriedAnswer && !userAnswered. checkWeeklyPresence fired!');
         document.eo_user.showLiveActions();
-
         is_new_session = document.englishonBackend.is_new_session();
         if (is_new_session) {
           console.log('reporting StartedSession.... ..... ...... ');
@@ -4208,6 +4204,7 @@ Injector = function (paragraphs) {
       return;
     }
     $('.eo-spaces').remove();
+    //check if better do that native
     $(this.elements).each(function (i, q) {
       q.replacement.replaceWith(q.original);
       //check if this is the right place!!!! 
@@ -4216,8 +4213,8 @@ Injector = function (paragraphs) {
       q.qobj.tried = [];
     });
     this.isActive = false;
-    this.interacted = false;
-    this.userAnswered = false;
+    //this.interacted = false;
+    //this.userAnswered = false;
     console.log("hide questions now");
   };
   this.on = function () {
@@ -4232,6 +4229,7 @@ Injector = function (paragraphs) {
       q.original.replaceWith(q.replacement);
       //if the question after answering is too long - add spaces
       var width = q.replacement.outerWidth();
+      var parnt = q.replacement.parent();
       var parentoffset = q.replacement.parent().offset().left;
       var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width;
       q.replacement.find('.eo-hint').text(q.qobj.practicedWord);
@@ -4247,6 +4245,7 @@ Injector = function (paragraphs) {
 
   this.setQuestions = function (questions, toggleSound) {
     this.elements = [];
+    //enable setQuestion after login
     this.isBatch = true;
     for (var i = 0; i < questions.length; i++) {
       this.addQuestion(questions[i], toggleSound);
@@ -4821,7 +4820,8 @@ ExpiredMultipleChoiceQuestion.prototype.constructor = ExpiredMultipleChoiceQuest
 //
 ShturemFrontpageOverlay = function (parts) {
   this.parts = {};
-
+  this.interacted = false;
+  this.userAnswered = false;
   $.each(parts, function (url, para) {
     this.parts[url] = {
       url: url,
@@ -4858,14 +4858,36 @@ ShturemFrontpageOverlay = function (parts) {
     // and should be fixed as soon as the backend
     // implements support for fetching multiple 'pages'
     // with a single query.
+    this.interacted = false;
+    this.userAnswered = false;
+    //to enable fetch again after login
+    $.each(this.parts, function (url, part) {
+      part.questions = [];
+      if (part.injector) {
+        part.injector.off();
+      }
+    });
+    //remove only 'eo-injection-target' tags,not content
+    $('.eo-injection-target').contents().unwrap();
     var promises = $.map(this.parts, function (part, url) {
       return backend.getArticle(url).then(function (questions) {
+        for (var i = 0; i < questions.length; i++) {
+          questions[i].location = part.paragraphs.context.textContent.indexOf(questions[i].context);
+        }
+        questions.sort(function (q1, q2) {
+          return q1.location - q2.location;
+        });
         part.questions = questions;
-        part.injector = new Injector(part.paragraphs), part.injector.setQuestions(questions);
+        console.log("Num questions: " + questions.length);
+        part.injector = new Injector(part.paragraphs);
+        part.injector.setQuestions(questions);
+        return questions;
       }, function (error) {
         // ignore
       });
     });
+    console.log('after set questions for all parts.overlay');
+
     return Promise.all(promises);
   };
 
@@ -4888,6 +4910,8 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.subtitle = subtitle;
   this.bodytext = bodytext;
   this.paragraphs = [subtitle, bodytext];
+  this.interacted = false;
+  this.userAnswered = false;
   // stubs, just to make it "compile"
   this.setReporter = function (backend) {};
   this.fetchLinkStates = function (backend) {
@@ -4908,20 +4932,20 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     //EnglishOnButton.registerHandlers(this);
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
-
-    //$("body").append($('<div>').addClass('Grid Grid--gutters Grid--full large-Grid--1of4 med-Grid--1of3 u-textCenter').html(html_string));   
   }.bind(this);
 
   this.fetchQuestions = function (backend) {
-    // TODO: these are questions for the subtitle.
-    // ask for questions for the body text too.
+    //remove only 'eo-injection-target' tags,not content
+    $('.eo-injection-target').contents().unwrap();
     this.questions = []; //to enable fetch again after login
     if (this.injector) {
       this.injector.off();
     }
+    this.interacted = false;
+    this.userAnswered = false;
     return backend.getArticle(this.url).then(function (questions) {
       for (var i = 0; i < questions.length; i++) {
-        questions[i].word_location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context));
+        questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context));
       }
       questions.sort(function (q1, q2) {
         return q1.location - q2.location;
@@ -4930,7 +4954,6 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
       console.log("Num questions: " + questions.length);
       this.injector = new Injector(this.paragraphs);
       this.injector.setQuestions(questions);
-      //document.overlay.injector.setQuestions(questions);
       return questions;
     }.bind(this));
   };
@@ -5365,12 +5388,12 @@ function englishon() {
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES
   url = window.location.toString().substr(0, window.location.toString().indexOf("id=") + 3);
   if (url != 'http://shturem.net/index.php?section=news&id=' && url != 'http://www.shturem.net/index.php?section=news&id=' && url != 'http://www.englishon.org/hidden/shturem.html') {
-    return;
+    //return;
   }
   if (url != 'http://www.englishon.org/hidden/shturem.html') {
     article_id = Number(window.location.search.substr(window.location.search.indexOf('id=') + 3));
     if (article_id < 91251 || article_id > 91551) {
-      return;
+      //return;
     }
   }
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
@@ -5647,6 +5670,7 @@ var EnglishOnMenu = function () {
         $('#eo-dlg-login').addClass('valid');
         configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
         document.overlay.fetchQuestions(document.englishonBackend).then(function () {
+          console.log('LOGIN BY MAIL after fetch---- eo-target-injection length: ' + $('.eo-injection-target').length);
           document.eo_user.initial();
           document.menu.powerOn();
         });
@@ -5675,7 +5699,6 @@ var EnglishOnMenu = function () {
         window.location.reload();
       }
     } else {
-
       document.overlay.hideQuestions();
       if (document.eo_user) document.eo_user.hideLiveActions();
     }
@@ -5697,7 +5720,6 @@ var EnglishOnMenu = function () {
     configStorage.set({ 'isActive': false });
     $('#eo-power-switch-text').text('OFF');
     $('body').removeClass('eo-active');
-    //debugger;
     document.overlay.hideQuestions();
     document.eo_user.hideLiveActions();
   };
@@ -5927,6 +5949,7 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
   if (document.englishonConfig.isUser) {
     document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
     document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
+      console.log('after fetch question. eo-injection-target length: ' + $('.eo-injection-target').length);
       document.menu = new EnglishOnMenu();
       document.eo_user = new UserInfo(document.englishonConfig.token);
       document.eo_user.initial();
