@@ -3542,7 +3542,7 @@ HerokuBackend.prototype.dictionary = function (new_word) {
 
   var post = this.ajax('POST', '/quiz/editor/dictionary/add/', new_word);
   post.done(function () {
-    console.log("A new word added to dictionary");
+    console.log("Dictionary changed! (A word or new meanings added or removed)");
   });
 };
 HerokuBackend.prototype.create_all_questions = function (address, question) {
@@ -3604,13 +3604,21 @@ Editor.prototype.createAutoQuestion = function (event) {
     });
     var old_meanings = span.find('option').slice(2).text();
     console.log('meaning: ' + span.find('option').text());
-    edit_meanings_dlg = $('<div id="dictionary_edit_dlg">').append($('<div id="edit-meanings-dlg-content">').append($('<div>').text('Edit meanings for the word: ' + replaced)).append($('<input type="text" id="meanings">').val(old_meanings)).append($('<button>').text('Save').on('click', function () {
+    edit_meanings_dlg = $('<div id="dictionary_edit_dlg">').addClass('editor-dlg').append($('<div id="edit-meanings-dlg-content">').append($('<div>').addClass('editor-div').text('Edit meanings for the word: ' + hint)).append($('<input type="text" id="meanings">').val(old_meanings)).append($('<button>').text('Save').on('click', function () {
       console.log('EDIT MEANINGS NOW.');
-      var new_word = { 'word': replaced + ' ' + edit_meanings_dlg.find('#meanings').val(), 'action': 'edit' };
+      var new_word = { 'word': hint + ' ' + edit_meanings_dlg.find('#meanings').val(), 'action': 'edit' };
       document.englishonBackend.dictionary(new_word);
       edit_meanings_dlg.dialog('close');
       edit_meanings_dlg.dialog('destroy');
-    })));
+      //TODO: check why the destroy is not doing the job
+    })).append($('<div>').addClass('editor-div').append($('<button>').text('Delete this word from dictionary').on('click', function () {
+      console.log('DELETE WORD NOW.');
+      var deleted_word = { 'word': hint + ' ', 'action': 'delete' };
+      document.englishonBackend.dictionary(deleted_word);
+      edit_meanings_dlg.dialog('close');
+      edit_meanings_dlg.dialog('destroy');
+      //TODO: check why the destroy is not doing the job
+    }))));
     edit_meanings_dlg.dialog({ modal: true });
     return;
   }
@@ -3620,7 +3628,7 @@ Editor.prototype.createAutoQuestion = function (event) {
   var wrong_words = [];
 
   internal_id_keys = Object.keys(this.eo_dictionary);
-  if (internal_id_keys < 3) {
+  if (internal_id_keys.length < 3) {
     alert('dictionary is containing les than 3 words. cannot create questions. ');
     return;
   }
@@ -3870,10 +3878,12 @@ Editor.prototype.highlight = function () {
       question_dict[questions[i].replaced].push(questions[i].context);
     }
   }
+  $('.artText a').text('HERE IS A LINK!!!!!!');
+  $('.artSubtitle a').text('HERE IS A LINK!!!!!!');
+  //TODO: do the same with the content appearing after the last dote in the subtitle, because in main page it should be a link
   this.ps = [];
   this.paragraphs.each(function (i, p) {
     p = $(p);
-    $('.artText a').text('HERE IS A LINK!!!!!!');
     var text = p.text();
     this.ps.push(text);
     p.empty();
@@ -5610,7 +5620,7 @@ var EnglishOnDialogs = function () {
     }
     //don't do pushstate with DOMelement. after jquery selection of the element this will not work
     window.history.pushState({ 'elementToShow': element }, '');
-  };
+  }.bind(this);
 };
 
 // ****
@@ -5684,7 +5694,7 @@ var EnglishOnMenu = function () {
           document.eoDialogs.hideDialogs(1000);
         } else if (res.status == 'registered') {
           message = 'Thank you for registering! A confirmation message sent to the given email.';
-          document.menu.displayMessage(message, $('#subtitle'));
+          document.eoDialogs.displayMessage(message, $('#subtitle'));
           document.eoDialogs.hideDialogs(3500);
           $('#eo-account-img').addClass('no-iamge');
         }
@@ -5837,11 +5847,11 @@ var EnglishOnMenu = function () {
     $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
     uiLoginActions('logged');
   }
-  $('#eo-account-name').on('click', document.eoDialogs.toggleDialogTrigger.bind(this));
+  $('#eo-account-name').on('click', document.eoDialogs.toggleDialogTrigger);
   if (JSON.parse(document.englishonConfig.editor)) {
     $('#eo-menu').addClass('menu-editor');
     $('#editor-row').removeClass('hidden');
-    var _editor = new Editor(document.overlay);
+    document._editor = new Editor(document.overlay);
     $('#eo-editor-btn').on('click', function (event) {
       document.overlay.hideQuestions();
       document.eoDialogs.hideDialogs();
@@ -5851,8 +5861,8 @@ var EnglishOnMenu = function () {
       // (for now. this should be fixed.)
 
       document.overlay.hideButtons();
-      _editor.fetchQuestions().then(function () {
-        _editor.highlight();
+      document._editor.fetchQuestions().then(function () {
+        document._editor.highlight();
       });
     });
   } else {
@@ -5861,11 +5871,11 @@ var EnglishOnMenu = function () {
 
   //OPTIONS MENU HANDLERS
   $('#account-dropdown').data('elementToShowOnClick', 'eo-dlg-options-main');
-  $('#account-dropdown').on('click', document.eoDialogs.toggleDialogTrigger.bind(this));
+  $('#account-dropdown').on('click', document.eoDialogs.toggleDialogTrigger);
   $('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
-  $('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger.bind(this));
+  $('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger);
   $('#option-dlg-signin').data('elementToShowOnClick', 'eo-dlg-login');
-  $('#option-dlg-signin').on('click', document.eoDialogs.toggleDialogTrigger.bind(this));
+  $('#option-dlg-signin').on('click', document.eoDialogs.toggleDialogTrigger);
   $('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
   $('.eo-site-option').on('click', function (e) {
     configStorage.set({ siteLanguage: $(e.target).attr('id') });

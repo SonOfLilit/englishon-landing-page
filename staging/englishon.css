@@ -2417,13 +2417,12 @@ eo-signout-layout .signout {
 /*@media (max-width: 981px) {
 
 }*/
-.editor-div {
-  padding: 5px;
-}
-
 .editor-dlg {
   direction: ltr;
 }
 .editor-dlg #new-word {
   direction: rtl;
+}
+.editor-dlg .editor-div {
+  padding: 5px;
 }
