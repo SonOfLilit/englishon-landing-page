@@ -320,6 +320,10 @@ div.eo-question,
 div.eo-question > .eo-hint {
   background-color: #78909c;
 }
+div.eo-question.preposition::first-letter,
+div.eo-question > .eo-hint.preposition::first-letter {
+  color: #b8bfc2;
+}
 div.eo-question > .eo-options,
 div.eo-question > .eo-options > .eo-option {
   background-color: #4b5666;
@@ -554,6 +558,9 @@ div.eo-question > .eo-correct {
   top: 0;
   /* grep for width: auto transitions */
   transition: top 0.5s ease-in, padding-left 0.5s, padding-right 0.5s;
+}
+div.eo-question > .eo-correct.preposition::first-letter {
+  color: #b8bfc2;
 }
 div.eo-question.eo-answered > .eo-correct {
   display: block;
@@ -1897,14 +1904,6 @@ eo-signout-layout .signout {
   background: #2cc6a8;
 }
 
-.eo-menu-footer {
-  font-size: 44px;
-  line-height: 1.3;
-  font-family: Roboto;
-  color: #c7d1d5;
-  cursor: pointer;
-}
-
 #tos:hover {
   color: #93a0a8;
 }
@@ -2420,4 +2419,11 @@ eo-signout-layout .signout {
 }*/
 .editor-div {
   padding: 5px;
+}
+
+.editor-dlg {
+  direction: ltr;
+}
+.editor-dlg #new-word {
+  direction: rtl;
 }
