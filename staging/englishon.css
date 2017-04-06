@@ -1967,6 +1967,7 @@ eo-signout-layout .signout {
   position: relative;
 }
 #eo-live #sr {
+  cursor: pointer;
   height: 260px;
 }
 #eo-live #sr #eo-progress {
@@ -2015,6 +2016,7 @@ eo-signout-layout .signout {
 #eo-live #milotrage {
   background-color: black;
   margin: 0px;
+  cursor: pointer;
 }
 #eo-live.eo-live-maximize {
   height: 680px;
@@ -2036,6 +2038,10 @@ eo-signout-layout .signout {
 
 /*CSS FOR DESKTOP*/
 @media (min-width: 1050px) {
+  .Grid-cell {
+    font-size: 16px;
+  }
+
   #eo-dlg-options .Grid--full .Grid-cell > div {
     height: 100%;
     width: 100%;
@@ -2408,6 +2414,25 @@ eo-signout-layout .signout {
   #eo-live > .Grid > .Grid-cell #milotrage {
     background-color: black;
     margin: 4px 20px 4px 20px;
+  }
+  #eo-live #vocabulary {
+    height: 170px;
+    background-color: black;
+    color: white;
+    font-size: 25px;
+    text-align: left;
+  }
+  #eo-live #vocabulary .Grid-cell.cell1 {
+    height: 40px;
+  }
+  #eo-live #vocabulary .Grid-cell.cell2 {
+    height: 130px;
+  }
+  #eo-live #vocabulary #vocabulary-content .vocabulary-odometer, #eo-live #vocabulary #vocabulary-content .vocabulary-word {
+    padding-right: 10px;
+  }
+  #eo-live #vocabulary .Grid-cell #vocabulary-order {
+    background-color: #2cc6a8;
   }
 
   .Grid#days-pannel {
