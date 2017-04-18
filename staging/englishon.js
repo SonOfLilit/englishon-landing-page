@@ -4023,21 +4023,23 @@ UserInfo = function () {
     this.checkWeeklyPresence();
     this.checkSRProgress();
     this.milotrage();
-    $('#eo-live').removeClass('hidden');
+    $('#eo-live').removeClass('hidden vocabulary-open');
     if (document.englishonConfig.media == 'desktop') {
       $('#eo-live').addClass('eo-live-maximize');
       $($(document).on('click', function (e) {
         e.preventDefault();
         e.target = $(e.target);
         if (!e.target.is('.eo-question') && e.target.parents('.eo-question').length === 0) {
-          $('#eo-live').removeClass('eo-live-maximize');
+          $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
           $('#vocabulary').addClass('hidden');
           $('#eo-live-main').removeClass('hidden');
           $(document).off('click');
         }
       }));
       this.setTimeOut = setTimeout(function () {
-        $('#eo-live').removeClass('eo-live-maximize');
+        $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+        $('#vocabulary').addClass('hidden');
+        $('#eo-live-main').removeClass('hidden');
         $(document).off('click');
       }, 10000);
       $('#eo-live').on('click', function (e) {
@@ -4045,12 +4047,25 @@ UserInfo = function () {
       }.bind(this));
     }
   };
+  this.fetchVocabulary = function () {
+    document.englishonBackend.allSRQuestions().then(function (res) {
+      this.srsByAlphabet = res.allSRQuestions;
+      this.srsByTime = res.allSRQuestions.concat();
+      this.srsByTime.sort(function (a, b) {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(a.next_time) - new Date(b.next_time);
+      });
+      $('#vocabulary').data('order', 'alphabet');
+      this.renderVocabulary(this.srsByAlphabet);
+    }.bind(this));
+  };
   this.renderVocabulary = function (words_list) {
     var content = $('<div>');
     $.each(words_list, function (i, word_info) {
       content.append($('<div>').addClass('')
       //the text value is a hack to display the milotrage digits without the decimal point
-      .append($('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append($('<span>').addClass('vocabulary-word').text(word_info.word)).append($('<span>').addClass('vocabulary-translation').text(word_info.translation)));
+      .append($('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append($('<span>').addClass('vocabulary-word').text(word_info.word).on('click', function (e) {})).append($('<span>').addClass('vocabulary-translation hidden').text(word_info.translation)));
     });
     $('#vocabulary-content').html(content);
     var el = document.getElementsByClassName('vocabulary-odometer');
@@ -4108,43 +4123,49 @@ UserInfo = function () {
       e.stopPropagation();
       e.target = $(e.target);
       if (e.target.is('#vocabulary-order')) {
-        this.renderVocabulary(this.srsByTime);
+        if ($('#vocabulary').data('order') == 'alphabet') {
+          $('#vocabulary').data('order', 'srTime');
+          this.renderVocabulary(this.srsByTime);
+        } else {
+          $('#vocabulary').data('order', 'alphabet');
+          this.renderVocabulary(this.srsByAlphabet);
+        }
+        return;
+      }
+      if (e.target.is('.vocabulary-word')) {
+        e.target.next().toggleClass('hidden');
         return;
       }
       if (e.target.parents('#srProgress').length || e.target.parents('#milotrage').length && $('#eo-live').hasClass('eo-live-maximize') || e.target.is('#vocabulary') || e.target.parents('#vocabulary').length) {
         $('#eo-live-main').toggleClass('hidden');
         $('#vocabulary').toggleClass('hidden');
         if (!$('#vocabulary').hasClass('hidden')) {
+          $('#eo-live').addClass('vocabulary-open');
           $('#vocabulary-content').html('');
-          document.englishonBackend.allSRQuestions().then(function (res) {
-            this.srsByAlphabet = res.allSRQuestions;
-            this.srsByTime = res.allSRQuestions.concat();
-            this.srsByTime.sort(function (a, b) {
-              // Turn your strings into dates, and then subtract them
-              // to get a value that is either negative, positive, or zero.
-              return new Date(a.next_time) - new Date(b.next_time);
-            });
-            this.renderVocabulary(this.srsByAlphabet);
-          }.bind(this));
-        }
+          this.fetchVocabulary();
+        } else {
+          $('#eo-live').removeClass('vocabulary-open');
+        };
         return;
       }
       $('#eo-live').toggleClass('eo-live-maximize');
       if (!$('#eo-live').hasClass('eo-live-maximize')) {
+        $('#eo-live-main').removeClass('hidden');
+        $('#vocabulary').addClass('hidden');
+        $('#eo-live').removeClass('vocabulary-open');
         return;
       }
-      $($(document).on('click', function (e) {
+      $(document).on('click', function (e) {
         e.preventDefault();
         e.target = $(e.target);
         if (e.target.is('.eo-question') || e.target.parents('.eo-question').length) {
           return;
         }
-
-        $('#eo-live').removeClass('eo-live-maximize');
+        $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
         $('#vocabulary').addClass('hidden');
         $('#eo-live-main').removeClass('hidden');
         $(document).off('click');
-      }));
+      });
     }.bind(this));
   };
   this.hideLiveActions = function () {
@@ -4231,6 +4252,9 @@ Injector = function (paragraphs) {
           console.log('reporting StartedSession.... ..... ...... ');
           report("StartedSession");
         }
+      }
+      if (!$('#vocabulary').hasClass('hidden') && msg === "CompletedQuestion") {
+        document.eo_user.fetchVocabulary();
       }
     });
     if (msg === "CompletedQuestion" && $('.eo-question:not(.eo-answered)').length === 0) {

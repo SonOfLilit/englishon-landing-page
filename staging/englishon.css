@@ -1959,6 +1959,9 @@ eo-signout-layout .signout {
   overflow: auto;
   z-index: 11;
 }
+#eo-live.vocabulary-open {
+  background-color: black;
+}
 #eo-live #srProgress,
 #eo-live #progress2 {
   margin: 12px 120px 12px 120px;
