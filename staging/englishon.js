@@ -5390,8 +5390,15 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 document.live_actions = "<div class='hidden' id='eo-live'>\
     <div class='Grid Grid--full' id='eo-live-main'>\
         <div class='Grid-cell'>\
-            <div id='milotrage' class='live-part v-align h-align'>\
-                <div id='eo-odometer' class='odometer'>1234567</div>\
+            <div class='Grid' id='milotrage'>\
+                <div class='Grid-cell u-2of10'>\
+                    <div id='actions-logo'></div>\
+                </div>\
+                <div class='Grid-cell'>\
+                    <div  class='live-part v-align h-align'>\
+                        <div id='eo-odometer' class='odometer'>1234567</div>\
+                    </div>\
+                </div>\
             </div>\
         </div>\
         <div class='Grid-cell'>\
