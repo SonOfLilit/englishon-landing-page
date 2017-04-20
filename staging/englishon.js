@@ -4012,7 +4012,7 @@ UserInfo = function () {
       if (val == 1) {
         //adding success styles to progress bar 
         $('#srProgress').addClass('sr-complete');
-        document.eo_user.sr_progress.text.style.fontSize = '30px';
+        document.eo_user.sr_progress.text.style.fontSize = document.englishonConfig.media == 'desktop' ? '30px' : '120px';
         document.eo_user.sr_progress.text.style.color = 'white';
       }
 
@@ -4082,8 +4082,9 @@ UserInfo = function () {
     this.answered = { 'sr_questions': [] };
     if (!this.sr_progress) {
       this.sr_progress = new ProgressBar.Circle(srProgress, {
-        //prevent css style tag to overide class settings
+        //prevent css style tag to overide custom settings
         color: 'invalidProperty',
+        //font-size: 'invalidProperty',
         //color: '#2cc6a8',
         // This has to be the same size as the maximum width to
         // prevent clipping
@@ -4134,6 +4135,11 @@ UserInfo = function () {
       }
       if (e.target.is('.vocabulary-word')) {
         e.target.next().toggleClass('hidden');
+        return;
+      }
+      if (e.target.is('.eo-close')) {
+        $('#eo-live').addClass('hidden');
+        $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
         return;
       }
       if (e.target.parents('#srProgress').length || e.target.parents('#milotrage').length && $('#eo-live').hasClass('eo-live-maximize') || e.target.is('#vocabulary') || e.target.parents('#vocabulary').length) {
@@ -5056,7 +5062,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
 };
 
 function showTermsDialog(callback) {
-  document.eoDialogs.toggleDialog('#eo-dlg-terms');
+  document.eoDialogs.toggleDialog('eo-dlg-terms');
 }
 //
 ScraperFactory = function (location) {
@@ -5283,8 +5289,8 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
             </div>\
             <div class='Grid-cell eo-row10 eo-menu-inner'>\
                 <div class='Grid'>\
-                    <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='http://englishon.desk.com/'>Need Help?</a></div>\
-                    <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='http://englishon.desk.com/'>Contact Us</a></div>\
+                    <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='http://englishon1.desk.com/'>Need Help?</a></div>\
+                    <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='http://englishon1.desk.com/'>Contact Us</a></div>\
                 </div>\
             </div>\
             <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
@@ -5388,16 +5394,15 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 ";
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
+<div class='eo-close'></div>\
     <div class='Grid Grid--full' id='eo-live-main'>\
         <div class='Grid-cell'>\
-            <div class='Grid' id='milotrage'>\
-                <div class='Grid-cell u-2of10'>\
+            <div class='Grid live-part' id='milotrage'>\
+                <div class='Grid-cell actions-logo-cell v-align h-align'>\
                     <div id='actions-logo'></div>\
                 </div>\
-                <div class='Grid-cell'>\
-                    <div  class='live-part v-align h-align'>\
-                        <div id='eo-odometer' class='odometer'>1234567</div>\
-                    </div>\
+                <div class='Grid-cell v-align'>\
+                    <div id='eo-odometer' class='odometer'>1234567</div>\
                 </div>\
             </div>\
         </div>\

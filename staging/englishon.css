@@ -1278,7 +1278,12 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   width: 27% !important;
 }
 
+.u-1of4 {
+  width: 25% !important;
+}
+
 .u-1of3,
+.u-1of4,
 .u-2of3,
 .u-1of6,
 .u-1of2,
@@ -1306,6 +1311,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 .h-align {
+  display: flex;
   justify-content: center;
 }
 
@@ -1323,6 +1329,14 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   -ms-flex: none !important;
   flex: none !important;
   width: 20% !important;
+}
+
+.actions-logo-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 22% !important;
 }
 
 .right-align {
@@ -1478,10 +1492,13 @@ eo-signout-layout .signout {
 }
 
 #actions-logo {
+  height: 27.5px;
+  width: 27.5px;
+  background-size: 27.5px;
   background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
   background-repeat: no-repeat;
-  height: 40px;
-  background-size: 30.5px;
+  background-position-y: center;
+  margin-left: 9px;
 }
 
 #eo-menu .eo-menu-inner {
@@ -1652,7 +1669,7 @@ eo-signout-layout .signout {
   padding-top: 3px;
 }
 
-#eo-dlg-login .eo-row9 {
+.eo-row9 {
   height: 30px;
 }
 
@@ -1966,12 +1983,6 @@ eo-signout-layout .signout {
   display: none;
 }
 
-#eo-dlg-options .Grid--full .Grid-cell > div {
-  height: 100%;
-  width: 100%;
-  line-height: 80px;
-}
-
 #eo-dlg-options {
   height: 250px;
   background-color: #eceff1;
@@ -2007,20 +2018,36 @@ eo-signout-layout .signout {
   height: 60px;
   width: 300px;
   overflow: auto;
-}
-#eo-live #milotrage .Grid-cell {
-  font-size: 30px;
+  cursor: pointer;
 }
 #eo-live.eo-live-maximize {
+  cursor: arrow;
   padding: 20px;
   height: 170px;
 }
 #eo-live.eo-live-maximize #milotrage {
-  background-color: black;
   margin: 0px;
 }
 #eo-live.eo-live-maximize .day-bar {
   margin: 5px;
+}
+#eo-live .eo-close {
+  color: gray;
+  position: fixed;
+  top: 13px;
+  right: 13px;
+  height: 15px;
+  width: 15px;
+  background-size: 15px;
+  background-image: url(http://www.englishon.org/v1/img/close.png);
+  z-index: 20;
+}
+#eo-live .eo-close:hover {
+  background-color: gray;
+  color: white;
+}
+#eo-live.vocabulary-open {
+  background-color: black;
 }
 #eo-live #srProgress,
 #eo-live #progress2 {
@@ -2037,6 +2064,7 @@ eo-signout-layout .signout {
   color: #aaa;
 }
 #eo-live #sr .sr-complete {
+  background-color: #2cc6a8;
   border-radius: 25px;
 }
 #eo-live #sr .sr-complete .progressbar-text {
@@ -2068,15 +2096,19 @@ eo-signout-layout .signout {
   margin: 4px 20px 4px 20px;
   font-size: 30px;
 }
-#eo-live > .Grid > .Grid-cell > .live-part#milotrage {
-  color: red;
-}
 #eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
   /*font-size: 16px*/
 }
 #eo-live > .Grid > .Grid-cell #milotrage {
   background-color: black;
   margin: 4px 20px 4px 20px;
+  cursor: pointer;
+}
+#eo-live > .Grid > .Grid-cell #milotrage .Grid-cell {
+  font-size: 30px;
+}
+#eo-live > .Grid > .Grid-cell #milotrage .live-part {
+  background-color: black;
 }
 #eo-live #vocabulary {
   height: 170px;
@@ -2114,6 +2146,18 @@ This is causing chrome to compute the body width as 980px anycase, in inspector 
 That is the reason to determine 980px as the media queries breakpoint */
 /*MENU FOR MOBILE*/
 @media (max-width: 981px) {
+  #eo-menu .Grid-cell,
+  #eo-dlg-login .Grid-cell,
+  #eo-dlg-options .Grid-cell {
+    font-size: 64px;
+  }
+
+  #eo-menu .eo-menu-footer,
+  #eo-dlg-login .eo-menu-footer,
+  #eo-dlg-options .eo-menu-footer {
+    font-size: 44px;
+  }
+
   #eo-menu,
   #eo-dlg-login {
     position: fixed;
@@ -2122,6 +2166,10 @@ That is the reason to determine 980px as the media queries breakpoint */
     width: 100%;
     height: 100%;
     overflow-y: auto;
+  }
+
+  #eo-menu.menu-editor {
+    height: 100%;
   }
 
   #eo-menu .eo-menu-inner {
@@ -2289,6 +2337,10 @@ That is the reason to determine 980px as the media queries breakpoint */
     transform: scale(3.5);
   }
 
+  #google-iframe {
+    padding-top: 100px;
+  }
+
   #eo-power-switch {
     height: 80px;
     width: 187px;
@@ -2308,26 +2360,39 @@ That is the reason to determine 980px as the media queries breakpoint */
   #eo-dlg-options .Grid-cell {
     height: 280px;
   }
+
+  #eo-dlg-options .Grid--full .Grid-cell > div {
+    line-height: 320px;
+  }
 }
 /*LIVE ACTIONS FOR MOBILE*/
 @media (max-width: 981px) {
   #eo-live {
-    background-color: rgba(0, 0, 0, 0.2);
-    background-clip: padding-box;
-    border: solid transparent;
-    border-width: 1px 1px 1px 6px;
-    min-height: 28px;
-    /*resize: both;*/
-    position: fixed;
     bottom: 10px;
-    right: 10px;
-    width: 960px;
-    height: 125px;
+    right: 0px;
+    /*CHECK IF 100% NEEDED AFTER UPLOAD TO PRODUCTION*/
+    width: 96%;
+    height: 138px;
     overflow: auto;
     z-index: 11;
   }
-  #eo-live.vocabulary-open {
-    background-color: black;
+  #eo-live .live-part {
+    border-radius: 48px;
+    margin: 16px 80px 16px 80px;
+    font-size: 120px;
+  }
+  #eo-live .live-part #eo-odometer {
+    font-size: 80px;
+  }
+  #eo-live .live-part .Grid .Grid-cell {
+    font-size: 64px;
+  }
+  #eo-live #actions-logo {
+    height: 110px;
+    width: 110px;
+    background-size: 110px;
+    background-position-y: center;
+    margin-left: 45px;
   }
   #eo-live #srProgress,
   #eo-live #progress2 {
@@ -2337,24 +2402,21 @@ That is the reason to determine 980px as the media queries breakpoint */
     position: relative;
   }
   #eo-live #sr {
-    cursor: pointer;
     height: 260px;
   }
-  #eo-live #sr #eo-progress {
-    height: 90%;
-    width: 90%;
-  }
   #eo-live #sr .progressbar-text {
-    font-size: 48px;
+    font-size: 120px;
     color: #aaa;
   }
   #eo-live #sr .sr-complete {
-    background-color: #2cc6a8;
     border-radius: 100px;
   }
   #eo-live #sr .sr-complete .progressbar-text {
     font-size: 120px;
     color: white;
+  }
+  #eo-live .actions-logo-cell {
+    width: 32% !important;
   }
   #eo-live .day-bar {
     border-radius: 50px;
@@ -2371,32 +2433,18 @@ That is the reason to determine 980px as the media queries breakpoint */
   #eo-live > .Grid > .Grid-cell {
     height: 100%;
   }
-  #eo-live > .Grid > .Grid-cell > .live-part {
-    border-radius: 12px;
-    background-color: white;
-    margin: 16px 80px 16px 80px;
-    font-size: 120px;
-  }
-  #eo-live > .Grid > .Grid-cell > .live-part #eo-odometer {
-    font-size: 90px;
-  }
-  #eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
-    font-size: 64px;
-  }
-  #eo-live #milotrage {
-    background-color: black;
-    margin: 0px;
-    cursor: pointer;
+  #eo-live > .Grid > .Grid-cell #milotrage .Grid-cell {
+    font-size: 100px;
   }
   #eo-live.eo-live-maximize {
-    height: 680px;
+    height: 550px;
   }
   #eo-live.eo-live-maximize #milotrage {
     background-color: black;
     margin: 16px 80px 16px 80px;
   }
   #eo-live.eo-live-maximize #milotrage #eo-odometer {
-    font-size: 120px;
+    /*font-size: 80px;*/
   }
   #eo-live.eo-live-maximize .day-bar {
     margin: 10px;
@@ -2414,7 +2462,4 @@ That is the reason to determine 980px as the media queries breakpoint */
 }
 .editor-dlg .editor-div {
   padding: 5px;
-}
-.editor-dlg #eo-dlg-options .Grid--full .Grid-cell > div {
-  line-height: 300px;
 }
