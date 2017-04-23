@@ -3421,20 +3421,16 @@ HerokuBackend.prototype.mergeTokens = function (oldToken, newToken) {
 };
 
 HerokuBackend.prototype.milotrage = function () {
-  console.log('HerokuBackend.prototype.milotrage');
   return this.ajax("POST", "/quiz/score/milotrage/", { 'token': this.token });
 };
 HerokuBackend.prototype.checkpersistence = function () {
-  console.log('HerokuBackend.prototype.score');
   var post = this.ajax("POST", "/quiz/score/checkpersistence/", { 'token': this.token });
 };
 HerokuBackend.prototype.allSRQuestions = function () {
-  console.log('HerokuBackend.prototype.score');
   return this.ajax("POST", "/quiz/score/allSRQuestions/", { 'token': this.token });
 };
 
 HerokuBackend.prototype.score = function (score_num) {
-  console.log('HerokuBackend.prototype.score');
   var post = this.ajax("POST", "/quiz/score/score/", { 'token': this.token, 'scores_num': score_num });
   post.done(function () {
     console.log('user got scores');
@@ -3445,17 +3441,21 @@ HerokuBackend.prototype.score = function (score_num) {
 };
 
 HerokuBackend.prototype.checkWeeklyPresence = function () {
-  console.log('checkWeeklyPresence');
   return this.ajax("POST", "/quiz/score/checkWeeklyPresence/", { 'token': this.token });
 };
 
 HerokuBackend.prototype.getUnAnsweredSR = function (address) {
-  console.log('HerokuBackend.prototype.getUnAnsweredSR');
   return this.ajax("POST", "/quiz/getUnAnsweredSR/", { 'token': this.token });
 };
 HerokuBackend.prototype.getAnsweredSR = function (address) {
-  console.log('HerokuBackend.prototype.getCompletedSR');
   return this.ajax("POST", "/quiz/getAnsweredSR/", { 'token': this.token });
+};
+
+HerokuBackend.prototype.acceptedTerms = function (address) {
+  return this.ajax("POST", "/quiz/acceptedTerms/", { 'token': this.token });
+};
+HerokuBackend.prototype.rejectedTerms = function (address) {
+  return this.ajax("POST", "/quiz/rejectedTerms/", { 'token': this.token });
 };
 
 HerokuBackend.prototype.getArticle = function (address) {
@@ -3632,8 +3632,8 @@ Editor.prototype.createAutoQuestion = function (event) {
   var wrong_words = [];
 
   internal_id_keys = Object.keys(this.eo_dictionary);
-  if (internal_id_keys.length < 3) {
-    alert('dictionary is containing les than 3 words. cannot create questions. ');
+  if (internal_id_keys.length < 4) {
+    alert('dictionary is containing les than 4 words. cannot create questions. ');
     return;
   }
   while (wrong.length < 3) {
@@ -4284,6 +4284,7 @@ Injector = function (paragraphs) {
     if (!this.isActive) {
       return;
     }
+    this.isActive = false;
     $('.eo-spaces').remove();
     $(this.elements).each(function (i, q) {
       q.replacement.replaceWith(q.original);
@@ -4292,7 +4293,7 @@ Injector = function (paragraphs) {
       q.qobj.touched = false;
       q.qobj.tried = [];
     });
-    this.isActive = false;
+
     //this.interacted = false;
     //this.userAnswered = false;
     console.log("hide questions now");
@@ -4301,6 +4302,7 @@ Injector = function (paragraphs) {
     if (this.isActive) {
       return;
     }
+    this.isActive = true;
     //a touch in shruerm css... increase space between lines
     if (this.elements.length) $('.artText').last().css('line-height', '150%');
     $(this.elements).each(function (i, q) {
@@ -4324,7 +4326,6 @@ Injector = function (paragraphs) {
         $('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').insertBefore(q.replacement);
       }
     });
-    this.isActive = true;
   };
 
   this.setQuestions = function (questions, toggleSound) {
@@ -4904,19 +4905,280 @@ var ExpiredMultipleChoiceQuestion = function (question) {
 ExpiredMultipleChoiceQuestion.prototype = Object.create(AbstractExpiredQuestion.prototype);
 ExpiredMultipleChoiceQuestion.prototype.constructor = ExpiredMultipleChoiceQuestion;
 //
-ShturemFrontpageOverlay = function (parts) {
-  this.parts = {};
-  this.interacted = false;
-  this.userAnswered = false;
-  $.each(parts, function (url, para) {
-    this.parts[url] = {
-      url: url,
-      paragraphs: $(para),
-      questions: null,
-      injector: null
-    };
-  }.bind(this));
-
+document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
+    <div id='eo-menu' class='hidden eo-area'>\
+        <div class='header'>\
+            <div id='eo-account-area'>\
+                <div class='Grid u-textCenter eo-row eo-menu-inner'>\
+                    <div class='Grid-cell u-2of10'>\
+                        <div id='eo-account-img'></div>\
+                    </div>\
+                    <div class='Grid-cell u-7of10  v-align h-align'>\
+                        <div id='eo-account-name'></div>\
+                    </div>\
+                    <div class='Grid-cell v-align u-1of10 right-align'>\
+                        <div id='account-dropdown'>&#9662;</div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class='Grid u-textCenter eo-row eo-menu-inner'>\
+                <div class='Grid-cell u-1of3 v-align'>\
+                    <div id='eo-power-switch'>\
+                        <span id='eo-power-switch-text'></span>\
+                        <div id='eo-power-switch-circle'></div>\
+                    </div>\
+                </div>\
+                <div class='Grid-cell delimiter'>\
+                    <div class='eo-line'></div>\
+                </div>\
+                <div class='Grid-cell'>\
+                    <div class='Grid'>\
+                        <div class='Grid-cell u-1of3 v-align h-align'>\
+                            <div id='eo-speaker-res'></div>\
+                        </div>\
+                        <div class='Grid-cell v-align right-align'>\
+                            <div id='eo-slider'></div>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+        </div>\
+        <div class='languages_picker'>\
+            <div class='Grid Grid--full'>\
+                <div class='Grid-cell v-align eo-menu-inner' id='eo-picker-tittle'>\
+                    <div id='eo-language_header'>Pick a language</div>\
+                </div>\
+                <div class='Grid-cell eo-menu-inner available'>\
+                    <div class='Grid eo-row'>\
+                        <div class='Grid-cell u-1of6'>\
+                            <div class='flag us-flag'></div>\
+                        </div>\
+                        <div class='Grid-cell v-align '>\
+                            <div class='eo-language-option-res'>English (US)</div>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div id='coming_soon'>\
+                <div class='Grid-cell eo-row eo-menu-inner'>\
+                    <div class='Grid'>\
+                        <span class='tooltip'>Coming soon</span>\
+                        <div class='Grid-cell u-1of6 eo-low-layer'>\
+                            <div class='flag sp-flag'></div>\
+                        </div>\
+                        <div class='Grid-cell v-align eo-low-layer'>\
+                            <div class='eo-language-option-res'>Spanish</div>\
+                        </div>\
+                    </div>\
+                </div>\
+                <div class='Grid-cell eo-row eo-menu-inner' id='eo-last-option'>\
+                    <div class='Grid'>\
+                        <span class='tooltip'>Coming soon</span>\
+                        <div class='Grid-cell u-1of6 eo-low-layer'>\
+                            <div class='flag fr-flag'></div>\
+                        </div>\
+                        <div class='Grid-cell v-align eo-low-layer'>\
+                            <div class='eo-language-option-res'>French</div>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class='Grid-cell eo-row11 h-align'>\
+                <div id='englishon-bottom'></div>\
+            </div>\
+            <div class='Grid-cell eo-row10 eo-menu-inner'>\
+                <div class='Grid'>\
+                    <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='http://englishon1.desk.com/'>Need Help?</a></div>\
+                    <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='http://englishon1.desk.com/'>Contact Us</a></div>\
+                </div>\
+            </div>\
+            <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
+                <div class='Grid-cell v-align h-align'>\
+                    <div id='eo-editor-btn' class='v-align h-align'>edit questions</div>\
+                </div>\
+            </div>\
+        </div>\
+    </div>\
+</div>\
+";
+//
+document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
+    <div id='eo-dlg-inner'>\
+        <div class='Grid Grid--full'>\
+            <div class='Grid-cell eo-row2'>\
+                <div class='Grid'>\
+                    <div class='Grid-cell header-cell right-align v-align'>\
+                        <div id='dlg-sign-in-header'>Sign In</div>\
+                    </div>\
+                    <div class='Grid-cell icon-cell'>\
+                        <div id='eo-dlg-icon'></div>\
+                    </div>\
+                    <div class='Grid-cell header-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
+                </div>\
+            </div>\
+            <div class='Grid-cell eo-row3 v-align h-align'>\
+                <div class='subtitle' id='subtitle'>Welcome to englishon. Learn english- fast and fun</div>\
+            </div>\
+            <div class='Grid-cell eo-row4'>\
+                <div id='google-iframe'></div>\
+            </div>\
+            <div class='Grid-cell hidden'>\
+                <div id='eo-google-msg' class='eo-message'></div>\
+            </div>\
+            <div class='Grid-cell eo-row5'>\
+                <div class='Grid'>\
+                    <div class='Grid-cell line eo-delimiter'></div>\
+                    <div class='Grid-cell v-align h-align'>\
+                        <span class='subtitle' id='or'>OR</span>\
+                    </div>\
+                    <div class='Grid-cell line eo-delimiter'></div>\
+                </div>\
+            </div>\
+            <div class='Grid-cell eo-row6'>\
+                <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' />\
+            </div>\
+            <div class='Grid-cell hidden eo-row8'>\
+                <div id='login-email-msg' class='error eo-message'></div>\
+            </div>\
+            <div class='Grid-cell eo-row6'>\
+                <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' />\
+            </div>\
+            <div class='Grid-cell hidden eo-row8'>\
+                <div id='login-password-msg' class='error eo-message'></div>\
+            </div>\
+            <div class='Grid-cell v-align right-align eo-row9'>\
+                <div class='v-align right-align eo-menu-footer'>\
+                    <a href='http://localhost:8080/recover' id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
+                </div>\
+            </div>\
+            <div class='Grid-cell eo-row12'>\
+            </div>\
+            <div class='Grid-cell eo-row7 v-align h-align'>\
+                <div id='eo-mail-login-btn' class='v-align h-align'>sign in</div>\
+            </div>\
+        </div>\
+    </div>\
+</div>\
+</div>\
+";
+//
+document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
+    <div class='Grid Grid--full eo-inner-area hidden' id ='eo-dlg-options-main'>\
+        <div class='Grid-cell option-dlg-guest'>\
+            <div id='option-dlg-signin' >sign in</div>\
+        </div>\
+        <div class='Grid-cell option-dlg-guest'>\
+            <div id='get-started'>get started</div>\
+        </div>\
+        <div class='Grid-cell option'>\
+            <div id='eo-choose-lang'>Choose site language</div>\
+        </div>\
+        <div class='Grid-cell option-dlg-logged'>\
+            <div id='signout_btn'>Sign out</div>\
+        </div>\
+        <div class='Grid-cell v-align h-align'>\
+            <div id='eo-signout-msg'></div>\
+        </div>\
+    </div>\
+    <div id='eo-site-languages' class='hidden Grid Grid--full eo-inner-area'>\
+        <div class='Grid-cell option'>\
+            <div class='eo-site-option' id='english'>English</div>\
+        </div>\
+        <div class='Grid-cell option'>\
+            <div class='eo-site-option' id='hebrew'>עברית</div>\
+        </div>\
+    </div>    \
+</div>\
+\
+";
+//
+document.live_actions = "<div class='hidden' id='eo-live'>\
+<div class='eo-close'></div>\
+    <div class='Grid Grid--full' id='eo-live-main'>\
+        <div class='Grid-cell'>\
+            <div class='Grid live-part' id='milotrage'>\
+                <div class='Grid-cell actions-logo-cell v-align h-align'>\
+                    <div id='actions-logo'></div>\
+                </div>\
+                <div class='Grid-cell v-align'>\
+                    <div id='eo-odometer' class='odometer'>1234567</div>\
+                </div>\
+            </div>\
+        </div>\
+        <div class='Grid-cell'>\
+            <div id='sr' class='live-part v-align h-align'>\
+                <div id='srProgress'></div>\
+            </div>\
+        </div>\
+        <div class='Grid-cell'>\
+            <div id='persistence' class='live-part'>\
+                <div class='Grid' id='days-pannel'>\
+                    <div class='Grid-cell'>\
+                        <div class='day-bar v-align h-align' id='eo-day1'>1</div>\
+                    </div>\
+                    <div class='Grid-cell'>\
+                        <div class='day-bar v-align h-align' id='eo-day2'>2</div>\
+                    </div>\
+                    <div class='Grid-cell'>\
+                        <div class='day-bar v-align h-align' id='eo-day3'>3</div>\
+                    </div>\
+                    <div class='Grid-cell'>\
+                        <div class='day-bar v-align h-align' id='eo-day4'>4</div>\
+                    </div>\
+                    <div class='Grid-cell'>\
+                        <div class='day-bar v-align h-align' id='eo-day5'>5</div>\
+                    </div>\
+                    <div class='Grid-cell'>\
+                        <div class='day-bar v-align h-align' id='eo-day6'>6</div>\
+                    </div>\
+                    <div class='Grid-cell'>\
+                        <div class='day-bar v-align h-align' id='eo-day7'>7</div>\
+                    </div>\
+                </div>\
+            </div>\
+        </div>\
+    </div>\
+    <div id='vocabulary' class='Grid Grid--full hidden'>\
+        <div class='Grid-cell cell1'>\
+            <div id='vocabulary-order'>change the list order</div>\
+        </div>\
+        <div class='Grid-cell cell2'>\
+            <div id='vocabulary-content'>\
+            </div>\
+        </div>\
+    </div>\
+</div>\
+";
+//
+document.TERMS_DLG = "<div id='eo-dlg-terms' class='hidden eo-area'>\
+    <div id='eo-dlg-inner'>\
+        <div class='Grid Grid--full'>\
+            <div class='Grid-cell eo-row2'>\
+                <div class='Grid'>\
+                    <div class='Grid-cell terms-icon-cell'>\
+                        <div id='eo-dlg-icon'></div>\
+                    </div>\
+                    <div class='Grid-cell terms-header-cell left-align v-align' id='dlg-terms-header'>Terms and Conditions</div>\
+                </div>\
+            </div>\
+            <div class='Grid-cell eo-row3 v-align h-align'>\
+                <div class='subtitle' id='subtitle'>Do you agree to the <a href='#'>Terms and Conditions</a></div>\
+            </div>\
+            <div class='Grid-cell'>and</div>\
+            <div class='Grid-cell subtitle'> <a>Privacy Policy</a></div>\
+        </div>\
+        <div class='Grid-cell eo-row4 v-align h-align'>\
+            <div id='eo-accept-btn' class='v-align h-align'>Yes</div>\
+        </div>\
+        <div class='Grid-cell eo-row4 v-align h-align'>\
+            <div id='eo-reject-btn' class='v-align h-align'>No</div>\
+        </div>\
+    </div>\
+</div>\
+</div>\
+";
+//
+ShturemOverlay = function () {
   // stubs, just to make it "compile"
   this.setReporter = function (backend) {};
   this.fetchLinkStates = function (backend) {
@@ -4937,15 +5199,57 @@ ShturemFrontpageOverlay = function (parts) {
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
   };
+  this.showTermsDialog = function (callback) {
+    this.insertContent($(document.TERMS_DLG));
+    if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
+      var menuTop = 0;
+    } else {
+      var menuTop = (screen.height - 540) / 2;
+    }
+    $('#eo-dlg-terms').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
+    $('#eo-accept-btn').on('click', function () {
+      document.englishonBackend.acceptedTerms().then(function () {
+        document.eoDialogs.hideDialogs();
+        this.fetchQuestions().then(callback);
+      }.bind(this));
+    }.bind(this));
+    $('#eo-reject-btn').on('click', function () {
+      document.eoDialogs.hideDialogs();
+      document.englishonBackend.rejectedTerms().then(function () {
+        //give the user a status of guest
+        window.localStorage.removeItem('email');
+        window.localStorage.removeItem('eo-user-name');
+        window.location.reload();
+      }.bind(this));
+    }.bind(this));
 
-  this.fetchQuestions = function (backend) {
+    document.eoDialogs.toggleDialog('eo-dlg-terms');
+  };
+};
+ShturemFrontpageOverlay = function (parts) {
+  this.parts = {};
+  this.interacted = false;
+  this.userAnswered = false;
+  ShturemOverlay.call(this);
+  $.each(parts, function (url, para) {
+    this.parts[url] = {
+      url: url,
+      paragraphs: $(para),
+      questions: null,
+      injector: null
+    };
+  }.bind(this));
+
+  this.fetchQuestions = function () {
     // send a separate request per part, (about 26)
     // results in many rounds-trips. this is wasteful
     // and should be fixed as soon as the backend
     // implements support for fetching multiple 'pages'
     // with a single query.
+    var backend = document.englishonBackend;
     this.interacted = false;
     this.userAnswered = false;
+    this.flag = '';
     //to enable fetch again after login
     $.each(this.parts, function (url, part) {
       part.questions = [];
@@ -4969,14 +5273,17 @@ ShturemFrontpageOverlay = function (parts) {
         part.injector = new Injector(part.paragraphs);
         part.injector.setQuestions(questions);
         return questions;
-      }, function (error) {
-        if (error == 'terms_not_accepted') {
-          showTermsDialog(this.fetchQuestions.bind(this));
-        }
       }.bind(this));
-    });
-    console.log('after set questions for all parts.overlay');
+    }.bind(this));
 
+    // $.when(promises).done(function() {
+    //   console.log('after set questions for all parts.overlay');
+    //   if (this.flag == 'terms_not_accepted') {
+    //     this.showTermsDialog();
+    //   }
+    // });
+    // $.when($.ajax("/page1.php"), $.ajax("/page2.php"))
+    //   .then(myFunc, myFailure);
     return Promise.all(promises);
   };
 
@@ -5001,29 +5308,9 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.paragraphs = [subtitle, bodytext];
   this.interacted = false;
   this.userAnswered = false;
-  // stubs, just to make it "compile"
-  this.setReporter = function (backend) {};
-  this.fetchLinkStates = function (backend) {
-    return Promise.resolve();
-  };
-
-  this.markLinks = function (links) {};
-  this.hideButtons = function () {
-    $('.eo-button').addClass('hidden');
-  };
-  this.insertContent = function (element) {
-    //element.insertBefore($('table:first'));
-    $('body').append(element);
-  };
-  this.showButtons = function () {
-    //this.injector = new Injector(this.paragraphs);
-    $('div#top_menu_block').append(EnglishOnButton.element);
-    //EnglishOnButton.registerHandlers(this);
-    // needs to be done here because registering event handlers
-    // only works correctly after inserting the element into DOM.
-  }.bind(this);
-
-  this.fetchQuestions = function (backend) {
+  ShturemOverlay.call(this);
+  this.fetchQuestions = function () {
+    var backend = document.englishonBackend;
     //remove only 'eo-injection-target' tags,not content
     //check if better do that native
     $('.eo-injection-target').contents().unwrap();
@@ -5045,10 +5332,6 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
       this.injector = new Injector(this.paragraphs);
       this.injector.setQuestions(questions);
       return questions;
-    }.bind(this), function (error) {
-      if (error == 'terms_not_accepted') {
-        showTermsDialog(this.fetchQuestions.bind(this));
-      }
     }.bind(this));
   };
 
@@ -5060,10 +5343,6 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     if (this.injector) this.injector.off();
   }.bind(this);
 };
-
-function showTermsDialog(callback) {
-  document.eoDialogs.toggleDialog('eo-dlg-terms');
-}
 //
 ScraperFactory = function (location) {
   if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
@@ -5205,251 +5484,6 @@ var Speaker = new function () {
 // context.nodes.push(source);
 // source.buffer = Audiobuffer;
 // source.playbackRate.value = 1.5;
-//
-document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
-    <div id='eo-menu' class='hidden eo-area'>\
-        <div class='header'>\
-            <div id='eo-account-area'>\
-                <div class='Grid u-textCenter eo-row eo-menu-inner'>\
-                    <div class='Grid-cell u-2of10'>\
-                        <div id='eo-account-img'></div>\
-                    </div>\
-                    <div class='Grid-cell u-7of10  v-align h-align'>\
-                        <div id='eo-account-name'></div>\
-                    </div>\
-                    <div class='Grid-cell v-align u-1of10 right-align'>\
-                        <div id='account-dropdown'>&#9662;</div>\
-                    </div>\
-                </div>\
-            </div>\
-            <div class='Grid u-textCenter eo-row eo-menu-inner'>\
-                <div class='Grid-cell u-1of3 v-align'>\
-                    <div id='eo-power-switch'>\
-                        <span id='eo-power-switch-text'></span>\
-                        <div id='eo-power-switch-circle'></div>\
-                    </div>\
-                </div>\
-                <div class='Grid-cell delimiter'>\
-                    <div class='eo-line'></div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <div class='Grid'>\
-                        <div class='Grid-cell u-1of3 v-align h-align'>\
-                            <div id='eo-speaker-res'></div>\
-                        </div>\
-                        <div class='Grid-cell v-align right-align'>\
-                            <div id='eo-slider'></div>\
-                        </div>\
-                    </div>\
-                </div>\
-            </div>\
-        </div>\
-        <div class='languages_picker'>\
-            <div class='Grid Grid--full'>\
-                <div class='Grid-cell v-align eo-menu-inner' id='eo-picker-tittle'>\
-                    <div id='eo-language_header'>Pick a language</div>\
-                </div>\
-                <div class='Grid-cell eo-menu-inner available'>\
-                    <div class='Grid eo-row'>\
-                        <div class='Grid-cell u-1of6'>\
-                            <div class='flag us-flag'></div>\
-                        </div>\
-                        <div class='Grid-cell v-align '>\
-                            <div class='eo-language-option-res'>English (US)</div>\
-                        </div>\
-                    </div>\
-                </div>\
-            </div>\
-            <div id='coming_soon'>\
-                <div class='Grid-cell eo-row eo-menu-inner'>\
-                    <div class='Grid'>\
-                        <span class='tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6 eo-low-layer'>\
-                            <div class='flag sp-flag'></div>\
-                        </div>\
-                        <div class='Grid-cell v-align eo-low-layer'>\
-                            <div class='eo-language-option-res'>Spanish</div>\
-                        </div>\
-                    </div>\
-                </div>\
-                <div class='Grid-cell eo-row eo-menu-inner' id='eo-last-option'>\
-                    <div class='Grid'>\
-                        <span class='tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6 eo-low-layer'>\
-                            <div class='flag fr-flag'></div>\
-                        </div>\
-                        <div class='Grid-cell v-align eo-low-layer'>\
-                            <div class='eo-language-option-res'>French</div>\
-                        </div>\
-                    </div>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row11 h-align'>\
-                <div id='englishon-bottom'></div>\
-            </div>\
-            <div class='Grid-cell eo-row10 eo-menu-inner'>\
-                <div class='Grid'>\
-                    <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='http://englishon1.desk.com/'>Need Help?</a></div>\
-                    <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='http://englishon1.desk.com/'>Contact Us</a></div>\
-                </div>\
-            </div>\
-            <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
-                <div class='Grid-cell v-align h-align'>\
-                    <div id='eo-editor-btn' class='v-align h-align'>edit questions</div>\
-                </div>\
-            </div>\
-        </div>\
-    </div>\
-</div>\
-";
-//
-document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
-    <div id='eo-dlg-inner'>\
-        <div class='Grid Grid--full'>\
-            <div class='Grid-cell eo-row2'>\
-                <div class='Grid'>\
-                    <div class='Grid-cell header-cell right-align v-align'>\
-                        <div class='' id='dlg-sign-in-header'>Sign In</div>\
-                    </div>\
-                    <div class='Grid-cell icon-cell'>\
-                        <div id='eo-dlg-icon'></div>\
-                    </div>\
-                    <div class='Grid-cell header-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row3 v-align h-align'>\
-                <div class='subtitle' id='subtitle'>Welcome to englishon. Learn english- fast and fun</div>\
-            </div>\
-            <div class='Grid-cell eo-row4'>\
-                <div id='google-iframe'></div>\
-            </div>\
-            <div class='Grid-cell hidden'>\
-                <div id='eo-google-msg' class='eo-message'></div>\
-            </div>\
-            <div class='Grid-cell eo-row5'>\
-                <div class='Grid'>\
-                    <div class='Grid-cell line eo-delimiter'></div>\
-                    <div class='Grid-cell v-align h-align'>\
-                        <span class='subtitle' id='or'>OR</span>\
-                    </div>\
-                    <div class='Grid-cell line eo-delimiter'></div>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row6'>\
-                <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' />\
-            </div>\
-            <div class='Grid-cell hidden eo-row8'>\
-                <div id='login-email-msg' class='error eo-message'></div>\
-            </div>\
-            <div class='Grid-cell eo-row6'>\
-                <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' />\
-            </div>\
-            <div class='Grid-cell hidden eo-row8'>\
-                <div id='login-password-msg' class='error eo-message'></div>\
-            </div>\
-            <div class='Grid-cell v-align right-align eo-row9'>\
-                <div class='v-align right-align eo-menu-footer'>\
-                    <a href='http://localhost:8080/recover' id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row12'>\
-            </div>\
-            <div class='Grid-cell eo-row7 v-align h-align'>\
-                <div id='eo-mail-login-btn' class='v-align h-align'>sign in</div>\
-            </div>\
-        </div>\
-    </div>\
-</div>\
-</div>\
-";
-//
-document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
-    <div class='Grid Grid--full eo-inner-area hidden' id ='eo-dlg-options-main'>\
-        <div class='Grid-cell option-dlg-guest'>\
-            <div id='option-dlg-signin' >sign in</div>\
-        </div>\
-        <div class='Grid-cell option-dlg-guest'>\
-            <div id='get-started'>get started</div>\
-        </div>\
-        <div class='Grid-cell option'>\
-            <div id='eo-choose-lang'>Choose site language</div>\
-        </div>\
-        <div class='Grid-cell option-dlg-logged'>\
-            <div id='signout_btn'>Sign out</div>\
-        </div>\
-        <div class='Grid-cell v-align h-align'>\
-            <div id='eo-signout-msg'></div>\
-        </div>\
-    </div>\
-    <div id='eo-site-languages' class='hidden Grid Grid--full eo-inner-area'>\
-        <div class='Grid-cell option'>\
-            <div class='eo-site-option' id='english'>English</div>\
-        </div>\
-        <div class='Grid-cell option'>\
-            <div class='eo-site-option' id='hebrew'>עברית</div>\
-        </div>\
-    </div>    \
-</div>\
-\
-";
-//
-document.live_actions = "<div class='hidden' id='eo-live'>\
-<div class='eo-close'></div>\
-    <div class='Grid Grid--full' id='eo-live-main'>\
-        <div class='Grid-cell'>\
-            <div class='Grid live-part' id='milotrage'>\
-                <div class='Grid-cell actions-logo-cell v-align h-align'>\
-                    <div id='actions-logo'></div>\
-                </div>\
-                <div class='Grid-cell v-align'>\
-                    <div id='eo-odometer' class='odometer'>1234567</div>\
-                </div>\
-            </div>\
-        </div>\
-        <div class='Grid-cell'>\
-            <div id='sr' class='live-part v-align h-align'>\
-                <div id='srProgress'></div>\
-            </div>\
-        </div>\
-        <div class='Grid-cell'>\
-            <div id='persistence' class='live-part'>\
-                <div class='Grid' id='days-pannel'>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day1'>1</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day2'>2</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day3'>3</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day4'>4</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day5'>5</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day6'>6</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day7'>7</div>\
-                    </div>\
-                </div>\
-            </div>\
-        </div>\
-    </div>\
-    <div id='vocabulary' class='Grid Grid--full hidden'>\
-        <div class='Grid-cell cell1'>\
-            <div id='vocabulary-order'>change the list order</div>\
-        </div>\
-        <div class='Grid-cell cell2'>\
-            <div id='vocabulary-content'>\
-            </div>\
-        </div>\
-    </div>\
-</div>\
-";
 //
 // **************
 // Initialization
@@ -5782,9 +5816,16 @@ var EnglishOnMenu = function () {
         $('#eo-account-area').removeClass('guest');
         $('#eo-dlg-login').addClass('valid');
         configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
-        document.overlay.fetchQuestions(document.englishonBackend).then(function () {
+        var TODOAfterFetch = function () {
           document.eo_user.initial();
           document.menu.powerOn();
+        };
+        document.overlay.fetchQuestions().then(function () {
+          TODOAfterFetch();
+        }, function (error) {
+          if (error == 'terms_not_accepted') {
+            document.overlay.showTermsDialog(TODOAfterFetch);
+          }
         });
         $('#eo-account-name').text(email.val());
         $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
@@ -5858,7 +5899,7 @@ var EnglishOnMenu = function () {
       document.eoDialogs.hideDialogs();
       $('body').addClass('guest').removeClass('logged');
       //prepare questions for guest
-      document.overlay.fetchQuestions(document.englishonBackend).then(function () {
+      document.overlay.fetchQuestions().then(function () {
         document.eo_user.initial();
       });
     });
@@ -5869,7 +5910,6 @@ var EnglishOnMenu = function () {
   }
   document.overlay.insertContent($(document.MENU_HTML));
   document.overlay.insertContent($(document.LOGIN_DLG));
-  document.overlay.insertContent($(document.TERMS_DLG));
   document.overlay.insertContent($(document.OPTIONS_DLG));
   document.overlay.insertContent($(document.live_actions));
   EnglishOnButton.on();
@@ -5903,13 +5943,12 @@ var EnglishOnMenu = function () {
   if (document.englishonConfig.media == 'desktop') {
     //top left values to display centered dialogs 
     if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
-      var menuTop = -0;
+      var menuTop = 0;
     } else {
       var menuTop = (screen.height - 540) / 2;
     }
     $('#eo-menu').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
     $('#eo-dlg-login').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
-    $('#eo-dlg-terms').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
     $('#eo-dlg-options').css({ top: menuTop + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' });
   }
   // ***********************
@@ -6063,15 +6102,24 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
   if (document.englishonConfig.isUser) {
     document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
     document.eoDialogs = new EnglishOnDialogs();
-    document.overlay.fetchQuestions(document.englishonBackend).then(function (questions) {
+    var TODOAfterFetch = function () {
       document.menu = new EnglishOnMenu();
       document.eo_user = new UserInfo(document.englishonConfig.token);
       document.eo_user.initial();
       if ($('.eo-expired').length) {
         document.eo_user.showLiveActions();
       }
+    };
+    document.overlay.fetchQuestions().then(function (questions) {
+      TODOAfterFetch();
+    }, function (error) {
+      if (error == 'terms_not_accepted') {
+        document.overlay.showTermsDialog(TODOAfterFetch);
+      }
     });
-  } else document.menu = new EnglishOnMenu();
+  } else {
+    document.menu = new EnglishOnMenu();
+  }
 });
 
 function receiveMessage(event) {
@@ -6094,9 +6142,16 @@ function receiveMessage(event) {
     document.englishonBackend.token = django_token;
 
     $('body').addClass('logged').removeClass('guest');
-    document.overlay.fetchQuestions(document.englishonBackend).then(function () {
+    var TODOAfterFetch = function () {
       document.eo_user.initial();
       document.menu.powerOn();
+    };
+    document.overlay.fetchQuestions().then(function () {
+      TODOAfterFetch();
+    }, function (error) {
+      if (error == 'terms_not_accepted') {
+        document.overlay.showTermsDialog(TODOAfterFetch);
+      }
     });
     localStorage.setItem('email', email);
     $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');

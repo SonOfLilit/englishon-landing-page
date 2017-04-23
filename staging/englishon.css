@@ -1331,6 +1331,22 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   width: 20% !important;
 }
 
+.terms-icon-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 17% !important;
+}
+
+.terms-header-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 80% !important;
+}
+
 .actions-logo-cell {
   -webkit-box-flex: 0 !important;
   -webkit-flex: none !important;
@@ -1835,7 +1851,8 @@ eo-signout-layout .signout {
 
 /*LOGIN DIALOG AND SHARED AREA*/
 #eo-menu,
-#eo-dlg-login {
+#eo-dlg-login,
+#eo-dlg-terms {
   border: 1px solid #d7dee3;
   background-color: #eceff1;
   z-index: 12;
@@ -1863,7 +1880,8 @@ eo-signout-layout .signout {
 
 #eo-menu,
 #eo-dlg-login,
-#eo-dlg-options {
+#eo-dlg-options,
+#eo-dlg-terms {
   width: 240px;
   height: 360px;
   overflow-y: hidden;
@@ -1871,20 +1889,23 @@ eo-signout-layout .signout {
 }
 #eo-menu .Grid-cell,
 #eo-dlg-login .Grid-cell,
-#eo-dlg-options .Grid-cell {
+#eo-dlg-options .Grid-cell,
+#eo-dlg-terms .Grid-cell {
   font-size: 16px;
   line-height: 1.3;
 }
 #eo-menu .eo-menu-footer,
 #eo-dlg-login .eo-menu-footer,
-#eo-dlg-options .eo-menu-footer {
+#eo-dlg-options .eo-menu-footer,
+#eo-dlg-terms .eo-menu-footer {
   font-size: 11px;
   line-height: 1.3;
 }
 @-moz-document url-prefix() {
   #eo-menu .eo-menu-footer,
   #eo-dlg-login .eo-menu-footer,
-  #eo-dlg-options .eo-menu-footer {
+  #eo-dlg-options .eo-menu-footer,
+  #eo-dlg-terms .eo-menu-footer {
     font-size: 10px;
   }
 }
@@ -2043,8 +2064,8 @@ eo-signout-layout .signout {
   z-index: 20;
 }
 #eo-live .eo-close:hover {
+  background-image: url(http://www.englishon.org/v1/img/close2.png);
   background-color: gray;
-  color: white;
 }
 #eo-live.vocabulary-open {
   background-color: black;
@@ -2133,6 +2154,20 @@ eo-signout-layout .signout {
 
 .Grid#days-pannel {
   direction: rtl;
+}
+
+/*TERMS DIALOG*/
+#eo-dlg-terms .Grid-cell.terms-header-cell {
+  font-size: 14px;
+}
+#eo-dlg-terms #eo-dlg-inner {
+  padding-top: 30px;
+}
+#eo-dlg-terms #eo-accept-btn, #eo-dlg-terms #eo-reject-btn {
+  cursor: pointer;
+}
+#eo-dlg-terms #eo-accept-btn:hover, #eo-dlg-terms #eo-reject-btn:hover {
+  color: #2cc6a8;
 }
 
 /*EDITOR POPUPS*/
