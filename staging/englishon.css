@@ -1323,6 +1323,22 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   width: 40% !important;
 }
 
+.checkbox-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 10% !important;
+}
+
+.checkbox-text-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 90% !important;
+}
+
 .icon-cell {
   -webkit-box-flex: 0 !important;
   -webkit-flex: none !important;
@@ -1337,14 +1353,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   -ms-flex: none !important;
   flex: none !important;
   width: 17% !important;
-}
-
-.terms-header-cell {
-  -webkit-box-flex: 0 !important;
-  -webkit-flex: none !important;
-  -ms-flex: none !important;
-  flex: none !important;
-  width: 80% !important;
 }
 
 .actions-logo-cell {
@@ -1373,7 +1381,8 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   background-color: #e6e6e6;
 }
 
-#eo-area-container {
+#eo-area-container,
+#terms-container {
   /* Hidden by default */
   position: fixed;
   /* Stay in place */
@@ -1825,13 +1834,6 @@ eo-signout-layout .signout {
   color: #2cc6a8;
 }
 
-#tos:hover {
-  color: #93a0a8;
-}
-#tos a:hover {
-  color: #2cc6a8;
-}
-
 #eo-menu .eo-menu-footer:hover {
   color: #2cc6a8;
 }
@@ -2052,21 +2054,6 @@ eo-signout-layout .signout {
 #eo-live.eo-live-maximize .day-bar {
   margin: 5px;
 }
-#eo-live .eo-close {
-  color: gray;
-  position: fixed;
-  top: 13px;
-  right: 13px;
-  height: 15px;
-  width: 15px;
-  background-size: 15px;
-  background-image: url(http://www.englishon.org/v1/img/close.png);
-  z-index: 20;
-}
-#eo-live .eo-close:hover {
-  background-image: url(http://www.englishon.org/v1/img/close2.png);
-  background-color: gray;
-}
 #eo-live.vocabulary-open {
   background-color: black;
 }
@@ -2157,11 +2144,27 @@ eo-signout-layout .signout {
 }
 
 /*TERMS DIALOG*/
-#eo-dlg-terms .Grid-cell.terms-header-cell {
+#eo-dlg-terms {
+  font-family: Roboto-light;
+  z-index: 20;
+}
+#eo-dlg-terms .Grid {
+  width: 100%;
+}
+#eo-dlg-terms #tos {
+  font-size: 12px;
+}
+#eo-dlg-terms #tos:hover {
+  color: #93a0a8;
+}
+#eo-dlg-terms #tos a:hover {
+  color: #2cc6a8;
+}
+#eo-dlg-terms .Grid-cell.terms-header-cell, #eo-dlg-terms .checkbox-text-cell {
   font-size: 14px;
 }
 #eo-dlg-terms #eo-dlg-inner {
-  padding-top: 30px;
+  padding-top: 70px;
 }
 #eo-dlg-terms #eo-accept-btn, #eo-dlg-terms #eo-reject-btn {
   cursor: pointer;
@@ -2174,6 +2177,32 @@ eo-signout-layout .signout {
 .editor-btn {
   background-color: #4b5a66;
   color: white;
+}
+
+/*CLOSE BUTTONS*/
+.terms-close {
+  top: 13px;
+  right: 13px;
+  position: relative;
+}
+
+.actions-close {
+  top: 13px;
+  right: 13px;
+  position: fixed;
+}
+
+.eo-close {
+  color: gray;
+  height: 15px;
+  width: 15px;
+  background-size: 15px;
+  background-image: url(http://www.englishon.org/v1/img/close.png);
+  z-index: 20;
+}
+.eo-close:hover {
+  background-image: url(http://www.englishon.org/v1/img/close2.png);
+  background-color: gray;
 }
 /* responsive.scss */
 /*Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">

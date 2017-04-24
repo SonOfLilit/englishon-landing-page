@@ -3164,6 +3164,7 @@ var MESSAGES = {
     ZH: "Chinese",
     HELP: 'Need Help?',
     CONTACT: 'Conatct Us',
+
     OR: 'OR',
     // Login dialog
     LOGIN_SIGN_IN_TITLE: 'Sign In',
@@ -3188,7 +3189,8 @@ var MESSAGES = {
     SIGN_OUT_FEEDBACK: "You've Signed Out",
     LOGGED_IN_FIDBACK: 'You signed in',
     GET_STARTED: 'Get Started',
-    SITE_LANGUAGE: 'Site Language'
+    SITE_LANGUAGE: 'Site Language',
+    AGREE_TO_TOS: "By signing up, I agree to the</br> <a>Terms of Use</a> & <a>Privacy Policy</a>"
   },
   'hebrew': {
     LANGUAGE: 'hebrew',
@@ -3212,7 +3214,6 @@ var MESSAGES = {
     FORGOT_PASSWORD: '?שכחת סיסמה',
 
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
-
     ENABLE: "Enable EnglishON",
     DISABLE: "Disable EnglishON",
 
@@ -3229,7 +3230,8 @@ var MESSAGES = {
     SIGN_OUT_FEEDBACK: 'התנתקת מאינגלישאון...',
     LOGGED_IN_FIDBACK: 'התחברת לאינגלשיאון',
     GET_STARTED: 'התחל ללמוד שפות',
-    SITE_LANGUAGE: 'שפת התפריט'
+    SITE_LANGUAGE: 'שפת התפריט',
+    AGREE_TO_TOS: "אני מסכים <a>לתנאי השימוש</a> ול<a>תנאי הפרטיות</a> "
   }
 
 };
@@ -5093,7 +5095,7 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 ";
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
-<div class='eo-close'></div>\
+<div class='eo-close actions-close'></div>\
     <div class='Grid Grid--full' id='eo-live-main'>\
         <div class='Grid-cell'>\
             <div class='Grid live-part' id='milotrage'>\
@@ -5150,31 +5152,33 @@ document.live_actions = "<div class='hidden' id='eo-live'>\
 </div>\
 ";
 //
-document.TERMS_DLG = "<div id='eo-dlg-terms' class='hidden eo-area'>\
-    <div id='eo-dlg-inner'>\
-        <div class='Grid Grid--full'>\
-            <div class='Grid-cell eo-row2'>\
-                <div class='Grid'>\
-                    <div class='Grid-cell terms-icon-cell'>\
-                        <div id='eo-dlg-icon'></div>\
+document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
+    <div id='eo-dlg-terms' class='hidden'>\
+    <div class='eo-close terms-close'></div>\
+        <div id='eo-dlg-inner'>\
+            <div class='Grid Grid--full'>\
+                <div class='Grid-cell eo-row2'>\
+                    <div class='Grid h-align'>\
+                        <div class='Grid-cell terms-icon-cell'>\
+                            <div id='eo-dlg-icon'></div>\
+                        </div>\
+                        <div class='Grid-cell header-cell left-align v-align' id='dlg-terms-header'>Englishon</div>\
                     </div>\
-                    <div class='Grid-cell terms-header-cell left-align v-align' id='dlg-terms-header'>Terms and Conditions</div>\
+                </div>\
+                <div class='Grid-cell eo-row3 v-align h-align'>\
+                    <div id='tos'>i agree to the Terms and Conditions</div>\
+                </div>\
+                <div class='Grid-cell eo-row4 v-align h-align'>\
+                    <div class='Grid v-align h-align'>\
+                        <div class='Grid-cell checkbox-cell'>\
+                            <input type='checkbox' id='eo-accept-checkbox' />\
+                        </div>\
+                        <div class='Grid-cell checkbox-text-cell'> Yes, I agree. Let's start!</div>\
+                    </div>\
                 </div>\
             </div>\
-            <div class='Grid-cell eo-row3 v-align h-align'>\
-                <div class='subtitle' id='subtitle'>Do you agree to the <a href='#'>Terms and Conditions</a></div>\
-            </div>\
-            <div class='Grid-cell'>and</div>\
-            <div class='Grid-cell subtitle'> <a>Privacy Policy</a></div>\
-        </div>\
-        <div class='Grid-cell eo-row4 v-align h-align'>\
-            <div id='eo-accept-btn' class='v-align h-align'>Yes</div>\
-        </div>\
-        <div class='Grid-cell eo-row4 v-align h-align'>\
-            <div id='eo-reject-btn' class='v-align h-align'>No</div>\
         </div>\
     </div>\
-</div>\
 </div>\
 ";
 //
@@ -5199,31 +5203,38 @@ ShturemOverlay = function () {
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
   };
-  this.showTermsDialog = function (callback) {
-    this.insertContent($(document.TERMS_DLG));
+  this.rejectTerms = function () {
+    //Give the user astatus of guest
+    window.localStorage.removeItem('email');
+    window.localStorage.removeItem('eo-user-name');
+    window.location.reload();
+    document.englishonBackend.rejectedTerms();
+  };
+  this.TermsDialog = function () {
+    var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
+    $('#tos').html(messages.AGREE_TO_TOS);
     if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
       var menuTop = 0;
     } else {
       var menuTop = (screen.height - 540) / 2;
     }
     $('#eo-dlg-terms').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
-    $('#eo-accept-btn').on('click', function () {
-      document.englishonBackend.acceptedTerms().then(function () {
-        document.eoDialogs.hideDialogs();
-        this.fetchQuestions().then(callback);
-      }.bind(this));
+  };
+  this.showTermsDialog = function (callback) {
+    $('#eo-accept-checkbox').off('change');
+    $('#eo-accept-checkbox').change(function (e) {
+      // this will contain a reference to the checkbox   
+      if (e.target.checked) {
+        document.englishonBackend.acceptedTerms().then(function () {
+          $('#terms-container').addClass('hidden');
+          $('#eo-dlg-terms').addClass('hidden');
+          this.fetchQuestions().then(callback);
+        }.bind(this));
+      }
     }.bind(this));
-    $('#eo-reject-btn').on('click', function () {
-      document.eoDialogs.hideDialogs();
-      document.englishonBackend.rejectedTerms().then(function () {
-        //give the user a status of guest
-        window.localStorage.removeItem('email');
-        window.localStorage.removeItem('eo-user-name');
-        window.location.reload();
-      }.bind(this));
-    }.bind(this));
-
-    document.eoDialogs.toggleDialog('eo-dlg-terms');
+    $('.terms-close').on('click', this.rejectTerms);
+    $('#terms-container').removeClass('hidden');
+    $('#eo-dlg-terms').removeClass('hidden');
   };
 };
 ShturemFrontpageOverlay = function (parts) {
@@ -5275,15 +5286,6 @@ ShturemFrontpageOverlay = function (parts) {
         return questions;
       }.bind(this));
     }.bind(this));
-
-    // $.when(promises).done(function() {
-    //   console.log('after set questions for all parts.overlay');
-    //   if (this.flag == 'terms_not_accepted') {
-    //     this.showTermsDialog();
-    //   }
-    // });
-    // $.when($.ajax("/page1.php"), $.ajax("/page2.php"))
-    //   .then(myFunc, myFailure);
     return Promise.all(promises);
   };
 
@@ -5681,6 +5683,7 @@ var EnglishOnButton = new function () {
       e.stopPropagation();
       var button = $('.eo-button');
       if (button.is(e.target)) return;
+
       if (!$(e.target).hasClass('eo-area') && !$(e.target).parents().hasClass('eo-area')) {
         document.eoDialogs.hideDialogs(0);
         window.history.pushState({ 'elementToShow': 'shturem' }, '');
@@ -6099,6 +6102,8 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
       $('#eo-upgrade-dialog').dialog('open');
     });
   }
+  document.overlay.insertContent($(document.TERMS_DLG));
+  document.overlay.TermsDialog();
   if (document.englishonConfig.isUser) {
     document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
     document.eoDialogs = new EnglishOnDialogs();
@@ -6112,10 +6117,6 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     };
     document.overlay.fetchQuestions().then(function (questions) {
       TODOAfterFetch();
-    }, function (error) {
-      if (error == 'terms_not_accepted') {
-        document.overlay.showTermsDialog(TODOAfterFetch);
-      }
     });
   } else {
     document.menu = new EnglishOnMenu();
