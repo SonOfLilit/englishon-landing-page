@@ -5213,12 +5213,14 @@ ShturemOverlay = function () {
   this.TermsDialog = function () {
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
     $('#tos').html(messages.AGREE_TO_TOS);
-    if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
-      var menuTop = 0;
-    } else {
-      var menuTop = (screen.height - 540) / 2;
+    if (document.englishonConfig.media == 'desktop') {
+      if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
+        var menuTop = 0;
+      } else {
+        var menuTop = (screen.height - 540) / 2;
+      }
+      $('#eo-dlg-terms').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
     }
-    $('#eo-dlg-terms').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
   };
   this.showTermsDialog = function (callback) {
     $('#eo-accept-checkbox').off('change');
@@ -5228,6 +5230,7 @@ ShturemOverlay = function () {
         document.englishonBackend.acceptedTerms().then(function () {
           $('#terms-container').addClass('hidden');
           $('#eo-dlg-terms').addClass('hidden');
+          $('#eo-accept-checkbox').click();
           this.fetchQuestions().then(callback);
         }.bind(this));
       }
@@ -6117,6 +6120,10 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     };
     document.overlay.fetchQuestions().then(function (questions) {
       TODOAfterFetch();
+    }, function (error) {
+      if (error == 'terms_not_accepted') {
+        document.overlay.showTermsDialog(TODOAfterFetch);
+      }
     });
   } else {
     document.menu = new EnglishOnMenu();

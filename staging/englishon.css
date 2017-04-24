@@ -2122,7 +2122,6 @@ eo-signout-layout .signout {
   height: 170px;
   background-color: black;
   color: white;
-  font-size: 25px;
   text-align: left;
 }
 #eo-live #vocabulary .Grid-cell.cell1 {
@@ -2174,6 +2173,16 @@ eo-signout-layout .signout {
 }
 
 /*EDITOR POPUPS*/
+.editor-dlg {
+  direction: ltr;
+}
+.editor-dlg #new-word {
+  direction: rtl;
+}
+.editor-dlg .editor-div {
+  padding: 5px;
+}
+
 .editor-btn {
   background-color: #4b5a66;
   color: white;
@@ -2210,6 +2219,10 @@ This is causing chrome to compute the body width as 980px anycase, in inspector 
 That is the reason to determine 980px as the media queries breakpoint */
 /*MENU FOR MOBILE*/
 @media (max-width: 981px) {
+  .Grid-cell {
+    font-size: 64px;
+  }
+
   #eo-menu .Grid-cell,
   #eo-dlg-login .Grid-cell,
   #eo-dlg-options .Grid-cell {
@@ -2223,7 +2236,8 @@ That is the reason to determine 980px as the media queries breakpoint */
   }
 
   #eo-menu,
-  #eo-dlg-login {
+  #eo-dlg-login,
+  #eo-dlg-terms {
     position: fixed;
     left: 0px;
     top: 0px;
@@ -2513,17 +2527,37 @@ That is the reason to determine 980px as the media queries breakpoint */
   #eo-live.eo-live-maximize .day-bar {
     margin: 10px;
   }
+  #eo-live #vocabulary .Grid-cell.cell1 {
+    height: 160px;
+  }
+  #eo-live #vocabulary .Grid-cell.cell2 {
+    height: 520px;
+  }
 
   .Grid#days-pannel {
     direction: rtl;
   }
 }
-.editor-dlg {
-  direction: ltr;
-}
-.editor-dlg #new-word {
-  direction: rtl;
-}
-.editor-dlg .editor-div {
-  padding: 5px;
+/*TERMS DIALOG FOR MOBILE*/
+@media (max-width: 981px) {
+  #eo-dlg-terms .Grid-cell {
+    font-size: 64px;
+  }
+  #eo-dlg-terms #tos {
+    font-size: 48px;
+  }
+  #eo-dlg-terms .Grid-cell.terms-header-cell, #eo-dlg-terms .checkbox-text-cell {
+    font-size: 56px;
+  }
+  #eo-dlg-terms #eo-dlg-inner {
+    padding-top: 280px;
+  }
+  #eo-dlg-terms #eo-accept-checkbox {
+    transform: scale(3.5);
+  }
+
+  .eo-close {
+    width: 60px;
+    height: 60px;
+  }
 }
