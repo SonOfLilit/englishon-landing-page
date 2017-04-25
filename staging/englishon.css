@@ -293,10 +293,14 @@ div.eo-question > .eo-correct {
 }
 
 div.eo-question {
+  border: 1px dashed #78909c;
   @expand %reset;
   /* active needs to have same width so js animations work */
   /* options arrow can't be a child of eo-options because overflow: hidden */
   /* progress 3d animation */
+}
+div.eo-question.eo-answered, div.eo-question.eo-expired {
+  border: none;
 }
 auto div.eo-question,
 div.eo-question > .eo-hint,
@@ -318,7 +322,8 @@ div.eo-question > .eo-options > .eo-option {
 }
 div.eo-question,
 div.eo-question > .eo-hint {
-  background-color: #78909c;
+  /*background-color: $hint-color;*/
+  color: #78909c;
 }
 div.eo-question.preposition::first-letter,
 div.eo-question > .eo-hint.preposition::first-letter {
@@ -334,6 +339,7 @@ div.eo-question > .eo-options > .eo-option:hover {
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option,
 div.eo-question > .eo-correct {
   background-color: #2cc6a8;
+  border: 1px solid #2cc6a8;
 }
 div.eo-question > .eo-correct:hover {
   background-color: #2fb299;
@@ -1843,10 +1849,6 @@ eo-signout-layout .signout {
   font-size: 15px;
 }
 
-.error {
-  font-size: 11px;
-}
-
 .eo-state-error {
   border: 1px solid #d0021b;
 }
@@ -1863,6 +1865,10 @@ eo-signout-layout .signout {
 
 #eo-dlg-login .eo-input.eo-state-error {
   border: 1px solid #d0021b;
+}
+
+#eo-dlg-login .error {
+  font-size: 11px;
 }
 
 #eo-dlg-login {
@@ -2010,7 +2016,7 @@ eo-signout-layout .signout {
   height: 250px;
   background-color: #eceff1;
   font-family: Roboto;
-  top: 180px;
+  top: 210px;
   color: #3d4c58;
   position: fixed;
   left: 0px;
@@ -2098,24 +2104,24 @@ eo-signout-layout .signout {
 #eo-live > .Grid > .Grid-cell {
   height: 100%;
 }
-#eo-live > .Grid > .Grid-cell > .live-part {
+#eo-live .live-part {
   border-radius: 12px;
   background-color: white;
-  margin: 4px 20px 4px 20px;
+  margin: 4px 2px 4px 2px;
   font-size: 30px;
 }
-#eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
+#eo-live .live-part .Grid .Grid-cell {
   /*font-size: 16px*/
 }
-#eo-live > .Grid > .Grid-cell #milotrage {
+#eo-live #milotrage {
   background-color: black;
   margin: 4px 20px 4px 20px;
   cursor: pointer;
 }
-#eo-live > .Grid > .Grid-cell #milotrage .Grid-cell {
+#eo-live #milotrage .Grid-cell {
   font-size: 30px;
 }
-#eo-live > .Grid > .Grid-cell #milotrage .live-part {
+#eo-live #milotrage .live-part {
   background-color: black;
 }
 #eo-live #vocabulary {
@@ -2411,6 +2417,10 @@ That is the reason to determine 980px as the media queries breakpoint */
     font-size: 56px;
   }
 
+  #eo-dlg-login .error {
+    font-size: 44px;
+  }
+
   #eo-iframe {
     transform: scale(3.5);
   }
@@ -2447,16 +2457,16 @@ That is the reason to determine 980px as the media queries breakpoint */
 @media (max-width: 981px) {
   #eo-live {
     bottom: 10px;
+    top: initial;
     right: 0px;
-    /*CHECK IF 100% NEEDED AFTER UPLOAD TO PRODUCTION*/
-    width: 96%;
+    width: 100%;
     height: 138px;
     overflow: auto;
     z-index: 11;
   }
   #eo-live .live-part {
-    border-radius: 48px;
-    margin: 16px 80px 16px 80px;
+    border-radius: 20px;
+    margin: 8px 30px 8px 30px;
     font-size: 120px;
   }
   #eo-live .live-part #eo-odometer {
@@ -2515,11 +2525,12 @@ That is the reason to determine 980px as the media queries breakpoint */
     font-size: 100px;
   }
   #eo-live.eo-live-maximize {
-    height: 550px;
+    /*CHECK IF THERE IS A NEED FOR width:96% IN PRODUCTION*/
+    height: 520px;
   }
   #eo-live.eo-live-maximize #milotrage {
     background-color: black;
-    margin: 16px 80px 16px 80px;
+    margin: 8px 30px 8px 30px;
   }
   #eo-live.eo-live-maximize #milotrage #eo-odometer {
     /*font-size: 80px;*/
@@ -2559,5 +2570,19 @@ That is the reason to determine 980px as the media queries breakpoint */
   .eo-close {
     width: 60px;
     height: 60px;
+    background-size: 60px;
+  }
+}
+/*CLOSE BUTTONS FOR MOBILE*/
+@media (max-width: 981px) {
+  .actions-close {
+    top: 13px;
+    right: 13px;
+    position: absolute;
+  }
+
+  .eo-live-maximize .actions-close {
+    top: 33px;
+    right: 50px;
   }
 }

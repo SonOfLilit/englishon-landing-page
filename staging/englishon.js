@@ -3173,7 +3173,7 @@ var MESSAGES = {
     FORGOT_PASSWORD: 'Forgot password?',
 
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
-
+    REGISTER_MESSAGE: 'Thank you for registering! A confirmation message sent to the given email.',
     ENABLE: "Enable EnglishON",
     DISABLE: "Disable EnglishON",
 
@@ -3212,7 +3212,7 @@ var MESSAGES = {
     LOGIN_SIGN_UP_TITLE: 'הירשם',
     LOGIN_SUBTITLE: 'שפר את המיומנות שלך באנגלית </br>בכייף בקלות ובחינם',
     FORGOT_PASSWORD: '?שכחת סיסמה',
-
+    REGISTER_MESSAGE: 'Thank you for registering! A confirmation message sent to the given email.',
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
     ENABLE: "Enable EnglishON",
     DISABLE: "Disable EnglishON",
@@ -3257,7 +3257,7 @@ var WEBSITE_I18N = {
     SITE_LANGUAGE: 'hebrew'
   },
   'www.shturem.net': {
-    DIRECTION: LTR,
+    DIRECTION: RTL,
     DEFAULT_TARGET_LANGUAGE: 'en',
     SITE_LANGUAGE: 'hebrew'
   },
@@ -3681,7 +3681,7 @@ Editor.prototype.question_onClick = function (event) {
     'ctx': context
   };
   var q_dialog = $('<div  align="left" dir="ltr">');
-  q_dialog.append($('<h3>').text('You are deleting this word: ' + word));
+  q_dialog.append($('<h3>').text('You are deleting question for this word: ' + word));
   q_dialog.append($('<h3>').text('With this context: ' + context));
   q_dialog.append($('<button>').text("Delete Question").click(function (event) {
     span.removeClass('eo-editor-question').addClass('eo-editor-candidate');
@@ -4141,6 +4141,8 @@ UserInfo = function () {
       }
       if (e.target.is('.eo-close')) {
         $('#eo-live').addClass('hidden');
+        $('#vocabulary').addClass('hidden');
+        $('#eo-live-main').removeClass('hidden');
         $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
         return;
       }
@@ -5758,7 +5760,8 @@ var EnglishOnDialogs = function () {
       this.toggleDialog(element, 'hide');
     }
     //don't do pushstate with DOMelement. after jquery selection of the element this will not work
-    window.history.pushState({ 'elementToShow': element }, '');
+    var visibleNow = $('.eo-area').filter(':visible').last().find('.eo-inner-area').length ? $('.eo-area').filter(':visible').last().find('.eo-inner-area').filter(':visible') : $('.eo-area').filter(':visible').last();
+    window.history.pushState({ 'elementToShow': visibleNow.attr('id') }, '');
   }.bind(this);
 };
 
@@ -5839,9 +5842,7 @@ var EnglishOnMenu = function () {
         if (res.status == 'logged_in') {
           document.eoDialogs.hideDialogs(1000);
         } else if (res.status == 'registered') {
-          message = 'Thank you for registering! A confirmation message sent to the given email.';
-          document.eoDialogs.displayMessage(message, $('#subtitle'));
-          document.eoDialogs.hideDialogs(3500);
+          document.eoDialogs.hideDialogs(0);
           $('#eo-account-img').addClass('no-iamge');
         }
       });
@@ -5997,6 +5998,7 @@ var EnglishOnMenu = function () {
     $('#editor-row').removeClass('hidden');
     document._editor = new Editor(document.overlay);
     $('#eo-editor-btn').on('click', function (event) {
+      document.menu.powerOn();
       document.overlay.hideQuestions();
       document.eoDialogs.hideDialogs();
       event.preventDefault();
@@ -6071,7 +6073,6 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     if (e.state) {
       if (e.state.elementToShow == 'shturem') {
         document.eoDialogs.hideDialogs(0);
-        //window.history.pushState({ 'elementToShow': 'shturem' }, '');
         return;
       }
       document.eoDialogs.toggleDialog(e.state.elementToShow, 'show');
