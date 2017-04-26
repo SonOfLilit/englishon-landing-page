@@ -338,11 +338,11 @@ div.eo-question > .eo-options > .eo-option:hover {
 }
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option,
 div.eo-question > .eo-correct {
-  background-color: #2cc6a8;
   border: 1px solid #2cc6a8;
+  color: #78909c;
 }
 div.eo-question > .eo-correct:hover {
-  background-color: #2fb299;
+  /*background-color: $correct-hover-color;*/
 }
 div.eo-question .eo-options > .eo-option.eo-correct_option::after {
   display: inline-block;
