@@ -4327,7 +4327,8 @@ Injector = function (paragraphs) {
       q.replacement.find('.eo-hint').text(hint);
       if (widthAfterAnswering > spaceInCurrentLine) {
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
-        $('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').insertBefore(q.replacement);
+        //$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').text('s').insertBefore(q.replacement);
+        q.replacement.before("<br class ='eo-space'>");
       }
     });
   };
@@ -4479,7 +4480,6 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
 AbstractQuestion.prototype.open = function () {
   // placeholder, you probably want to call not super() but animateStateChange() directly
   this.element.addClass('eo-active');
-  console.log("EVENT AbstractQuestion.prototype.open ");
 };
 
 AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesToRemove, finalWidth) {
@@ -4505,9 +4505,21 @@ AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesT
   } else {
     this.element.css('width', finalWidth + 1);
   }
+  if (this.element.is('.eo-answered')) {
+    //the goal is removing the width.  maybe the margin-bottom is needed? it's not look so.
+    this.element.removeAttr('style');
+  }
   // if (!(future_point < parentoffset) || classesToAdd.indexOf('eo-answered') != -1) {
   //   this.element.css('width', finalWidth + 1);
   // }
+};
+
+AbstractQuestion.prototype.QuestionAudio = function (e) {
+  e.preventDefault();
+  var target = $(e.target);
+  var prepositionClass = this.data.preposition ? 'preposition' : '';
+  target.toggleHtml(this.data.preposition + this.data.hint, this.practicedWord).toggleClass(prepositionClass);
+  Speaker.speak(document.englishonConfig.targetLanguage, target.text());
 };
 
 AbstractQuestion.prototype.closeUnanswered = function () {
@@ -4839,21 +4851,11 @@ MultipleChoice.prototype.closeAnswered = function () {
   var correctOption = this.element.find('.eo-option.eo-correct_option span');
   var initialTop = correctOption.offset().top - this.element.offset().top;
   var correct = this.element.find('.eo-correct');
-  var prepositionClass = this.data.preposition ? 'preposition' : '';
-
   correct.css('top', initialTop);
   // force repaint
   correct.width();
-  var org = this.data.preposition + this.data.hint;
-  var answer = this.data.correct_answers[0].answer;
-  this.element.on('click', function (e) {
-    e.preventDefault();
-    var target = $(e.target);
-    target.toggleHtml(org, answer).toggleClass(prepositionClass);
-    Speaker.speak(document.englishonConfig.targetLanguage, target.text());
-  });
+  this.element.click(this.QuestionAudio.bind(this));
   AbstractQuestion.prototype.closeAnswered.call(this);
-
   correct.css('top', 0);
 };
 
@@ -4872,13 +4874,7 @@ AbstractExpiredQuestion.prototype.createElement = function () {
 };
 
 AbstractExpiredQuestion.prototype.bindInput = function () {
-  var prepositionClass = this.data.preposition ? 'preposition' : '';
-  this.element.on('click', function (e) {
-    e.preventDefault();
-    var target = $(e.target);
-    target.toggleHtml(this.data.preposition + this.data.hint, this.practicedWord).toggleClass(prepositionClass);
-    Speaker.speak(document.englishonConfig.targetLanguage, target.text());
-  }.bind(this));
+  this.element.click(this.QuestionAudio.bind(this));
 };
 
 var ExpiredOpenQuestion = function (question) {

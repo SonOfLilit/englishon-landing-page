@@ -341,6 +341,9 @@ div.eo-question > .eo-correct {
   border: 1px solid #2cc6a8;
   color: #78909c;
 }
+div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option {
+  background-color: #2cc6a8;
+}
 div.eo-question > .eo-correct:hover {
   /*background-color: $correct-hover-color;*/
 }
@@ -584,7 +587,7 @@ div.eo-question:not(.eo-expired) > .eo-correct {
   z-index: 3;
 }
 div.eo-question.eo-answered:not(.eo-expired) {
-  perspective: 300px;
+  /*perspective: 300px;*/
   transform-style: preserve-3d;
   animation: tilt-to-show-progress 1s 0.5s ease-out;
 }
