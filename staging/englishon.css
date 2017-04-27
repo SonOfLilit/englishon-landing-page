@@ -292,8 +292,14 @@ div.eo-question > .eo-correct {
   display: inline-block;
 }
 
+.www-shturem-net.question-injected .artText .artText,
+.www-shturem-net.question-injected .mainpn_text {
+  line-height: 150%;
+}
+
 div.eo-question {
   border: 1px dashed #78909c;
+  margin-bottom: 0px !important;
   @expand %reset;
   /* active needs to have same width so js animations work */
   /* options arrow can't be a child of eo-options because overflow: hidden */
@@ -307,13 +313,10 @@ div.eo-question > .eo-hint,
 div.eo-question > .eo-options > .eo-option,
 div.eo-question > .eo-correct {
   height: 18px;
-  font-size: 16px;
   letter-spacing: 0.05em;
   line-height: 18px;
-  color: #fff;
 }
-div.eo-question > .eo-hint, div.eo-question.eo-active > .eo-options > .eo-option:hover,
-div.eo-question > .eo-correct {
+div.eo-question.eo-active > .eo-options > .eo-option:hover {
   font-weight: 700;
 }
 div.eo-question > .eo-options > .eo-option {
@@ -323,7 +326,7 @@ div.eo-question > .eo-options > .eo-option {
 div.eo-question,
 div.eo-question > .eo-hint {
   /*background-color: $hint-color;*/
-  color: #78909c;
+  /*color: #78909c;*/
 }
 div.eo-question.preposition::first-letter,
 div.eo-question > .eo-hint.preposition::first-letter {
@@ -332,6 +335,7 @@ div.eo-question > .eo-hint.preposition::first-letter {
 div.eo-question > .eo-options,
 div.eo-question > .eo-options > .eo-option {
   background-color: #4b5666;
+  color: white;
 }
 div.eo-question > .eo-options > .eo-option:hover {
   background-color: #78909c;
@@ -339,7 +343,7 @@ div.eo-question > .eo-options > .eo-option:hover {
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option,
 div.eo-question > .eo-correct {
   border: 1px solid #2cc6a8;
-  color: #78909c;
+  /*color: #78909c;*/
 }
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option {
   background-color: #2cc6a8;
@@ -543,9 +547,6 @@ div.eo-question.eo-active > .eo-options > .eo-option:hover {
 div.eo-question > .eo-options > .eo-option > span {
   /* so we can use it to measure the needed final width for correct */
   width: initial;
-}
-div.eo-question .eo-question {
-  margin-bottom: 0 !important;
 }
 div.eo-question > .eo-input {
   display: inline-block;

@@ -3587,45 +3587,50 @@ Editor = function (overlay) {
   this.eo_dictionary = internal_dic;
   this.ps = [];
 };
+Editor.prototype.editMeanings = function (span) {
+  var replaced = span.data('preposition') + span.data('word');
+  var hint = span.data('word');
+  var correct = span.find(".correct_answer").val();
+  var delimiter = ' ';
+  span.find('option').slice(2).each(function () {
+    $(this).prepend(delimiter);
+  });
+  var old_meanings = span.find('option').slice(2).text();
+  console.log('meaning: ' + span.find('option').text());
+  edit_meanings_dlg = $('<div id="dictionary_edit_dlg">').addClass('editor-dlg').append($('<div id="edit-meanings-dlg-content">').append($('<div>').addClass('editor-div').text('Edit meanings for the word: ' + hint)).append($('<input type="text" id="meanings">').val(old_meanings)).append($('<button>').text('Save').on('click', function () {
+    console.log('EDIT MEANINGS NOW.');
+    var new_word = { 'word': hint + ' ' + edit_meanings_dlg.find('#meanings').val(), 'action': 'edit' };
+    document.englishonBackend.dictionary(new_word);
+    edit_meanings_dlg.dialog('close');
+    edit_meanings_dlg.dialog('destroy');
+    //TODO: check why the destroy is not doing the job
+  })).append($('<div>').addClass('editor-div').append($('<button>').text('Delete this word from dictionary').on('click', function () {
+    console.log('DELETE WORD NOW.');
+    var deleted_word = { 'word': hint + ' ', 'action': 'delete' };
+    document.englishonBackend.dictionary(deleted_word);
+    edit_meanings_dlg.dialog('close');
+    edit_meanings_dlg.dialog('destroy');
+    //TODO: check why the destroy is not doing the job
+  }))));
+  edit_meanings_dlg.dialog({ modal: true });
+};
 
 Editor.prototype.createAutoQuestion = function (event) {
   event.preventDefault();
   var span = $(event.target).parent();
   console.log('createAutoQuestion***** span is: ' + span);
+  var replaced = span.data('preposition') + span.data('word');
+  var hint = span.data('word');
+  var correct = span.find(".correct_answer").val();
+  if (correct == "Edit meanings") {
+    this.editMeanings(span);
+    return;
+  }
   var ctx = this.autoContext(span);
 
   if (!ctx) {
     alert("No suitable context found");
     span.removeClass('auto-editor-candidate_inne').addClass('eo-editor-irrelevant').off('click');
-    return;
-  }
-
-  var replaced = span.data('preposition') + span.data('word');
-  var hint = span.data('word');
-  var correct = span.find(".correct_answer").val();
-  if (correct == "Edit meanings") {
-    var delimiter = ' ';
-    span.find('option').slice(2).each(function () {
-      $(this).prepend(delimiter);
-    });
-    var old_meanings = span.find('option').slice(2).text();
-    console.log('meaning: ' + span.find('option').text());
-    edit_meanings_dlg = $('<div id="dictionary_edit_dlg">').addClass('editor-dlg').append($('<div id="edit-meanings-dlg-content">').append($('<div>').addClass('editor-div').text('Edit meanings for the word: ' + hint)).append($('<input type="text" id="meanings">').val(old_meanings)).append($('<button>').text('Save').on('click', function () {
-      console.log('EDIT MEANINGS NOW.');
-      var new_word = { 'word': hint + ' ' + edit_meanings_dlg.find('#meanings').val(), 'action': 'edit' };
-      document.englishonBackend.dictionary(new_word);
-      edit_meanings_dlg.dialog('close');
-      edit_meanings_dlg.dialog('destroy');
-      //TODO: check why the destroy is not doing the job
-    })).append($('<div>').addClass('editor-div').append($('<button>').text('Delete this word from dictionary').on('click', function () {
-      console.log('DELETE WORD NOW.');
-      var deleted_word = { 'word': hint + ' ', 'action': 'delete' };
-      document.englishonBackend.dictionary(deleted_word);
-      edit_meanings_dlg.dialog('close');
-      edit_meanings_dlg.dialog('destroy');
-      //TODO: check why the destroy is not doing the job
-    }))));
-    edit_meanings_dlg.dialog({ modal: true });
     return;
   }
 
@@ -3649,6 +3654,7 @@ Editor.prototype.createAutoQuestion = function (event) {
   }
   //wrong.push({word:'buttle',translation:'המילההכיארוכה_בכלהשפההעברית'});
   //wrong.push({word:'niceday',translation:'איזהיוםיפהונהדרטובלצחוק'});
+  wrong.push({ word: 'veryveryverylongword', translation: 'איזהיוםיפהונהדרטובלצחוק' });
   preposition = span.data('preposition');
   var question = {
     'context': ctx,
@@ -3843,6 +3849,11 @@ Editor.prototype.autoContext = function (span) {
   var len = 5;
   while (true) {
     var ctx = text.slice(Math.max(0, start - len), Math.min(text.length, end + len));
+    // is this the largest candidate context?
+    if (ctx === span.data('text')) {
+      console.log('This is the largest possible context...');
+      break;
+    };
     // is the context ambiguous?
     if (ctx.indexOf(word) !== ctx.lastIndexOf(word)) {
       console.log("The context is ambiguous. context is: " + ctx);
@@ -3859,8 +3870,6 @@ Editor.prototype.autoContext = function (span) {
       len += 5;
       continue;
     }
-    // is this the largest candidate context?
-    if (ctx === span.data('text')) break;
   }
 };
 
@@ -4307,8 +4316,6 @@ Injector = function (paragraphs) {
       return;
     }
     this.isActive = true;
-    //a touch in shruerm css... increase space between lines
-    if (this.elements.length) $('.artText').last().css('line-height', '150%');
     $(this.elements).each(function (i, q) {
       var hint = q.qobj.data.preposition + q.qobj.data.hint;
       q.replacement = q.qobj.replacement();
@@ -4446,7 +4453,7 @@ AbstractQuestion.prototype.replacement = function () {
 AbstractQuestion.prototype.createElement = function () {
   var textWithPreposition = this.data.preposition + this.data.hint;
   var prepositionClass = this.data.preposition ? 'preposition' : '';
-  return $('<div style="margin-bottom:0">').addClass('eo-question').addClass(this.languageOrderClass())
+  return $('<div>').addClass('eo-question').addClass(this.languageOrderClass())
   //.append($('<span>').addClass('eo-correct').toggleHtml(this.correct[0]))
   .append($('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append($('<span>').addClass('eo-hint').addClass(prepositionClass).text(textWithPreposition)).append($('<span>').addClass('eo-progress').append($('<span>').addClass('eo-progress-inner')));
 };
@@ -4486,32 +4493,27 @@ AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesT
   var offset = this.element.offset().left;
   var future_point = offset - (finalWidth - Number(this.element.css('width').replace(/[^\d\.\-]/g, '')));
   var parentoffset = this.element.parent().offset().left;
-  //console.log( "animateStateChange*****left of parent: " + parentoffset.left + ", top: " + parentoffset.top );
-
-  // explicitly set initial width
-  // +1 because rounding down makes the text sometimes not fit, and one pixel is a small price for solving it
-  this.element.css('width', this.element.outerWidth() + 1);
-  // force repaint
-  this.element.width();
-  // change state
-  this.element.addClass(classesToAdd);
-  this.element.removeClass(classesToRemove);
-  // force repaint
-  this.element.width();
-  // explicitly set target width
   if (future_point < parentoffset) {
+    this.element.addClass(classesToAdd);
+    this.element.removeClass(classesToRemove);
     console.log('edge question!');
-    //if (classesToAdd.indexOf('eo-answered') != -1) {this.element.css('width', finalWidth + 1);}
   } else {
+    // explicitly set initial width
+    // +1 because rounding down makes the text sometimes not fit, and one pixel is a small price for solving it
+    this.element.css('width', this.element.outerWidth() + 1);
+    // force repaint
+    this.element.width();
+    // change state
+    this.element.addClass(classesToAdd);
+    this.element.removeClass(classesToRemove);
+    this.element.width();
+    // explicitly set target width
     this.element.css('width', finalWidth + 1);
   }
+  // cancle fixed width for question and give it fit width
   if (this.element.is('.eo-answered')) {
-    //the goal is removing the width.  maybe the margin-bottom is needed? it's not look so.
     this.element.removeAttr('style');
   }
-  // if (!(future_point < parentoffset) || classesToAdd.indexOf('eo-answered') != -1) {
-  //   this.element.css('width', finalWidth + 1);
-  // }
 };
 
 AbstractQuestion.prototype.QuestionAudio = function (e) {
@@ -5238,6 +5240,13 @@ ShturemOverlay = function () {
     $('#eo-dlg-terms').removeClass('hidden');
   };
 };
+ShturemOverlay.prototype.showQuestions = function () {
+  //a touch in shruerm css... increase space between lines
+  $('body').addClass('question-injected');
+};
+ShturemOverlay.prototype.hideQuestions = function () {
+  $('body').removeClass('question-injected');
+};
 ShturemFrontpageOverlay = function (parts) {
   this.parts = {};
   this.interacted = false;
@@ -5291,11 +5300,13 @@ ShturemFrontpageOverlay = function (parts) {
   };
 
   this.showQuestions = function () {
+    ShturemOverlay.prototype.showQuestions.call(this);
     $.each(this.parts, function (url, part) {
       if (part.injector) part.injector.on();
     });
   };
   this.hideQuestions = function () {
+    ShturemOverlay.prototype.hideQuestions.call(this);
     $.each(this.parts, function (url, part) {
       if (part.injector) part.injector.off();
     });
@@ -5339,10 +5350,12 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   };
 
   this.showQuestions = function () {
+    ShturemOverlay.prototype.showQuestions.call(this);
     if (this.injector) this.injector.on();
   }.bind(this);
 
   this.hideQuestions = function () {
+    ShturemOverlay.prototype.hideQuestions.call(this);
     if (this.injector) this.injector.off();
   }.bind(this);
 };
