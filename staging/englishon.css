@@ -2505,7 +2505,6 @@ That is the reason to determine 980px as the media queries breakpoint */
   }
   #eo-live #sr .sr-complete .progressbar-text {
     font-size: 120px;
-    color: white;
   }
   #eo-live .actions-logo-cell {
     width: 32% !important;

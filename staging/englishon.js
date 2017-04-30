@@ -4012,6 +4012,7 @@ UserInfo = function () {
     this.unAnswered_promise = $.Deferred();
     this.getAnsweredSR();
     this.getUnAnsweredSR();
+    $('#srProgress').removeClass('sr-complete');
     $.when(this.answered_promise, this.unAnswered_promise).done(function () {
       val = document.eo_user.answered.sr_questions.length / (document.eo_user.answered.sr_questions.length + document.eo_user.unAnswered.sr_questions.length);
       //positive feedback if user doesn't get sr questions for today
@@ -4024,8 +4025,6 @@ UserInfo = function () {
       if (val == 1) {
         //adding success styles to progress bar 
         $('#srProgress').addClass('sr-complete');
-        document.eo_user.sr_progress.text.style.fontSize = document.englishonConfig.media == 'desktop' ? '30px' : '120px';
-        document.eo_user.sr_progress.text.style.color = 'white';
       }
 
       document.eo_user.sr_progress.animate(val);
@@ -4132,6 +4131,7 @@ UserInfo = function () {
       value: 0,
       format: 'd'
     });
+    $('#eo-live').off('click');
     $('#eo-live').on('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -4187,6 +4187,7 @@ UserInfo = function () {
         $('#eo-live-main').removeClass('hidden');
         $(document).off('click');
       });
+      return;
     }.bind(this));
   };
   this.hideLiveActions = function () {
