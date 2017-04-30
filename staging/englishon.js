@@ -3467,7 +3467,8 @@ HerokuBackend.prototype.getArticle = function (address) {
     this.pageid = data.id;
     return data.questions;
   }.bind(this), function (data) {
-    if (data.responseJSON.detail === 'Terms not accepted') {
+
+    if (data.responseJSON && data.responseJSON.detail === 'Terms not accepted') {
       return $.Deferred().reject('terms_not_accepted').promise();
     }
   });
@@ -3654,7 +3655,7 @@ Editor.prototype.createAutoQuestion = function (event) {
   }
   //wrong.push({word:'buttle',translation:'המילההכיארוכה_בכלהשפההעברית'});
   //wrong.push({word:'niceday',translation:'איזהיוםיפהונהדרטובלצחוק'});
-  wrong.push({ word: 'veryveryverylongword', translation: 'איזהיוםיפהונהדרטובלצחוק' });
+  //wrong.push({word:'veryveryverylongword',translation:'איזהיוםיפהונהדרטובלצחוק'});
   preposition = span.data('preposition');
   var question = {
     'context': ctx,
@@ -4133,6 +4134,7 @@ UserInfo = function () {
     });
     $('#eo-live').on('click', function (e) {
       e.stopPropagation();
+      e.preventDefault();
       e.target = $(e.target);
       if (e.target.is('#vocabulary-order')) {
         if ($('#vocabulary').data('order') == 'alphabet') {
@@ -4243,11 +4245,11 @@ jQuery.fn.extend({
 });
 Injector = function (paragraphs) {
 
-  function report(msg, data) {
+  report = function (msg, data) {
     if (!data) data = {};
 
     post = document.englishonBackend.report(msg, data);
-    post.done(function () {
+    post.done(function (res) {
       if (msg === 'TriedAnswer') {
         document.eo_user.milotrage();
         //document.eo_user.scoreCorrect();
@@ -4258,6 +4260,10 @@ Injector = function (paragraphs) {
           //score user if coming day after day
           document.eo_user.checkpersistence();
           document.eo_user.checkWeeklyPresence();
+        }
+        //this should happen only if isCorrect=True!
+        if (!$('#vocabulary').hasClass('hidden') && this.isCorrect(res.answer)) {
+          document.eo_user.fetchVocabulary();
         }
       }
 
@@ -4272,14 +4278,11 @@ Injector = function (paragraphs) {
           report("StartedSession");
         }
       }
-      if (!$('#vocabulary').hasClass('hidden') && msg === "CompletedQuestion") {
-        document.eo_user.fetchVocabulary();
-      }
-    });
+    }.bind(this));
     if (msg === "CompletedQuestion" && $('.eo-question:not(.eo-answered)').length === 0) {
       report("CompletedQuiz");
     }
-  }
+  };
 
   this.elements = [];
   this.isActive = false;
@@ -4324,15 +4327,17 @@ Injector = function (paragraphs) {
       var width = q.replacement.outerWidth();
       var parentoffset = q.replacement.parent().offset().left;
       var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width;
-      if (q.replacement.hasClass('eo-expired')) {
-        future_text = q.qobj.data.hint;
-      } else {
-        future_text = q.qobj.practicedWord;
-      }
-      q.replacement.find('.eo-hint').text(future_text);
+      // if (q.replacement.hasClass('eo-expired')) {
+      //   future_text = q.qobj.data.replaced;
+      // } else {
+      //   future_text = q.qobj.practicedWord;
+      // }
+      var future_text = q.replacement.hasClass('eo-expired') ? q.qobj.data.replaced : q.qobj.practicedWord;
+      var visible_element = q.replacement.hasClass('eo-expired') ? '.eo-correct' : '.eo-hint';
+      q.replacement.find(visible_element).text(future_text);
       var widthAfterAnswering = q.replacement.outerWidth();
-      q.replacement.find('.eo-hint').text(hint);
-      if (widthAfterAnswering > spaceInCurrentLine) {
+      q.replacement.find(visible_element).text(hint);
+      if (widthAfterAnswering > spaceInCurrentLine || width > widthAfterAnswering && spaceInCurrentLine === 401.140625) {
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
         //$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').text('s').insertBefore(q.replacement);
         q.replacement.before("<br class ='eo-space'>");
@@ -4381,7 +4386,7 @@ Injector = function (paragraphs) {
     } else {
       r = new OpenQuestion(question, toggleSound);
     }
-    r.report = report;
+    r.report = report.bind(r);
     return r;
   }
 

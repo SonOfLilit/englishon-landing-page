@@ -2141,7 +2141,7 @@ eo-signout-layout .signout {
   height: 130px;
 }
 #eo-live #vocabulary #vocabulary-content .vocabulary-odometer, #eo-live #vocabulary #vocabulary-content .vocabulary-word {
-  padding-right: 10px;
+  padding-right: 30px;
 }
 #eo-live #vocabulary .Grid-cell #vocabulary-order {
   background-color: #2cc6a8;
