@@ -4133,8 +4133,8 @@ UserInfo = function () {
       format: 'd'
     });
     $('#eo-live').on('click', function (e) {
-      e.stopPropagation();
       e.preventDefault();
+      e.stopPropagation();
       e.target = $(e.target);
       if (e.target.is('#vocabulary-order')) {
         if ($('#vocabulary').data('order') == 'alphabet') {
@@ -4327,17 +4327,15 @@ Injector = function (paragraphs) {
       var width = q.replacement.outerWidth();
       var parentoffset = q.replacement.parent().offset().left;
       var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width;
-      // if (q.replacement.hasClass('eo-expired')) {
-      //   future_text = q.qobj.data.replaced;
-      // } else {
-      //   future_text = q.qobj.practicedWord;
-      // }
+      var curent_text = q.replacement.hasClass('eo-expired') ? q.qobj.practicedWord : q.qobj.data.replaced;
       var future_text = q.replacement.hasClass('eo-expired') ? q.qobj.data.replaced : q.qobj.practicedWord;
       var visible_element = q.replacement.hasClass('eo-expired') ? '.eo-correct' : '.eo-hint';
       q.replacement.find(visible_element).text(future_text);
-      var widthAfterAnswering = q.replacement.outerWidth();
-      q.replacement.find(visible_element).text(hint);
-      if (widthAfterAnswering > spaceInCurrentLine || width > widthAfterAnswering && spaceInCurrentLine === 401.140625) {
+      var future_width = q.replacement.outerWidth();
+      q.replacement.find(visible_element).text(curent_text);
+      if (future_width > spaceInCurrentLine || ////a question which expected to go down after action
+      width > future_width && spaceInCurrentLine > 395) {
+        //a question which expected to go up after action
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
         //$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').text('s').insertBefore(q.replacement);
         q.replacement.before("<br class ='eo-space'>");
