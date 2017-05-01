@@ -292,14 +292,17 @@ div.eo-question > .eo-correct {
   display: inline-block;
 }
 
-.www-shturem-net.question-injected .artText .artText,
-.www-shturem-net.question-injected .mainpn_text {
+.www-shturem-net.question-injected .artText .artText, .www-shturem-net.question-injected .mainpn_text {
   line-height: 150%;
+}
+.www-shturem-net.question-injected table {
+  cursor: default;
 }
 
 div.eo-question {
   border: 1px dashed #78909c;
   margin-bottom: 0px !important;
+  cursor: pointer;
   @expand %reset;
   /* active needs to have same width so js animations work */
   /* options arrow can't be a child of eo-options because overflow: hidden */
@@ -1873,6 +1876,7 @@ eo-signout-layout .signout {
 
 #eo-dlg-login .error {
   font-size: 11px;
+  color: #a94442;
 }
 
 #eo-dlg-login {

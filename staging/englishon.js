@@ -3482,15 +3482,7 @@ HerokuBackend.prototype.getSupportedLinks = function (urls) {
 };
 
 HerokuBackend.prototype.deleteQuestion = function (question) {
-  console.log('backend*****deleteQuestion**** I got this question: ' + question['word'] + ' with ctx: ' + question['ctx']);
-  console.log('backend*****deleteQuestion****url is: ' + this.url);
-  var post = this.ajax('POST', '/quiz/editor/deletequestion/' + this.url, question);
-  post.done(function () {
-    console.log("Deleted question");
-  });
-  post.fail(function () {
-    alert('Error deleting question');
-  });
+  return this.ajax('POST', '/quiz/editor/deletequestion/' + this.url, question);
 };
 
 HerokuBackend.prototype.createQuestion = function (question) {
@@ -3501,14 +3493,7 @@ HerokuBackend.prototype.createQuestion = function (question) {
   question.wrong_answers = question.wrong_answers.map(function (a) {
     return { answer: a.word, translation: a.translation };
   });
-  var post = this.ajax('POST', '/quiz/editor/question/' + this.url, question);
-  post.done(function (data) {
-    console.log("Created question");
-  });
-  post.fail(function () {
-    alert('Error creating question');
-  });
-  return post;
+  return this.ajax('POST', '/quiz/editor/question/' + this.url, question);
 };
 
 HerokuBackend.prototype.resetUser = function () {
@@ -3547,9 +3532,13 @@ HerokuBackend.prototype.fetchDictionary = function () {
 
 HerokuBackend.prototype.dictionary = function (new_word) {
 
-  var post = this.ajax('POST', '/quiz/editor/dictionary/add/', new_word);
-  post.done(function () {
-    console.log("Dictionary changed! (A word or new meanings added or removed)");
+  post = this.ajax('POST', '/quiz/editor/dictionary/add/', new_word);
+  post.done(function (res) {
+    if (res.message == 'done') {
+      console.log("Dictionary changed! (A word or new meanings added or removed)");
+    } else {
+      alert(res.message);
+    };
   });
 };
 HerokuBackend.prototype.create_all_questions = function (address, question) {
@@ -3600,8 +3589,8 @@ Editor.prototype.editMeanings = function (span) {
   console.log('meaning: ' + span.find('option').text());
   edit_meanings_dlg = $('<div id="dictionary_edit_dlg">').addClass('editor-dlg').append($('<div id="edit-meanings-dlg-content">').append($('<div>').addClass('editor-div').text('Edit meanings for the word: ' + hint)).append($('<input type="text" id="meanings">').val(old_meanings)).append($('<button>').text('Save').on('click', function () {
     console.log('EDIT MEANINGS NOW.');
-    var new_word = { 'word': hint + ' ' + edit_meanings_dlg.find('#meanings').val(), 'action': 'edit' };
-    document.englishonBackend.dictionary(new_word);
+    var data = { 'word': hint + ' ' + edit_meanings_dlg.find('#meanings').val(), 'action': 'edit' };
+    document.englishonBackend.dictionary(data);
     edit_meanings_dlg.dialog('close');
     edit_meanings_dlg.dialog('destroy');
     //TODO: check why the destroy is not doing the job
@@ -3631,10 +3620,10 @@ Editor.prototype.createAutoQuestion = function (event) {
 
   if (!ctx) {
     alert("No suitable context found");
-    span.removeClass('auto-editor-candidate_inne').addClass('eo-editor-irrelevant').off('click');
+    span.removeClass('auto-editor-candidate').addClass('eo-editor-irrelevant').off('click');
     return;
   }
-
+  span.data('context', ctx);
   //Creating a list of 4 Distractions randomaly, using the word buffer of the internal id
   var wrong = [];
   var wrong_words = [];
@@ -3653,9 +3642,7 @@ Editor.prototype.createAutoQuestion = function (event) {
       wrong_words.push(candidate);
     }
   }
-  //wrong.push({word:'buttle',translation:'המילההכיארוכה_בכלהשפההעברית'});
-  //wrong.push({word:'niceday',translation:'איזהיוםיפהונהדרטובלצחוק'});
-  //wrong.push({word:'veryveryverylongword',translation:'איזהיוםיפהונהדרטובלצחוק'});
+
   preposition = span.data('preposition');
   var question = {
     'context': ctx,
@@ -3668,12 +3655,18 @@ Editor.prototype.createAutoQuestion = function (event) {
     'preposition': preposition
   };
   console.log("Finished create the object in createAutoquestion");
-  var res = document.englishonBackend.createQuestion(question);
-  span.data('context', ctx).removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click', 'onClick');
-  // .on('click', this.question_onClick.bind(this));
-  span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
-    e.stopPropagation();
-  });
+  this.span = span;
+  document.englishonBackend.createQuestion(question).then(function (res) {
+    this.span.removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click', 'onClick');
+    // .on('click', this.question_onClick.bind(this));
+    span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
+      e.stopPropagation();
+    });
+  }.bind(this), function (reason) {
+    alert('Error creating question');
+    console.log('Error creating question. reason is: ' + reason);
+    this.span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click', 'onClick');
+  }.bind(this));
 };
 
 Editor.prototype.question_onClick = function (event) {
@@ -3687,15 +3680,18 @@ Editor.prototype.question_onClick = function (event) {
     'word': word,
     'ctx': context
   };
+  this.span = span;
   var q_dialog = $('<div  align="left" dir="ltr">');
   q_dialog.append($('<h3>').text('You are deleting question for this word: ' + word));
   q_dialog.append($('<h3>').text('With this context: ' + context));
   q_dialog.append($('<button>').text("Delete Question").click(function (event) {
-    span.removeClass('eo-editor-question').addClass('eo-editor-candidate');
-    span.off('click');
-    document.englishonBackend.deleteQuestion(question);
-    span.on('click', this.onClick.bind(this));
     q_dialog.dialog('close');
+    document.englishonBackend.deleteQuestion(question).then(function (res) {
+      console.log('Question deleted');
+      this.span.removeClass('eo-editor-question').addClass('eo-editor-candidate').off('click').on('click', this.onClick.bind(this));
+    }.bind(this), function (reason) {
+      console.log('Error delete question. Reason is: ' + reason);
+    });
   }.bind(this)));
 
   q_dialog.dialog();
@@ -3715,25 +3711,35 @@ Editor.prototype.onClick = function (event) {
   var dia = $('<div>').addClass('editor-dlg');
   var acc = $('<div>');
   acc.append($('<h3>').text("Hebrew -> English"));
-  acc.append($('<h3>').text("Adding: " + word));
+  acc.append($('<h3>').text("Add to dictionary: " + word));
   acc.append($('<div class="editor-div">').append($('<span>').text("edit choosen word")).append($('<input type="text" id="new-word">').val(word)));
   acc.append($('<div class="editor-div">').append($('<span>').text("optional meanings")).append($('<input type="text" id="new-meanings">')));
-  dia.append(acc);
-  dia.append($('<button>').text("Add to dictionary").click(function (event) {
+  acc.append($('<button>').text("Add").click(function (event) {
     event.preventDefault();
-    var new_word = { 'word': dia.find('#new-word').val() + ' ' + dia.find('#new-meanings').val(), 'action': 'add' };
-    document.englishonBackend.dictionary(new_word);
+    var data = { 'word': dia.find('#new-word').val() + ' ' + dia.find('#new-meanings').val(), 'action': 'add' };
+    document.englishonBackend.dictionary(data);
     dia.dialog('close');
     dia.dialog('destroy');
     span.addClass('eo-editor-candidate');
   }));
 
-  dia.append($('<button>').text('Close').click(function (event) {
+  acc.append($('<button>').text('Close').click(function (event) {
     event.preventDefault();
     dia.dialog('close');
     dia.dialog('destroy');
   }));
+  acc.append($('<h3>').text("Remove from dictionary"));
+  acc.append($('<div class="editor-div">').append($('<span>').text("Remove choosen word")).append($('<input type="text" id="word_to_delete">')));
 
+  acc.append($('<button>').text("Remove").click(function (event) {
+    event.preventDefault();
+    var data = { 'word': dia.find('#word_to_delete').val() + ' ', 'action': 'delete' };
+    document.englishonBackend.dictionary(data);
+    dia.dialog('close');
+    dia.dialog('destroy');
+  }));
+
+  dia.append(acc);
   dia.dialog({ autoOpen: true, height: 'auto', width: 'auto', modal: 'true' });
   $(".wrd").text(word);
 };
@@ -3953,8 +3959,8 @@ Editor.prototype.highlight = function () {
           var preposition = match[0].slice(0, 1);
         }
         if (wordMatch) {
-          console.log("I found a candidate: " + match[0] + ' currentWord: ' + currentWord);
-          console.log('slice: ' + text.slice(lastIndex, match.index));
+          //console.log("I found a candidate: " + match[0] + ' currentWord: ' + currentWord);
+          //console.log('slice: ' + text.slice(lastIndex, match.index));
           p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, matchIndex)));
 
           var select = $('<select>').addClass('correct_answer');
@@ -5552,12 +5558,12 @@ function englishon() {
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES
   url = window.location.toString().substr(0, window.location.toString().indexOf("id=") + 3);
   if (url != 'http://shturem.net/index.php?section=news&id=' && url != 'http://www.shturem.net/index.php?section=news&id=' && url != 'http://www.englishon.org/hidden/shturem.html') {
-    //return;
+    return;
   }
   if (url != 'http://www.englishon.org/hidden/shturem.html') {
     article_id = Number(window.location.search.substr(window.location.search.indexOf('id=') + 3));
     if (article_id < 91251 || article_id > 91551) {
-      //return;
+      return;
     }
   }
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
