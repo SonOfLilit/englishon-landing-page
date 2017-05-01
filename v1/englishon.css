@@ -292,24 +292,34 @@ div.eo-question > .eo-correct {
   display: inline-block;
 }
 
+.www-shturem-net.question-injected .artText .artText, .www-shturem-net.question-injected .mainpn_text {
+  line-height: 150%;
+}
+.www-shturem-net.question-injected table {
+  cursor: default;
+}
+
 div.eo-question {
+  border: 1px dashed #78909c;
+  margin-bottom: 0px !important;
+  cursor: pointer;
   @expand %reset;
   /* active needs to have same width so js animations work */
   /* options arrow can't be a child of eo-options because overflow: hidden */
   /* progress 3d animation */
+}
+div.eo-question.eo-answered, div.eo-question.eo-expired {
+  border: none;
 }
 auto div.eo-question,
 div.eo-question > .eo-hint,
 div.eo-question > .eo-options > .eo-option,
 div.eo-question > .eo-correct {
   height: 18px;
-  font-size: 16px;
   letter-spacing: 0.05em;
   line-height: 18px;
-  color: #fff;
 }
-div.eo-question > .eo-hint, div.eo-question.eo-active > .eo-options > .eo-option:hover,
-div.eo-question > .eo-correct {
+div.eo-question.eo-active > .eo-options > .eo-option:hover {
   font-weight: 700;
 }
 div.eo-question > .eo-options > .eo-option {
@@ -318,21 +328,31 @@ div.eo-question > .eo-options > .eo-option {
 }
 div.eo-question,
 div.eo-question > .eo-hint {
-  background-color: #78909c;
+  /*background-color: $hint-color;*/
+  /*color: #78909c;*/
+}
+div.eo-question.preposition::first-letter,
+div.eo-question > .eo-hint.preposition::first-letter {
+  color: #b8bfc2;
 }
 div.eo-question > .eo-options,
 div.eo-question > .eo-options > .eo-option {
   background-color: #4b5666;
+  color: white;
 }
 div.eo-question > .eo-options > .eo-option:hover {
   background-color: #78909c;
 }
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option,
 div.eo-question > .eo-correct {
+  border: 1px solid #2cc6a8;
+  /*color: #78909c;*/
+}
+div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option {
   background-color: #2cc6a8;
 }
 div.eo-question > .eo-correct:hover {
-  background-color: #2fb299;
+  /*background-color: $correct-hover-color;*/
 }
 div.eo-question .eo-options > .eo-option.eo-correct_option::after {
   display: inline-block;
@@ -531,9 +551,6 @@ div.eo-question > .eo-options > .eo-option > span {
   /* so we can use it to measure the needed final width for correct */
   width: initial;
 }
-div.eo-question .eo-question {
-  margin-bottom: 0 !important;
-}
 div.eo-question > .eo-input {
   display: inline-block;
   position: absolute;
@@ -555,6 +572,9 @@ div.eo-question > .eo-correct {
   /* grep for width: auto transitions */
   transition: top 0.5s ease-in, padding-left 0.5s, padding-right 0.5s;
 }
+div.eo-question > .eo-correct.preposition::first-letter {
+  color: #b8bfc2;
+}
 div.eo-question.eo-answered > .eo-correct {
   display: block;
   padding-left: 22px;
@@ -571,7 +591,7 @@ div.eo-question:not(.eo-expired) > .eo-correct {
   z-index: 3;
 }
 div.eo-question.eo-answered:not(.eo-expired) {
-  perspective: 300px;
+  /*perspective: 300px;*/
   transform-style: preserve-3d;
   animation: tilt-to-show-progress 1s 0.5s ease-out;
 }
@@ -997,20 +1017,6 @@ body.www-bloombergview-com .eo-menu {
 body.www-bloombergview-com .eo-menu > .eo-superuser p {
   color: #000 !important;
 }
-/* responsive.scss */
-/*Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
-This is causing chrome to compute the body width as 980px anycase, in inspector too
-That is the reason to determine 980px as the media queries breakpoint */
-.heroku-staging .newsHead {
-  background-color: #e6e6e6;
-}
-
-.eo-delimiter {
-  height: 50%;
-  border-bottom: 2px solid #d7dee3;
-  flex: 0 0 42%;
-}
-
 .Grid {
   display: flex;
   flex-wrap: wrap;
@@ -1023,20 +1029,8 @@ That is the reason to determine 980px as the media queries breakpoint */
 .Grid-cell {
   flex: 1;
   z-index: 3;
-  font-size: 64px;
   letter-spacing: 0.03em;
   line-height: 1.3;
-}
-
-#eo-mail-login-btn {
-  width: 604px;
-  height: 106.64px;
-  background-color: #2cc6a8;
-  border-radius: 12px;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 52px;
 }
 
 .Grid--flexCells > .Grid-cell {
@@ -1093,12 +1087,6 @@ That is the reason to determine 980px as the media queries breakpoint */
 
 .Grid--1of4 > .Grid-cell {
   flex: 0 0 25%;
-}
-
-#editor-row {
-  background-color: #4b5a66;
-  color: white;
-  margin-top: 15px;
 }
 
 @media (--break-sm) {
@@ -1180,25 +1168,6 @@ That is the reason to determine 980px as the media queries breakpoint */
     margin-left: 20%;
   }
 }
-.eo-row {
-  height: 204px;
-}
-.eo-row .Grid {
-  height: 100%;
-}
-
-#eo-dlg-login {
-  z-index: 4;
-  overflow-y: auto;
-}
-
-#google_btn {
-  height: 38px;
-  width: 140px;
-  background-color: #dc4e41;
-  border-radius: 5px;
-}
-
 .Grid--gutters {
   margin: -1em 0 1em 0;
 }
@@ -1298,54 +1267,6 @@ That is the reason to determine 980px as the media queries breakpoint */
     padding: 2em 0 0 2em;
   }
 }
-.Demo {
-  height: 40px;
-  padding: .8em .1em 0;
-}
-
-.u-textCenter {
-  text-align: center !important;
-}
-
-#google_iframe {
-  height: 100%;
-  margin-top: 100px;
-}
-
-.header {
-  background-color: #4b5a66;
-  font-family: Roboto;
-  color: white;
-  text-align: left;
-  letter-spacing: 0.05em;
-  line-height: 1.3;
-}
-
-.cell--centered {
-  margin-left: 50%;
-}
-
-.languages_picker {
-  background-color: #eceff1;
-  text-align: left;
-}
-
-.u-1of2,
-.u-7of10,
-.u-1of10,
-.u-2of10,
-.u-full {
-  -webkit-box-flex: 0 !important;
-  -webkit-flex: none !important;
-  -ms-flex: none !important;
-  flex: none !important;
-}
-
-#eo-dlg-inner {
-  margin: 0px 104px;
-  height: 100%;
-}
-
 .u-1of2 {
   width: 50% !important;
 }
@@ -1370,42 +1291,170 @@ That is the reason to determine 980px as the media queries breakpoint */
   width: 27% !important;
 }
 
+.u-1of4 {
+  width: 25% !important;
+}
+
 .u-1of3,
+.u-1of4,
 .u-2of3,
-.u-1of6 {
+.u-1of6,
+.u-1of2,
+.u-7of10,
+.u-1of10,
+.u-2of10,
+.u-full {
   -webkit-box-flex: 0 !important;
   -webkit-flex: none !important;
   -ms-flex: none !important;
   flex: none !important;
 }
 
-#eo-account-area {
-  border-bottom: 2px solid #3d4c58;
-  cursor: pointer;
+.cell--centered {
+  margin-left: 50%;
 }
 
-#wide_cell {
-  height: 80px;
+.u-textCenter {
+  text-align: center !important;
 }
 
-.guest #eo-account-img,
-.no-image {
-  background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg) !important;
+.v-align {
+  display: flex;
+  align-items: center;
 }
 
-#eo-picker-tittle {
-  height: 180px;
+.h-align {
+  display: flex;
+  justify-content: center;
 }
 
-#eo-picker-footer {
-  height: 105.88235294117649px;
+.header-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 40% !important;
 }
 
-#eo-iframe {
-  width: 160px;
-  height: 60px;
-  border: none;
-  transform: scale(3.5);
+.checkbox-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 10% !important;
+}
+
+.checkbox-text-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 90% !important;
+}
+
+.icon-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 20% !important;
+}
+
+.terms-icon-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 17% !important;
+}
+
+.actions-logo-cell {
+  -webkit-box-flex: 0 !important;
+  -webkit-flex: none !important;
+  -ms-flex: none !important;
+  flex: none !important;
+  width: 22% !important;
+}
+
+.right-align {
+  justify-content: flex-end;
+  display: flex;
+}
+
+.left-align {
+  justify-content: flex-start;
+  display: flex;
+}
+/*CSS FOR DESKTOP*/
+.hidden {
+  display: none;
+}
+
+.heroku-staging .newsHead {
+  background-color: #e6e6e6;
+}
+
+#eo-area-container,
+#terms-container {
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: black;
+  /* Fallback color */
+  background-color: rgba(80, 80, 80, 0.75);
+  /* Black w/ opacity */
+  z-index: 12;
+}
+
+#eo-upgrade-dialog {
+  background-color: #eceff1;
+  font-family: Roboto-Light;
+  font-size: 16px;
+}
+#eo-upgrade-dialog > div {
+  margin-top: 20px;
+}
+#eo-upgrade-dialog a {
+  color: #2cc6a8;
+}
+
+/*ENGLISHON LINES*/
+.eo-delimiter {
+  height: 50%;
+  border-bottom: 2px solid #d7dee3;
+  flex: 0 0 42%;
+}
+
+.eo-delimiter {
+  border-bottom: 1px solid #d7dee3;
+}
+
+.delimiter {
+  flex: 0 0 2%;
+}
+
+.eo-line {
+  border-left: 1px solid #3d4c58;
+  height: 100%;
+}
+
+.eo-delimiter2 {
+  border-right: 1px solid #b8c6cf;
+}
+
+/*MAIN MENU*/
+.Grid-cell {
+  font-size: 16px;
 }
 
 #eo-power-switch {
@@ -1416,10 +1465,12 @@ That is the reason to determine 980px as the media queries breakpoint */
   color: white;
   line-height: 1.3;
   position: relative;
-  height: 80px;
-  width: 187px;
-  border-radius: 40px;
-  font-size: 44px;
+  height: 20px;
+  width: 46.66px;
+  border-radius: 10px;
+  font-family: Roboto-Light;
+  font-size: 11px;
+  border-radius: 50px;
 }
 #eo-power-switch #eo-power-switch-text {
   position: absolute;
@@ -1427,41 +1478,77 @@ That is the reason to determine 980px as the media queries breakpoint */
   left: 98px;
 }
 
-.eo-menu-inner {
-  padding-left: 92px;
-  padding-right: 92px;
+#eo-picker-tittle,
+#eo-last-option {
+  border-bottom: 1px solid #d7dee3;
 }
 
-.eo-active #eo-power-switch {
-  background-color: #2cc6a8;
-  text-align: left;
-  padding-left: 16px;
-}
-.eo-active #eo-power-switch #eo-power-switch-text {
-  left: 44px;
-}
-.eo-active #eo-power-switch-circle {
-  transition: border-color 0.3s ease-in 0s, right 0.3s ease-in 0s;
-  left: 116px;
+#coming_soon .Grid-cell .Grid .tooltip,
+eo-signout-layout .signout {
+  font-size: 16px;
+  padding-top: 14px;
+  padding-left: 60px;
 }
 
-.eo-dlg-header {
-  font-size: 96px;
-  color: #3d4c58;
+#coming_soon .Grid-cell:hover .u-1of6 {
+  padding-left: 23px;
 }
 
-#eo-power-switch-circle {
+.eo-low-layer:hover {
+  opacity: .1;
+}
+
+#eo-menu.menu-editor {
+  height: 411px;
+}
+
+#coming_soon .Grid-cell:hover {
+  padding: 0px;
+}
+
+.languages_picker {
   background-color: #eceff1;
-  position: absolute;
-  height: 88px;
-  width: 88px;
-  top: -6px;
-  border: 1px solid #eceff1;
-  border-radius: 50px;
-  left: -5px;
+  text-align: left;
 }
-#eo-power-switch-circle:hover {
-  background-color: white;
+
+.header {
+  background-color: #4b5a66;
+  font-family: Roboto;
+  color: white;
+  text-align: left;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+}
+
+#eo-dlg-icon {
+  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-repeat: no-repeat;
+  height: 40px;
+  background-size: 30.5px;
+  /*background-position: top;
+  height: 100%;*/
+}
+
+#actions-logo {
+  height: 27.5px;
+  width: 27.5px;
+  background-size: 27.5px;
+  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-repeat: no-repeat;
+  background-position-y: center;
+  margin-left: 9px;
+}
+
+#eo-menu .eo-menu-inner {
+  padding-left: 23px;
+  padding-right: 23px;
+}
+
+.eo-row {
+  height: 51px;
+}
+.eo-row .Grid {
+  height: 100%;
 }
 
 #eo-slider {
@@ -1471,36 +1558,108 @@ That is the reason to determine 980px as the media queries breakpoint */
   outline: none;
 }
 
+#eo-menu .ui-slider-horizontal {
+  height: 14%;
+}
+#eo-menu .ui-slider-handle {
+  top: -100%;
+  border-radius: 50%;
+}
+
+#eo-power-switch #eo-power-switch-text {
+  top: 4px;
+  left: 23px;
+}
+
+#eo-power-switch-circle {
+  height: 22px;
+  width: 22px;
+  top: -2px;
+  border-radius: 22px;
+  background-color: #eceff1;
+  position: absolute;
+  border: 1px solid #eceff1;
+  left: -5px;
+  border: 1px solid #eceff1;
+}
+#eo-power-switch-circle:hover {
+  background-color: white;
+}
+
+.flag,
+#eo-account-img {
+  background-size: 32px;
+  background-repeat: no-repeat;
+  height: 100%;
+  width: 100%;
+  background-position: left;
+}
+
+#eo-picker-footer {
+  height: 29px;
+}
+#eo-picker-footer .Grid-cell {
+  height: 100%;
+}
+
+#englishon-bottom {
+  margin-top: 4px;
+  height: 30px;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 32px;
+  background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
+  background-size: 35%;
+}
+
+#eo-picker-tittle {
+  height: 45px;
+}
+
 #eo-speaker-res {
   background-image: url(http://www.englishon.org/v1/img/menu-sound-off.svg);
   background-repeat: no-repeat;
   padding-left: 10px;
   background-position: right;
-  background-size: 78px;
+  background-size: 19px;
   height: 100%;
   width: 100%;
   cursor: pointer;
 }
 #eo-speaker-res:hover {
-  background-size: 96px;
+  background-size: 24px;
 }
 
 .eo-speaker #eo-speaker-res {
   background-image: url(http://www.englishon.org/v1/img/question-sound-on.svg);
 }
-.eo-speaker #eo-speaker-res:hover {
-  background-size: 96px;
+
+.eo-active #eo-power-switch {
+  background-color: #2cc6a8;
+  text-align: left;
+  padding-left: 4px;
+}
+.eo-active #eo-power-switch #eo-power-switch-text {
+  left: 11px;
+}
+.eo-active #eo-power-switch-circle {
+  transition: border-color 0.3s ease-in 0s, right 0.3s ease-in 0s;
+  left: 30px;
+}
+
+#eo-slider {
+  width: 80%;
+}
+
+#eo-slider .ui-slider-range {
+  background: #2cc6a8;
 }
 
 #eo-language_header {
   font-family: Roboto;
   color: #3d4c58;
   line-height: 1.3;
-}
-
-#eo-picker-tittle,
-#eo-last-option {
-  border-bottom: 3px solid #d7dee3;
 }
 
 .eo-language-option-res {
@@ -1511,50 +1670,78 @@ That is the reason to determine 980px as the media queries breakpoint */
   padding-left: 10px;
 }
 
-#eo-dlg-login .eo-input {
-  direction: ltr;
+.eo-row2 {
+  height: 40.75px;
+  margin-top: 12px;
+}
+
+.eo-row3 {
+  height: 55.75px;
+  line-height: 1.3;
+  font-size: 15px;
+}
+
+.eo-row4 {
+  height: 55px;
+}
+
+.eo-row5 {
+  height: 20.75px;
+}
+.eo-row5 > .Grid {
   height: 100%;
-  width: 720px;
-  border: 1px solid #c7d1d7;
-  border-radius: 5px;
-  padding-left: 10px;
-  font-size: 56px;
-  font-family: Roboto-Light;
 }
 
-#eo-dlg-login .eo-input.eo-state-error {
-  border: 1px solid #d0021b;
+.eo-row6 {
+  margin-top: 10px;
+  height: 24.5px;
 }
 
-.v-align {
-  display: flex;
-  align-items: center;
+.eo-row7 {
+  height: 20.25px;
 }
 
-.h-align {
-  justify-content: center;
+.eo-row8 {
+  height: 10px;
+  font-size: 11px;
+  padding-top: 3px;
 }
 
-.hidden {
-  display: none;
+.eo-row9 {
+  height: 30px;
 }
 
-.guest .option-dlg-logged {
-  display: none;
-}
-.guest .option-dlg-guest {
-  display: flex;
+.eo-row10 {
+  height: 11px;
 }
 
-.logged .option-dlg-logged {
-  display: flex;
-}
-.logged .option-dlg-guest {
-  display: none;
+.eo-row11 {
+  height: 30px;
 }
 
-#eo-dlg-login.valid input {
-  background-color: #2cc6a8;
+.eo-dlg-header {
+  color: #3d4c58;
+  font-size: 20px;
+}
+
+#eo-account-area {
+  border-bottom: 2px solid #3d4c58;
+  cursor: pointer;
+}
+
+.guest #eo-account-img,
+.no-image {
+  background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg) !important;
+}
+
+#editor-row {
+  background-color: #4b5a66;
+  color: white;
+  margin-top: 15px;
+}
+
+#account-dropdown {
+  font-size: 36px;
 }
 
 #coming_soon .Grid:hover {
@@ -1564,8 +1751,7 @@ That is the reason to determine 980px as the media queries breakpoint */
   opacity: .1;
 }
 
-#coming_soon .Grid-cell .Grid .tooltip,
-eo-signout-layout .signout {
+#coming_soon .Grid-cell .Grid .tooltip {
   visibility: hidden;
   position: absolute;
   text-align: center;
@@ -1593,59 +1779,15 @@ eo-signout-layout .signout {
   line-height: 1.3;
 }
 
-#coming_soon .Grid,
-#eo-signout-layout .Grid {
+#coming_soon .Grid {
   position: relative;
-}
-
-#eo-dlg-login .eo-input.ui-state-error {
-  border: 1px solid #f1a899;
-  background: #fddfdf;
-  color: #5f3f3f;
-}
-
-.ui-state-highlight {
-  border: 1px solid #dad55e;
-  background: #fffa90;
-  color: #777620;
-}
-
-#eo-login-msg,
-#eo-google-msg,
-#eo-signout-msg {
-  font-size: 60px;
-  font-family: Roboto-Light;
-}
-
-#google-iframe {
-  margin-left: 20px;
-  padding-top: 30px;
-  height: 180px;
-  padding-top: 100px;
 }
 
 .available:hover {
   background-color: #b8c6cf;
 }
 
-#eo-dlg-options .Grid--full .Grid-cell > div {
-  height: 100%;
-  width: 100%;
-  line-height: 300px;
-}
-
 .checked-language {
-  background-color: #b8c6cf;
-}
-
-#signout_btn {
-  cursor: pointer;
-}
-
-#eo-dlg-options {
-  cursor: pointer;
-}
-#eo-dlg-options .option-dlg-guest:hover, #eo-dlg-options .option-dlg-logged:hover, #eo-dlg-options .option:hover, #eo-dlg-options .option:hover {
   background-color: #b8c6cf;
 }
 
@@ -1682,10 +1824,6 @@ eo-signout-layout .signout {
   background-image: url(http://www.englishon.org/v1/img/button-on-zh.svg);
 }
 
-#account-dropdown {
-  font-size: 144px;
-}
-
 #eo-help {
   flex: 0 1 47%;
   padding-right: 3%;
@@ -1709,242 +1847,201 @@ eo-signout-layout .signout {
   color: #2cc6a8;
 }
 
-.flag,
-#eo-account-img {
-  background-repeat: no-repeat;
-  height: 100%;
-  width: 100%;
-  background-position: left;
-  background-size: 120px;
-}
-
-#englishon-bottom {
-  background-repeat: no-repeat;
-  height: 120px;
-  width: 100%;
-  background-position: center;
-  background-size: 120px;
-  margin-top: 16px;
-}
-
-#englishon-bottom {
-  background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
-  background-size: 35%;
-}
-
-.delimiter {
-  flex: 0 0 2%;
-}
-
-.header-cell {
-  -webkit-box-flex: 0 !important;
-  -webkit-flex: none !important;
-  -ms-flex: none !important;
-  flex: none !important;
-  width: 40% !important;
-}
-
-.icon-cell {
-  -webkit-box-flex: 0 !important;
-  -webkit-flex: none !important;
-  -ms-flex: none !important;
-  flex: none !important;
-  width: 20% !important;
-}
-
-.right-align {
-  justify-content: flex-end;
-  display: flex;
-}
-
-.left-align {
-  justify-content: flex-start;
-  display: flex;
-}
-
-.eo-line {
-  border-left: 1px solid #3d4c58;
-  height: 100%;
-}
-
-.eo-low-layer:hover {
-  opacity: .1;
+#eo-menu .eo-menu-footer:hover {
+  color: #2cc6a8;
 }
 
 .subtitle {
   font-family: Roboto-Light;
-  font-size: 60px;
-}
-
-#eo-menu,
-#eo-dlg-login {
-  border: 1px solid #d7dee3;
-  background-color: #eceff1;
-  top: 0px;
-}
-
-#eo-menu,
-#eo-dlg-login {
-  position: fixed;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-  z-index: 12;
-  overflow-y: auto;
-}
-
-#eo-dlg-options {
-  background-color: #eceff1;
-  font-family: Roboto;
-  top: 180px;
-  color: #3d4c58;
-  position: fixed;
-  left: 0px;
-  width: 100%;
-  height: 1000px;
-  z-index: 12;
-  overflow-y: auto;
-}
-#eo-dlg-options .Grid-cell {
-  border-top: 1px solid #d7dee3;
-  height: 280px;
-}
-
-.editor-btn {
-  background-color: #4b5a66;
-  color: white;
-}
-
-.eo-row2 {
-  height: 163px;
-  margin-top: 48px;
-}
-.eo-row2 > .Grid {
-  height: 100%;
-}
-
-.eo-row3 {
-  height: 223px;
-  font-size: 60px;
-}
-
-.eo-row4 {
-  height: 220px;
-}
-
-.eo-row5 {
-  height: 83px;
-}
-.eo-row5 > .Grid {
-  height: 100%;
-}
-
-.eo-row6 {
-  margin-top: 40px;
-  height: 90px;
-}
-
-.eo-row8 {
-  height: 80px;
-  padding-top: 12px;
-  color: #d0021b;
-  font-family: Roboto-Light;
+  font-size: 15px;
 }
 
 .eo-state-error {
   border: 1px solid #d0021b;
 }
 
-.eo-row9 {
-  height: 120px;
+/*LOGIN DIALOG AND SHARED AREA*/
+#eo-menu,
+#eo-dlg-login,
+#eo-dlg-terms {
+  border: 1px solid #d7dee3;
+  background-color: #eceff1;
+  z-index: 12;
+  position: fixed;
 }
-.eo-row9 > .Grid {
+
+#eo-dlg-login .eo-input.eo-state-error {
+  border: 1px solid #d0021b;
+}
+
+#eo-dlg-login .error {
+  font-size: 11px;
+  color: #a94442;
+}
+
+#eo-dlg-login {
+  /*z-index: 4;*/
+  overflow-y: auto;
+}
+#eo-dlg-login .eo-input {
+  width: 170px;
   height: 100%;
-}
-.eo-row9 > .Grid > .Grid-cell {
-  height: 100%;
-}
-
-.eo-delimiter2 {
-  border-right: 1px solid #b8c6cf;
-}
-
-.eo-row7 {
-  height: 81px;
+  font-size: 14px;
+  border-radius: 5px;
+  padding-left: 10px;
+  direction: ltr;
+  border: 1px solid #c7d1d7;
+  font-family: Roboto-Light;
 }
 
-.eo-row11 {
-  height: 120px;
+#eo-menu,
+#eo-dlg-login,
+#eo-dlg-options,
+#eo-dlg-terms {
+  width: 240px;
+  height: 360px;
+  overflow-y: hidden;
+  /*firefox need a smaller font for menu footer*/
 }
-
-.eo-row12 {
-  height: 160px;
-}
-
-.eo-row10 {
-  height: 44px;
-  /*margin-top: 20px;*/
-}
-.eo-row10 .Grid {
-  height: 100%;
-}
-
-#eo-slider {
-  width: 80%;
-}
-
-#eo-slider .ui-slider-range {
-  background: #2cc6a8;
-}
-
-.eo-menu-footer {
-  font-size: 44px;
+#eo-menu .Grid-cell,
+#eo-dlg-login .Grid-cell,
+#eo-dlg-options .Grid-cell,
+#eo-dlg-terms .Grid-cell {
+  font-size: 16px;
   line-height: 1.3;
-  font-family: Roboto;
-  color: #c7d1d5;
+}
+#eo-menu .eo-menu-footer,
+#eo-dlg-login .eo-menu-footer,
+#eo-dlg-options .eo-menu-footer,
+#eo-dlg-terms .eo-menu-footer {
+  font-size: 11px;
+  line-height: 1.3;
+}
+@-moz-document url-prefix() {
+  #eo-menu .eo-menu-footer,
+  #eo-dlg-login .eo-menu-footer,
+  #eo-dlg-options .eo-menu-footer,
+  #eo-dlg-terms .eo-menu-footer {
+    font-size: 10px;
+  }
+}
+#eo-dlg-login.valid input {
+  background-color: #2cc6a8;
+}
+
+#eo-login-msg,
+#eo-google-msg,
+#eo-signout-msg {
+  font-size: 12px;
+}
+
+#signout_btn {
   cursor: pointer;
 }
 
-#tos:hover {
-  color: #93a0a8;
-}
-#tos a:hover {
-  color: #2cc6a8;
-}
-
-#eo-menu .eo-menu-footer:hover {
-  color: #2cc6a8;
+#eo-dlg-login .eo-input.ui-state-error {
+  border: 1px solid #f1a899;
+  background: #fddfdf;
+  color: #5f3f3f;
 }
 
-#eo-upgrade-dialog {
-  background-color: #eceff1;
+.ui-state-highlight {
+  border: 1px solid #dad55e;
+  background: #fffa90;
+  color: #777620;
+}
+
+#eo-login-msg,
+#eo-google-msg,
+#eo-signout-msg {
+  font-size: 60px;
   font-family: Roboto-Light;
-  font-size: 16px;
-}
-#eo-upgrade-dialog > div {
-  margin-top: 20px;
-}
-#eo-upgrade-dialog a {
-  color: #2cc6a8;
 }
 
-#eo-dlg-icon {
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
-  background-repeat: no-repeat;
-  background-size: 122px;
-  background-position: top;
+#google_btn {
+  height: 38px;
+  width: 140px;
+  background-color: #dc4e41;
+  border-radius: 5px;
+}
+
+#google-iframe {
+  margin-left: 20px;
+  padding-top: 0px;
+  height: 45px;
+}
+
+#eo-iframe {
+  width: 160px;
+  height: 60px;
+  border: none;
+}
+
+#eo-mail-login-btn {
+  width: 152px;
+  height: 26.66px;
+  border-radius: 3px;
+  font-size: 13px;
+  color: white;
+  background-color: #2cc6a8;
+  border: none;
+  cursor: pointer;
+}
+
+#eo-dlg-inner {
+  margin: 0px 29px;
+  overflow: hidden;
   height: 100%;
 }
 
-#eo-menu .ui-slider-horizontal {
-  height: 14%;
-}
-#eo-menu .ui-slider-handle {
-  top: -100%;
-  border-radius: 50%;
+#eo-dlg-login .eo-row12 {
+  height: 40px;
 }
 
-/*LIVE ACTIONS FOR MOBILE*/
+/*OPTIONS DIALOG*/
+#eo-dlg-options {
+  cursor: pointer;
+}
+#eo-dlg-options .option-dlg-guest:hover, #eo-dlg-options .option-dlg-logged:hover, #eo-dlg-options .option:hover, #eo-dlg-options .option:hover {
+  background-color: #b8c6cf;
+}
+
+.guest .option-dlg-logged {
+  display: none;
+}
+.guest .option-dlg-guest {
+  display: flex;
+}
+
+.logged .option-dlg-logged {
+  display: flex;
+}
+.logged .option-dlg-guest {
+  display: none;
+}
+
+#eo-dlg-options {
+  height: 250px;
+  background-color: #eceff1;
+  font-family: Roboto;
+  top: 210px;
+  color: #3d4c58;
+  position: fixed;
+  left: 0px;
+  z-index: 12;
+}
+#eo-dlg-options .Grid-cell {
+  border-top: 1px solid #d7dee3;
+  height: 83px;
+}
+
+#eo-dlg-options .Grid--full .Grid-cell > div {
+  height: 100%;
+  width: 100%;
+  line-height: 80px;
+}
+
+/*LIVE ACTIONS AREA*/
 #eo-live {
   background-color: rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -1953,46 +2050,60 @@ eo-signout-layout .signout {
   min-height: 28px;
   /*resize: both;*/
   position: fixed;
-  bottom: 10px;
+  top: 10px;
   right: 10px;
-  width: 960px;
-  height: 125px;
+  height: 60px;
+  width: 300px;
   overflow: auto;
-  z-index: 11;
+  cursor: pointer;
+}
+#eo-live.eo-live-maximize {
+  cursor: arrow;
+  padding: 20px;
+  height: 170px;
+}
+#eo-live.eo-live-maximize #milotrage {
+  margin: 0px;
+}
+#eo-live.eo-live-maximize .day-bar {
+  margin: 5px;
+}
+#eo-live.vocabulary-open {
+  background-color: black;
 }
 #eo-live #srProgress,
 #eo-live #progress2 {
-  margin: 12px 120px 12px 120px;
-  width: 200px;
-  height: 200px;
+  margin: 3px 30px 3px 30px;
+  width: 50px;
+  height: 50px;
   position: relative;
 }
 #eo-live #sr {
-  height: 260px;
+  height: 65px;
+}
+#eo-live #sr .progressbar-text {
+  font-size: 12px;
+  color: #aaa;
+}
+#eo-live #sr .sr-complete {
+  background-color: #2cc6a8;
+  border-radius: 25px;
+}
+#eo-live #sr .sr-complete .progressbar-text {
+  font-size: 30px;
+  color: white;
 }
 #eo-live #sr #eo-progress {
   height: 90%;
   width: 90%;
 }
-#eo-live #sr .progressbar-text {
-  font-size: 48px;
-  color: #aaa;
-}
-#eo-live #sr .sr-complete {
-  background-color: #2cc6a8;
-  border-radius: 100px;
-}
-#eo-live #sr .sr-complete .progressbar-text {
-  font-size: 120px;
-  color: white;
-}
 #eo-live .day-bar {
-  border-radius: 50px;
+  border-radius: 25px;
   background-color: gray;
-  margin: 20px;
-  width: 92px;
-  height: 92px;
-  font-size: 48px;
+  margin: 5px;
+  width: 23px;
+  height: 23px;
+  font-size: 12px;
   color: white;
 }
 #eo-live .day-bar.eo-persistence {
@@ -2001,388 +2112,414 @@ eo-signout-layout .signout {
 #eo-live > .Grid > .Grid-cell {
   height: 100%;
 }
-#eo-live > .Grid > .Grid-cell > .live-part {
+#eo-live .live-part {
   border-radius: 12px;
   background-color: white;
-  margin: 16px 80px 16px 80px;
-  font-size: 120px;
+  margin: 4px 2px 4px 2px;
+  font-size: 30px;
 }
-#eo-live > .Grid > .Grid-cell > .live-part #eo-odometer {
-  font-size: 90px;
-}
-#eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
-  font-size: 64px;
+#eo-live .live-part .Grid .Grid-cell {
+  /*font-size: 16px*/
 }
 #eo-live #milotrage {
   background-color: black;
-  margin: 0px;
+  margin: 4px 20px 4px 20px;
+  cursor: pointer;
 }
-#eo-live.eo-live-maximize {
-  height: 680px;
+#eo-live #milotrage .Grid-cell {
+  font-size: 30px;
 }
-#eo-live.eo-live-maximize #milotrage {
+#eo-live #milotrage .live-part {
   background-color: black;
-  margin: 16px 80px 16px 80px;
 }
-#eo-live.eo-live-maximize #milotrage #eo-odometer {
-  font-size: 120px;
+#eo-live #vocabulary {
+  height: 170px;
+  background-color: black;
+  color: white;
+  text-align: left;
 }
-#eo-live.eo-live-maximize .day-bar {
-  margin: 10px;
+#eo-live #vocabulary .Grid-cell.cell1 {
+  height: 40px;
+}
+#eo-live #vocabulary .Grid-cell.cell2 {
+  height: 130px;
+}
+#eo-live #vocabulary #vocabulary-content .vocabulary-odometer, #eo-live #vocabulary #vocabulary-content .vocabulary-word {
+  padding-right: 30px;
+}
+#eo-live #vocabulary .Grid-cell #vocabulary-order {
+  background-color: #2cc6a8;
+  cursor: pointer;
 }
 
 .Grid#days-pannel {
   direction: rtl;
 }
 
-/*CSS FOR DESKTOP*/
-@media (min-width: 1050px) {
-  #eo-dlg-options .Grid--full .Grid-cell > div {
-    height: 100%;
-    width: 100%;
-    line-height: 80px;
+/*TERMS DIALOG*/
+#eo-dlg-terms {
+  font-family: Roboto-light;
+  z-index: 20;
+}
+#eo-dlg-terms .Grid {
+  width: 100%;
+}
+#eo-dlg-terms #tos {
+  font-size: 12px;
+}
+#eo-dlg-terms #tos:hover {
+  color: #93a0a8;
+}
+#eo-dlg-terms #tos a:hover {
+  color: #2cc6a8;
+}
+#eo-dlg-terms .Grid-cell.terms-header-cell, #eo-dlg-terms .checkbox-text-cell {
+  font-size: 14px;
+}
+#eo-dlg-terms #eo-dlg-inner {
+  padding-top: 70px;
+}
+#eo-dlg-terms #eo-accept-btn, #eo-dlg-terms #eo-reject-btn {
+  cursor: pointer;
+}
+#eo-dlg-terms #eo-accept-btn:hover, #eo-dlg-terms #eo-reject-btn:hover {
+  color: #2cc6a8;
+}
+
+/*EDITOR POPUPS*/
+.editor-dlg {
+  direction: ltr;
+}
+.editor-dlg #new-word {
+  direction: rtl;
+}
+.editor-dlg .editor-div {
+  padding: 5px;
+}
+
+.editor-btn {
+  background-color: #4b5a66;
+  color: white;
+}
+
+/*CLOSE BUTTONS*/
+.terms-close {
+  top: 13px;
+  right: 13px;
+  position: relative;
+}
+
+.actions-close {
+  top: 13px;
+  right: 13px;
+  position: fixed;
+}
+
+.eo-close {
+  color: gray;
+  height: 15px;
+  width: 15px;
+  background-size: 15px;
+  background-image: url(http://www.englishon.org/v1/img/close.png);
+  z-index: 20;
+}
+.eo-close:hover {
+  background-image: url(http://www.englishon.org/v1/img/close2.png);
+  background-color: gray;
+}
+/* responsive.scss */
+/*Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
+This is causing chrome to compute the body width as 980px anycase, in inspector too
+That is the reason to determine 980px as the media queries breakpoint */
+/*MENU FOR MOBILE*/
+@media (max-width: 981px) {
+  .Grid-cell {
+    font-size: 64px;
   }
 
-  #eo-picker-tittle,
-  #eo-last-option {
-    border-bottom: 1px solid #d7dee3;
-  }
-
-  #coming_soon .Grid-cell .Grid .tooltip,
-  eo-signout-layout .signout {
-    font-size: 16px;
-    padding-top: 14px;
-    padding-left: 60px;
-  }
-
-  #coming_soon .Grid-cell:hover .u-1of6 {
-    padding-left: 23px;
-  }
-
-  #eo-menu.menu-editor {
-    height: 411px;
-  }
-
-  #coming_soon .Grid-cell:hover {
-    padding: 0px;
-  }
-
-  #google-iframe {
-    margin-left: 20px;
-    padding-top: 0px;
-    height: 45px;
-  }
-
-  #eo-iframe {
-    transform: scale(1);
-  }
-
-  .eo-delimiter {
-    border-bottom: 1px solid #d7dee3;
-  }
-
-  #eo-login-msg,
-  #eo-google-msg,
-  #eo-signout-msg {
-    font-size: 12px;
-  }
-
-  #eo-dlg-icon {
-    background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
-    background-repeat: no-repeat;
-    height: 40px;
-    background-size: 30.5px;
-  }
-
-  #eo-menu .eo-menu-inner {
-    padding-left: 23px;
-    padding-right: 23px;
-  }
-
-  .eo-active #eo-menu #eo-power-switch {
-    padding-left: 4px;
-  }
-  .eo-active #eo-menu #eo-power-switch #eo-power-switch-text {
-    left: 11px;
-  }
-
-  #eo-menu,
-  #eo-dlg-login {
-    height: 360px;
-  }
-  #eo-menu .eo-input,
-  #eo-dlg-login .eo-input {
-    width: 170px;
-    font-size: 14px;
-  }
-
-  #eo-dlg-options {
-    height: 250px;
-  }
+  #eo-menu .Grid-cell,
+  #eo-dlg-login .Grid-cell,
   #eo-dlg-options .Grid-cell {
-    height: 83px;
+    font-size: 64px;
+  }
+
+  #eo-menu .eo-menu-footer,
+  #eo-dlg-login .eo-menu-footer,
+  #eo-dlg-options .eo-menu-footer {
+    font-size: 44px;
   }
 
   #eo-menu,
   #eo-dlg-login,
-  #eo-dlg-options {
-    width: 240px;
-    overflow-y: hidden;
-    /*firefox need a smaller font at menu footer*/
-  }
-  #eo-menu .eo-row,
-  #eo-dlg-login .eo-row,
-  #eo-dlg-options .eo-row {
-    height: 51px;
-  }
-  #eo-menu .Grid-cell,
-  #eo-dlg-login .Grid-cell,
-  #eo-dlg-options .Grid-cell {
-    font-size: 16px;
-    line-height: 1.3;
-  }
-  #eo-menu .Grid-cell .subtitle,
-  #eo-dlg-login .Grid-cell .subtitle,
-  #eo-dlg-options .Grid-cell .subtitle {
-    font-size: 15px;
-  }
-  #eo-menu .Grid-cell .error,
-  #eo-dlg-login .Grid-cell .error,
-  #eo-dlg-options .Grid-cell .error {
-    font-size: 11px;
-  }
-  #eo-menu .eo-menu-footer,
-  #eo-dlg-login .eo-menu-footer,
-  #eo-dlg-options .eo-menu-footer {
-    font-size: 11px;
-    line-height: 1.3;
-  }
-  @-moz-document url-prefix() {
-    #eo-menu .eo-menu-footer,
-    #eo-dlg-login .eo-menu-footer,
-    #eo-dlg-options .eo-menu-footer {
-      font-size: 10px;
-    }
-  }
-  #eo-menu .flag, #eo-menu #eo-account-img,
-  #eo-dlg-login .flag,
-  #eo-dlg-login #eo-account-img,
-  #eo-dlg-options .flag,
-  #eo-dlg-options #eo-account-img {
-    background-size: 32px;
-  }
-  #eo-menu #eo-power-switch,
-  #eo-dlg-login #eo-power-switch,
-  #eo-dlg-options #eo-power-switch {
-    height: 20px;
-    width: 46.66px;
-    border-radius: 10px;
-    font-family: Roboto-Light;
-    font-size: 11px;
-    border-radius: 50px;
-  }
-  #eo-menu #eo-power-switch #eo-power-switch-text,
-  #eo-dlg-login #eo-power-switch #eo-power-switch-text,
-  #eo-dlg-options #eo-power-switch #eo-power-switch-text {
-    top: 4px;
-    left: 23px;
-  }
-  #eo-menu #eo-power-switch-circle,
-  #eo-dlg-login #eo-power-switch-circle,
-  #eo-dlg-options #eo-power-switch-circle {
-    height: 22px;
-    width: 22px;
-    top: -2px;
-    border-radius: 22px;
-  }
-  #eo-menu #eo-picker-footer,
-  #eo-dlg-login #eo-picker-footer,
-  #eo-dlg-options #eo-picker-footer {
-    height: 29px;
-  }
-  #eo-menu #eo-picker-footer .Grid-cell,
-  #eo-dlg-login #eo-picker-footer .Grid-cell,
-  #eo-dlg-options #eo-picker-footer .Grid-cell {
+  #eo-dlg-terms {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
     height: 100%;
-  }
-  #eo-menu #englishon-bottom,
-  #eo-dlg-login #englishon-bottom,
-  #eo-dlg-options #englishon-bottom {
-    margin-top: 4px;
-    height: 30px;
-  }
-  #eo-menu #eo-picker-tittle,
-  #eo-dlg-login #eo-picker-tittle,
-  #eo-dlg-options #eo-picker-tittle {
-    height: 45px;
-  }
-  #eo-menu #eo-speaker-res,
-  #eo-dlg-login #eo-speaker-res,
-  #eo-dlg-options #eo-speaker-res {
-    background-size: 19px;
-  }
-  #eo-menu #eo-speaker-res:hover,
-  #eo-dlg-login #eo-speaker-res:hover,
-  #eo-dlg-options #eo-speaker-res:hover {
-    background-size: 24px;
+    overflow-y: auto;
   }
 
-  .eo-active #eo-power-switch-circle {
-    left: 30px;
+  #eo-menu.menu-editor {
+    height: 100%;
+  }
+
+  #eo-menu .eo-menu-inner {
+    padding-left: 92px;
+    padding-right: 92px;
+  }
+
+  #eo-picker-tittle,
+  #eo-last-option {
+    border-bottom: 3px solid #d7dee3;
+  }
+
+  #eo-dlg-icon {
+    background-size: 122px;
+    background-position: top;
+    height: 100%;
   }
 
   .eo-row2 {
-    height: 40.75px;
-    margin-top: 12px;
+    height: 163px;
+    margin-top: 48px;
+  }
+  .eo-row2 > .Grid {
+    height: 100%;
   }
 
   .eo-row3 {
-    height: 55.75px;
-    line-height: 1.3;
-    font-size: 15px;
+    height: 223px;
+    font-size: 60px;
   }
 
   .eo-row4 {
-    height: 55px;
-  }
-
-  .eo-row11 {
-    height: 30px;
+    height: 220px;
   }
 
   .eo-row5 {
-    height: 20.75px;
+    height: 83px;
   }
   .eo-row5 > .Grid {
     height: 100%;
   }
 
   .eo-row6 {
-    margin-top: 10px;
-    height: 24.5px;
+    margin-top: 40px;
+    height: 90px;
   }
 
   .eo-row7 {
-    height: 20.25px;
+    height: 81px;
   }
 
   .eo-row8 {
-    height: 10px;
-    font-size: 11px;
-    padding-top: 3px;
+    height: 80px;
+    padding-top: 12px;
+    color: #d0021b;
+    font-family: Roboto-Light;
   }
 
-  .eo-dlg-header {
-    font-size: 20px;
+  .eo-row9 {
+    height: 120px;
+  }
+  .eo-row9 > .Grid {
+    height: 100%;
+  }
+  .eo-row9 > .Grid > .Grid-cell {
+    height: 100%;
   }
 
   .eo-row10 {
-    height: 11px;
-    /*margin-top: 5px;*/
+    height: 44px;
+    /*margin-top: 20px;*/
+  }
+  .eo-row10 .Grid {
+    height: 100%;
+  }
+
+  .eo-row11 {
+    height: 120px;
+  }
+
+  .eo-row12 {
+    height: 160px;
+  }
+
+  .eo-active #eo-power-switch {
+    padding-left: 16px;
+  }
+  .eo-active #eo-power-switch #eo-power-switch-text {
+    left: 44px;
+  }
+  .eo-active #eo-power-switch-circle {
+    left: 116px;
+  }
+
+  .subtitle {
+    font-size: 60px;
+  }
+
+  .eo-dlg-header {
+    font-size: 96px;
+  }
+
+  #eo-speaker-res {
+    background-size: 78px;
+  }
+  #eo-speaker-res:hover {
+    background-size: 96px;
+  }
+
+  .flag,
+  #eo-account-img {
+    background-size: 120px;
   }
 
   #eo-mail-login-btn {
-    height: 26.66px;
-    width: 152px;
-    border-radius: 3px;
-    font-size: 13px;
+    width: 604px;
+    height: 106.64px;
+    border-radius: 12px;
+    font-size: 52px;
   }
 
-  #eo-dlg-inner {
-    margin: 0px 29px;
-    overflow: hidden;
-  }
-
-  #eo-dlg-login .eo-row9 {
-    height: 30px;
-  }
-
-  #eo-dlg-login .eo-row12 {
-    height: 40px;
+  #eo-power-switch-circle {
+    background-color: #eceff1;
+    position: absolute;
+    height: 88px;
+    width: 88px;
+    top: -6px;
+    border: 1px solid #eceff1;
+    border-radius: 50px;
+    left: -5px;
   }
 
   #account-dropdown {
-    font-size: 36px;
+    font-size: 144px;
   }
 
-  #eo-area-container {
-    /* Hidden by default */
-    position: fixed;
-    /* Stay in place */
-    z-index: 1;
-    /* Sit on top */
-    left: 0;
-    top: 0;
+  .eo-row {
+    height: 204px;
+  }
+
+  #englishon-bottom {
+    margin-top: 16px;
+    height: 120px;
+  }
+
+  #eo-dlg-inner {
+    margin: 0px 104px;
+    overflow: auto;
+  }
+
+  #eo-picker-tittle {
+    height: 180px;
+  }
+
+  #eo-picker-footer {
+    height: 105.88235294117649px;
+  }
+
+  #eo-dlg-login .eo-input {
+    width: 720px;
+    font-size: 56px;
+  }
+
+  #eo-dlg-login .error {
+    font-size: 44px;
+  }
+
+  #eo-iframe {
+    transform: scale(3.5);
+  }
+
+  #google-iframe {
+    padding-top: 100px;
+  }
+
+  #eo-power-switch {
+    height: 80px;
+    width: 187px;
+    border-radius: 40px;
+    font-size: 44px;
+  }
+  #eo-power-switch #eo-power-switch-text {
+    top: 16px;
+    left: 98px;
+  }
+
+  #eo-dlg-options {
+    height: 1000px;
     width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
-    overflow: auto;
-    /* Enable scroll if needed */
-    background-color: black;
-    /* Fallback color */
-    background-color: rgba(80, 80, 80, 0.75);
-    /* Black w/ opacity */
-    z-index: 12;
+    overflow-y: auto;
+  }
+  #eo-dlg-options .Grid-cell {
+    height: 280px;
   }
 
+  #eo-dlg-options .Grid--full .Grid-cell > div {
+    line-height: 320px;
+  }
+}
+/*LIVE ACTIONS FOR MOBILE*/
+@media (max-width: 981px) {
   #eo-live {
-    background-color: rgba(0, 0, 0, 0.2);
-    background-clip: padding-box;
-    border: solid transparent;
-    border-width: 1px 1px 1px 6px;
-    min-height: 28px;
-    /*resize: both;*/
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    height: 60px;
-    width: 300px;
+    bottom: 10px;
+    top: initial;
+    right: 0px;
+    width: 100%;
+    height: 138px;
     overflow: auto;
+    z-index: 11;
   }
-  #eo-live.eo-live-maximize {
-    padding: 20px;
-    height: 170px;
+  #eo-live .live-part {
+    border-radius: 20px;
+    margin: 8px 30px 8px 30px;
+    font-size: 120px;
   }
-  #eo-live.eo-live-maximize #milotrage {
-    background-color: black;
-    margin: 0px;
+  #eo-live .live-part #eo-odometer {
+    font-size: 80px;
   }
-  #eo-live.eo-live-maximize .day-bar {
-    margin: 5px;
+  #eo-live .live-part .Grid .Grid-cell {
+    font-size: 64px;
+  }
+  #eo-live #actions-logo {
+    height: 110px;
+    width: 110px;
+    background-size: 110px;
+    background-position-y: center;
+    margin-left: 45px;
   }
   #eo-live #srProgress,
   #eo-live #progress2 {
-    margin: 3px 30px 3px 30px;
-    width: 50px;
-    height: 50px;
+    margin: 12px 120px 12px 120px;
+    width: 200px;
+    height: 200px;
     position: relative;
   }
   #eo-live #sr {
-    height: 65px;
+    height: 260px;
   }
   #eo-live #sr .progressbar-text {
-    font-size: 12px;
+    font-size: 120px;
     color: #aaa;
   }
   #eo-live #sr .sr-complete {
-    border-radius: 25px;
+    border-radius: 100px;
   }
   #eo-live #sr .sr-complete .progressbar-text {
-    font-size: 30px;
-    color: white;
+    font-size: 120px;
   }
-  #eo-live #sr #eo-progress {
-    height: 90%;
-    width: 90%;
+  #eo-live .actions-logo-cell {
+    width: 32% !important;
   }
   #eo-live .day-bar {
-    border-radius: 25px;
+    border-radius: 50px;
     background-color: gray;
-    margin: 5px;
-    width: 23px;
-    height: 23px;
-    font-size: 12px;
+    margin: 20px;
+    width: 92px;
+    height: 92px;
+    font-size: 48px;
     color: white;
   }
   #eo-live .day-bar.eo-persistence {
@@ -2391,33 +2528,68 @@ eo-signout-layout .signout {
   #eo-live > .Grid > .Grid-cell {
     height: 100%;
   }
-  #eo-live > .Grid > .Grid-cell > .live-part {
-    border-radius: 12px;
-    background-color: white;
-    margin: 4px 20px 4px 20px;
-    font-size: 30px;
+  #eo-live > .Grid > .Grid-cell #milotrage .Grid-cell {
+    font-size: 100px;
   }
-  #eo-live > .Grid > .Grid-cell > .live-part#milotrage {
-    color: red;
+  #eo-live.eo-live-maximize {
+    /*CHECK IF THERE IS A NEED FOR width:96% IN PRODUCTION*/
+    height: 520px;
   }
-  #eo-live > .Grid > .Grid-cell > .live-part#milotrage #eo-odometer {
-    font-size: 30px;
-  }
-  #eo-live > .Grid > .Grid-cell > .live-part .Grid .Grid-cell {
-    font-size: 16px;
-  }
-  #eo-live > .Grid > .Grid-cell #milotrage {
+  #eo-live.eo-live-maximize #milotrage {
     background-color: black;
-    margin: 4px 20px 4px 20px;
+    margin: 8px 30px 8px 30px;
+  }
+  #eo-live.eo-live-maximize #milotrage #eo-odometer {
+    /*font-size: 80px;*/
+  }
+  #eo-live.eo-live-maximize .day-bar {
+    margin: 10px;
+  }
+  #eo-live #vocabulary .Grid-cell.cell1 {
+    height: 160px;
+  }
+  #eo-live #vocabulary .Grid-cell.cell2 {
+    height: 520px;
   }
 
   .Grid#days-pannel {
     direction: rtl;
   }
 }
-/*@media (max-width: 981px) {
+/*TERMS DIALOG FOR MOBILE*/
+@media (max-width: 981px) {
+  #eo-dlg-terms .Grid-cell {
+    font-size: 64px;
+  }
+  #eo-dlg-terms #tos {
+    font-size: 48px;
+  }
+  #eo-dlg-terms .Grid-cell.terms-header-cell, #eo-dlg-terms .checkbox-text-cell {
+    font-size: 56px;
+  }
+  #eo-dlg-terms #eo-dlg-inner {
+    padding-top: 280px;
+  }
+  #eo-dlg-terms #eo-accept-checkbox {
+    transform: scale(3.5);
+  }
 
-}*/
-.editor-div {
-  padding: 5px;
+  .eo-close {
+    width: 60px;
+    height: 60px;
+    background-size: 60px;
+  }
+}
+/*CLOSE BUTTONS FOR MOBILE*/
+@media (max-width: 981px) {
+  .actions-close {
+    top: 13px;
+    right: 13px;
+    position: absolute;
+  }
+
+  .eo-live-maximize .actions-close {
+    top: 33px;
+    right: 50px;
+  }
 }
