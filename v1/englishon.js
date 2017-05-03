@@ -4318,14 +4318,14 @@ Injector = function (paragraphs) {
       q.replacement = q.qobj.replacement();
       q.original.replaceWith(q.replacement);
       //if the question after answering is too long - add spaces
-      var width = q.replacement.outerWidth() + 2; //2 pixels for the border
+      var width = q.replacement.outerWidth(); //2 pixels for the border and 4 is spere...
       var parentoffset = q.replacement.parent().offset().left;
-      var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width;
+      var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width - 6; // a spere...
       var curent_text = q.replacement.hasClass('eo-expired') ? q.qobj.practicedWord : q.qobj.data.replaced;
       var future_text = q.replacement.hasClass('eo-expired') ? q.qobj.data.replaced : q.qobj.practicedWord;
       var visible_element = q.replacement.hasClass('eo-expired') ? '.eo-correct' : '.eo-hint';
       q.replacement.find(visible_element).text(future_text);
-      var future_width = q.replacement.outerWidth() + 2; //2 pixels for the border
+      var future_width = q.replacement.outerWidth(); //2 pixels for the border
       q.replacement.find(visible_element).text(curent_text);
       if (future_width > spaceInCurrentLine || ////a question which expected to go down after action
       width > future_width && spaceInCurrentLine > 395) {
