@@ -3164,7 +3164,6 @@ var MESSAGES = {
     ZH: "Chinese",
     HELP: 'Need Help?',
     CONTACT: 'Conatct Us',
-
     OR: 'OR',
     // Login dialog
     LOGIN_SIGN_IN_TITLE: 'Sign In',
@@ -3467,7 +3466,6 @@ HerokuBackend.prototype.getArticle = function (address) {
     this.pageid = data.id;
     return data.questions;
   }.bind(this), function (data) {
-
     if (data.responseJSON && data.responseJSON.detail === 'Terms not accepted') {
       return $.Deferred().reject('terms_not_accepted').promise();
     }
@@ -3506,17 +3504,6 @@ HerokuBackend.prototype.report = function (msg, data) {
   data.timestamp = new Date().toJSON();
   data.page = this.pageid;
   var r = this.ajax('POST', '/quiz/report/' + msg + '/', data);
-  //Looks like it for chrome extention
-  // if (IN_CHROME) {
-  //   var mixdata = $.extend({}, data);
-  //   delete mixdata.timestamp; // mixpanel does it's own timestamping
-  //   // it sometimes crashes, we don't yet know why, and it's not business critical, so lets ignore errors
-  //   try {
-  //     chrome.runtime.sendMessage({track: msg, data: mixdata});
-  //   } catch (err) {
-  //     console.log("Mixpanel error: ", err);
-  //   }
-  // }
   return r;
 };
 
@@ -3723,11 +3710,6 @@ Editor.prototype.onClick = function (event) {
     span.addClass('eo-editor-candidate');
   }));
 
-  acc.append($('<button>').text('Close').click(function (event) {
-    event.preventDefault();
-    dia.dialog('close');
-    dia.dialog('destroy');
-  }));
   acc.append($('<h3>').text("Remove from dictionary"));
   acc.append($('<div class="editor-div">').append($('<span>').text("Remove choosen word")).append($('<input type="text" id="word_to_delete">')));
 
@@ -3738,6 +3720,12 @@ Editor.prototype.onClick = function (event) {
     dia.dialog('close');
     dia.dialog('destroy');
   }));
+
+  acc.append($('<div>').addClass('editor-div').append($('<button>').text('Close').click(function (event) {
+    event.preventDefault();
+    dia.dialog('close');
+    dia.dialog('destroy');
+  })));
 
   dia.append(acc);
   dia.dialog({ autoOpen: true, height: 'auto', width: 'auto', modal: 'true' });
@@ -4193,7 +4181,6 @@ UserInfo = function () {
         $('#eo-live-main').removeClass('hidden');
         $(document).off('click');
       });
-      return;
     }.bind(this));
   };
   this.hideLiveActions = function () {
