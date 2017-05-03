@@ -4295,7 +4295,7 @@ Injector = function (paragraphs) {
       return;
     }
     this.isActive = false;
-    $('.eo-spaces').remove();
+    $('.eo-space').remove();
     $(this.elements).each(function (i, q) {
       q.replacement.replaceWith(q.original);
       //check if this is the right place!!!! 
