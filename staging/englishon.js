@@ -3240,6 +3240,11 @@ document.MESSAGES = MESSAGES;
 var RTL = 'rtl',
     LTR = 'ltr';
 var WEBSITE_I18N = {
+  'www.ch10.co.il': {
+    DIRECTION: RTL,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'english'
+  },
   'www.bhol.co.il': {
     DIRECTION: RTL,
     DEFAULT_TARGET_LANGUAGE: 'en',
@@ -4212,31 +4217,7 @@ UserInfo = function () {
   };
 };
 //
-jQuery.fn.extend({
-  toggleText: function (a, b) {
-    if (this.text() != a && this.text() != b) {
-      this.text(a);
-    } else if (this.text() == a) {
-      this.text(b);
-    } else if (this.text() == b) {
-      this.text(a);
-    }
-    return this;
-  },
-  //for toggle text which containing html entities
-  toggleHtml: function (a, b) {
-    a = a.replace('_', '&nbsp;');
-    if (b) b = b.replace('_', '&nbsp;');
-    if (this.html() != a && this.html() != b) {
-      this.html(a);
-    } else if (this.html() == a) {
-      this.html(b);
-    } else if (this.html() == b) {
-      this.html(a);
-    }
-    return this;
-  }
-});
+
 Injector = function (paragraphs) {
 
   report = function (msg, data) {
@@ -4320,7 +4301,9 @@ Injector = function (paragraphs) {
       //if the question after answering is too long - add spaces
       var width = q.replacement.outerWidth(); //2 pixels for the border and 4 is spere...
       var parentoffset = q.replacement.parent().offset().left;
-      var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width - 6; // a spere...
+      var parentPadding = 30;
+      var lineWidth = 385;
+      var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width - 6 - parentPadding; // a spere...
       var curent_text = q.replacement.hasClass('eo-expired') ? q.qobj.practicedWord : q.qobj.data.replaced;
       var future_text = q.replacement.hasClass('eo-expired') ? q.qobj.data.replaced : q.qobj.practicedWord;
       var visible_element = q.replacement.hasClass('eo-expired') ? '.eo-correct' : '.eo-hint';
@@ -4328,11 +4311,12 @@ Injector = function (paragraphs) {
       var future_width = q.replacement.outerWidth(); //2 pixels for the border
       q.replacement.find(visible_element).text(curent_text);
       if (future_width > spaceInCurrentLine || ////a question which expected to go down after action
-      width > future_width && spaceInCurrentLine > 395) {
+      width > future_width && spaceInCurrentLine > lineWidth) {
         //a question which expected to go up after action
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
         //$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').text('s').insertBefore(q.replacement);
-        q.replacement.before("<br class ='eo-space'>");
+        //q.replacement.before("<br class ='eo-space'>");
+        q.replacement.before($('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
       }
     });
   };
@@ -4387,7 +4371,8 @@ Injector = function (paragraphs) {
     var found;
     // paragraphs.each(function(i, p) {
     $.each(paragraphs, function (i, p) {
-
+      //maybe replace '&nbsp;' with ' '? it will help front page injector to find target
+      //p.html(p.innerHTML.replace('&nbsp;',' '));
       findAndReplaceDOMText(p, {
         find: ctx,
         replace: function (portion, match) {
@@ -5181,6 +5166,7 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
 //
 ShturemOverlay = function () {
   // stubs, just to make it "compile"
+
   this.setReporter = function (backend) {};
   this.fetchLinkStates = function (backend) {
     return Promise.resolve();
@@ -5196,7 +5182,7 @@ ShturemOverlay = function () {
   };
   this.showButtons = function () {
     $('div#top_menu_block').append(EnglishOnButton.element);
-    //EnglishOnButton.registerHandlers(this);
+    $('.eo-button').on('click', EnglishOnButton.showMainMenu);
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
   };
@@ -5287,7 +5273,9 @@ ShturemFrontpageOverlay = function (parts) {
           return q1.location - q2.location;
         });
         part.questions = questions;
-        console.log("Num questions: " + questions.length);
+        if (questions.length) {
+          console.log("url: " + url + "Num questions: " + questions.length);
+        }
         part.injector = new Injector(part.paragraphs);
         part.injector.setQuestions(questions);
         return questions;
@@ -5356,6 +5344,57 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     if (this.injector) this.injector.off();
   }.bind(this);
 };
+
+CH10Overlay = function (url, subtitle, bodytext) {
+  this.url = url;
+  this.subtitle = subtitle;
+  this.bodytext = bodytext;
+  this.paragraphs = [subtitle, bodytext];
+  this.interacted = false;
+  this.userAnswered = false;
+  ShturemOverlay.call(this);
+  this.showButtons = function () {
+    //$('div#top_menu_block').append(EnglishOnButton.element);
+    $('ul.menu').append(EnglishOnButton.element);
+    $('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    //EnglishOnButton.registerHandlers(this);
+    // needs to be done here because registering event handlers
+    // only works correctly after inserting the element into DOM.
+  };
+  this.fetchQuestions = function () {
+    var backend = document.englishonBackend;
+    //remove only 'eo-injection-target' tags,not content
+    //check if better do that native
+    $('.eo-injection-target').contents().unwrap();
+    this.questions = []; //to enable fetch again after login
+    if (this.injector) {
+      this.injector.off();
+    }
+    this.interacted = false;
+    this.userAnswered = false;
+    return backend.getArticle(this.url).then(function (questions) {
+      // for (var i = 0; i < questions.length; i++) {
+      //   questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context))
+      // }
+      // questions.sort(function(q1, q2) {
+      //   return q1.location - q2.location;
+      // });
+      this.questions = questions;
+      console.log("Num questions: " + questions.length);
+      this.injector = new Injector(this.paragraphs);
+      this.injector.setQuestions(questions);
+      return questions;
+    }.bind(this));
+  };
+
+  this.showQuestions = function () {
+    if (this.injector) this.injector.on();
+  }.bind(this);
+
+  this.hideQuestions = function () {
+    if (this.injector) this.injector.off();
+  }.bind(this);
+};
 //
 ScraperFactory = function (location) {
   if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
@@ -5365,6 +5404,24 @@ ScraperFactory = function (location) {
   if (location.host === 'www.englishon.org') {
     if (location.pathname === '/hidden/shturem.html') return new EnglishonArticleScraper();
   }
+  if (location.host === 'www.ch10.co.il') {
+    return new CH10Scraper();
+  }
+};
+
+var CH10Scraper = function () {
+  this.getHost = function () {
+    return 'www.ch10.co.il';
+  };
+
+  this.scrape = function () {
+    url = ('http://www.ch10.co.il' + location.pathname + location.search).replace(/#.*$/, '');
+    var subtitle = $('.main-post').find('.excerpt')[0];
+    var bodytext = $('.main-post').find('.content_content')[0];
+    // Shturem article bodies are not divided internally to <p>s.
+    // they're just blobs of text with the occasional double <br>.
+    return new CH10Overlay(url, subtitle, bodytext);
+  };
 };
 
 var ShturemArticleScraper = function () {
@@ -5545,12 +5602,12 @@ function englishon() {
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES
   url = window.location.toString().substr(0, window.location.toString().indexOf("id=") + 3);
   if (url != 'http://shturem.net/index.php?section=news&id=' && url != 'http://www.shturem.net/index.php?section=news&id=' && url != 'http://www.englishon.org/hidden/shturem.html') {
-    return;
+    //return;
   }
   if (url != 'http://www.englishon.org/hidden/shturem.html') {
     article_id = Number(window.location.search.substr(window.location.search.indexOf('id=') + 3));
     if (article_id < 91251 || article_id > 91551) {
-      return;
+      //return;
     }
   }
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
@@ -5703,7 +5760,7 @@ var EnglishOnButton = new function () {
     });
   };
   this.currentState = 'eo-button-on';
-  this.element = $('<div>').addClass('eo-button').addClass(this.currentState).on('click', this.showMainMenu);
+  this.element = $('<div>').addClass('eo-button').addClass(this.currentState);
 
   this.changeState = function (state) {
     this.element.removeClass(this.currentState);
@@ -5775,6 +5832,33 @@ var EnglishOnDialogs = function () {
 // Menu
 // ****
 var EnglishOnMenu = function () {
+  console.log('jquery extend before');
+  jQuery.fn.extend({
+    toggleText: function (a, b) {
+      if (this.text() != a && this.text() != b) {
+        this.text(a);
+      } else if (this.text() == a) {
+        this.text(b);
+      } else if (this.text() == b) {
+        this.text(a);
+      }
+      return this;
+    },
+    //for toggle text which containing html entities
+    toggleHtml: function (a, b) {
+      a = a.replace('_', '&nbsp;');
+      if (b) b = b.replace('_', '&nbsp;');
+      if (this.html() != a && this.html() != b) {
+        this.html(a);
+      } else if (this.html() == a) {
+        this.html(b);
+      } else if (this.html() == b) {
+        this.html(a);
+      }
+      return this;
+    }
+  });
+  console.log('jquery extend after');
   this.displayMenuMessages = function () {
     switch_text = JSON.parse(document.englishonConfig.isActive) ? 'On' : 'Off';
     $('#eo-power-switch-text').text(switch_text);
@@ -5794,7 +5878,10 @@ var EnglishOnMenu = function () {
     $('#get-started').text(messages.GET_STARTED);
     $('#signout_btn').text(messages.SIGN_OUT);
   };
-
+  document.overlay.insertContent($(document.MENU_HTML));
+  document.overlay.insertContent($(document.LOGIN_DLG));
+  document.overlay.insertContent($(document.OPTIONS_DLG));
+  document.overlay.insertContent($(document.live_actions));
   /* returns a toggler function that both updates `configEntry`
      and calls the given `toggle()` function, useful when you want
      your saved configuration to always match what's on screen
@@ -5856,7 +5943,7 @@ var EnglishOnMenu = function () {
   };
   var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
   this.togglePower = toggler('eo-active', 'isActive', function (enable) {
-    elem = $('#eo-power-switch-text');
+    var elem = $('#eo-power-switch-text');
     elem.toggleText('On', 'Off');
     if (JSON.parse(enable)) {
       document.overlay.showQuestions();
@@ -5921,10 +6008,7 @@ var EnglishOnMenu = function () {
   if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') {
     $('body').addClass('heroku-staging');
   }
-  document.overlay.insertContent($(document.MENU_HTML));
-  document.overlay.insertContent($(document.LOGIN_DLG));
-  document.overlay.insertContent($(document.OPTIONS_DLG));
-  document.overlay.insertContent($(document.live_actions));
+
   EnglishOnButton.on();
   this.volume = new function () {
     this.changeVolume = function () {
