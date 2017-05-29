@@ -3471,6 +3471,7 @@ HerokuBackend.prototype.getArticle = function (address) {
     this.pageid = data.id;
     return data.questions;
   }.bind(this), function (data) {
+
     if (data.responseJSON && data.responseJSON.detail === 'Terms not accepted') {
       return $.Deferred().reject('terms_not_accepted').promise();
     }
@@ -3513,7 +3514,7 @@ HerokuBackend.prototype.report = function (msg, data) {
 };
 
 HerokuBackend.prototype.getTextToSpeechLink = function (language, phrase) {
-  return this.ajax('GET', '/tts/' + language + '/' + phrase + '/').then(function (response) {
+  return this.ajax('GET', '/tts/' + language + '/' + phrase).then(function (response) {
     return response.url;
   });
 };
@@ -4217,7 +4218,6 @@ UserInfo = function () {
   };
 };
 //
-
 Injector = function (paragraphs) {
 
   report = function (msg, data) {
@@ -4301,7 +4301,8 @@ Injector = function (paragraphs) {
       //if the question after answering is too long - add spaces
       var width = q.replacement.outerWidth(); //2 pixels for the border and 4 is spere...
       var parentoffset = q.replacement.parent().offset().left;
-      var parentPadding = 30;
+      //var parentPadding = 30;
+      var parentPadding = document.overlay.constructor.name == 'ShturemArticleOverlay' ? 0 : 30;
       var lineWidth = 385;
       var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width - 6 - parentPadding; // a spere...
       var curent_text = q.replacement.hasClass('eo-expired') ? q.qobj.practicedWord : q.qobj.data.replaced;
@@ -4503,7 +4504,9 @@ AbstractQuestion.prototype.QuestionAudio = function (e) {
   var target = $(e.target);
   var prepositionClass = this.data.preposition ? 'preposition' : '';
   target.toggleHtml(this.data.preposition + this.data.hint, this.practicedWord).toggleClass(prepositionClass);
-  Speaker.speak(document.englishonConfig.targetLanguage, target.text());
+  if (target.html() == this.practicedWord) {
+    Speaker.speak(document.englishonConfig.targetLanguage, target.text());
+  }
 };
 
 AbstractQuestion.prototype.closeUnanswered = function () {
@@ -4550,11 +4553,11 @@ AbstractQuestion.prototype.touch = function (event) {
     });
     var language = document.englishonConfig.targetLanguage;
     if (this.practicedWord === this.data.hint) {
-      Speaker.fetch(language, this.practicedWord);
+      //Speaker.fetch(language, this.practicedWord);
     } else {
-      Speaker.fetch(language, this.correct[0]);
+      //Speaker.fetch(language, this.correct[0]);
       for (i = 0; i < this.data.wrong_answers.length; i++) {
-        Speaker.fetch(language, this.data.wrong_answers[i].answer);
+        //Speaker.fetch(language, this.data.wrong_answers[i].answer);
       }
     }
     this.touched = true;
@@ -4569,7 +4572,6 @@ AbstractQuestion.prototype.guess = function (answer, target) {
   var isCorrect = this.isCorrect(answer);
   if (isCorrect) {
     if (!isAnswerInTargetLanguage) {
-      //Speaker.speak(document.englishonConfig.targetLanguage, this.practicedWord);
       Speaker.speak(document.englishonConfig.targetLanguage, this.practicedWord.replace('_', ' '));
     }
     this.closeAnswered();
@@ -4794,7 +4796,9 @@ MultipleChoice.prototype.bindInput = function () {
       e.preventDefault();
       var target = $(e.target);
       target.toggleHtml(this.data.hint, this.practicedWord);
-      Speaker.speak(document.englishonConfig.targetLanguage, target.text());
+      if (target.html() == this.practicedWord) {
+        Speaker.speak(document.englishonConfig.targetLanguage, target.text());
+      }
     }.bind(this));
   }
 };
@@ -4891,6 +4895,7 @@ ExpiredMultipleChoiceQuestion.prototype.constructor = ExpiredMultipleChoiceQuest
 //
 document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
     <div id='eo-menu' class='hidden eo-area'>\
+        <audio id='player'></audio>\
         <div class='header'>\
             <div id='eo-account-area'>\
                 <div class='Grid u-textCenter eo-row eo-menu-inner'>\
@@ -5166,7 +5171,6 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
 //
 ShturemOverlay = function () {
   // stubs, just to make it "compile"
-
   this.setReporter = function (backend) {};
   this.fetchLinkStates = function (backend) {
     return Promise.resolve();
@@ -5521,7 +5525,7 @@ var Speaker = new function () {
     document.englishonBackend.getTextToSpeechLink(language, phrase).then(function (url) {
       // can't use jQuery because it doesn't support arraybuffer yet
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', url, true);
+      xhr.open('GET', document.englishonBackend.base + url, true);
       xhr.responseType = 'arraybuffer';
       xhr.onload = function (e) {
         audioContext.decodeAudioData(xhr.response, r.resolve.bind(r));
@@ -5602,12 +5606,12 @@ function englishon() {
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES
   url = window.location.toString().substr(0, window.location.toString().indexOf("id=") + 3);
   if (url != 'http://shturem.net/index.php?section=news&id=' && url != 'http://www.shturem.net/index.php?section=news&id=' && url != 'http://www.englishon.org/hidden/shturem.html') {
-    //return;
+    return;
   }
   if (url != 'http://www.englishon.org/hidden/shturem.html') {
     article_id = Number(window.location.search.substr(window.location.search.indexOf('id=') + 3));
     if (article_id < 91251 || article_id > 91551) {
-      //return;
+      return;
     }
   }
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);

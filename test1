@@ -1,0 +1,73 @@
+#!/bin/sh
+
+# build chrome extension
+
+rm -r extension/chrome
+mkdir extension/chrome
+cp -r src/* extension/chrome/
+HOST=${HOST:-localhost:8080}
+#HOST=www.englishon.org
+BABEL=~/node_modules/.bin/babel
+MAPCAT=~/node_modules/.bin/mapcat
+UGLIFY=~/Downloads/iojs-v3.3.1-linux-x64/bin/uglifyjs
+rm -r site/${HOST}
+mkdir site/${HOST}
+rm -r build
+mkdir build
+
+sass src/sass/main.scss  -t expanded > build/main.css
+sass src/sass/flexbox.scss  -t expanded > build/flexbox.css
+sass src/sass/mobile.scss -t expanded > build/mobile.css
+sass src/sass/desktop.scss -t expanded > build/desktop.css
+cat build/main.css build/flexbox.css build/desktop.css build/mobile.css > build/injected.css
+# replace chrome-extension references in css
+if [ "$HOST" = "localhost:8080" ]; then
+         echo Building for localhost
+	   sed "s|chrome-extension://[^/]*/\([^)]*\)|http://${HOST}/static/ex/\1|" < build/injected.css >> build/fixed.css
+      else
+        sed "s|chrome-extension://[^/]*/\([^)]*\)|http://${HOST}/v1/\1|" < build/injected.css >> build/fixed.css
+        echo Building for CDN server
+fi
+cat src/jquery-ui.min.css src/jquery-ui.theme.min.css  src/odometer-theme.css build/fixed.css > site/${HOST}/englishon.css
+
+python -c 'open("src/menu_html.js", "wb").write("document.MENU_HTML = \"%s\";" % open("src/menu.html", "rb").read().replace("\n", "\\\n"))'
+python -c 'open("src/login_dlg_html.js", "wb").write("document.LOGIN_DLG = \"%s\";" % open("src/login_dlg.html", "rb").read().replace("\n", "\\\n"))'
+python -c 'open("src/terms_dlg_html.js", "wb").write("document.TERMS_DLG = \"%s\";" % open("src/terms_dlg.html", "rb").read().replace("\n", "\\\n"))'
+python -c 'open("src/options_dlg_html.js", "wb").write("document.OPTIONS_DLG = \"%s\";" % open("src/options_dlg.html", "rb").read().replace("\n", "\\\n"))'
+python -c 'open("src/live_actions_html.js", "wb").write("document.live_actions = \"%s\";" % open("src/live_actions.html", "rb").read().replace("\n", "\\\n"))'
+
+# transpile to ES5, since uglifyjs does not support ES6/CoffeeScript
+$BABEL --plugins transform-es2015-for-of src -s -d build/es5
+
+# concatenate js source files in manifest.json order
+$MAPCAT $(sed -n '/"js":/,/],/ { s/"\(.*\)\.js",\?/build\/es5\/\1.js.map/ p }' < src/manifest.json) -m build/englishon.map -j build/englishon.js
+
+# uglify
+# $UGLIFY -b --compress --in-source-map build/englishon.map --source-map site/${HOST}/englishon.map --source-map-url http://${HOST}/static/ex/englishon.map -- build/englishon.js > site/${HOST}/englishon.js
+
+# don't uglify
+cp build/englishon.js site/${HOST}/
+cp build/englishon.map site/${HOST}/
+echo copying static recourcec
+# copy static resources
+#cp -r src/internal_id/ site/${HOST}/
+cp -r src/img/ site/${HOST}/
+cp -r src/images/ site/${HOST}/
+cp -r src/fonts/ site/${HOST}/
+cp src/*.txt site/${HOST}/
+
+if [ "$HOST" = "www.englishon.org" ]; then
+   rm -r englishon-landing-page/v1/ 
+   rm -r englishon-landing-page/staging/ 
+   cp -r site/www.englishon.org/ englishon-landing-page/v1/ 
+   cp -r site/www.englishon.org/ englishon-landing-page/staging/
+   rm site/${HOST}/englishon.map
+fi 
+if [ "$HOST" = "localhost:8080" ]; then
+	rm site/${HOST}/englishon.map
+fi
+#    staticUrl = lambda resource: "chrome.extension.getURL('%s')" % resource
+#    staticUrl = lambda resource: "'/static/ex/%s'" % resource
+
+
+
