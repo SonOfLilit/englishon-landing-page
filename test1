@@ -1,7 +1,6 @@
 #!/bin/sh
 
 # build chrome extension
-
 rm -r extension/chrome
 mkdir extension/chrome
 cp -r src/* extension/chrome/
