@@ -2151,6 +2151,14 @@ eo-signout-layout .signout {
   background-color: #2cc6a8;
   cursor: pointer;
 }
+#eo-live #vocabulary #personal-word, #eo-live #vocabulary #personal-word-btn {
+  width: 150px;
+}
+#eo-live #vocabulary #personal-word-btn {
+  margin: 0px;
+  padding: 0px;
+  list-style: none;
+}
 
 .Grid#days-pannel {
   direction: rtl;

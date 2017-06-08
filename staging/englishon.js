@@ -3426,6 +3426,13 @@ HerokuBackend.prototype.mergeTokens = function (oldToken, newToken) {
   return this.report('MergeTokens', { guest: oldToken, registered: newToken });
 };
 
+HerokuBackend.prototype.getMeanings = function (word, lang) {
+  return this.ajax("POST", "/quiz/getMeanings/", { 'word': word, 'lang': lang });
+};
+HerokuBackend.prototype.addPersonalWord = function (word) {
+  return this.ajax("POST", "/quiz/addPersonalWord/", { 'word': word });
+};
+
 HerokuBackend.prototype.milotrage = function () {
   return this.ajax("POST", "/quiz/score/milotrage/", { 'token': this.token });
 };
@@ -3511,12 +3518,6 @@ HerokuBackend.prototype.report = function (msg, data) {
   data.page = this.pageid;
   var r = this.ajax('POST', '/quiz/report/' + msg + '/', data);
   return r;
-};
-
-HerokuBackend.prototype.getTextToSpeechLink = function (language, phrase) {
-  return this.ajax('GET', '/tts/' + language + '/' + phrase).then(function (response) {
-    return response.url;
-  });
 };
 
 HerokuBackend.prototype.fetchDictionary = function () {
@@ -4030,6 +4031,18 @@ UserInfo = function () {
       document.eo_user.sr_progress.animate(val);
     });
   };
+  this.minimize = function (e) {
+    if (e) {
+      e.preventDefault();
+      e.target = $(e.target);
+    }
+    if (!e || !e.target.is('.eo-question') && e.target.parents('.eo-question').length === 0) {
+      $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+      $('#vocabulary').addClass('hidden');
+      $('#eo-live-main').removeClass('hidden');
+      $(document).off('click', $(document), this.minimize);
+    }
+  };
   this.showLiveActions = function () {
     this.checkWeeklyPresence();
     this.checkSRProgress();
@@ -4037,22 +4050,8 @@ UserInfo = function () {
     $('#eo-live').removeClass('hidden vocabulary-open');
     if (document.englishonConfig.media == 'desktop') {
       $('#eo-live').addClass('eo-live-maximize');
-      $($(document).on('click', function (e) {
-        e.preventDefault();
-        e.target = $(e.target);
-        if (!e.target.is('.eo-question') && e.target.parents('.eo-question').length === 0) {
-          $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-          $('#vocabulary').addClass('hidden');
-          $('#eo-live-main').removeClass('hidden');
-          $(document).off('click');
-        }
-      }));
-      this.setTimeOut = setTimeout(function () {
-        $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-        $('#vocabulary').addClass('hidden');
-        $('#eo-live-main').removeClass('hidden');
-        $(document).off('click');
-      }, 10000);
+      $(document).on('click', $(document), this.minimize);
+      this.setTimeOut = setTimeout(this.minimize, 10000);
       $('#eo-live').on('click', function (e) {
         clearTimeout(this.setTimeOut);
       }.bind(this));
@@ -4078,7 +4077,7 @@ UserInfo = function () {
       //the text value is a hack to display the milotrage digits without the decimal point
       .append($('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append($('<span>').addClass('vocabulary-word').text(word_info.word).on('click', function (e) {})).append($('<span>').addClass('vocabulary-translation hidden').text(word_info.translation)));
     });
-    $('#vocabulary-content').html(content);
+    $('#vocabulary-content-list').html(content);
     var el = document.getElementsByClassName('vocabulary-odometer');
     for (var i = 0; i < el.length; i++) {
       new Odometer({
@@ -4086,6 +4085,27 @@ UserInfo = function () {
         value: el[i].innerText,
         format: 'd'
       });
+    }
+  };
+  this.listenToInput = function (e) {
+    var key = e.keyCode;
+    if (key === 13 || key === 10) {
+      var word = $(e.target).val().trim();
+      if (word == '') {
+        alert('Type your word:)');
+        return;
+      }
+      if (word.indexOf(' ') != -1) {
+        alert('type one word only');
+        return;
+      }
+      if ($('#personal-word-btn').find('option').length > 1) {
+        return;
+      }
+
+      this.createMeaningsList(word);
+    } else {
+      $('#personal-word-btn').find('option').slice(1).remove();
     }
   };
   this.initial = function () {
@@ -4132,6 +4152,12 @@ UserInfo = function () {
       format: 'd'
     });
     $('#eo-live').off('click');
+    //keypress is not a good choice, because it is not recognizing backspace
+    $('#personal-word').on('keyup', this.listenToInput.bind(this));
+
+    $('#personal-word-btn').on('change', this.addPersonalWord.bind(this));
+    $('#personal-word').val('');
+    $('#personal-word-btn').find('option').slice(1).remove();
     $('#eo-live').on('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -4150,6 +4176,12 @@ UserInfo = function () {
         e.target.next().toggleClass('hidden');
         return;
       }
+      if (e.target.is('#personal-word')) {
+        return;
+      }
+      if (e.target.is('#personal-word-btn')) {
+        return;
+      }
       if (e.target.is('.eo-close')) {
         $('#eo-live').addClass('hidden');
         $('#vocabulary').addClass('hidden');
@@ -4162,7 +4194,7 @@ UserInfo = function () {
         $('#vocabulary').toggleClass('hidden');
         if (!$('#vocabulary').hasClass('hidden')) {
           $('#eo-live').addClass('vocabulary-open');
-          $('#vocabulary-content').html('');
+          $('#vocabulary-content-list').html('');
           this.fetchVocabulary();
         } else {
           $('#eo-live').removeClass('vocabulary-open');
@@ -4176,19 +4208,41 @@ UserInfo = function () {
         $('#eo-live').removeClass('vocabulary-open');
         return;
       }
-      $(document).on('click', function (e) {
-        e.preventDefault();
-        e.target = $(e.target);
-        if (e.target.is('.eo-question') || e.target.parents('.eo-question').length) {
-          return;
-        }
-        $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-        $('#vocabulary').addClass('hidden');
-        $('#eo-live-main').removeClass('hidden');
-        $(document).off('click');
+      $(document).on('click', $(document), this.minimize);
+    }.bind(this));
+  };
+  this.detectLanguage = function (str) {
+    var lang = str.charCodeAt(0) >= 65 && str.charCodeAt(0) <= 116 ? 'eng' : 'heb';
+    return lang;
+  };
+  this.createMeaningsList = function (word) {
+    var select = $('#personal-word-btn');
+    var lang = this.detectLanguage(word);
+    document.englishonBackend.getMeanings(word, lang).then(function (data) {
+      meanings = data.meanings;
+      $('#vocabulary-content-list').html('');
+      $(meanings).each(function (i, meaning) {
+        select.append($('<option>').text(meaning));
       });
     }.bind(this));
   };
+
+  this.addPersonalWord = function () {
+    var input = $('#personal-word').val();
+    var select = $('#personal-word-btn').val();
+    var origin = this.detectLanguage(select) == 'eng' ? select : input;
+    var translation = this.detectLanguage(input) == 'heb' ? input : select;
+    var word = { 'origin': origin, 'translation': translation };
+    if (word.origin == '') {
+      return;
+    }
+    document.englishonBackend.addPersonalWord(word).then(function (res) {
+      alert(res.message);
+    }, function (error) {
+      alert('sorry, not today');
+    });
+  };
+
   this.hideLiveActions = function () {
     $('#eo-live').addClass('hidden');
   };
@@ -4242,7 +4296,7 @@ Injector = function (paragraphs) {
         }
       }
 
-      if (msg === "StartedQuestion" && !document.overlay.interacted) {
+      if (msg === "StartedQuestion" && !document.overlay.interacted && !$('.eo-answered').length && !$('.eo-expired').length) {
         document.overlay.interacted = true;
         report("StartedQuiz");
         console.log('msg === TriedAnswer && !userAnswered. checkWeeklyPresence fired!');
@@ -4895,7 +4949,6 @@ ExpiredMultipleChoiceQuestion.prototype.constructor = ExpiredMultipleChoiceQuest
 //
 document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
     <div id='eo-menu' class='hidden eo-area'>\
-        <audio id='player'></audio>\
         <div class='header'>\
             <div id='eo-account-area'>\
                 <div class='Grid u-textCenter eo-row eo-menu-inner'>\
@@ -5082,7 +5135,7 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 ";
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
-<div class='eo-close actions-close'></div>\
+    <div class='eo-close actions-close'></div>\
     <div class='Grid Grid--full' id='eo-live-main'>\
         <div class='Grid-cell'>\
             <div class='Grid live-part' id='milotrage'>\
@@ -5133,6 +5186,15 @@ document.live_actions = "<div class='hidden' id='eo-live'>\
         </div>\
         <div class='Grid-cell cell2'>\
             <div id='vocabulary-content'>\
+                <div class='Grid-cell cell1'>\
+                    <input type='text' id='personal-word' placeholder='type your word here' autocomplete='off'/>\
+                </div>\
+                <div class='Grid-cell cell1'>\
+                    <select id='personal-word-btn'>\
+                        <option selected='selected' style='display:none;'>add to my vocabulary</option>\
+                    </select>\
+                </div>\
+                <div id='vocabulary-content-list'></div>\
             </div>\
         </div>\
     </div>\
@@ -5522,20 +5584,19 @@ var Speaker = new function () {
       return this.cache[key];
     }
     var r = $.Deferred();
-    document.englishonBackend.getTextToSpeechLink(language, phrase).then(function (url) {
-      // can't use jQuery because it doesn't support arraybuffer yet
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', document.englishonBackend.base + url, true);
-      xhr.responseType = 'arraybuffer';
-      xhr.onload = function (e) {
-        audioContext.decodeAudioData(xhr.response, r.resolve.bind(r));
-      };
-      xhr.onerror = function (e) {
-        console.log('Error pronouncing phrase "' + key + '": ' + e.error);
-        console.log(e);
-      };
-      xhr.send();
-    });
+
+    // can't use jQuery because it doesn't support arraybuffer yet
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', document.englishonBackend.base + "/tts/speak/" + language + '/' + phrase, true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function (e) {
+      audioContext.decodeAudioData(xhr.response, r.resolve.bind(r));
+    };
+    xhr.onerror = function (e) {
+      console.log('Error pronouncing phrase "' + key + '": ' + e.error);
+      console.log(e);
+    };
+    xhr.send();
     this.cache[key] = r;
     return r;
   };
