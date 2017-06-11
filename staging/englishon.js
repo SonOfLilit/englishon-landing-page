@@ -3457,11 +3457,12 @@ HerokuBackend.prototype.checkWeeklyPresence = function () {
   return this.ajax("POST", "/quiz/score/checkWeeklyPresence/", { 'token': this.token });
 };
 
-HerokuBackend.prototype.getUnAnsweredSR = function (address) {
-  return this.ajax("POST", "/quiz/getUnAnsweredSR/", { 'token': this.token });
+HerokuBackend.prototype.getSRStatus = function (address) {
+  return this.ajax("POST", "/quiz/getSRStatus/", { 'token': this.token });
 };
-HerokuBackend.prototype.getAnsweredSR = function (address) {
-  return this.ajax("POST", "/quiz/getAnsweredSR/", { 'token': this.token });
+
+HerokuBackend.prototype.getLevel = function (address) {
+  return this.ajax("POST", "/quiz/score/getLevel/", { 'token': this.token });
 };
 
 HerokuBackend.prototype.acceptedTerms = function (address) {
@@ -3478,7 +3479,6 @@ HerokuBackend.prototype.getArticle = function (address) {
     this.pageid = data.id;
     return data.questions;
   }.bind(this), function (data) {
-
     if (data.responseJSON && data.responseJSON.detail === 'Terms not accepted') {
       return $.Deferred().reject('terms_not_accepted').promise();
     }
@@ -3528,11 +3528,10 @@ HerokuBackend.prototype.dictionary = function (new_word) {
 
   post = this.ajax('POST', '/quiz/editor/dictionary/add/', new_word);
   post.done(function (res) {
-    if (res.message == 'done') {
-      console.log("Dictionary changed! (A word or new meanings added or removed)");
-    } else {
+    console.log("Dictionary changed! (A word or new meanings added or removed)");
+    if (!res.message.startsWith('Done')) {
       alert(res.message);
-    };
+    }
   });
 };
 HerokuBackend.prototype.create_all_questions = function (address, question) {
@@ -3982,22 +3981,9 @@ Editor.prototype.highlight = function () {
 //
 UserInfo = function () {
   this.scoreValue = { 'correct': 200, 'persistence': 300 };
-  this.getUnAnsweredSR = function () {
-    document.englishonBackend.getUnAnsweredSR().then(function (data) {
-      console.log('getUnAnsweredSR*******data from server: ' + data);
-      //i tried to do it with bind, but don't know how.
-      document.eo_user.unAnswered = data;
-      document.eo_user.unAnswered_promise.resolve();
-    });
-  };
-  this.getAnsweredSR = function () {
-    document.englishonBackend.getAnsweredSR().then(function (data) {
-      document.eo_user.answered = data;
-      document.eo_user.answered_promise.resolve();
-    });
-  };
+
   this.displaySRStatus = function () {
-    var generall_sr = this.unAnswered.sr_questions.length + this.answered.sr_questions.length;
+    var generall_sr = this.unAnswered.length + this.answered.length;
     console.log('you answered ' + this.answered.sr_questions.length + ' from: ' + generall_sr);
   };
   this.scoreCorrect = function () {
@@ -4008,16 +3994,20 @@ UserInfo = function () {
     console.log('checkpersistence');
     document.englishonBackend.checkpersistence();
   };
+  this.getLevel = function () {
+    document.englishonBackend.getLevel().then(function (data) {
+      $('#level').text(data.level.toFixed(2));
+    });
+  };
   this.checkSRProgress = function () {
-    this.answered_promise = $.Deferred();
-    this.unAnswered_promise = $.Deferred();
-    this.getAnsweredSR();
-    this.getUnAnsweredSR();
-    $('#srProgress').removeClass('sr-complete');
-    $.when(this.answered_promise, this.unAnswered_promise).done(function () {
-      val = document.eo_user.answered.sr_questions.length / (document.eo_user.answered.sr_questions.length + document.eo_user.unAnswered.sr_questions.length);
+    document.englishonBackend.getSRStatus().then(function (data) {
+      this.answered = data.answered;
+      this.unAnswered = data.unAnswered;
+
+      $('#srProgress').removeClass('sr-complete');
+      val = this.answered.length / (this.answered.length + this.unAnswered.length);
       //positive feedback if user doesn't get sr questions for today
-      if (!(document.eo_user.answered.sr_questions.length + document.eo_user.unAnswered.sr_questions.length)) {
+      if (!(this.answered.length + this.unAnswered.length)) {
         val = 1;
       }
       if (!val) {
@@ -4028,8 +4018,8 @@ UserInfo = function () {
         $('#srProgress').addClass('sr-complete');
       }
 
-      document.eo_user.sr_progress.animate(val);
-    });
+      this.sr_progress.animate(val);
+    }.bind(this));
   };
   this.minimize = function (e) {
     if (e) {
@@ -4047,6 +4037,7 @@ UserInfo = function () {
     this.checkWeeklyPresence();
     this.checkSRProgress();
     this.milotrage();
+    this.getLevel();
     $('#eo-live').removeClass('hidden vocabulary-open');
     if (document.englishonConfig.media == 'desktop') {
       $('#eo-live').addClass('eo-live-maximize');
@@ -4132,7 +4123,7 @@ UserInfo = function () {
         step: function (state, circle) {
           circle.path.setAttribute('stroke', state.color);
           circle.path.setAttribute('stroke-width', state.width);
-          text = document.eo_user.unAnswered.sr_questions.length + document.eo_user.answered.sr_questions.length;
+          text = document.eo_user.unAnswered.length + document.eo_user.answered.length;
           if (!text || text == document.eo_user.answered.sr_questions.length) {
             text = '&#10004;';
           };
@@ -4281,6 +4272,7 @@ Injector = function (paragraphs) {
     post.done(function (res) {
       if (msg === 'TriedAnswer') {
         document.eo_user.milotrage();
+        document.eo_user.getLevel();
         //document.eo_user.scoreCorrect();
         document.eo_user.checkSRProgress();
         if (!document.overlay.userAnswered) {
@@ -4501,24 +4493,28 @@ AbstractQuestion.prototype.bindInput = function () {
 
 AbstractQuestion.prototype.questionOnClick = function (e) {
   e.preventDefault();
+  e.stopPropagation();
   if (this.element.hasClass('eo-answered')) {
     return;
   }
   this.touch();
-  if (this.element.hasClass('eo-active')) {
+  if ($(e.target).parents('.eo-question.eo-active').length) {
     this.closeUnanswered();
-  } else {
-    this.open();
-    var handler = function (e) {
-      if (this.element.has(e.target).length === 0) {
-        if (this.element.hasClass('eo-active')) {
-          this.closeUnanswered();
-        }
-        $(document).off('click', handler);
-      }
-    }.bind(this);
-    $(document).on('click', handler);
+    return;
   }
+  if ($('.eo-question.eo-active').length) {
+    document.overlay.closeUnAnswered();
+  }
+  this.open();
+  var handler = function (e) {
+    if (this.element.has(e.target).length === 0) {
+      if (this.element.hasClass('eo-active')) {
+        this.closeUnanswered();
+      };
+      $(document).off('click', handler);
+    };
+  }.bind(this);
+  $(document).on('click', handler);
 };
 
 AbstractQuestion.prototype.open = function () {
@@ -5148,8 +5144,15 @@ document.live_actions = "<div class='hidden' id='eo-live'>\
             </div>\
         </div>\
         <div class='Grid-cell'>\
-            <div id='sr' class='live-part v-align h-align'>\
-                <div id='srProgress'></div>\
+            <div class='Grid'>\
+                <div class='Grid-cell'>\
+                    <div id='sr' class='live-part v-align h-align'>\
+                        <div id='srProgress'></div>\
+                    </div>\
+                </div>\
+                <div class='Grid-cell'>\
+                    <div id='level' class='live-part v-align h-align'></div>\
+                </div>\
             </div>\
         </div>\
         <div class='Grid-cell'>\
@@ -5233,6 +5236,7 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
 //
 ShturemOverlay = function () {
   // stubs, just to make it "compile"
+
   this.setReporter = function (backend) {};
   this.fetchLinkStates = function (backend) {
     return Promise.resolve();
@@ -5310,6 +5314,16 @@ ShturemFrontpageOverlay = function (parts) {
     };
   }.bind(this));
 
+  this.closeUnAnswered = function () {
+    $.each(this.parts, function (url, part) {
+
+      $(part.injector.elements).each(function (i, q) {
+        if (q.qobj.element && q.qobj.element.is('.eo-active')) {
+          q.qobj.closeUnanswered();
+        }
+      });
+    });
+  };
   this.fetchQuestions = function () {
     // send a separate request per part, (about 26)
     // results in many rounds-trips. this is wasteful
@@ -5374,6 +5388,13 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
+  this.closeUnAnswered = function () {
+    $(this.injector.elements).each(function (i, q) {
+      if (q.qobj.element && q.qobj.element.is('.eo-active')) {
+        q.qobj.closeUnanswered();
+      }
+    });
+  };
   this.fetchQuestions = function () {
     var backend = document.englishonBackend;
     //remove only 'eo-injection-target' tags,not content
