@@ -3125,6 +3125,1832 @@
 	return exposed;
 });
 //
+/*! tether 0.6.5 */
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory(require, exports, module);
+  } else {
+    root.Tether = factory();
+  }
+})(this, function (require, exports, module) {
+
+  (function () {
+    var Evented,
+        addClass,
+        defer,
+        deferred,
+        extend,
+        flush,
+        getBounds,
+        getOffsetParent,
+        getOrigin,
+        getScrollBarSize,
+        getScrollParent,
+        hasClass,
+        node,
+        removeClass,
+        uniqueId,
+        updateClasses,
+        zeroPosCache,
+        __hasProp = {}.hasOwnProperty,
+        __indexOf = [].indexOf || function (item) {
+      for (var i = 0, l = this.length; i < l; i++) {
+        if (i in this && this[i] === item) return i;
+      }return -1;
+    },
+        __slice = [].slice;
+
+    if (this.Tether == null) {
+      this.Tether = {
+        modules: []
+      };
+    }
+
+    getScrollParent = function (el) {
+      var parent, position, scrollParent, style, _ref;
+      position = getComputedStyle(el).position;
+      if (position === 'fixed') {
+        return el;
+      }
+      scrollParent = void 0;
+      parent = el;
+      while (parent = parent.parentNode) {
+        try {
+          style = getComputedStyle(parent);
+        } catch (_error) {}
+        if (style == null) {
+          return parent;
+        }
+        if (/(auto|scroll)/.test(style['overflow'] + style['overflow-y'] + style['overflow-x'])) {
+          if (position !== 'absolute' || (_ref = style['position']) === 'relative' || _ref === 'absolute' || _ref === 'fixed') {
+            return parent;
+          }
+        }
+      }
+      return document.body;
+    };
+
+    uniqueId = function () {
+      var id;
+      id = 0;
+      return function () {
+        return id++;
+      };
+    }();
+
+    zeroPosCache = {};
+
+    getOrigin = function (doc) {
+      var id, k, node, v, _ref;
+      node = doc._tetherZeroElement;
+      if (node == null) {
+        node = doc.createElement('div');
+        node.setAttribute('data-tether-id', uniqueId());
+        extend(node.style, {
+          top: 0,
+          left: 0,
+          position: 'absolute'
+        });
+        doc.body.appendChild(node);
+        doc._tetherZeroElement = node;
+      }
+      id = node.getAttribute('data-tether-id');
+      if (zeroPosCache[id] == null) {
+        zeroPosCache[id] = {};
+        _ref = node.getBoundingClientRect();
+        for (k in _ref) {
+          v = _ref[k];
+          zeroPosCache[id][k] = v;
+        }
+        defer(function () {
+          return zeroPosCache[id] = void 0;
+        });
+      }
+      return zeroPosCache[id];
+    };
+
+    node = null;
+
+    getBounds = function (el) {
+      var box, doc, docEl, k, origin, v, _ref;
+      if (el === document) {
+        doc = document;
+        el = document.documentElement;
+      } else {
+        doc = el.ownerDocument;
+      }
+      docEl = doc.documentElement;
+      box = {};
+      _ref = el.getBoundingClientRect();
+      for (k in _ref) {
+        v = _ref[k];
+        box[k] = v;
+      }
+      origin = getOrigin(doc);
+      box.top -= origin.top;
+      box.left -= origin.left;
+      if (box.width == null) {
+        box.width = document.body.scrollWidth - box.left - box.right;
+      }
+      if (box.height == null) {
+        box.height = document.body.scrollHeight - box.top - box.bottom;
+      }
+      box.top = box.top - docEl.clientTop;
+      box.left = box.left - docEl.clientLeft;
+      box.right = doc.body.clientWidth - box.width - box.left;
+      box.bottom = doc.body.clientHeight - box.height - box.top;
+      return box;
+    };
+
+    getOffsetParent = function (el) {
+      return el.offsetParent || document.documentElement;
+    };
+
+    getScrollBarSize = function () {
+      var inner, outer, width, widthContained, widthScroll;
+      inner = document.createElement('div');
+      inner.style.width = '100%';
+      inner.style.height = '200px';
+      outer = document.createElement('div');
+      extend(outer.style, {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        pointerEvents: 'none',
+        visibility: 'hidden',
+        width: '200px',
+        height: '150px',
+        overflow: 'hidden'
+      });
+      outer.appendChild(inner);
+      document.body.appendChild(outer);
+      widthContained = inner.offsetWidth;
+      outer.style.overflow = 'scroll';
+      widthScroll = inner.offsetWidth;
+      if (widthContained === widthScroll) {
+        widthScroll = outer.clientWidth;
+      }
+      document.body.removeChild(outer);
+      width = widthContained - widthScroll;
+      return {
+        width: width,
+        height: width
+      };
+    };
+
+    extend = function (out) {
+      var args, key, obj, val, _i, _len, _ref;
+      if (out == null) {
+        out = {};
+      }
+      args = [];
+      Array.prototype.push.apply(args, arguments);
+      _ref = args.slice(1);
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        obj = _ref[_i];
+        if (obj) {
+          for (key in obj) {
+            if (!__hasProp.call(obj, key)) continue;
+            val = obj[key];
+            out[key] = val;
+          }
+        }
+      }
+      return out;
+    };
+
+    removeClass = function (el, name) {
+      var cls, _i, _len, _ref, _results;
+      if (el.classList != null) {
+        _ref = name.split(' ');
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          cls = _ref[_i];
+          if (cls.trim()) {
+            _results.push(el.classList.remove(cls));
+          }
+        }
+        return _results;
+      } else {
+        return el.className = el.className.replace(new RegExp("(^| )" + name.split(' ').join('|') + "( |$)", 'gi'), ' ');
+      }
+    };
+
+    addClass = function (el, name) {
+      var cls, _i, _len, _ref, _results;
+      if (el.classList != null) {
+        _ref = name.split(' ');
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          cls = _ref[_i];
+          if (cls.trim()) {
+            _results.push(el.classList.add(cls));
+          }
+        }
+        return _results;
+      } else {
+        removeClass(el, name);
+        return el.className += " " + name;
+      }
+    };
+
+    hasClass = function (el, name) {
+      if (el.classList != null) {
+        return el.classList.contains(name);
+      } else {
+        return new RegExp("(^| )" + name + "( |$)", 'gi').test(el.className);
+      }
+    };
+
+    updateClasses = function (el, add, all) {
+      var cls, _i, _j, _len, _len1, _results;
+      for (_i = 0, _len = all.length; _i < _len; _i++) {
+        cls = all[_i];
+        if (__indexOf.call(add, cls) < 0) {
+          if (hasClass(el, cls)) {
+            removeClass(el, cls);
+          }
+        }
+      }
+      _results = [];
+      for (_j = 0, _len1 = add.length; _j < _len1; _j++) {
+        cls = add[_j];
+        if (!hasClass(el, cls)) {
+          _results.push(addClass(el, cls));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    deferred = [];
+
+    defer = function (fn) {
+      return deferred.push(fn);
+    };
+
+    flush = function () {
+      var fn, _results;
+      _results = [];
+      while (fn = deferred.pop()) {
+        _results.push(fn());
+      }
+      return _results;
+    };
+
+    Evented = function () {
+      function Evented() {}
+
+      Evented.prototype.on = function (event, handler, ctx, once) {
+        var _base;
+        if (once == null) {
+          once = false;
+        }
+        if (this.bindings == null) {
+          this.bindings = {};
+        }
+        if ((_base = this.bindings)[event] == null) {
+          _base[event] = [];
+        }
+        return this.bindings[event].push({
+          handler: handler,
+          ctx: ctx,
+          once: once
+        });
+      };
+
+      Evented.prototype.once = function (event, handler, ctx) {
+        return this.on(event, handler, ctx, true);
+      };
+
+      Evented.prototype.off = function (event, handler) {
+        var i, _ref, _results;
+        if (((_ref = this.bindings) != null ? _ref[event] : void 0) == null) {
+          return;
+        }
+        if (handler == null) {
+          return delete this.bindings[event];
+        } else {
+          i = 0;
+          _results = [];
+          while (i < this.bindings[event].length) {
+            if (this.bindings[event][i].handler === handler) {
+              _results.push(this.bindings[event].splice(i, 1));
+            } else {
+              _results.push(i++);
+            }
+          }
+          return _results;
+        }
+      };
+
+      Evented.prototype.trigger = function () {
+        var args, ctx, event, handler, i, once, _ref, _ref1, _results;
+        event = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+        if ((_ref = this.bindings) != null ? _ref[event] : void 0) {
+          i = 0;
+          _results = [];
+          while (i < this.bindings[event].length) {
+            _ref1 = this.bindings[event][i], handler = _ref1.handler, ctx = _ref1.ctx, once = _ref1.once;
+            handler.apply(ctx != null ? ctx : this, args);
+            if (once) {
+              _results.push(this.bindings[event].splice(i, 1));
+            } else {
+              _results.push(i++);
+            }
+          }
+          return _results;
+        }
+      };
+
+      return Evented;
+    }();
+
+    this.Tether.Utils = {
+      getScrollParent: getScrollParent,
+      getBounds: getBounds,
+      getOffsetParent: getOffsetParent,
+      extend: extend,
+      addClass: addClass,
+      removeClass: removeClass,
+      hasClass: hasClass,
+      updateClasses: updateClasses,
+      defer: defer,
+      flush: flush,
+      uniqueId: uniqueId,
+      Evented: Evented,
+      getScrollBarSize: getScrollBarSize
+    };
+  }).call(this);
+
+  (function () {
+    var MIRROR_LR,
+        MIRROR_TB,
+        OFFSET_MAP,
+        Tether,
+        addClass,
+        addOffset,
+        attachmentToOffset,
+        autoToFixedAttachment,
+        defer,
+        extend,
+        flush,
+        getBounds,
+        getOffsetParent,
+        getOuterSize,
+        getScrollBarSize,
+        getScrollParent,
+        getSize,
+        now,
+        offsetToPx,
+        parseAttachment,
+        parseOffset,
+        position,
+        removeClass,
+        tethers,
+        transformKey,
+        updateClasses,
+        within,
+        _Tether,
+        _ref,
+        __slice = [].slice,
+        __bind = function (fn, me) {
+      return function () {
+        return fn.apply(me, arguments);
+      };
+    };
+
+    if (this.Tether == null) {
+      throw new Error("You must include the utils.js file before tether.js");
+    }
+
+    Tether = this.Tether;
+
+    _ref = Tether.Utils, getScrollParent = _ref.getScrollParent, getSize = _ref.getSize, getOuterSize = _ref.getOuterSize, getBounds = _ref.getBounds, getOffsetParent = _ref.getOffsetParent, extend = _ref.extend, addClass = _ref.addClass, removeClass = _ref.removeClass, updateClasses = _ref.updateClasses, defer = _ref.defer, flush = _ref.flush, getScrollBarSize = _ref.getScrollBarSize;
+
+    within = function (a, b, diff) {
+      if (diff == null) {
+        diff = 1;
+      }
+      return a + diff >= b && b >= a - diff;
+    };
+
+    transformKey = function () {
+      var el, key, _i, _len, _ref1;
+      el = document.createElement('div');
+      _ref1 = ['transform', 'webkitTransform', 'OTransform', 'MozTransform', 'msTransform'];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        key = _ref1[_i];
+        if (el.style[key] !== void 0) {
+          return key;
+        }
+      }
+    }();
+
+    tethers = [];
+
+    position = function () {
+      var tether, _i, _len;
+      for (_i = 0, _len = tethers.length; _i < _len; _i++) {
+        tether = tethers[_i];
+        tether.position(false);
+      }
+      return flush();
+    };
+
+    now = function () {
+      var _ref1;
+      return (_ref1 = typeof performance !== "undefined" && performance !== null ? typeof performance.now === "function" ? performance.now() : void 0 : void 0) != null ? _ref1 : +new Date();
+    };
+
+    (function () {
+      var event, lastCall, lastDuration, pendingTimeout, tick, _i, _len, _ref1, _results;
+      lastCall = null;
+      lastDuration = null;
+      pendingTimeout = null;
+      tick = function () {
+        if (lastDuration != null && lastDuration > 16) {
+          lastDuration = Math.min(lastDuration - 16, 250);
+          pendingTimeout = setTimeout(tick, 250);
+          return;
+        }
+        if (lastCall != null && now() - lastCall < 10) {
+          return;
+        }
+        if (pendingTimeout != null) {
+          clearTimeout(pendingTimeout);
+          pendingTimeout = null;
+        }
+        lastCall = now();
+        position();
+        return lastDuration = now() - lastCall;
+      };
+      _ref1 = ['resize', 'scroll', 'touchmove'];
+      _results = [];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        event = _ref1[_i];
+        _results.push(window.addEventListener(event, tick));
+      }
+      return _results;
+    })();
+
+    MIRROR_LR = {
+      center: 'center',
+      left: 'right',
+      right: 'left'
+    };
+
+    MIRROR_TB = {
+      middle: 'middle',
+      top: 'bottom',
+      bottom: 'top'
+    };
+
+    OFFSET_MAP = {
+      top: 0,
+      left: 0,
+      middle: '50%',
+      center: '50%',
+      bottom: '100%',
+      right: '100%'
+    };
+
+    autoToFixedAttachment = function (attachment, relativeToAttachment) {
+      var left, top;
+      left = attachment.left, top = attachment.top;
+      if (left === 'auto') {
+        left = MIRROR_LR[relativeToAttachment.left];
+      }
+      if (top === 'auto') {
+        top = MIRROR_TB[relativeToAttachment.top];
+      }
+      return {
+        left: left,
+        top: top
+      };
+    };
+
+    attachmentToOffset = function (attachment) {
+      var _ref1, _ref2;
+      return {
+        left: (_ref1 = OFFSET_MAP[attachment.left]) != null ? _ref1 : attachment.left,
+        top: (_ref2 = OFFSET_MAP[attachment.top]) != null ? _ref2 : attachment.top
+      };
+    };
+
+    addOffset = function () {
+      var left, offsets, out, top, _i, _len, _ref1;
+      offsets = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      out = {
+        top: 0,
+        left: 0
+      };
+      for (_i = 0, _len = offsets.length; _i < _len; _i++) {
+        _ref1 = offsets[_i], top = _ref1.top, left = _ref1.left;
+        if (typeof top === 'string') {
+          top = parseFloat(top, 10);
+        }
+        if (typeof left === 'string') {
+          left = parseFloat(left, 10);
+        }
+        out.top += top;
+        out.left += left;
+      }
+      return out;
+    };
+
+    offsetToPx = function (offset, size) {
+      if (typeof offset.left === 'string' && offset.left.indexOf('%') !== -1) {
+        offset.left = parseFloat(offset.left, 10) / 100 * size.width;
+      }
+      if (typeof offset.top === 'string' && offset.top.indexOf('%') !== -1) {
+        offset.top = parseFloat(offset.top, 10) / 100 * size.height;
+      }
+      return offset;
+    };
+
+    parseAttachment = parseOffset = function (value) {
+      var left, top, _ref1;
+      _ref1 = value.split(' '), top = _ref1[0], left = _ref1[1];
+      return {
+        top: top,
+        left: left
+      };
+    };
+
+    _Tether = function () {
+      _Tether.modules = [];
+
+      function _Tether(options) {
+        this.position = __bind(this.position, this);
+        var module, _i, _len, _ref1, _ref2;
+        tethers.push(this);
+        this.history = [];
+        this.setOptions(options, false);
+        _ref1 = Tether.modules;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          module = _ref1[_i];
+          if ((_ref2 = module.initialize) != null) {
+            _ref2.call(this);
+          }
+        }
+        this.position();
+      }
+
+      _Tether.prototype.getClass = function (key) {
+        var _ref1, _ref2;
+        if ((_ref1 = this.options.classes) != null ? _ref1[key] : void 0) {
+          return this.options.classes[key];
+        } else if (((_ref2 = this.options.classes) != null ? _ref2[key] : void 0) !== false) {
+          if (this.options.classPrefix) {
+            return "" + this.options.classPrefix + "-" + key;
+          } else {
+            return key;
+          }
+        } else {
+          return '';
+        }
+      };
+
+      _Tether.prototype.setOptions = function (options, position) {
+        var defaults, key, _i, _len, _ref1, _ref2;
+        this.options = options;
+        if (position == null) {
+          position = true;
+        }
+        defaults = {
+          offset: '0 0',
+          targetOffset: '0 0',
+          targetAttachment: 'auto auto',
+          classPrefix: 'tether'
+        };
+        this.options = extend(defaults, this.options);
+        _ref1 = this.options, this.element = _ref1.element, this.target = _ref1.target, this.targetModifier = _ref1.targetModifier;
+        if (this.target === 'viewport') {
+          this.target = document.body;
+          this.targetModifier = 'visible';
+        } else if (this.target === 'scroll-handle') {
+          this.target = document.body;
+          this.targetModifier = 'scroll-handle';
+        }
+        _ref2 = ['element', 'target'];
+        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+          key = _ref2[_i];
+          if (this[key] == null) {
+            throw new Error("Tether Error: Both element and target must be defined");
+          }
+          if (this[key].jquery != null) {
+            this[key] = this[key][0];
+          } else if (typeof this[key] === 'string') {
+            this[key] = document.querySelector(this[key]);
+          }
+        }
+        addClass(this.element, this.getClass('element'));
+        addClass(this.target, this.getClass('target'));
+        if (!this.options.attachment) {
+          throw new Error("Tether Error: You must provide an attachment");
+        }
+        this.targetAttachment = parseAttachment(this.options.targetAttachment);
+        this.attachment = parseAttachment(this.options.attachment);
+        this.offset = parseOffset(this.options.offset);
+        this.targetOffset = parseOffset(this.options.targetOffset);
+        if (this.scrollParent != null) {
+          this.disable();
+        }
+        if (this.targetModifier === 'scroll-handle') {
+          this.scrollParent = this.target;
+        } else {
+          this.scrollParent = getScrollParent(this.target);
+        }
+        if (this.options.enabled !== false) {
+          return this.enable(position);
+        }
+      };
+
+      _Tether.prototype.getTargetBounds = function () {
+        var bounds, fitAdj, hasBottomScroll, height, out, scrollBottom, scrollPercentage, style, target;
+        if (this.targetModifier != null) {
+          switch (this.targetModifier) {
+            case 'visible':
+              if (this.target === document.body) {
+                return {
+                  top: pageYOffset,
+                  left: pageXOffset,
+                  height: innerHeight,
+                  width: innerWidth
+                };
+              } else {
+                bounds = getBounds(this.target);
+                out = {
+                  height: bounds.height,
+                  width: bounds.width,
+                  top: bounds.top,
+                  left: bounds.left
+                };
+                out.height = Math.min(out.height, bounds.height - (pageYOffset - bounds.top));
+                out.height = Math.min(out.height, bounds.height - (bounds.top + bounds.height - (pageYOffset + innerHeight)));
+                out.height = Math.min(innerHeight, out.height);
+                out.height -= 2;
+                out.width = Math.min(out.width, bounds.width - (pageXOffset - bounds.left));
+                out.width = Math.min(out.width, bounds.width - (bounds.left + bounds.width - (pageXOffset + innerWidth)));
+                out.width = Math.min(innerWidth, out.width);
+                out.width -= 2;
+                if (out.top < pageYOffset) {
+                  out.top = pageYOffset;
+                }
+                if (out.left < pageXOffset) {
+                  out.left = pageXOffset;
+                }
+                return out;
+              }
+              break;
+            case 'scroll-handle':
+              target = this.target;
+              if (target === document.body) {
+                target = document.documentElement;
+                bounds = {
+                  left: pageXOffset,
+                  top: pageYOffset,
+                  height: innerHeight,
+                  width: innerWidth
+                };
+              } else {
+                bounds = getBounds(target);
+              }
+              style = getComputedStyle(target);
+              hasBottomScroll = target.scrollWidth > target.clientWidth || 'scroll' === [style.overflow, style.overflowX] || this.target !== document.body;
+              scrollBottom = 0;
+              if (hasBottomScroll) {
+                scrollBottom = 15;
+              }
+              height = bounds.height - parseFloat(style.borderTopWidth) - parseFloat(style.borderBottomWidth) - scrollBottom;
+              out = {
+                width: 15,
+                height: height * 0.975 * (height / target.scrollHeight),
+                left: bounds.left + bounds.width - parseFloat(style.borderLeftWidth) - 15
+              };
+              fitAdj = 0;
+              if (height < 408 && this.target === document.body) {
+                fitAdj = -0.00011 * Math.pow(height, 2) - 0.00727 * height + 22.58;
+              }
+              if (this.target !== document.body) {
+                out.height = Math.max(out.height, 24);
+              }
+              scrollPercentage = this.target.scrollTop / (target.scrollHeight - height);
+              out.top = scrollPercentage * (height - out.height - fitAdj) + bounds.top + parseFloat(style.borderTopWidth);
+              if (this.target === document.body) {
+                out.height = Math.max(out.height, 24);
+              }
+              return out;
+          }
+        } else {
+          return getBounds(this.target);
+        }
+      };
+
+      _Tether.prototype.clearCache = function () {
+        return this._cache = {};
+      };
+
+      _Tether.prototype.cache = function (k, getter) {
+        if (this._cache == null) {
+          this._cache = {};
+        }
+        if (this._cache[k] == null) {
+          this._cache[k] = getter.call(this);
+        }
+        return this._cache[k];
+      };
+
+      _Tether.prototype.enable = function (position) {
+        if (position == null) {
+          position = true;
+        }
+        addClass(this.target, this.getClass('enabled'));
+        addClass(this.element, this.getClass('enabled'));
+        this.enabled = true;
+        if (this.scrollParent !== document) {
+          this.scrollParent.addEventListener('scroll', this.position);
+        }
+        if (position) {
+          return this.position();
+        }
+      };
+
+      _Tether.prototype.disable = function () {
+        removeClass(this.target, this.getClass('enabled'));
+        removeClass(this.element, this.getClass('enabled'));
+        this.enabled = false;
+        if (this.scrollParent != null) {
+          return this.scrollParent.removeEventListener('scroll', this.position);
+        }
+      };
+
+      _Tether.prototype.destroy = function () {
+        var i, tether, _i, _len, _results;
+        this.disable();
+        _results = [];
+        for (i = _i = 0, _len = tethers.length; _i < _len; i = ++_i) {
+          tether = tethers[i];
+          if (tether === this) {
+            tethers.splice(i, 1);
+            break;
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
+      _Tether.prototype.updateAttachClasses = function (elementAttach, targetAttach) {
+        var add,
+            all,
+            side,
+            sides,
+            _i,
+            _j,
+            _len,
+            _len1,
+            _ref1,
+            _this = this;
+        if (elementAttach == null) {
+          elementAttach = this.attachment;
+        }
+        if (targetAttach == null) {
+          targetAttach = this.targetAttachment;
+        }
+        sides = ['left', 'top', 'bottom', 'right', 'middle', 'center'];
+        if ((_ref1 = this._addAttachClasses) != null ? _ref1.length : void 0) {
+          this._addAttachClasses.splice(0, this._addAttachClasses.length);
+        }
+        add = this._addAttachClasses != null ? this._addAttachClasses : this._addAttachClasses = [];
+        if (elementAttach.top) {
+          add.push("" + this.getClass('element-attached') + "-" + elementAttach.top);
+        }
+        if (elementAttach.left) {
+          add.push("" + this.getClass('element-attached') + "-" + elementAttach.left);
+        }
+        if (targetAttach.top) {
+          add.push("" + this.getClass('target-attached') + "-" + targetAttach.top);
+        }
+        if (targetAttach.left) {
+          add.push("" + this.getClass('target-attached') + "-" + targetAttach.left);
+        }
+        all = [];
+        for (_i = 0, _len = sides.length; _i < _len; _i++) {
+          side = sides[_i];
+          all.push("" + this.getClass('element-attached') + "-" + side);
+        }
+        for (_j = 0, _len1 = sides.length; _j < _len1; _j++) {
+          side = sides[_j];
+          all.push("" + this.getClass('target-attached') + "-" + side);
+        }
+        return defer(function () {
+          if (_this._addAttachClasses == null) {
+            return;
+          }
+          updateClasses(_this.element, _this._addAttachClasses, all);
+          updateClasses(_this.target, _this._addAttachClasses, all);
+          return _this._addAttachClasses = void 0;
+        });
+      };
+
+      _Tether.prototype.position = function (flushChanges) {
+        var elementPos,
+            elementStyle,
+            height,
+            left,
+            manualOffset,
+            manualTargetOffset,
+            module,
+            next,
+            offset,
+            offsetBorder,
+            offsetParent,
+            offsetParentSize,
+            offsetParentStyle,
+            offsetPosition,
+            ret,
+            scrollLeft,
+            scrollTop,
+            scrollbarSize,
+            side,
+            targetAttachment,
+            targetOffset,
+            targetPos,
+            targetSize,
+            top,
+            width,
+            _i,
+            _j,
+            _len,
+            _len1,
+            _ref1,
+            _ref2,
+            _ref3,
+            _ref4,
+            _ref5,
+            _ref6,
+            _this = this;
+        if (flushChanges == null) {
+          flushChanges = true;
+        }
+        if (!this.enabled) {
+          return;
+        }
+        this.clearCache();
+        targetAttachment = autoToFixedAttachment(this.targetAttachment, this.attachment);
+        this.updateAttachClasses(this.attachment, targetAttachment);
+        elementPos = this.cache('element-bounds', function () {
+          return getBounds(_this.element);
+        });
+        width = elementPos.width, height = elementPos.height;
+        if (width === 0 && height === 0 && this.lastSize != null) {
+          _ref1 = this.lastSize, width = _ref1.width, height = _ref1.height;
+        } else {
+          this.lastSize = {
+            width: width,
+            height: height
+          };
+        }
+        targetSize = targetPos = this.cache('target-bounds', function () {
+          return _this.getTargetBounds();
+        });
+        offset = offsetToPx(attachmentToOffset(this.attachment), {
+          width: width,
+          height: height
+        });
+        targetOffset = offsetToPx(attachmentToOffset(targetAttachment), targetSize);
+        manualOffset = offsetToPx(this.offset, {
+          width: width,
+          height: height
+        });
+        manualTargetOffset = offsetToPx(this.targetOffset, targetSize);
+        offset = addOffset(offset, manualOffset);
+        targetOffset = addOffset(targetOffset, manualTargetOffset);
+        left = targetPos.left + targetOffset.left - offset.left;
+        top = targetPos.top + targetOffset.top - offset.top;
+        _ref2 = Tether.modules;
+        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+          module = _ref2[_i];
+          ret = module.position.call(this, {
+            left: left,
+            top: top,
+            targetAttachment: targetAttachment,
+            targetPos: targetPos,
+            attachment: this.attachment,
+            elementPos: elementPos,
+            offset: offset,
+            targetOffset: targetOffset,
+            manualOffset: manualOffset,
+            manualTargetOffset: manualTargetOffset,
+            scrollbarSize: scrollbarSize
+          });
+          if (ret == null || typeof ret !== 'object') {
+            continue;
+          } else if (ret === false) {
+            return false;
+          } else {
+            top = ret.top, left = ret.left;
+          }
+        }
+        next = {
+          page: {
+            top: top,
+            left: left
+          },
+          viewport: {
+            top: top - pageYOffset,
+            bottom: pageYOffset - top - height + innerHeight,
+            left: left - pageXOffset,
+            right: pageXOffset - left - width + innerWidth
+          }
+        };
+        if (document.body.scrollWidth > window.innerWidth) {
+          scrollbarSize = this.cache('scrollbar-size', getScrollBarSize);
+          next.viewport.bottom -= scrollbarSize.height;
+        }
+        if (document.body.scrollHeight > window.innerHeight) {
+          scrollbarSize = this.cache('scrollbar-size', getScrollBarSize);
+          next.viewport.right -= scrollbarSize.width;
+        }
+        if ((_ref3 = document.body.style.position) !== '' && _ref3 !== 'static' || (_ref4 = document.body.parentElement.style.position) !== '' && _ref4 !== 'static') {
+          next.page.bottom = document.body.scrollHeight - top - height;
+          next.page.right = document.body.scrollWidth - left - width;
+        }
+        if (((_ref5 = this.options.optimizations) != null ? _ref5.moveElement : void 0) !== false && this.targetModifier == null) {
+          offsetParent = this.cache('target-offsetparent', function () {
+            return getOffsetParent(_this.target);
+          });
+          offsetPosition = this.cache('target-offsetparent-bounds', function () {
+            return getBounds(offsetParent);
+          });
+          offsetParentStyle = getComputedStyle(offsetParent);
+          elementStyle = getComputedStyle(this.element);
+          offsetParentSize = offsetPosition;
+          offsetBorder = {};
+          _ref6 = ['Top', 'Left', 'Bottom', 'Right'];
+          for (_j = 0, _len1 = _ref6.length; _j < _len1; _j++) {
+            side = _ref6[_j];
+            offsetBorder[side.toLowerCase()] = parseFloat(offsetParentStyle["border" + side + "Width"]);
+          }
+          offsetPosition.right = document.body.scrollWidth - offsetPosition.left - offsetParentSize.width + offsetBorder.right;
+          offsetPosition.bottom = document.body.scrollHeight - offsetPosition.top - offsetParentSize.height + offsetBorder.bottom;
+          if (next.page.top >= offsetPosition.top + offsetBorder.top && next.page.bottom >= offsetPosition.bottom) {
+            if (next.page.left >= offsetPosition.left + offsetBorder.left && next.page.right >= offsetPosition.right) {
+              scrollTop = offsetParent.scrollTop;
+              scrollLeft = offsetParent.scrollLeft;
+              next.offset = {
+                top: next.page.top - offsetPosition.top + scrollTop - offsetBorder.top,
+                left: next.page.left - offsetPosition.left + scrollLeft - offsetBorder.left
+              };
+            }
+          }
+        }
+        this.move(next);
+        this.history.unshift(next);
+        if (this.history.length > 3) {
+          this.history.pop();
+        }
+        if (flushChanges) {
+          flush();
+        }
+        return true;
+      };
+
+      _Tether.prototype.move = function (position) {
+        var css,
+            elVal,
+            found,
+            key,
+            moved,
+            offsetParent,
+            point,
+            same,
+            transcribe,
+            type,
+            val,
+            write,
+            writeCSS,
+            _i,
+            _len,
+            _ref1,
+            _ref2,
+            _this = this;
+        if (this.element.parentNode == null) {
+          return;
+        }
+        same = {};
+        for (type in position) {
+          same[type] = {};
+          for (key in position[type]) {
+            found = false;
+            _ref1 = this.history;
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              point = _ref1[_i];
+              if (!within((_ref2 = point[type]) != null ? _ref2[key] : void 0, position[type][key])) {
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              same[type][key] = true;
+            }
+          }
+        }
+        css = {
+          top: '',
+          left: '',
+          right: '',
+          bottom: ''
+        };
+        transcribe = function (same, pos) {
+          var xPos, yPos, _ref3;
+          if (((_ref3 = _this.options.optimizations) != null ? _ref3.gpu : void 0) !== false) {
+            if (same.top) {
+              css.top = 0;
+              yPos = pos.top;
+            } else {
+              css.bottom = 0;
+              yPos = -pos.bottom;
+            }
+            if (same.left) {
+              css.left = 0;
+              xPos = pos.left;
+            } else {
+              css.right = 0;
+              xPos = -pos.right;
+            }
+            css[transformKey] = "translateX(" + Math.round(xPos) + "px) translateY(" + Math.round(yPos) + "px)";
+            if (transformKey !== 'msTransform') {
+              return css[transformKey] += " translateZ(0)";
+            }
+          } else {
+            if (same.top) {
+              css.top = "" + pos.top + "px";
+            } else {
+              css.bottom = "" + pos.bottom + "px";
+            }
+            if (same.left) {
+              return css.left = "" + pos.left + "px";
+            } else {
+              return css.right = "" + pos.right + "px";
+            }
+          }
+        };
+        moved = false;
+        if ((same.page.top || same.page.bottom) && (same.page.left || same.page.right)) {
+          css.position = 'absolute';
+          transcribe(same.page, position.page);
+        } else if ((same.viewport.top || same.viewport.bottom) && (same.viewport.left || same.viewport.right)) {
+          css.position = 'fixed';
+          transcribe(same.viewport, position.viewport);
+        } else if (same.offset != null && same.offset.top && same.offset.left) {
+          css.position = 'absolute';
+          offsetParent = this.cache('target-offsetparent', function () {
+            return getOffsetParent(_this.target);
+          });
+          if (getOffsetParent(this.element) !== offsetParent) {
+            defer(function () {
+              _this.element.parentNode.removeChild(_this.element);
+              return offsetParent.appendChild(_this.element);
+            });
+          }
+          transcribe(same.offset, position.offset);
+          moved = true;
+        } else {
+          css.position = 'absolute';
+          transcribe({
+            top: true,
+            left: true
+          }, position.page);
+        }
+        if (!moved && this.element.parentNode.tagName !== 'BODY') {
+          this.element.parentNode.removeChild(this.element);
+          document.body.appendChild(this.element);
+        }
+        writeCSS = {};
+        write = false;
+        for (key in css) {
+          val = css[key];
+          elVal = this.element.style[key];
+          if (elVal !== '' && val !== '' && (key === 'top' || key === 'left' || key === 'bottom' || key === 'right')) {
+            elVal = parseFloat(elVal);
+            val = parseFloat(val);
+          }
+          if (elVal !== val) {
+            write = true;
+            writeCSS[key] = css[key];
+          }
+        }
+        if (write) {
+          return defer(function () {
+            return extend(_this.element.style, writeCSS);
+          });
+        }
+      };
+
+      return _Tether;
+    }();
+
+    Tether.position = position;
+
+    this.Tether = extend(_Tether, Tether);
+  }).call(this);
+
+  (function () {
+    var BOUNDS_FORMAT,
+        MIRROR_ATTACH,
+        defer,
+        extend,
+        getBoundingRect,
+        getBounds,
+        getOuterSize,
+        getSize,
+        updateClasses,
+        _ref,
+        __indexOf = [].indexOf || function (item) {
+      for (var i = 0, l = this.length; i < l; i++) {
+        if (i in this && this[i] === item) return i;
+      }return -1;
+    };
+
+    _ref = this.Tether.Utils, getOuterSize = _ref.getOuterSize, getBounds = _ref.getBounds, getSize = _ref.getSize, extend = _ref.extend, updateClasses = _ref.updateClasses, defer = _ref.defer;
+
+    MIRROR_ATTACH = {
+      left: 'right',
+      right: 'left',
+      top: 'bottom',
+      bottom: 'top',
+      middle: 'middle'
+    };
+
+    BOUNDS_FORMAT = ['left', 'top', 'right', 'bottom'];
+
+    getBoundingRect = function (tether, to) {
+      var i, pos, side, size, style, _i, _len;
+      if (to === 'scrollParent') {
+        to = tether.scrollParent;
+      } else if (to === 'window') {
+        to = [pageXOffset, pageYOffset, innerWidth + pageXOffset, innerHeight + pageYOffset];
+      }
+      if (to === document) {
+        to = to.documentElement;
+      }
+      if (to.nodeType != null) {
+        pos = size = getBounds(to);
+        style = getComputedStyle(to);
+        to = [pos.left, pos.top, size.width + pos.left, size.height + pos.top];
+        for (i = _i = 0, _len = BOUNDS_FORMAT.length; _i < _len; i = ++_i) {
+          side = BOUNDS_FORMAT[i];
+          side = side[0].toUpperCase() + side.substr(1);
+          if (side === 'Top' || side === 'Left') {
+            to[i] += parseFloat(style["border" + side + "Width"]);
+          } else {
+            to[i] -= parseFloat(style["border" + side + "Width"]);
+          }
+        }
+      }
+      return to;
+    };
+
+    this.Tether.modules.push({
+      position: function (_arg) {
+        var addClasses,
+            allClasses,
+            attachment,
+            bounds,
+            changeAttachX,
+            changeAttachY,
+            cls,
+            constraint,
+            eAttachment,
+            height,
+            left,
+            oob,
+            oobClass,
+            p,
+            pin,
+            pinned,
+            pinnedClass,
+            removeClass,
+            side,
+            tAttachment,
+            targetAttachment,
+            targetHeight,
+            targetSize,
+            targetWidth,
+            to,
+            top,
+            width,
+            _i,
+            _j,
+            _k,
+            _l,
+            _len,
+            _len1,
+            _len2,
+            _len3,
+            _len4,
+            _len5,
+            _m,
+            _n,
+            _ref1,
+            _ref2,
+            _ref3,
+            _ref4,
+            _ref5,
+            _ref6,
+            _ref7,
+            _ref8,
+            _this = this;
+        top = _arg.top, left = _arg.left, targetAttachment = _arg.targetAttachment;
+        if (!this.options.constraints) {
+          return true;
+        }
+        removeClass = function (prefix) {
+          var side, _i, _len, _results;
+          _this.removeClass(prefix);
+          _results = [];
+          for (_i = 0, _len = BOUNDS_FORMAT.length; _i < _len; _i++) {
+            side = BOUNDS_FORMAT[_i];
+            _results.push(_this.removeClass("" + prefix + "-" + side));
+          }
+          return _results;
+        };
+        _ref1 = this.cache('element-bounds', function () {
+          return getBounds(_this.element);
+        }), height = _ref1.height, width = _ref1.width;
+        if (width === 0 && height === 0 && this.lastSize != null) {
+          _ref2 = this.lastSize, width = _ref2.width, height = _ref2.height;
+        }
+        targetSize = this.cache('target-bounds', function () {
+          return _this.getTargetBounds();
+        });
+        targetHeight = targetSize.height;
+        targetWidth = targetSize.width;
+        tAttachment = {};
+        eAttachment = {};
+        allClasses = [this.getClass('pinned'), this.getClass('out-of-bounds')];
+        _ref3 = this.options.constraints;
+        for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+          constraint = _ref3[_i];
+          if (constraint.outOfBoundsClass) {
+            allClasses.push(constraint.outOfBoundsClass);
+          }
+          if (constraint.pinnedClass) {
+            allClasses.push(constraint.pinnedClass);
+          }
+        }
+        for (_j = 0, _len1 = allClasses.length; _j < _len1; _j++) {
+          cls = allClasses[_j];
+          _ref4 = ['left', 'top', 'right', 'bottom'];
+          for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
+            side = _ref4[_k];
+            allClasses.push("" + cls + "-" + side);
+          }
+        }
+        addClasses = [];
+        tAttachment = extend({}, targetAttachment);
+        eAttachment = extend({}, this.attachment);
+        _ref5 = this.options.constraints;
+        for (_l = 0, _len3 = _ref5.length; _l < _len3; _l++) {
+          constraint = _ref5[_l];
+          to = constraint.to, attachment = constraint.attachment, pin = constraint.pin;
+          if (attachment == null) {
+            attachment = '';
+          }
+          if (__indexOf.call(attachment, ' ') >= 0) {
+            _ref6 = attachment.split(' '), changeAttachY = _ref6[0], changeAttachX = _ref6[1];
+          } else {
+            changeAttachX = changeAttachY = attachment;
+          }
+          bounds = getBoundingRect(this, to);
+          if (changeAttachY === 'target' || changeAttachY === 'both') {
+            if (top < bounds[1] && tAttachment.top === 'top') {
+              top += targetHeight;
+              tAttachment.top = 'bottom';
+            }
+            if (top + height > bounds[3] && tAttachment.top === 'bottom') {
+              top -= targetHeight;
+              tAttachment.top = 'top';
+            }
+          }
+          if (changeAttachY === 'together') {
+            if (top < bounds[1] && tAttachment.top === 'top') {
+              if (eAttachment.top === 'bottom') {
+                top += targetHeight;
+                tAttachment.top = 'bottom';
+                top += height;
+                eAttachment.top = 'top';
+              } else if (eAttachment.top === 'top') {
+                top += targetHeight;
+                tAttachment.top = 'bottom';
+                top -= height;
+                eAttachment.top = 'bottom';
+              }
+            }
+            if (top + height > bounds[3] && tAttachment.top === 'bottom') {
+              if (eAttachment.top === 'top') {
+                top -= targetHeight;
+                tAttachment.top = 'top';
+                top -= height;
+                eAttachment.top = 'bottom';
+              } else if (eAttachment.top === 'bottom') {
+                top -= targetHeight;
+                tAttachment.top = 'top';
+                top += height;
+                eAttachment.top = 'top';
+              }
+            }
+            if (tAttachment.top === 'middle') {
+              if (top + height > bounds[3] && eAttachment.top === 'top') {
+                top -= height;
+                eAttachment.top = 'bottom';
+              } else if (top < bounds[1] && eAttachment.top === 'bottom') {
+                top += height;
+                eAttachment.top = 'top';
+              }
+            }
+          }
+          if (changeAttachX === 'target' || changeAttachX === 'both') {
+            if (left < bounds[0] && tAttachment.left === 'left') {
+              left += targetWidth;
+              tAttachment.left = 'right';
+            }
+            if (left + width > bounds[2] && tAttachment.left === 'right') {
+              left -= targetWidth;
+              tAttachment.left = 'left';
+            }
+          }
+          if (changeAttachX === 'together') {
+            if (left < bounds[0] && tAttachment.left === 'left') {
+              if (eAttachment.left === 'right') {
+                left += targetWidth;
+                tAttachment.left = 'right';
+                left += width;
+                eAttachment.left = 'left';
+              } else if (eAttachment.left === 'left') {
+                left += targetWidth;
+                tAttachment.left = 'right';
+                left -= width;
+                eAttachment.left = 'right';
+              }
+            } else if (left + width > bounds[2] && tAttachment.left === 'right') {
+              if (eAttachment.left === 'left') {
+                left -= targetWidth;
+                tAttachment.left = 'left';
+                left -= width;
+                eAttachment.left = 'right';
+              } else if (eAttachment.left === 'right') {
+                left -= targetWidth;
+                tAttachment.left = 'left';
+                left += width;
+                eAttachment.left = 'left';
+              }
+            } else if (tAttachment.left === 'center') {
+              if (left + width > bounds[2] && eAttachment.left === 'left') {
+                left -= width;
+                eAttachment.left = 'right';
+              } else if (left < bounds[0] && eAttachment.left === 'right') {
+                left += width;
+                eAttachment.left = 'left';
+              }
+            }
+          }
+          if (changeAttachY === 'element' || changeAttachY === 'both') {
+            if (top < bounds[1] && eAttachment.top === 'bottom') {
+              top += height;
+              eAttachment.top = 'top';
+            }
+            if (top + height > bounds[3] && eAttachment.top === 'top') {
+              top -= height;
+              eAttachment.top = 'bottom';
+            }
+          }
+          if (changeAttachX === 'element' || changeAttachX === 'both') {
+            if (left < bounds[0] && eAttachment.left === 'right') {
+              left += width;
+              eAttachment.left = 'left';
+            }
+            if (left + width > bounds[2] && eAttachment.left === 'left') {
+              left -= width;
+              eAttachment.left = 'right';
+            }
+          }
+          if (typeof pin === 'string') {
+            pin = function () {
+              var _len4, _m, _ref7, _results;
+              _ref7 = pin.split(',');
+              _results = [];
+              for (_m = 0, _len4 = _ref7.length; _m < _len4; _m++) {
+                p = _ref7[_m];
+                _results.push(p.trim());
+              }
+              return _results;
+            }();
+          } else if (pin === true) {
+            pin = ['top', 'left', 'right', 'bottom'];
+          }
+          pin || (pin = []);
+          pinned = [];
+          oob = [];
+          if (top < bounds[1]) {
+            if (__indexOf.call(pin, 'top') >= 0) {
+              top = bounds[1];
+              pinned.push('top');
+            } else {
+              oob.push('top');
+            }
+          }
+          if (top + height > bounds[3]) {
+            if (__indexOf.call(pin, 'bottom') >= 0) {
+              top = bounds[3] - height;
+              pinned.push('bottom');
+            } else {
+              oob.push('bottom');
+            }
+          }
+          if (left < bounds[0]) {
+            if (__indexOf.call(pin, 'left') >= 0) {
+              left = bounds[0];
+              pinned.push('left');
+            } else {
+              oob.push('left');
+            }
+          }
+          if (left + width > bounds[2]) {
+            if (__indexOf.call(pin, 'right') >= 0) {
+              left = bounds[2] - width;
+              pinned.push('right');
+            } else {
+              oob.push('right');
+            }
+          }
+          if (pinned.length) {
+            pinnedClass = (_ref7 = this.options.pinnedClass) != null ? _ref7 : this.getClass('pinned');
+            addClasses.push(pinnedClass);
+            for (_m = 0, _len4 = pinned.length; _m < _len4; _m++) {
+              side = pinned[_m];
+              addClasses.push("" + pinnedClass + "-" + side);
+            }
+          }
+          if (oob.length) {
+            oobClass = (_ref8 = this.options.outOfBoundsClass) != null ? _ref8 : this.getClass('out-of-bounds');
+            addClasses.push(oobClass);
+            for (_n = 0, _len5 = oob.length; _n < _len5; _n++) {
+              side = oob[_n];
+              addClasses.push("" + oobClass + "-" + side);
+            }
+          }
+          if (__indexOf.call(pinned, 'left') >= 0 || __indexOf.call(pinned, 'right') >= 0) {
+            eAttachment.left = tAttachment.left = false;
+          }
+          if (__indexOf.call(pinned, 'top') >= 0 || __indexOf.call(pinned, 'bottom') >= 0) {
+            eAttachment.top = tAttachment.top = false;
+          }
+          if (tAttachment.top !== targetAttachment.top || tAttachment.left !== targetAttachment.left || eAttachment.top !== this.attachment.top || eAttachment.left !== this.attachment.left) {
+            this.updateAttachClasses(eAttachment, tAttachment);
+          }
+        }
+        defer(function () {
+          updateClasses(_this.target, addClasses, allClasses);
+          return updateClasses(_this.element, addClasses, allClasses);
+        });
+        return {
+          top: top,
+          left: left
+        };
+      }
+    });
+  }).call(this);
+
+  (function () {
+    var defer, getBounds, updateClasses, _ref;
+
+    _ref = this.Tether.Utils, getBounds = _ref.getBounds, updateClasses = _ref.updateClasses, defer = _ref.defer;
+
+    this.Tether.modules.push({
+      position: function (_arg) {
+        var abutted,
+            addClasses,
+            allClasses,
+            bottom,
+            height,
+            left,
+            right,
+            side,
+            sides,
+            targetPos,
+            top,
+            width,
+            _i,
+            _j,
+            _k,
+            _l,
+            _len,
+            _len1,
+            _len2,
+            _len3,
+            _ref1,
+            _ref2,
+            _ref3,
+            _ref4,
+            _ref5,
+            _this = this;
+        top = _arg.top, left = _arg.left;
+        _ref1 = this.cache('element-bounds', function () {
+          return getBounds(_this.element);
+        }), height = _ref1.height, width = _ref1.width;
+        targetPos = this.getTargetBounds();
+        bottom = top + height;
+        right = left + width;
+        abutted = [];
+        if (top <= targetPos.bottom && bottom >= targetPos.top) {
+          _ref2 = ['left', 'right'];
+          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+            side = _ref2[_i];
+            if ((_ref3 = targetPos[side]) === left || _ref3 === right) {
+              abutted.push(side);
+            }
+          }
+        }
+        if (left <= targetPos.right && right >= targetPos.left) {
+          _ref4 = ['top', 'bottom'];
+          for (_j = 0, _len1 = _ref4.length; _j < _len1; _j++) {
+            side = _ref4[_j];
+            if ((_ref5 = targetPos[side]) === top || _ref5 === bottom) {
+              abutted.push(side);
+            }
+          }
+        }
+        allClasses = [];
+        addClasses = [];
+        sides = ['left', 'top', 'right', 'bottom'];
+        allClasses.push(this.getClass('abutted'));
+        for (_k = 0, _len2 = sides.length; _k < _len2; _k++) {
+          side = sides[_k];
+          allClasses.push("" + this.getClass('abutted') + "-" + side);
+        }
+        if (abutted.length) {
+          addClasses.push(this.getClass('abutted'));
+        }
+        for (_l = 0, _len3 = abutted.length; _l < _len3; _l++) {
+          side = abutted[_l];
+          addClasses.push("" + this.getClass('abutted') + "-" + side);
+        }
+        defer(function () {
+          updateClasses(_this.target, addClasses, allClasses);
+          return updateClasses(_this.element, addClasses, allClasses);
+        });
+        return true;
+      }
+    });
+  }).call(this);
+
+  (function () {
+    this.Tether.modules.push({
+      position: function (_arg) {
+        var left, result, shift, shiftLeft, shiftTop, top, _ref;
+        top = _arg.top, left = _arg.left;
+        if (!this.options.shift) {
+          return;
+        }
+        result = function (val) {
+          if (typeof val === 'function') {
+            return val.call(this, {
+              top: top,
+              left: left
+            });
+          } else {
+            return val;
+          }
+        };
+        shift = result(this.options.shift);
+        if (typeof shift === 'string') {
+          shift = shift.split(' ');
+          shift[1] || (shift[1] = shift[0]);
+          shiftTop = shift[0], shiftLeft = shift[1];
+          shiftTop = parseFloat(shiftTop, 10);
+          shiftLeft = parseFloat(shiftLeft, 10);
+        } else {
+          _ref = [shift.top, shift.left], shiftTop = _ref[0], shiftLeft = _ref[1];
+        }
+        top += shiftTop;
+        left += shiftLeft;
+        return {
+          top: top,
+          left: left
+        };
+      }
+    });
+  }).call(this);
+
+  return this.Tether;
+});
+//
+!function (t, e) {
+  "function" == typeof define && define.amd ? define(["tether"], e) : "object" == typeof exports ? module.exports = e(require("tether")) : t.Shepherd = e(t.Tether);
+}(this, function (t) {
+  "use strict";
+  function e(t, e) {
+    if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function");
+  }function n(t, e) {
+    if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function, not " + typeof e);t.prototype = Object.create(e && e.prototype, { constructor: { value: t, enumerable: !1, writable: !0, configurable: !0 } }), e && (Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e);
+  }function i(t) {
+    return "undefined" == typeof t;
+  }function r(t) {
+    return t && t.constructor === Array;
+  }function o(t) {
+    return t && t.constructor === Object;
+  }function s(t) {
+    return "object" == typeof t;
+  }function h(t) {
+    var e = document.createElement("div");return e.innerHTML = t, e.children[0];
+  }function c(t, e) {
+    var n = void 0;return i(t.matches) ? i(t.matchesSelector) ? i(t.msMatchesSelector) ? i(t.webkitMatchesSelector) ? i(t.mozMatchesSelector) ? i(t.oMatchesSelector) || (n = t.oMatchesSelector) : n = t.mozMatchesSelector : n = t.webkitMatchesSelector : n = t.msMatchesSelector : n = t.matchesSelector : n = t.matches, n.call(t, e);
+  }function l(t) {
+    if (s(t)) return t.hasOwnProperty("element") && t.hasOwnProperty("on") ? t : null;var e = S.exec(t);if (!e) return null;var n = e[2];return "[" === n[0] && (n = n.substring(1, n.length - 1)), { element: e[1], on: n };
+  }function a(t, e) {
+    if (null === t || i(t)) return t;if (s(t)) return t;for (var n = t.split(" "), r = {}, o = e.length - 1, h = n.length - 1; h >= 0; h--) {
+      if (0 === o) {
+        r[e[o]] = n.slice(0, h + 1).join(" ");break;
+      }r[e[o]] = n[h], o--;
+    }return r;
+  }var u = function () {
+    function t(t, e) {
+      for (var n = 0; n < e.length; n++) {
+        var i = e[n];i.enumerable = i.enumerable || !1, i.configurable = !0, "value" in i && (i.writable = !0), Object.defineProperty(t, i.key, i);
+      }
+    }return function (e, n, i) {
+      return n && t(e.prototype, n), i && t(e, i), e;
+    };
+  }(),
+      d = function (t, e, n) {
+    for (var i = !0; i;) {
+      var r = t,
+          o = e,
+          s = n;i = !1, null === r && (r = Function.prototype);var h = Object.getOwnPropertyDescriptor(r, o);if (void 0 !== h) {
+        if ("value" in h) return h.value;var c = h.get;if (void 0 === c) return;return c.call(s);
+      }var l = Object.getPrototypeOf(r);if (null === l) return;t = l, e = o, n = s, i = !0, h = l = void 0;
+    }
+  },
+      p = t.Utils,
+      f = p.Evented,
+      v = p.addClass,
+      m = p.extend,
+      y = p.hasClass,
+      g = p.removeClass,
+      b = p.uniqueId,
+      w = new f(),
+      k = { "top right": "bottom left", "top left": "bottom right", "top center": "bottom center", "middle right": "middle left", "middle left": "middle right", "middle center": "middle center", "bottom left": "top right", "bottom right": "top left", "bottom center": "top center", top: "bottom center", left: "middle right", right: "middle left", bottom: "top center", center: "middle center", middle: "middle center" },
+      S = /^(.+) (top|left|right|bottom|center|\[[a-z ]+\])$/,
+      O = function (s) {
+    function p(t, n) {
+      return e(this, p), d(Object.getPrototypeOf(p.prototype), "constructor", this).call(this, t, n), this.tour = t, this.bindMethods(), this.setOptions(n), this;
+    }return n(p, s), u(p, [{ key: "bindMethods", value: function () {
+        var t = this,
+            e = ["_show", "show", "hide", "isOpen", "cancel", "complete", "scrollTo", "destroy", "render"];e.map(function (e) {
+          t[e] = t[e].bind(t);
+        });
+      } }, { key: "setOptions", value: function () {
+        var t = arguments.length <= 0 || void 0 === arguments[0] ? {} : arguments[0];this.options = t, this.destroy(), this.id = this.options.id || this.id || "step-" + b();var e = this.options.when;if (e) for (var n in e) if ({}.hasOwnProperty.call(e, n)) {
+          var s = e[n];this.on(n, s, this);
+        }var h = JSON.stringify(this.options.buttons),
+            c = i(h) || "true" === h,
+            l = "{}" === h || "[]" === h || "null" === h || "false" === h,
+            a = !c && r(this.options.buttons),
+            u = !c && o(this.options.buttons);c ? this.options.buttons = [{ text: "Next", action: this.tour.next, classes: "btn" }] : !l && u ? this.options.buttons = [this.options.buttons] : !l && a || (this.options.buttons = !1);
+      } }, { key: "getTour", value: function () {
+        return this.tour;
+      } }, { key: "bindAdvance", value: function () {
+        var t = this,
+            e = a(this.options.advanceOn, ["selector", "event"]),
+            n = e.event,
+            r = e.selector,
+            o = function (e) {
+          t.isOpen() && (i(r) ? t.el && e.target === t.el && t.tour.next() : c(e.target, r) && t.tour.next());
+        };document.body.addEventListener(n, o), this.on("destroy", function () {
+          return document.body.removeEventListener(n, o);
+        });
+      } }, { key: "getAttachTo", value: function () {
+        var t = l(this.options.attachTo) || {},
+            e = m({}, t);return "string" == typeof t.element && (e.element = document.querySelector(t.element), e.element || console.error("The element for this Shepherd step was not found " + t.element)), e;
+      } }, { key: "setupTether", value: function () {
+        if (i(t)) throw new Error("Using the attachment feature of Shepherd requires the Tether library");var e = this.getAttachTo(),
+            n = k[e.on] || k.right;i(e.element) && (e.element = "viewport", n = "middle center");var r = { classPrefix: "shepherd", element: this.el, constraints: [{ to: "window", pin: !0, attachment: "together" }], target: e.element, offset: e.offset || "0 0", attachment: n };this.tether && this.tether.destroy(), this.tether = new t(m(r, this.options.tetherOptions));
+      } }, { key: "show", value: function () {
+        var t = this;if (!i(this.options.beforeShowPromise)) {
+          var e = this.options.beforeShowPromise();if (!i(e)) return e.then(function () {
+            return t._show();
+          });
+        }this._show();
+      } }, { key: "_show", value: function () {
+        var t = this;this.trigger("before-show"), this.el || this.render(), v(this.el, "shepherd-open"), document.body.setAttribute("data-shepherd-step", this.id), this.setupTether(), this.options.scrollTo && setTimeout(function () {
+          t.scrollTo();
+        }), this.trigger("show");
+      } }, { key: "hide", value: function () {
+        this.trigger("before-hide"), g(this.el, "shepherd-open"), document.body.removeAttribute("data-shepherd-step"), this.tether && this.tether.destroy(), this.tether = null, this.trigger("hide");
+      } }, { key: "isOpen", value: function () {
+        return this.el && y(this.el, "shepherd-open");
+      } }, { key: "cancel", value: function () {
+        this.tour.cancel(), this.trigger("cancel");
+      } }, { key: "complete", value: function () {
+        this.tour.complete(), this.trigger("complete");
+      } }, { key: "scrollTo", value: function () {
+        var t = this.getAttachTo(),
+            e = t.element;i(this.options.scrollToHandler) ? i(e) || e.scrollIntoView() : this.options.scrollToHandler(e);
+      } }, { key: "destroy", value: function () {
+        !i(this.el) && this.el.parentNode && (this.el.parentNode.removeChild(this.el), delete this.el), this.tether && this.tether.destroy(), this.tether = null, this.trigger("destroy");
+      } }, { key: "render", value: function () {
+        var t = this;i(this.el) || this.destroy(), this.el = h("<div class='shepherd-step " + (this.options.classes || "") + "' data-id='" + this.id + "' " + (this.options.idAttribute ? 'id="' + this.options.idAttribute + '"' : "") + "></div>");var e = document.createElement("div");e.className = "shepherd-content", this.el.appendChild(e);var n = document.createElement("header");if (e.appendChild(n), this.options.title && (n.innerHTML += "<h3 class='shepherd-title'>" + this.options.title + "</h3>", this.el.className += " shepherd-has-title"), this.options.showCancelLink) {
+          var r = h("<a href class='shepherd-cancel-link'>✕</a>");n.appendChild(r), this.el.className += " shepherd-has-cancel-link", this.bindCancelLink(r);
+        }i(this.options.text) || !function () {
+          var n = h("<div class='shepherd-text'></div>"),
+              i = t.options.text;"function" == typeof i && (i = i.call(t, n)), i instanceof HTMLElement ? n.appendChild(i) : ("string" == typeof i && (i = [i]), i.map(function (t) {
+            n.innerHTML += "<p>" + t + "</p>";
+          })), e.appendChild(n);
+        }(), this.options.buttons && !function () {
+          var n = document.createElement("footer"),
+              i = h("<ul class='shepherd-buttons'></ul>");t.options.buttons.map(function (e) {
+            var n = h("<li><a class='shepherd-button " + (e.classes || "") + "'>" + e.text + "</a>");i.appendChild(n), t.bindButtonEvents(e, n.querySelector("a"));
+          }), n.appendChild(i), e.appendChild(n);
+        }(), document.body.appendChild(this.el), this.setupTether(), this.options.advanceOn && this.bindAdvance();
+      } }, { key: "bindCancelLink", value: function (t) {
+        var e = this;t.addEventListener("click", function (t) {
+          t.preventDefault(), e.cancel();
+        });
+      } }, { key: "bindButtonEvents", value: function (t, e) {
+        var n = this;t.events = t.events || {}, i(t.action) || (t.events.click = t.action);for (var r in t.events) if ({}.hasOwnProperty.call(t.events, r)) {
+          var o = t.events[r];"string" == typeof o && !function () {
+            var t = o;o = function () {
+              return n.tour.show(t);
+            };
+          }(), e.addEventListener(r, o);
+        }this.on("destroy", function () {
+          for (var n in t.events) if ({}.hasOwnProperty.call(t.events, n)) {
+            var i = t.events[n];e.removeEventListener(n, i);
+          }
+        });
+      } }]), p;
+  }(f),
+      T = function (t) {
+    function r() {
+      var t = this,
+          n = arguments.length <= 0 || void 0 === arguments[0] ? {} : arguments[0];e(this, r), d(Object.getPrototypeOf(r.prototype), "constructor", this).call(this, n), this.bindMethods(), this.options = n, this.steps = this.options.steps || [];var i = ["complete", "cancel", "hide", "start", "show", "active", "inactive"];return i.map(function (e) {
+        !function (e) {
+          t.on(e, function (n) {
+            n = n || {}, n.tour = t, w.trigger(e, n);
+          });
+        }(e);
+      }), this;
+    }return n(r, t), u(r, [{ key: "bindMethods", value: function () {
+        var t = this,
+            e = ["next", "back", "cancel", "complete", "hide"];e.map(function (e) {
+          t[e] = t[e].bind(t);
+        });
+      } }, { key: "addStep", value: function (t, e) {
+        return i(e) && (e = t), e instanceof O ? e.tour = this : ("string" != typeof t && "number" != typeof t || (e.id = t.toString()), e = m({}, this.options.defaults, e), e = new O(this, e)), this.steps.push(e), this;
+      } }, { key: "removeStep", value: function (t) {
+        for (var e = this.getCurrentStep(), n = 0; n < this.steps.length; ++n) {
+          var i = this.steps[n];if (i.id === t) {
+            i.isOpen() && i.hide(), i.destroy(), this.steps.splice(n, 1);break;
+          }
+        }e && e.id === t && (this.currentStep = void 0, this.steps.length ? this.show(0) : this.hide());
+      } }, { key: "getById", value: function (t) {
+        for (var e = 0; e < this.steps.length; ++e) {
+          var n = this.steps[e];if (n.id === t) return n;
+        }
+      } }, { key: "getCurrentStep", value: function () {
+        return this.currentStep;
+      } }, { key: "next", value: function () {
+        var t = this.steps.indexOf(this.currentStep);t === this.steps.length - 1 ? (this.hide(t), this.trigger("complete"), this.done()) : this.show(t + 1, !0);
+      } }, { key: "back", value: function () {
+        var t = this.steps.indexOf(this.currentStep);this.show(t - 1, !1);
+      } }, { key: "cancel", value: function () {
+        this.currentStep && this.currentStep.hide(), this.trigger("cancel"), this.done();
+      } }, { key: "complete", value: function () {
+        this.currentStep && this.currentStep.hide(), this.trigger("complete"), this.done();
+      } }, { key: "hide", value: function () {
+        this.currentStep && this.currentStep.hide(), this.trigger("hide"), this.done();
+      } }, { key: "done", value: function () {
+        w.activeTour = null, g(document.body, "shepherd-active"), this.trigger("inactive", { tour: this });
+      } }, { key: "show", value: function () {
+        var t = arguments.length <= 0 || void 0 === arguments[0] ? 0 : arguments[0],
+            e = arguments.length <= 1 || void 0 === arguments[1] || arguments[1];this.currentStep ? this.currentStep.hide() : (v(document.body, "shepherd-active"), this.trigger("active", { tour: this })), w.activeTour = this;var n = void 0;if (n = "string" == typeof t ? this.getById(t) : this.steps[t]) if (i(n.options.showOn) || n.options.showOn()) this.trigger("show", { step: n, previous: this.currentStep }), this.currentStep && this.currentStep.hide(), this.currentStep = n, n.show();else {
+          var r = this.steps.indexOf(n),
+              o = e ? r + 1 : r - 1;this.show(o, e);
+        }
+      } }, { key: "start", value: function () {
+        this.trigger("start"), this.currentStep = null, this.next();
+      } }]), r;
+  }(f);return m(w, { Tour: T, Step: O, Evented: f }), w;
+});
+//
 var configStorage;
 // in the real world we will store config on the server
 // and do some CORS voodoo to fetch it.
@@ -3426,13 +5252,6 @@ HerokuBackend.prototype.mergeTokens = function (oldToken, newToken) {
   return this.report('MergeTokens', { guest: oldToken, registered: newToken });
 };
 
-HerokuBackend.prototype.getMeanings = function (word, lang) {
-  return this.ajax("POST", "/quiz/getMeanings/", { 'word': word, 'lang': lang });
-};
-HerokuBackend.prototype.addPersonalWord = function (word) {
-  return this.ajax("POST", "/quiz/addPersonalWord/", { 'word': word });
-};
-
 HerokuBackend.prototype.milotrage = function () {
   return this.ajax("POST", "/quiz/score/milotrage/", { 'token': this.token });
 };
@@ -3457,12 +5276,11 @@ HerokuBackend.prototype.checkWeeklyPresence = function () {
   return this.ajax("POST", "/quiz/score/checkWeeklyPresence/", { 'token': this.token });
 };
 
-HerokuBackend.prototype.getSRStatus = function (address) {
-  return this.ajax("POST", "/quiz/getSRStatus/", { 'token': this.token });
+HerokuBackend.prototype.getUnAnsweredSR = function (address) {
+  return this.ajax("POST", "/quiz/getUnAnsweredSR/", { 'token': this.token });
 };
-
-HerokuBackend.prototype.getLevel = function (address) {
-  return this.ajax("POST", "/quiz/score/getLevel/", { 'token': this.token });
+HerokuBackend.prototype.getAnsweredSR = function (address) {
+  return this.ajax("POST", "/quiz/getAnsweredSR/", { 'token': this.token });
 };
 
 HerokuBackend.prototype.acceptedTerms = function (address) {
@@ -3479,6 +5297,7 @@ HerokuBackend.prototype.getArticle = function (address) {
     this.pageid = data.id;
     return data.questions;
   }.bind(this), function (data) {
+
     if (data.responseJSON && data.responseJSON.detail === 'Terms not accepted') {
       return $.Deferred().reject('terms_not_accepted').promise();
     }
@@ -3528,10 +5347,11 @@ HerokuBackend.prototype.dictionary = function (new_word) {
 
   post = this.ajax('POST', '/quiz/editor/dictionary/add/', new_word);
   post.done(function (res) {
-    console.log("Dictionary changed! (A word or new meanings added or removed)");
-    if (!res.message.startsWith('Done')) {
+    if (res.message == 'done') {
+      console.log("Dictionary changed! (A word or new meanings added or removed)");
+    } else {
       alert(res.message);
-    }
+    };
   });
 };
 HerokuBackend.prototype.create_all_questions = function (address, question) {
@@ -3981,9 +5801,22 @@ Editor.prototype.highlight = function () {
 //
 UserInfo = function () {
   this.scoreValue = { 'correct': 200, 'persistence': 300 };
-
+  this.getUnAnsweredSR = function () {
+    document.englishonBackend.getUnAnsweredSR().then(function (data) {
+      console.log('getUnAnsweredSR*******data from server: ' + data);
+      //i tried to do it with bind, but don't know how.
+      document.eo_user.unAnswered = data;
+      document.eo_user.unAnswered_promise.resolve();
+    });
+  };
+  this.getAnsweredSR = function () {
+    document.englishonBackend.getAnsweredSR().then(function (data) {
+      document.eo_user.answered = data;
+      document.eo_user.answered_promise.resolve();
+    });
+  };
   this.displaySRStatus = function () {
-    var generall_sr = this.unAnswered.length + this.answered.length;
+    var generall_sr = this.unAnswered.sr_questions.length + this.answered.sr_questions.length;
     console.log('you answered ' + this.answered.sr_questions.length + ' from: ' + generall_sr);
   };
   this.scoreCorrect = function () {
@@ -3994,20 +5827,16 @@ UserInfo = function () {
     console.log('checkpersistence');
     document.englishonBackend.checkpersistence();
   };
-  this.getLevel = function () {
-    document.englishonBackend.getLevel().then(function (data) {
-      $('#level').text(data.level.toFixed(2));
-    });
-  };
   this.checkSRProgress = function () {
-    document.englishonBackend.getSRStatus().then(function (data) {
-      this.answered = data.answered;
-      this.unAnswered = data.unAnswered;
-
-      $('#srProgress').removeClass('sr-complete');
-      val = this.answered.length / (this.answered.length + this.unAnswered.length);
+    this.answered_promise = $.Deferred();
+    this.unAnswered_promise = $.Deferred();
+    this.getAnsweredSR();
+    this.getUnAnsweredSR();
+    $('#srProgress').removeClass('sr-complete');
+    $.when(this.answered_promise, this.unAnswered_promise).done(function () {
+      val = document.eo_user.answered.sr_questions.length / (document.eo_user.answered.sr_questions.length + document.eo_user.unAnswered.sr_questions.length);
       //positive feedback if user doesn't get sr questions for today
-      if (!(this.answered.length + this.unAnswered.length)) {
+      if (!(document.eo_user.answered.sr_questions.length + document.eo_user.unAnswered.sr_questions.length)) {
         val = 1;
       }
       if (!val) {
@@ -4018,31 +5847,32 @@ UserInfo = function () {
         $('#srProgress').addClass('sr-complete');
       }
 
-      this.sr_progress.animate(val);
-    }.bind(this));
-  };
-  this.minimize = function (e) {
-    if (e) {
-      e.preventDefault();
-      e.target = $(e.target);
-    }
-    if (!e || !e.target.is('.eo-question') && e.target.parents('.eo-question').length === 0) {
-      $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-      $('#vocabulary').addClass('hidden');
-      $('#eo-live-main').removeClass('hidden');
-      $(document).off('click', $(document), this.minimize);
-    }
+      document.eo_user.sr_progress.animate(val);
+    });
   };
   this.showLiveActions = function () {
     this.checkWeeklyPresence();
     this.checkSRProgress();
     this.milotrage();
-    this.getLevel();
     $('#eo-live').removeClass('hidden vocabulary-open');
     if (document.englishonConfig.media == 'desktop') {
       $('#eo-live').addClass('eo-live-maximize');
-      $(document).on('click', $(document), this.minimize);
-      this.setTimeOut = setTimeout(this.minimize, 10000);
+      $($(document).on('click', function (e) {
+        e.preventDefault();
+        e.target = $(e.target);
+        if (!e.target.is('.eo-question') && e.target.parents('.eo-question').length === 0) {
+          $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+          $('#vocabulary').addClass('hidden');
+          $('#eo-live-main').removeClass('hidden');
+          $(document).off('click');
+        }
+      }));
+      this.setTimeOut = setTimeout(function () {
+        $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+        $('#vocabulary').addClass('hidden');
+        $('#eo-live-main').removeClass('hidden');
+        $(document).off('click');
+      }, 10000);
       $('#eo-live').on('click', function (e) {
         clearTimeout(this.setTimeOut);
       }.bind(this));
@@ -4068,7 +5898,7 @@ UserInfo = function () {
       //the text value is a hack to display the milotrage digits without the decimal point
       .append($('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append($('<span>').addClass('vocabulary-word').text(word_info.word).on('click', function (e) {})).append($('<span>').addClass('vocabulary-translation hidden').text(word_info.translation)));
     });
-    $('#vocabulary-content-list').html(content);
+    $('#vocabulary-content').html(content);
     var el = document.getElementsByClassName('vocabulary-odometer');
     for (var i = 0; i < el.length; i++) {
       new Odometer({
@@ -4076,27 +5906,6 @@ UserInfo = function () {
         value: el[i].innerText,
         format: 'd'
       });
-    }
-  };
-  this.listenToInput = function (e) {
-    var key = e.keyCode;
-    if (key === 13 || key === 10) {
-      var word = $(e.target).val().trim();
-      if (word == '') {
-        alert('Type your word:)');
-        return;
-      }
-      if (word.indexOf(' ') != -1) {
-        alert('type one word only');
-        return;
-      }
-      if ($('#personal-word-btn').find('option').length > 1) {
-        return;
-      }
-
-      this.createMeaningsList(word);
-    } else {
-      $('#personal-word-btn').find('option').slice(1).remove();
     }
   };
   this.initial = function () {
@@ -4123,7 +5932,7 @@ UserInfo = function () {
         step: function (state, circle) {
           circle.path.setAttribute('stroke', state.color);
           circle.path.setAttribute('stroke-width', state.width);
-          text = document.eo_user.unAnswered.length + document.eo_user.answered.length;
+          text = document.eo_user.unAnswered.sr_questions.length + document.eo_user.answered.sr_questions.length;
           if (!text || text == document.eo_user.answered.sr_questions.length) {
             text = '&#10004;';
           };
@@ -4143,12 +5952,6 @@ UserInfo = function () {
       format: 'd'
     });
     $('#eo-live').off('click');
-    //keypress is not a good choice, because it is not recognizing backspace
-    $('#personal-word').on('keyup', this.listenToInput.bind(this));
-
-    $('#personal-word-btn').on('change', this.addPersonalWord.bind(this));
-    $('#personal-word').val('');
-    $('#personal-word-btn').find('option').slice(1).remove();
     $('#eo-live').on('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -4167,12 +5970,6 @@ UserInfo = function () {
         e.target.next().toggleClass('hidden');
         return;
       }
-      if (e.target.is('#personal-word')) {
-        return;
-      }
-      if (e.target.is('#personal-word-btn')) {
-        return;
-      }
       if (e.target.is('.eo-close')) {
         $('#eo-live').addClass('hidden');
         $('#vocabulary').addClass('hidden');
@@ -4185,7 +5982,7 @@ UserInfo = function () {
         $('#vocabulary').toggleClass('hidden');
         if (!$('#vocabulary').hasClass('hidden')) {
           $('#eo-live').addClass('vocabulary-open');
-          $('#vocabulary-content-list').html('');
+          $('#vocabulary-content').html('');
           this.fetchVocabulary();
         } else {
           $('#eo-live').removeClass('vocabulary-open');
@@ -4199,41 +5996,19 @@ UserInfo = function () {
         $('#eo-live').removeClass('vocabulary-open');
         return;
       }
-      $(document).on('click', $(document), this.minimize);
-    }.bind(this));
-  };
-  this.detectLanguage = function (str) {
-    var lang = str.charCodeAt(0) >= 65 && str.charCodeAt(0) <= 116 ? 'eng' : 'heb';
-    return lang;
-  };
-  this.createMeaningsList = function (word) {
-    var select = $('#personal-word-btn');
-    var lang = this.detectLanguage(word);
-    document.englishonBackend.getMeanings(word, lang).then(function (data) {
-      meanings = data.meanings;
-      $('#vocabulary-content-list').html('');
-      $(meanings).each(function (i, meaning) {
-        select.append($('<option>').text(meaning));
+      $(document).on('click', function (e) {
+        e.preventDefault();
+        e.target = $(e.target);
+        if (e.target.is('.eo-question') || e.target.parents('.eo-question').length) {
+          return;
+        }
+        $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+        $('#vocabulary').addClass('hidden');
+        $('#eo-live-main').removeClass('hidden');
+        $(document).off('click');
       });
     }.bind(this));
   };
-
-  this.addPersonalWord = function () {
-    var input = $('#personal-word').val();
-    var select = $('#personal-word-btn').val();
-    var origin = this.detectLanguage(select) == 'eng' ? select : input;
-    var translation = this.detectLanguage(input) == 'heb' ? input : select;
-    var word = { 'origin': origin, 'translation': translation };
-    if (word.origin == '') {
-      return;
-    }
-    document.englishonBackend.addPersonalWord(word).then(function (res) {
-      alert(res.message);
-    }, function (error) {
-      alert('sorry, not today');
-    });
-  };
-
   this.hideLiveActions = function () {
     $('#eo-live').addClass('hidden');
   };
@@ -4272,7 +6047,6 @@ Injector = function (paragraphs) {
     post.done(function (res) {
       if (msg === 'TriedAnswer') {
         document.eo_user.milotrage();
-        document.eo_user.getLevel();
         //document.eo_user.scoreCorrect();
         document.eo_user.checkSRProgress();
         if (!document.overlay.userAnswered) {
@@ -4288,7 +6062,7 @@ Injector = function (paragraphs) {
         }
       }
 
-      if (msg === "StartedQuestion" && !document.overlay.interacted && !$('.eo-answered').length && !$('.eo-expired').length) {
+      if (msg === "StartedQuestion" && !document.overlay.interacted) {
         document.overlay.interacted = true;
         report("StartedQuiz");
         console.log('msg === TriedAnswer && !userAnswered. checkWeeklyPresence fired!');
@@ -4493,28 +6267,24 @@ AbstractQuestion.prototype.bindInput = function () {
 
 AbstractQuestion.prototype.questionOnClick = function (e) {
   e.preventDefault();
-  e.stopPropagation();
   if (this.element.hasClass('eo-answered')) {
     return;
   }
   this.touch();
-  if ($(e.target).parents('.eo-question.eo-active').length) {
+  if (this.element.hasClass('eo-active')) {
     this.closeUnanswered();
-    return;
+  } else {
+    this.open();
+    var handler = function (e) {
+      if (this.element.has(e.target).length === 0) {
+        if (this.element.hasClass('eo-active')) {
+          this.closeUnanswered();
+        }
+        $(document).off('click', handler);
+      }
+    }.bind(this);
+    $(document).on('click', handler);
   }
-  if ($('.eo-question.eo-active').length) {
-    document.overlay.closeUnAnswered();
-  }
-  this.open();
-  var handler = function (e) {
-    if (this.element.has(e.target).length === 0) {
-      if (this.element.hasClass('eo-active')) {
-        this.closeUnanswered();
-      };
-      $(document).off('click', handler);
-    };
-  }.bind(this);
-  $(document).on('click', handler);
 };
 
 AbstractQuestion.prototype.open = function () {
@@ -5131,7 +6901,7 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 ";
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
-    <div class='eo-close actions-close'></div>\
+<div class='eo-close actions-close'></div>\
     <div class='Grid Grid--full' id='eo-live-main'>\
         <div class='Grid-cell'>\
             <div class='Grid live-part' id='milotrage'>\
@@ -5144,15 +6914,8 @@ document.live_actions = "<div class='hidden' id='eo-live'>\
             </div>\
         </div>\
         <div class='Grid-cell'>\
-            <div class='Grid'>\
-                <div class='Grid-cell'>\
-                    <div id='sr' class='live-part v-align h-align'>\
-                        <div id='srProgress'></div>\
-                    </div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <div id='level' class='live-part v-align h-align'></div>\
-                </div>\
+            <div id='sr' class='live-part v-align h-align'>\
+                <div id='srProgress'></div>\
             </div>\
         </div>\
         <div class='Grid-cell'>\
@@ -5189,15 +6952,6 @@ document.live_actions = "<div class='hidden' id='eo-live'>\
         </div>\
         <div class='Grid-cell cell2'>\
             <div id='vocabulary-content'>\
-                <div class='Grid-cell cell1'>\
-                    <input type='text' id='personal-word' placeholder='type your word here' autocomplete='off'/>\
-                </div>\
-                <div class='Grid-cell cell1'>\
-                    <select id='personal-word-btn'>\
-                        <option selected='selected' style='display:none;'>add to my vocabulary</option>\
-                    </select>\
-                </div>\
-                <div id='vocabulary-content-list'></div>\
             </div>\
         </div>\
     </div>\
@@ -5236,7 +6990,6 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
 //
 ShturemOverlay = function () {
   // stubs, just to make it "compile"
-
   this.setReporter = function (backend) {};
   this.fetchLinkStates = function (backend) {
     return Promise.resolve();
@@ -5314,16 +7067,6 @@ ShturemFrontpageOverlay = function (parts) {
     };
   }.bind(this));
 
-  this.closeUnAnswered = function () {
-    $.each(this.parts, function (url, part) {
-
-      $(part.injector.elements).each(function (i, q) {
-        if (q.qobj.element && q.qobj.element.is('.eo-active')) {
-          q.qobj.closeUnanswered();
-        }
-      });
-    });
-  };
   this.fetchQuestions = function () {
     // send a separate request per part, (about 26)
     // results in many rounds-trips. this is wasteful
@@ -5388,13 +7131,6 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
-  this.closeUnAnswered = function () {
-    $(this.injector.elements).each(function (i, q) {
-      if (q.qobj.element && q.qobj.element.is('.eo-active')) {
-        q.qobj.closeUnanswered();
-      }
-    });
-  };
   this.fetchQuestions = function () {
     var backend = document.englishonBackend;
     //remove only 'eo-injection-target' tags,not content
@@ -5641,12 +7377,107 @@ var Speaker = new function () {
 // source.buffer = Audiobuffer;
 // source.playbackRate.value = 1.5;
 //
+document.tour = new Shepherd.Tour({
+  defaults: {
+    classes: 'shepherd shepherd-theme-arrows shepherd-has-cancel-link',
+    showCancelLink: true,
+    scrollTo: true
+  }
+});
+
+document.tour.welcomeTutorial = function () {
+  steps = [];
+  steps.push(['.eo-button left', 'welcome', 'welcome to Englishon , etc........', null, 'welcome_' + 0]);
+  steps.push(['.eo-button top', 'englishon', 'Open the menu', '.eo-button click', 'welcome_' + 1]);
+  steps.push(['#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', null, 'welcome_' + 2]);
+  this.initTutorial(steps);
+};
+
+document.tour.quizTutorial = function () {
+  steps = [];
+  $('.eo-question').slice(0, 2).each(function (i, q) {
+    $(q).addClass('step_' + i);
+    steps.push(['.step_' + i + ' top', 'Start a quiz', 'click on the signed word, and pick the best answer', null, 'step_' + i]);
+  });
+
+  this.initTutorial(steps);
+};
+document.tour.initTutorial = function (steps) {
+
+  for (i = 0; i < steps.length; i++) {
+    buttons = [];
+    //add exit button to first step
+    if (i == 0) {
+      buttons.push({
+        text: 'Exit',
+        classes: 'shepherd-button-secondary',
+        action: function () {
+          return document.tour.hide();
+        }
+      });
+    }
+    // no back button at the start
+    if (i > 0) {
+      buttons.push({
+        text: 'Back',
+        classes: 'shepherd-button-secondary',
+        action: function () {
+          return document.tour.back();
+        }
+      });
+    }
+    // no next button on last step
+    if (i != steps.length - 1 && steps[i][4] != 'welcome_1') {
+      buttons.push({
+        text: 'Next',
+        classes: 'shepherd-button-primary',
+        action: function () {
+          return document.tour.next();
+        }
+      });
+    } else {
+      buttons.push({
+        text: 'Close',
+        classes: 'shepherd-button-primary',
+        action: function () {
+          return document.tour.hide();
+        }
+      });
+    }
+
+    document.tour.addStep(steps[i][4], {
+      text: steps[i][2],
+      title: steps[i][1],
+      attachTo: steps[i][0],
+      //classes: 'shepherd shepherd-open shepherd-theme-arrows shepherd-transparent-text',
+      buttons: buttons,
+      when: {
+        show: function () {
+          //window.scrollTo(0, 0);
+          if (!(document.tour.getCurrentStep().id.slice(0, 5) == 'step_')) {
+            return;
+          }
+          var val = $('.' + document.tour.getCurrentStep().id).offset().top;
+          window.scrollTo(0, val - 370);
+          console.log('tour event------------------attachTo: ' + document.tour.getCurrentStep().id);
+        }
+      },
+      advanceOn: steps[i][3]
+    });
+  }
+};
+
+document.tour.turnOffGuide = function () {
+  document.tour.hide();
+};
+//
 // **************
 // Initialization
 // **************
 
 document.resources_promise = $.Deferred();
 document.loaded_promise = $.Deferred();
+document.questions_promise = $.Deferred();
 
 function englishon() {
   var staticUrl = undefined;
@@ -5712,7 +7543,7 @@ function englishon() {
   var defaults = {
     'token': null,
     'backendUrl': DEFAULT_BACKEND_URL,
-    'isActive': true,
+    'isActive': false,
     'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
     'enableSound': true,
     'volume': 100,
@@ -5752,27 +7583,30 @@ function englishon() {
 }
 
 var startTutorial = function () {
-  $('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
-  var onPickLanguage = function () {
-    $('.eo-language_picker-option').off('click', onPickLanguage);
-    $('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
+  // $('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
+  // var onPickLanguage = function() {
+  //   $('.eo-language_picker-option').off('click', onPickLanguage);
+  //   $('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
 
-    // in case questions are still hidden, keep trying
-    var timer = setInterval(function () {
-      var questions = $('.eo-question');
-      if (questions.length > 0) {
-        questions.first().addClass('eo-first_question');
-        var onOpenQuestion = function () {
-          $('.eo-hint').off('click', onOpenQuestion);
-          $('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
-          configStorage.set({ enableTutorial: false });
-        };
-        $('.eo-hint').click(onOpenQuestion);
-        clearInterval(timer);
-      }
-    }, 100);
-  };
-  $('.eo-language_picker-option').click(onPickLanguage);
+  //   // in case questions are still hidden, keep trying
+  //   var timer = setInterval(function() {
+  //     var questions = $('.eo-question');
+  //     if (questions.length > 0) {
+  //       questions.first().addClass('eo-first_question');
+  //       var onOpenQuestion = function() {
+  //         $('.eo-hint').off('click', onOpenQuestion);
+  //         $('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
+  //         configStorage.set({ enableTutorial: false });
+  //       };
+  //       $('.eo-hint').click(onOpenQuestion);
+  //       clearInterval(timer);
+  //     }
+  //   }, 100);
+
+  // };
+  // $('.eo-language_picker-option').click(onPickLanguage);
+
+
 };
 
 // **********
@@ -6033,8 +7867,12 @@ var EnglishOnMenu = function () {
     elem.toggleText('On', 'Off');
     if (JSON.parse(enable)) {
       document.overlay.showQuestions();
+      document.questions_promise.resolve();
       if (!document.englishonConfig.isUser) {
         configStorage.set({ 'isUser': true });
+        if ($('.shepherd').length) {
+          window.localStorage.setItem('show_quiz_tutorial', 'true');
+        }
         window.location.reload();
       }
     } else {
@@ -6049,9 +7887,13 @@ var EnglishOnMenu = function () {
     $('#eo-power-switch-text').text('On');
     $('body').addClass('eo-active', true);
     document.overlay.showQuestions();
+    document.questions_promise.resolve();
     document.eo_user.showLiveActions();
     if (!document.englishonConfig.isUser) {
       configStorage.set({ 'isUser': true });
+      if ($('.shepherd').length) {
+        window.localStorage.setItem('show_quiz_tutorial', 'true');
+      }
       window.location.reload();
     }
   };
@@ -6240,6 +8082,14 @@ var EnglishOnMenu = function () {
 $(function () {
   document.loaded_promise.resolve();
 });
+$.when(document.questions_promise).done(function () {
+  if (window.localStorage.getItem('show_quiz_tutorial')) {
+    //if (true) {
+    window.localStorage.removeItem('show_quiz_tutorial');
+    document.tour.quizTutorial();
+    document.tour.start();
+  }
+});
 
 $.when(document.resources_promise, document.loaded_promise).done(function () {
   //event to get messageses from englishon backend
@@ -6284,9 +8134,9 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
   }
   document.overlay.insertContent($(document.TERMS_DLG));
   document.overlay.TermsDialog();
+  document.eoDialogs = new EnglishOnDialogs();
   if (document.englishonConfig.isUser) {
     document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
-    document.eoDialogs = new EnglishOnDialogs();
     var TODOAfterFetch = function () {
       document.menu = new EnglishOnMenu();
       document.eo_user = new UserInfo(document.englishonConfig.token);
@@ -6304,6 +8154,12 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     });
   } else {
     document.menu = new EnglishOnMenu();
+  }
+
+  if (!document.englishonConfig.isUser) {
+    //if (true) {
+    document.tour.welcomeTutorial();
+    document.tour.start();
   }
 });
 
