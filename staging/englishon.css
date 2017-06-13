@@ -2460,7 +2460,7 @@ eo-signout-layout .signout {
 }
 
 /*TUTORIAL*/
-.shepherd .shepherd-content {
+.shepherd {
   direction: ltr;
   text-align: left;
   z-index: 13;
