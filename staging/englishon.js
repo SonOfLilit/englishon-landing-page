@@ -7380,16 +7380,26 @@ var Speaker = new function () {
 document.tour = new Shepherd.Tour({
   defaults: {
     classes: 'shepherd shepherd-theme-arrows shepherd-has-cancel-link',
-    showCancelLink: true,
-    scrollTo: true
+    showCancelLink: true
   }
 });
+var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = null) {
+  this.id = id;
+  this.attachTo = attachTo;
+  this.title = title;
+  this.text = text;
+  this.advanceOn = advanceOn;
+  this.scroll_value = scroll_value;
+};
 
 document.tour.welcomeTutorial = function () {
   steps = [];
-  steps.push(['.eo-button left', 'welcome', 'welcome to Englishon , etc........', null, 'welcome_' + 0]);
-  steps.push(['.eo-button top', 'englishon', 'Open the menu', '.eo-button click', 'welcome_' + 1]);
-  steps.push(['#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', null, 'welcome_' + 2]);
+  // steps.push(['.eo-button left', 'welcome', 'welcome to Englishon , etc........', null, 'welcome_' + 0]);
+  // steps.push(['.eo-button top', 'englishon', 'Open the menu', '.eo-button click', 'welcome_' + 1]);
+  // steps.push(['#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', null, 'welcome_' + 2]);
+  steps.push(new step('.eo-button left', 'welcome', 'welcome to Englishon , etc........', 'welcome_' + 0, 0));
+  steps.push(new step('.eo-button left', 'englishon', 'Open the menu', 'welcome_' + 1, 0, '.eo-button click'));
+  steps.push(new step('#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', 'welcome_' + 2));
   this.initTutorial(steps);
 };
 
@@ -7397,7 +7407,7 @@ document.tour.quizTutorial = function () {
   steps = [];
   $('.eo-question').slice(0, 2).each(function (i, q) {
     $(q).addClass('step_' + i);
-    steps.push(['.step_' + i + ' top', 'Start a quiz', 'click on the signed word, and pick the best answer', null, 'step_' + i]);
+    steps.push(new step('.step_' + i + ' bottom', 'Start a quiz', 'click on the signed word, and pick the best answer', 'step_' + i));
   });
 
   this.initTutorial(steps);
@@ -7427,7 +7437,7 @@ document.tour.initTutorial = function (steps) {
       });
     }
     // no next button on last step
-    if (i != steps.length - 1 && steps[i][4] != 'welcome_1') {
+    if (i != steps.length - 1 && steps[i].id != 'welcome_1') {
       buttons.push({
         text: 'Next',
         classes: 'shepherd-button-primary',
@@ -7435,34 +7445,45 @@ document.tour.initTutorial = function (steps) {
           return document.tour.next();
         }
       });
-    } else {
+    }
+    if (i == steps.length - 1) {
       buttons.push({
-        text: 'Close',
+        text: 'Done',
         classes: 'shepherd-button-primary',
         action: function () {
           return document.tour.hide();
         }
       });
     }
+    // else {
+    //   buttons.push({
+    //     text: 'Close',
+    //     classes: 'shepherd-button-primary',
+    //     action: function() {
+    //       return document.tour.hide();
+    //     }
+    //   });
+    // }
 
-    document.tour.addStep(steps[i][4], {
-      text: steps[i][2],
-      title: steps[i][1],
-      attachTo: steps[i][0],
+    document.tour.addStep(steps[i].id, {
+      text: steps[i].text,
+      title: steps[i].title,
+      attachTo: steps[i].attachTo,
       //classes: 'shepherd shepherd-open shepherd-theme-arrows shepherd-transparent-text',
       buttons: buttons,
+      advanceOn: steps[i].advanceOn,
       when: {
         show: function () {
-          //window.scrollTo(0, 0);
+
           if (!(document.tour.getCurrentStep().id.slice(0, 5) == 'step_')) {
-            return;
+            window.scrollTo(0, 0);
+          } else {
+            var val = $('.' + document.tour.getCurrentStep().id).offset().top;
+            window.scrollTo(0, val - 370);
+            console.log('tour event------------------attachTo: ' + document.tour.getCurrentStep().id);
           }
-          var val = $('.' + document.tour.getCurrentStep().id).offset().top;
-          window.scrollTo(0, val - 370);
-          console.log('tour event------------------attachTo: ' + document.tour.getCurrentStep().id);
         }
-      },
-      advanceOn: steps[i][3]
+      }
     });
   }
 };
@@ -7871,7 +7892,7 @@ var EnglishOnMenu = function () {
       if (!document.englishonConfig.isUser) {
         configStorage.set({ 'isUser': true });
         if ($('.shepherd').length) {
-          window.localStorage.setItem('show_quiz_tutorial', 'true');
+          window.localStorage.setItem('show_quiz_tutorial', true);
         }
         window.location.reload();
       }
@@ -7892,7 +7913,7 @@ var EnglishOnMenu = function () {
     if (!document.englishonConfig.isUser) {
       configStorage.set({ 'isUser': true });
       if ($('.shepherd').length) {
-        window.localStorage.setItem('show_quiz_tutorial', 'true');
+        window.localStorage.setItem('show_quiz_tutorial', true);
       }
       window.location.reload();
     }
@@ -8154,12 +8175,22 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     });
   } else {
     document.menu = new EnglishOnMenu();
-  }
-
-  if (!document.englishonConfig.isUser) {
-    //if (true) {
     document.tour.welcomeTutorial();
-    document.tour.start();
+    $(".eo-button").on('mouseenter', function () {
+      if ($('.shepherd-open').length) {
+        return;
+      }
+      document.tour.start();
+    });
+    $(".eo-button").on('mouseleave', function () {
+      if ($('[data-id="welcome_0"]').hasClass('shepherd-open')) {
+        setTimeout(function () {
+          if (!document.querySelectorAll(".shepherd:hover").length && $('[data-id="welcome_0"]').hasClass('shepherd-open')) {
+            document.tour.hide();
+          }
+        }, 3000);
+      }
+    });
   }
 });
 
