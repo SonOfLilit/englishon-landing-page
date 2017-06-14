@@ -7398,7 +7398,7 @@ document.tour.welcomeTutorial = function () {
   // steps.push(['.eo-button top', 'englishon', 'Open the menu', '.eo-button click', 'welcome_' + 1]);
   // steps.push(['#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', null, 'welcome_' + 2]);
   steps.push(new step('.eo-button left', 'welcome', 'welcome to Englishon , etc........', 'welcome_' + 0, 0));
-  steps.push(new step('.eo-button left', 'englishon', 'Open the menu', 'welcome_' + 1, 0, '.eo-button click'));
+  steps.push(new step('.eo-button right', 'englishon', 'Open the menu', 'welcome_' + 1, 0, '.eo-button click'));
   steps.push(new step('#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', 'welcome_' + 2));
   this.initTutorial(steps);
 };
@@ -7407,9 +7407,10 @@ document.tour.quizTutorial = function () {
   steps = [];
   $('.eo-question').slice(0, 2).each(function (i, q) {
     $(q).addClass('step_' + i);
-    steps.push(new step('.step_' + i + ' bottom', 'Start a quiz', 'click on the signed word, and pick the best answer', 'step_' + i));
+    steps.push(new step('.step_' + i + ' top', 'Start a quiz', 'click on the signed word, and pick the best answer', 'step_' + i));
   });
-
+  steps.push(new step('#eo-live left', 'see your progress', 'the milotrage is showing you the score about correct answers', 'live_actions'));
+  steps.push(new step('#eo-live left', 'save your progress', 'Congratulations! you aquired x new words! to save your work-click <a href="#">here</a> and login', 'login'));
   this.initTutorial(steps);
 };
 document.tour.initTutorial = function (steps) {
@@ -7464,7 +7465,14 @@ document.tour.initTutorial = function (steps) {
     //     }
     //   });
     // }
-
+    var tetherOptionsDic = {};
+    if (steps[i].id.slice(0, 5) === 'step_') {
+      tetherOptionsDic.offset = '20px 20px';
+    }
+    // if (steps[i].id === 'live_actions' || steps[i].id === 'login') {
+    //   tetherOptionsDic.attachment = 'top right';
+    //   tetherOptions.targetAttachment = 'bottom left';
+    // }
     document.tour.addStep(steps[i].id, {
       text: steps[i].text,
       title: steps[i].title,
@@ -7472,9 +7480,14 @@ document.tour.initTutorial = function (steps) {
       //classes: 'shepherd shepherd-open shepherd-theme-arrows shepherd-transparent-text',
       buttons: buttons,
       advanceOn: steps[i].advanceOn,
+      tetherOptions: tetherOptionsDic,
       when: {
         show: function () {
-
+          if (document.tour.getCurrentStep().id === 'live_actions') {
+            if (!$('#eo-live:not(.hidden)').length) {
+              document.eo_user.showLiveActions();
+            }
+          }
           if (!(document.tour.getCurrentStep().id.slice(0, 5) == 'step_')) {
             window.scrollTo(0, 0);
           } else {
