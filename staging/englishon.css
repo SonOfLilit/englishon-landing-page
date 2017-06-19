@@ -182,7 +182,7 @@
 .odometer .odometer-inside .odometer-digit:first-child {
   display: none
 }
-/*THIS IS NOT THE ORIGINAL FILE! IT A CUSTOM ENGLISHON ONE*/
+/*THIS IS NOT THE ORIGINAL FILE! IT IS A CUSTOM ENGLISHON ONE*/
 
 
 /*ORIGIN FROM: https://github.com/HubSpot/shepherd*/
@@ -223,7 +223,7 @@
   font-family: inherit;
   background: #fff;
   color: #444;
-  padding: 1em;
+  padding: 10px;
   font-size: 18px;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
@@ -286,6 +286,7 @@
   margin-top: -16px;
   border-right-color: #fff;
 }
+
 .shepherd-element-attached-right.shepherd-target-attached-left .shepherd-content:before {
   left: 100%;
   top: 15%;
@@ -440,6 +441,10 @@
   float: left;
 }
 
+.shepherd-element.rtl.shepherd-theme-arrows.shepherd-has-cancel-link .shepherd-content header h3 {
+  float: right;
+}
+
 .shepherd-element.shepherd-theme-arrows .shepherd-content {
   padding: 0;
 }
@@ -467,6 +472,13 @@
 
 .shepherd-element.shepherd-theme-arrows .shepherd-content header a.shepherd-cancel-link {
   float: right;
+}
+
+.shepherd-element.rtl.shepherd-theme-arrows .shepherd-content header a.shepherd-cancel-link {
+  float: left;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content header a.shepherd-cancel-link {
   text-decoration: none;
   font-size: 1.25em;
   line-height: .8em;
@@ -484,7 +496,7 @@
 }
 
 .shepherd-element.shepherd-theme-arrows .shepherd-content .shepherd-text {
-  padding: 27px;
+  padding: 20px;
 }
 
 .shepherd-element.shepherd-theme-arrows .shepherd-content .shepherd-text p {
@@ -496,7 +508,7 @@
 }
 
 .shepherd-element.shepherd-theme-arrows .shepherd-content footer {
-  padding: 0 1em 1em;
+  padding: 0 10px 10px;
 }
 
 .shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons {
@@ -540,6 +552,13 @@
 
 .shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons li:last-child .shepherd-button {
   margin-right: 0;
+}
+
+
+/*TUTORIAL*/
+
+.shepherd {
+  z-index: 13;
 }
 /* Generic */
 @font-face {
@@ -1258,6 +1277,10 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   background-color: yellow;
   border: none;
 }
+.eo-editor-candidate select {
+  width: initial;
+  border: 1px solid black;
+}
 
 .eo-editor-dictionary-candidate {
   color: orange;
@@ -1326,6 +1349,13 @@ body.www-englishon-org .eo-button {
   padding-right: 30px;
   left: 50px;
   bottom: 24px;
+}
+
+body.actualic-co-il .eo-button {
+  margin-right: 520px;
+  top: 2px;
+  position: absolute;
+  width: 34px;
 }
 
 body.www-bhol-co-il .eo-layout-warning {
@@ -2585,22 +2615,6 @@ eo-signout-layout .signout {
 .eo-close:hover {
   background-image: url(http://www.englishon.org/v1/img/close2.png);
   background-color: gray;
-}
-
-/*TUTORIAL*/
-.shepherd {
-  direction: ltr;
-  text-align: left;
-  z-index: 13;
-}
-
-[data-id="live_actions"] .shepherd-content {
-  background-color: green;
-}
-[data-id="live_actions"]::before {
-  left: 100%;
-  top: 15%;
-  border-left-color: red;
 }
 /* responsive.scss */
 /*Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
