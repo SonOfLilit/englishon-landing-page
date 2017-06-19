@@ -7957,6 +7957,9 @@ var EnglishOnMenu = function () {
         e$('#eo-account-area').removeClass('guest');
         e$('#eo-dlg-login').addClass('valid');
         configStorage.set({ email: res.email, token: res.token, 'eo-user-name': e$('#eo-login-email').val() });
+        if (!document.englishonConfig.isUser) {
+          document.menu.firstTimeUser();
+        }
         var TODOAfterFetch = function () {
           document.eo_user.initial();
           document.menu.powerOn();
@@ -7988,18 +7991,20 @@ var EnglishOnMenu = function () {
       document.overlay.showQuestions();
       document.questions_promise.resolve();
       if (!document.englishonConfig.isUser) {
-        configStorage.set({ 'isUser': true });
-        if (e$('.shepherd').length) {
-          window.localStorage.setItem('show_quiz_tutorial', true);
-        }
-        window.location.reload();
+        this.firstTimeUser();
       }
     } else {
       document.overlay.hideQuestions();
       if (document.eo_user) document.eo_user.hideLiveActions();
     }
-  });
-
+  }.bind(this));
+  this.firstTimeUser = function () {
+    configStorage.set({ 'isUser': true, 'isActive': true });
+    if (e$('[data-id="welcome_1"]').length) {
+      window.localStorage.setItem('show_quiz_tutorial', true);
+    }
+    window.location.reload();
+  };
   this.powerOn = function () {
     console.log('POWER ON#########');
     configStorage.set({ 'isActive': true });
@@ -8009,11 +8014,7 @@ var EnglishOnMenu = function () {
     document.questions_promise.resolve();
     document.eo_user.showLiveActions();
     if (!document.englishonConfig.isUser) {
-      configStorage.set({ 'isUser': true });
-      if (e$('.shepherd').length) {
-        window.localStorage.setItem('show_quiz_tutorial', true);
-      }
-      window.location.reload();
+      this.firstTimeUser();
     }
   };
   this.powerOff = function () {
