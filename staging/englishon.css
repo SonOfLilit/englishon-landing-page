@@ -215,6 +215,7 @@
 .shepherd-element.shepherd-theme-arrows {
   max-width: 100%;
   max-height: 100%;
+  min-width: 210px;
 }
 
 .shepherd-element.shepherd-theme-arrows .shepherd-content {
@@ -429,7 +430,7 @@
 
 .shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header {
   background: #eee;
-  padding: 1em;
+  padding: 12px;
 }
 
 .shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header a.shepherd-cancel-link {
@@ -551,7 +552,7 @@
 }
 
 .shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons li:last-child .shepherd-button {
-  margin-right: 0;
+  margin-right: 10px;
 }
 
 
@@ -2144,20 +2145,10 @@ eo-signout-layout .signout {
   visibility: hidden;
   position: absolute;
   text-align: center;
-  font-size: 64px;
-  padding-top: 56px;
-  padding-left: 240px;
 }
 
 #coming_soon .Grid-cell:hover .tooltip {
   visibility: visible;
-}
-
-#coming_soon .Grid-cell:hover {
-  padding: 0px;
-}
-#coming_soon .Grid-cell:hover .u-1of6 {
-  padding-left: 87px;
 }
 
 #coming_soon .tooltip {
@@ -2616,6 +2607,16 @@ eo-signout-layout .signout {
   background-image: url(http://www.englishon.org/v1/img/close2.png);
   background-color: gray;
 }
+
+/*TUTORIAL*/
+.tutorial-icon {
+  background-size: 30px;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 6px;
+  left: 200px;
+}
 /* responsive.scss */
 /*Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
 This is causing chrome to compute the body width as 980px anycase, in inspector too
@@ -2835,6 +2836,16 @@ That is the reason to determine 980px as the media queries breakpoint */
   #eo-power-switch #eo-power-switch-text {
     top: 16px;
     left: 98px;
+  }
+
+  #coming_soon .Grid-cell .Grid .tooltip {
+    font-size: 64px;
+    padding-top: 56px;
+    padding-left: 240px;
+  }
+
+  #coming_soon .Grid-cell:hover .u-1of6 {
+    padding-left: 87px;
   }
 
   #eo-dlg-options {

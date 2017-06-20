@@ -7471,14 +7471,14 @@ document.tour.welcomeTutorial = function () {
   // steps.push(['.eo-button left', 'welcome', 'welcome to Englishon , etc........', null, 'welcome_' + 0]);
   // steps.push(['.eo-button top', 'englishon', 'Open the menu', '.eo-button click', 'welcome_' + 1]);
   // steps.push(['#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', null, 'welcome_' + 2]);
-  steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'לחץ להפעלה והתחל ללמוד אנגלית תוך כדי גלישה ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
+  steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון<img src=' + document.staticUrl('img/button-logo.svg') + ' class = "tutorial-icon"/>', 'לחץ להפעלה והתחל ללמוד אנגלית תוך כדי גלישה ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
   steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
   this.initTutorial(steps);
 };
 
 document.tour.quizTutorial = function () {
   steps = [];
-  e$('.eo-question').slice(0, 2).each(function (i, q) {
+  e$('.eo-question').each(function (i, q) {
     var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
     e$(q).addClass('step_' + i);
     steps.push(new step('.step_' + i + ' top', step_title, 'לחץ ובחר את המילה המתאימה', 'step_' + i));
@@ -7541,12 +7541,11 @@ document.tour.initTutorial = function (steps) {
     // }
     var tetherOptionsDic = {};
     if (steps[i].id.slice(0, 5) === 'step_') {
-      tetherOptionsDic.offset = '20px 20px';
+      tetherOptionsDic.offset = '20px 0px';
     }
-    // if (steps[i].id === 'live_actions' || steps[i].id === 'login') {
-    //   tetherOptionsDic.attachment = 'top right';
-    //   tetherOptions.targetAttachment = 'bottom left';
-    // }
+    if (steps[i].id === 'welcome_1') {
+      tetherOptionsDic.offset = '0px 20px';
+    }
     document.tour.addStep(steps[i].id, {
       text: steps[i].text,
       title: steps[i].title,
@@ -7592,15 +7591,14 @@ document.questions_promise = e$.Deferred();
 console.log('khgtyff222222222-------------------');
 
 function englishon() {
-  var staticUrl = undefined;
   if (e$('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
     console.log('khgtyff333333333-------------------');
-    staticUrl = function (resource) {
+    document.staticUrl = function (resource) {
       return 'http://localhost:8080/static/ex/' + resource;
     };
   } else {
     console.log('khgtyff333333333else-------------------');
-    staticUrl = function (resource) {
+    document.staticUrl = function (resource) {
       return 'http://www.englishon.org/v1/' + resource;
     };
   }
@@ -7776,6 +7774,7 @@ e$(englishon);
 
 
 var EnglishOnButton = new function () {
+  this.closeMainMenu = function (e) {};
   this.showMainMenu = function (e) {
     e.preventDefault();
     if (!e$('#eo-menu').length) {
@@ -7785,12 +7784,13 @@ var EnglishOnButton = new function () {
     e$('#eo-menu').removeClass('hidden');
     e$('#eo-area-container').removeClass('hidden');
     window.history.pushState({ 'elementToShow': 'eo-menu' }, '');
+
     e$(document).mouseup(function (e) {
       e.preventDefault();
       e.stopPropagation();
       var button = e$('.eo-button');
       if (button.is(e.target)) return;
-
+      if (e$('[data-id="welcome_1"]').hasClass('shepherd-open')) return;
       if (!e$(e.target).hasClass('eo-area') && !e$(e.target).parents().hasClass('eo-area')) {
         document.eoDialogs.hideDialogs(0);
         window.history.pushState({ 'elementToShow': 'shturem' }, '');
