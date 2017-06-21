@@ -5860,6 +5860,14 @@ UserInfo = function () {
     this.checkSRProgress();
     this.milotrage();
     e$('#eo-live').removeClass('hidden vocabulary-open');
+    if (scraper.getHost() == 'actualic.co.il') {
+      if ($(window).scrollTop() < 159) {
+        e$('#eo-live').css('top', $('.eo-button').offset());
+      }
+      $(window).scroll(function () {
+        console.log('EVENT');
+      });
+    }
     if (document.englishonConfig.media == 'desktop') {
       e$('#eo-live').addClass('eo-live-maximize');
       e$(e$(document).on('click', function (e) {
@@ -7485,6 +7493,7 @@ document.tour.quizTutorial = function () {
   });
   steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'חזור להסבר מפורט על לוח בקרת ההתקדמות בכל עת', 'live_actions'));
   steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
+  steps.push(new step('#eo-dlg-login left', '', 'here you can register', 'login2'));
   this.initTutorial(steps);
 };
 document.tour.initTutorial = function (steps) {
@@ -7512,11 +7521,15 @@ document.tour.initTutorial = function (steps) {
       });
     }
     // no next button on last step
-    if (i != steps.length - 1 && steps[i].id != 'welcome_0') {
+    if (i < steps.length - 1 && steps[i].id != 'welcome_0') {
       buttons.push({
         text: 'Next',
         classes: 'shepherd-button-primary',
         action: function () {
+          if (document.tour.getCurrentStep().id === 'login') {
+            document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
+            window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
+          }
           return document.tour.next();
         }
       });
@@ -7559,6 +7572,7 @@ document.tour.initTutorial = function (steps) {
           if (document.tour.getCurrentStep().id === 'live_actions') {
             if (!e$('#eo-live:not(.hidden)').length) {
               document.eo_user.showLiveActions();
+              window.scrollTo(0, 10);
             }
           }
           if (!(document.tour.getCurrentStep().id.slice(0, 5) == 'step_')) {
@@ -8224,7 +8238,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
       document.eoDialogs.toggleDialog(e.state.elementToShow, 'show');
     }
   };
-  var scraper = ScraperFactory(location);
+  window.scraper = ScraperFactory(location);
   if (!scraper) {
     console.log("EnglishOn: unknown website");
     return;

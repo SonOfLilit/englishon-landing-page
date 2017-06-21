@@ -2422,6 +2422,20 @@ eo-signout-layout .signout {
 }
 
 /*LIVE ACTIONS AREA*/
+.actualic-co-il #eo-live {
+  left: 30px;
+  top: 60px;
+}
+.actualic-co-il #eo-live.top {
+  top: 230px;
+}
+
+.www-shturem-net #eo-live,
+.shturem-net #eo-live {
+  top: 10px;
+  right: 10px;
+}
+
 #eo-live {
   background-color: rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -2430,8 +2444,6 @@ eo-signout-layout .signout {
   min-height: 28px;
   /*resize: both;*/
   position: fixed;
-  top: 10px;
-  right: 10px;
   height: 60px;
   width: 300px;
   overflow: auto;
@@ -2569,6 +2581,7 @@ eo-signout-layout .signout {
 /*EDITOR POPUPS*/
 .editor-dlg {
   direction: ltr;
+  text-align: center;
 }
 .editor-dlg #new-word {
   direction: rtl;
@@ -2576,10 +2589,27 @@ eo-signout-layout .signout {
 .editor-dlg .editor-div {
   padding: 5px;
 }
+.editor-dlg .editor-div input {
+  border: solid 1px;
+}
+.editor-dlg button {
+  background-color: #e9e9e9;
+  border: solid 1px;
+  padding: 3px;
+}
 
 .editor-btn {
   background-color: #4b5a66;
   color: white;
+}
+
+.eo-editor-question select,
+.eo-editor-candidate select {
+  border: solid 1px;
+  width: inherit;
+  padding: 0px;
+  margin: 0px;
+  height: 18px;
 }
 
 /*CLOSE BUTTONS*/
