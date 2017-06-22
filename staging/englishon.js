@@ -6784,7 +6784,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
             <div id='coming_soon'>\
                 <div class='Grid-cell eo-row eo-menu-inner'>\
                     <div class='Grid'>\
-                        <span class='tooltip'>Coming soon</span>\
+                        <span class='eo-tooltip'>Coming soon</span>\
                         <div class='Grid-cell u-1of6 eo-low-layer'>\
                             <div class='flag sp-flag'></div>\
                         </div>\
@@ -6795,7 +6795,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
                 </div>\
                 <div class='Grid-cell eo-row eo-menu-inner' id='eo-last-option'>\
                     <div class='Grid'>\
-                        <span class='tooltip'>Coming soon</span>\
+                        <span class='eo-tooltip'>Coming soon</span>\
                         <div class='Grid-cell u-1of6 eo-low-layer'>\
                             <div class='flag fr-flag'></div>\
                         </div>\
@@ -7469,7 +7469,7 @@ document.tour = new Shepherd.Tour({
 var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = null) {
   this.id = id;
   this.attachTo = attachTo;
-  this.title = title;
+  this.title = '<img src=' + document.staticUrl('img/menu-logotype.svg') + ' class = "tutorial-logo"/><img src=' + document.staticUrl('img/button-logo.svg') + ' class = "tutorial-icon"/>';
   this.text = text;
   this.advanceOn = advanceOn;
   this.scroll_value = scroll_value;
@@ -7480,7 +7480,7 @@ document.tour.welcomeTutorial = function () {
   // steps.push(['.eo-button left', 'welcome', 'welcome to Englishon , etc........', null, 'welcome_' + 0]);
   // steps.push(['.eo-button top', 'englishon', 'Open the menu', '.eo-button click', 'welcome_' + 1]);
   // steps.push(['#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', null, 'welcome_' + 2]);
-  steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון<img src=' + document.staticUrl('img/button-logo.svg') + ' class = "tutorial-icon"/>', 'לחץ להפעלה והתחל ללמוד אנגלית תוך כדי גלישה ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
+  steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'לחץ להפעלה והתחל ללמוד אנגלית תוך כדי גלישה ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
   steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
   this.initTutorial(steps);
 };
@@ -7494,7 +7494,7 @@ document.tour.quizTutorial = function () {
   });
   steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'חזור להסבר מפורט על לוח בקרת ההתקדמות בכל עת', 'live_actions'));
   steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
-  steps.push(new step('#eo-dlg-login left', '', 'here you can register', 'login2'));
+  steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
   this.initTutorial(steps);
 };
 document.tour.initTutorial = function (steps) {
@@ -7504,7 +7504,7 @@ document.tour.initTutorial = function (steps) {
     //add exit button to first step
     if (i == 0) {
       buttons.push({
-        text: 'Exit',
+        text: 'יציאה',
         classes: 'shepherd-button-secondary',
         action: function () {
           return document.tour.hide();
@@ -7514,7 +7514,7 @@ document.tour.initTutorial = function (steps) {
     // no back button at the start
     if (i > 0) {
       buttons.push({
-        text: 'חזור',
+        text: 'הקודם',
         classes: 'shepherd-button-secondary',
         action: function () {
           return document.tour.back();
@@ -7524,7 +7524,7 @@ document.tour.initTutorial = function (steps) {
     // no next button on last step
     if (i < steps.length - 1 && steps[i].id != 'welcome_0') {
       buttons.push({
-        text: 'יציאה',
+        text: 'הבא',
         classes: 'shepherd-button-primary',
         action: function () {
           if (document.tour.getCurrentStep().id === 'login') {
@@ -7535,15 +7535,16 @@ document.tour.initTutorial = function (steps) {
         }
       });
     }
-    if (i == steps.length - 1 && steps[i].id != 'welcome_1') {
-      buttons.push({
-        text: 'Done',
-        classes: 'shepherd-button-primary',
-        action: function () {
-          return document.tour.hide();
-        }
-      });
-    }
+    // if ((i == steps.length - 1) && steps[i].id != 'welcome_1') {
+    //   buttons.push({
+    //     text: 'Done',
+    //     classes: 'shepherd-button-primary',
+    //     action: function() {
+    //       return document.tour.hide();
+    //     }
+    //   });
+
+    // }
     // else {
     //   buttons.push({
     //     text: 'Close',
@@ -7583,6 +7584,8 @@ document.tour.initTutorial = function (steps) {
             window.scrollTo(0, val - 370);
             console.log('tour event------------------attachTo: ' + document.tour.getCurrentStep().id);
           }
+          var val = Math.max(230 - $(window).scrollTop(), 60);
+          e$('#eo-live').css('top', val);
         }
       }
     });
@@ -7596,29 +7599,23 @@ document.tour.turnOffGuide = function () {
 // **************
 // Initialization
 // **************
-console.log('khgtyff-------------------');
 window.e$ = jQuery.noConflict(true);
-console.log('khgtyff111111111-------------------');
 
 document.resources_promise = e$.Deferred();
 document.loaded_promise = e$.Deferred();
 document.questions_promise = e$.Deferred();
-console.log('khgtyff222222222-------------------');
 
 function englishon() {
+  var staticUrl = undefined;
   if (e$('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
-    console.log('khgtyff333333333-------------------');
-    document.staticUrl = function (resource) {
+    staticUrl = function (resource) {
       return 'http://localhost:8080/static/ex/' + resource;
     };
   } else {
-    console.log('khgtyff333333333else-------------------');
-    document.staticUrl = function (resource) {
+    staticUrl = function (resource) {
       return 'http://www.englishon.org/v1/' + resource;
     };
   }
-  console.log('khgtyff444444444-------------------');
-
   //function to retriave info about the browser
   browserInfo = function () {
     var ua = navigator.userAgent,
@@ -7636,7 +7633,6 @@ function englishon() {
     if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
     return { 'browser': M[0], 'version': M[1] };
   }();
-
   document.browserInfo = browserInfo;
   //Restrict none chrome browsers or chrome versions older than 49
   if (browserInfo.browser != 'Chrome' && (
@@ -7647,18 +7643,17 @@ function englishon() {
   }
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES
-  //var url = window.location.toString().substr(0, window.location.toString().indexOf("id=") + 3);
-  var url = window.location.toString();
-  if (url != 'http://shturem.net/index.php?section=news&id=' && url != 'http://www.shturem.net/index.php?section=news&id=' && url != 'http://www.englishon.org/hidden/shturem.html') {
-    //return;
+  sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org'];
+  if (sites.indexOf(window.location.host) == -1) {
+    return;
   }
-  if (url != 'http://www.englishon.org/hidden/shturem.html') {
+
+  if (window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') {
     article_id = Number(window.location.search.substr(window.location.search.indexOf('id=') + 3));
     if (article_id < 91251 || article_id > 91551) {
-      //return;
+      return;
     }
-  }
-  if (decodeURIComponent(url) != "http://actualic.co.il/חכ-שמוליהפכו-את-הקשישים-שלנו-לשקי-אגר/") {
+  } else if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/חכ-שמוליהפכו-את-הקשישים-שלנו-לשקי-אגר/") {
     return;
   }
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
@@ -7793,7 +7788,6 @@ e$(englishon);
 
 
 var EnglishOnButton = new function () {
-  this.closeMainMenu = function (e) {};
   this.showMainMenu = function (e) {
     e.preventDefault();
     if (!e$('#eo-menu').length) {

@@ -1873,7 +1873,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   border-bottom: 1px solid #d7dee3;
 }
 
-#coming_soon .Grid-cell .Grid .tooltip,
+#coming_soon .Grid-cell .Grid .eo-tooltip,
 eo-signout-layout .signout {
   font-size: 16px;
   padding-top: 14px;
@@ -2141,17 +2141,17 @@ eo-signout-layout .signout {
   opacity: .1;
 }
 
-#coming_soon .Grid-cell .Grid .tooltip {
+#coming_soon .Grid-cell .Grid .eo-tooltip {
   visibility: hidden;
   position: absolute;
   text-align: center;
 }
 
-#coming_soon .Grid-cell:hover .tooltip {
+#coming_soon .Grid-cell:hover .eo-tooltip {
   visibility: visible;
 }
 
-#coming_soon .tooltip {
+#coming_soon .eo-tooltip {
   font-family: Roboto;
   font-size: 18px;
   color: white;
@@ -2644,8 +2644,17 @@ eo-signout-layout .signout {
   width: 30px;
   height: 30px;
   position: absolute;
-  top: 6px;
-  left: 200px;
+  top: 8px;
+  right: 120px;
+}
+
+.tutorial-logo {
+  background-size: 150px;
+  width: 90px;
+  height: 30px;
+  right: 20px;
+  position: absolute;
+  top: 8px;
 }
 /* responsive.scss */
 /*Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">

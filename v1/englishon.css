@@ -182,6 +182,385 @@
 .odometer .odometer-inside .odometer-digit:first-child {
   display: none
 }
+/*THIS IS NOT THE ORIGINAL FILE! IT IS A CUSTOM ENGLISHON ONE*/
+
+
+/*ORIGIN FROM: https://github.com/HubSpot/shepherd*/
+
+.shepherd-element-attached-bottom.shepherd-element-attached-right.shepherd-target-attached-top.shepherd-target-attached-left .shepherd-content:before,
+.shepherd-element-attached-bottom.shepherd-element-attached-left.shepherd-target-attached-top.shepherd-target-attached-right .shepherd-content:before,
+.shepherd-element-attached-top.shepherd-element-attached-right.shepherd-target-attached-bottom.shepherd-target-attached-left .shepherd-content:before,
+.shepherd-element-attached-top.shepherd-element-attached-left.shepherd-target-attached-bottom.shepherd-target-attached-right .shepherd-content:before {
+  display: none;
+}
+
+.shepherd-element,
+.shepherd-element:after,
+.shepherd-element:before,
+.shepherd-element *,
+.shepherd-element *:after,
+.shepherd-element *:before {
+  box-sizing: border-box;
+}
+
+.shepherd-element {
+  position: absolute;
+  display: none;
+}
+
+.shepherd-element.shepherd-open {
+  display: block;
+}
+
+.shepherd-element.shepherd-theme-arrows {
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 210px;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content {
+  border-radius: 5px;
+  position: relative;
+  font-family: inherit;
+  background: #fff;
+  color: #444;
+  padding: 10px;
+  font-size: 18px;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content:before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-width: 16px;
+  border-style: solid;
+  pointer-events: none;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-center .shepherd-content {
+  margin-bottom: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-center .shepherd-content:before {
+  top: 100%;
+  left: 50%;
+  margin-left: -16px;
+  border-top-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-center .shepherd-content {
+  margin-top: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-center .shepherd-content:before {
+  bottom: 100%;
+  left: 50%;
+  margin-left: -16px;
+  border-bottom-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-right.shepherd-element-attached-middle .shepherd-content {
+  margin-right: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-right.shepherd-element-attached-middle .shepherd-content:before {
+  left: 100%;
+  top: 50%;
+  margin-top: -16px;
+  border-left-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-left.shepherd-element-attached-middle .shepherd-content {
+  margin-left: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-left.shepherd-element-attached-middle .shepherd-content:before {
+  right: 100%;
+  top: 50%;
+  margin-top: -16px;
+  border-right-color: #fff;
+}
+
+.shepherd-element-attached-right.shepherd-target-attached-left .shepherd-content:before {
+  left: 100%;
+  top: 15%;
+  border-left-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-left.shepherd-target-attached-center .shepherd-content {
+  left: -32px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-right.shepherd-target-attached-center .shepherd-content {
+  left: 32px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-left.shepherd-target-attached-middle .shepherd-content {
+  margin-top: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-left.shepherd-target-attached-middle .shepherd-content:before {
+  bottom: 100%;
+  left: 16px;
+  border-bottom-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-right.shepherd-target-attached-middle .shepherd-content {
+  margin-top: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-right.shepherd-target-attached-middle .shepherd-content:before {
+  bottom: 100%;
+  right: 16px;
+  border-bottom-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-left.shepherd-target-attached-middle .shepherd-content {
+  margin-bottom: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-left.shepherd-target-attached-middle .shepherd-content:before {
+  top: 100%;
+  left: 16px;
+  border-top-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-right.shepherd-target-attached-middle .shepherd-content {
+  margin-bottom: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-right.shepherd-target-attached-middle .shepherd-content:before {
+  top: 100%;
+  right: 16px;
+  border-top-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-left.shepherd-target-attached-bottom .shepherd-content {
+  margin-top: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-left.shepherd-target-attached-bottom .shepherd-content:before {
+  bottom: 100%;
+  left: 16px;
+  border-bottom-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-right.shepherd-target-attached-bottom .shepherd-content {
+  margin-top: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-right.shepherd-target-attached-bottom .shepherd-content:before {
+  bottom: 100%;
+  right: 16px;
+  border-bottom-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-left.shepherd-target-attached-top .shepherd-content {
+  margin-bottom: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-left.shepherd-target-attached-top .shepherd-content:before {
+  top: 100%;
+  left: 16px;
+  border-top-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-right.shepherd-target-attached-top .shepherd-content {
+  margin-bottom: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-right.shepherd-target-attached-top .shepherd-content:before {
+  top: 100%;
+  right: 16px;
+  border-top-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-right.shepherd-target-attached-left .shepherd-content {
+  margin-right: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-right.shepherd-target-attached-left .shepherd-content:before {
+  top: 16px;
+  left: 100%;
+  border-left-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-left.shepherd-target-attached-right .shepherd-content {
+  margin-left: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-left.shepherd-target-attached-right .shepherd-content:before {
+  top: 16px;
+  right: 100%;
+  border-right-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-right.shepherd-target-attached-left .shepherd-content {
+  margin-right: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-right.shepherd-target-attached-left .shepherd-content:before {
+  bottom: 16px;
+  left: 100%;
+  border-left-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-left.shepherd-target-attached-right .shepherd-content {
+  margin-left: 16px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-bottom.shepherd-element-attached-left.shepherd-target-attached-right .shepherd-content:before {
+  bottom: 16px;
+  right: 100%;
+  border-right-color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-center.shepherd-has-title .shepherd-content:before,
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-right.shepherd-target-attached-bottom.shepherd-has-title .shepherd-content:before,
+.shepherd-element.shepherd-theme-arrows.shepherd-element-attached-top.shepherd-element-attached-left.shepherd-target-attached-bottom.shepherd-has-title .shepherd-content:before {
+  border-bottom-color: #eee;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header {
+  background: #eee;
+  padding: 12px;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-has-title .shepherd-content header a.shepherd-cancel-link {
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.shepherd-element.shepherd-theme-arrows.shepherd-has-cancel-link .shepherd-content header h3 {
+  float: left;
+}
+
+.shepherd-element.rtl.shepherd-theme-arrows.shepherd-has-cancel-link .shepherd-content header h3 {
+  float: right;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content {
+  padding: 0;
+}
+
+
+/*.shepherd-element.shepherd-theme-arrows .shepherd-content * {
+    font-size: inherit; }*/
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content header {
+  *zoom: 1;
+  border-radius: 5px 5px 0 0;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content header:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content header h3 {
+  margin: 0;
+  line-height: 1;
+  font-weight: normal;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content header a.shepherd-cancel-link {
+  float: right;
+}
+
+.shepherd-element.rtl.shepherd-theme-arrows .shepherd-content header a.shepherd-cancel-link {
+  float: left;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content header a.shepherd-cancel-link {
+  text-decoration: none;
+  font-size: 1.25em;
+  line-height: .8em;
+  font-weight: normal;
+  color: rgba(0, 0, 0, 0.5);
+  opacity: 0.25;
+  position: relative;
+  top: .1em;
+  padding: .8em;
+  margin-bottom: -.8em;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content header a.shepherd-cancel-link:hover {
+  opacity: 1;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content .shepherd-text {
+  padding: 20px;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content .shepherd-text p {
+  margin: 0 0 .5em 0;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content .shepherd-text p:last-child {
+  margin-bottom: 0;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content footer {
+  padding: 0 10px 10px;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons {
+  text-align: right;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons li {
+  display: inline;
+  padding: 0;
+  margin: 0;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons li .shepherd-button {
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  *zoom: 1;
+  *display: inline;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 0;
+  margin: 0 .5em 0 0;
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-size: .8em;
+  /*line-height: 1em;*/
+  padding: .75em 2em;
+  /*background: $englishon-color;*/
+  background-color: #2cc6a8;
+  color: #fff;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons li .shepherd-button.shepherd-button-secondary {
+  background: #eee;
+  color: #888;
+}
+
+.shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons li:last-child .shepherd-button {
+  margin-right: 10px;
+}
+
+
+/*TUTORIAL*/
+
+.shepherd {
+  z-index: 13;
+}
 /* Generic */
 @font-face {
   font-family: "Roboto";
@@ -899,6 +1278,10 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   background-color: yellow;
   border: none;
 }
+.eo-editor-candidate select {
+  width: initial;
+  border: 1px solid black;
+}
 
 .eo-editor-dictionary-candidate {
   color: orange;
@@ -967,6 +1350,13 @@ body.www-englishon-org .eo-button {
   padding-right: 30px;
   left: 50px;
   bottom: 24px;
+}
+
+body.actualic-co-il .eo-button {
+  margin-right: 520px;
+  top: 2px;
+  position: absolute;
+  width: 34px;
 }
 
 body.www-bhol-co-il .eo-layout-warning {
@@ -1483,7 +1873,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   border-bottom: 1px solid #d7dee3;
 }
 
-#coming_soon .Grid-cell .Grid .tooltip,
+#coming_soon .Grid-cell .Grid .eo-tooltip,
 eo-signout-layout .signout {
   font-size: 16px;
   padding-top: 14px;
@@ -1751,27 +2141,17 @@ eo-signout-layout .signout {
   opacity: .1;
 }
 
-#coming_soon .Grid-cell .Grid .tooltip {
+#coming_soon .Grid-cell .Grid .eo-tooltip {
   visibility: hidden;
   position: absolute;
   text-align: center;
-  font-size: 64px;
-  padding-top: 56px;
-  padding-left: 240px;
 }
 
-#coming_soon .Grid-cell:hover .tooltip {
+#coming_soon .Grid-cell:hover .eo-tooltip {
   visibility: visible;
 }
 
-#coming_soon .Grid-cell:hover {
-  padding: 0px;
-}
-#coming_soon .Grid-cell:hover .u-1of6 {
-  padding-left: 87px;
-}
-
-#coming_soon .tooltip {
+#coming_soon .eo-tooltip {
   font-family: Roboto;
   font-size: 18px;
   color: white;
@@ -1900,7 +2280,7 @@ eo-signout-layout .signout {
 #eo-dlg-terms {
   width: 240px;
   height: 360px;
-  overflow-y: hidden;
+  /*overflow-y: hidden;*/
   /*firefox need a smaller font for menu footer*/
 }
 #eo-menu .Grid-cell,
@@ -2042,6 +2422,20 @@ eo-signout-layout .signout {
 }
 
 /*LIVE ACTIONS AREA*/
+.actualic-co-il #eo-live {
+  left: 30px;
+  top: 60px;
+}
+.actualic-co-il #eo-live.top {
+  top: 230px;
+}
+
+.www-shturem-net #eo-live,
+.shturem-net #eo-live {
+  top: 10px;
+  right: 10px;
+}
+
 #eo-live {
   background-color: rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -2050,8 +2444,6 @@ eo-signout-layout .signout {
   min-height: 28px;
   /*resize: both;*/
   position: fixed;
-  top: 10px;
-  right: 10px;
   height: 60px;
   width: 300px;
   overflow: auto;
@@ -2189,6 +2581,7 @@ eo-signout-layout .signout {
 /*EDITOR POPUPS*/
 .editor-dlg {
   direction: ltr;
+  text-align: center;
 }
 .editor-dlg #new-word {
   direction: rtl;
@@ -2196,10 +2589,27 @@ eo-signout-layout .signout {
 .editor-dlg .editor-div {
   padding: 5px;
 }
+.editor-dlg .editor-div input {
+  border: solid 1px;
+}
+.editor-dlg button {
+  background-color: #e9e9e9;
+  border: solid 1px;
+  padding: 3px;
+}
 
 .editor-btn {
   background-color: #4b5a66;
   color: white;
+}
+
+.eo-editor-question select,
+.eo-editor-candidate select {
+  border: solid 1px;
+  width: inherit;
+  padding: 0px;
+  margin: 0px;
+  height: 18px;
 }
 
 /*CLOSE BUTTONS*/
@@ -2226,6 +2636,25 @@ eo-signout-layout .signout {
 .eo-close:hover {
   background-image: url(http://www.englishon.org/v1/img/close2.png);
   background-color: gray;
+}
+
+/*TUTORIAL*/
+.tutorial-icon {
+  background-size: 30px;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 8px;
+  right: 120px;
+}
+
+.tutorial-logo {
+  background-size: 150px;
+  width: 90px;
+  height: 30px;
+  right: 20px;
+  position: absolute;
+  top: 8px;
 }
 /* responsive.scss */
 /*Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2446,6 +2875,16 @@ That is the reason to determine 980px as the media queries breakpoint */
   #eo-power-switch #eo-power-switch-text {
     top: 16px;
     left: 98px;
+  }
+
+  #coming_soon .Grid-cell .Grid .tooltip {
+    font-size: 64px;
+    padding-top: 56px;
+    padding-left: 240px;
+  }
+
+  #coming_soon .Grid-cell:hover .u-1of6 {
+    padding-left: 87px;
   }
 
   #eo-dlg-options {

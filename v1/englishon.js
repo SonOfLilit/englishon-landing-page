@@ -3125,27 +3125,1853 @@
 	return exposed;
 });
 //
-var configStorage;
+/*! tether 0.6.5 */
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory(require, exports, module);
+  } else {
+    root.Tether = factory();
+  }
+})(this, function (require, exports, module) {
+
+  (function () {
+    var Evented,
+        addClass,
+        defer,
+        deferred,
+        extend,
+        flush,
+        getBounds,
+        getOffsetParent,
+        getOrigin,
+        getScrollBarSize,
+        getScrollParent,
+        hasClass,
+        node,
+        removeClass,
+        uniqueId,
+        updateClasses,
+        zeroPosCache,
+        __hasProp = {}.hasOwnProperty,
+        __indexOf = [].indexOf || function (item) {
+      for (var i = 0, l = this.length; i < l; i++) {
+        if (i in this && this[i] === item) return i;
+      }return -1;
+    },
+        __slice = [].slice;
+
+    if (this.Tether == null) {
+      this.Tether = {
+        modules: []
+      };
+    }
+
+    getScrollParent = function (el) {
+      var parent, position, scrollParent, style, _ref;
+      position = getComputedStyle(el).position;
+      if (position === 'fixed') {
+        return el;
+      }
+      scrollParent = void 0;
+      parent = el;
+      while (parent = parent.parentNode) {
+        try {
+          style = getComputedStyle(parent);
+        } catch (_error) {}
+        if (style == null) {
+          return parent;
+        }
+        if (/(auto|scroll)/.test(style['overflow'] + style['overflow-y'] + style['overflow-x'])) {
+          if (position !== 'absolute' || (_ref = style['position']) === 'relative' || _ref === 'absolute' || _ref === 'fixed') {
+            return parent;
+          }
+        }
+      }
+      return document.body;
+    };
+
+    uniqueId = function () {
+      var id;
+      id = 0;
+      return function () {
+        return id++;
+      };
+    }();
+
+    zeroPosCache = {};
+
+    getOrigin = function (doc) {
+      var id, k, node, v, _ref;
+      node = doc._tetherZeroElement;
+      if (node == null) {
+        node = doc.createElement('div');
+        node.setAttribute('data-tether-id', uniqueId());
+        extend(node.style, {
+          top: 0,
+          left: 0,
+          position: 'absolute'
+        });
+        doc.body.appendChild(node);
+        doc._tetherZeroElement = node;
+      }
+      id = node.getAttribute('data-tether-id');
+      if (zeroPosCache[id] == null) {
+        zeroPosCache[id] = {};
+        _ref = node.getBoundingClientRect();
+        for (k in _ref) {
+          v = _ref[k];
+          zeroPosCache[id][k] = v;
+        }
+        defer(function () {
+          return zeroPosCache[id] = void 0;
+        });
+      }
+      return zeroPosCache[id];
+    };
+
+    node = null;
+
+    getBounds = function (el) {
+      var box, doc, docEl, k, origin, v, _ref;
+      if (el === document) {
+        doc = document;
+        el = document.documentElement;
+      } else {
+        doc = el.ownerDocument;
+      }
+      docEl = doc.documentElement;
+      box = {};
+      _ref = el.getBoundingClientRect();
+      for (k in _ref) {
+        v = _ref[k];
+        box[k] = v;
+      }
+      origin = getOrigin(doc);
+      box.top -= origin.top;
+      box.left -= origin.left;
+      if (box.width == null) {
+        box.width = document.body.scrollWidth - box.left - box.right;
+      }
+      if (box.height == null) {
+        box.height = document.body.scrollHeight - box.top - box.bottom;
+      }
+      box.top = box.top - docEl.clientTop;
+      box.left = box.left - docEl.clientLeft;
+      box.right = doc.body.clientWidth - box.width - box.left;
+      box.bottom = doc.body.clientHeight - box.height - box.top;
+      return box;
+    };
+
+    getOffsetParent = function (el) {
+      return el.offsetParent || document.documentElement;
+    };
+
+    getScrollBarSize = function () {
+      var inner, outer, width, widthContained, widthScroll;
+      inner = document.createElement('div');
+      inner.style.width = '100%';
+      inner.style.height = '200px';
+      outer = document.createElement('div');
+      extend(outer.style, {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        pointerEvents: 'none',
+        visibility: 'hidden',
+        width: '200px',
+        height: '150px',
+        overflow: 'hidden'
+      });
+      outer.appendChild(inner);
+      document.body.appendChild(outer);
+      widthContained = inner.offsetWidth;
+      outer.style.overflow = 'scroll';
+      widthScroll = inner.offsetWidth;
+      if (widthContained === widthScroll) {
+        widthScroll = outer.clientWidth;
+      }
+      document.body.removeChild(outer);
+      width = widthContained - widthScroll;
+      return {
+        width: width,
+        height: width
+      };
+    };
+
+    extend = function (out) {
+      var args, key, obj, val, _i, _len, _ref;
+      if (out == null) {
+        out = {};
+      }
+      args = [];
+      Array.prototype.push.apply(args, arguments);
+      _ref = args.slice(1);
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        obj = _ref[_i];
+        if (obj) {
+          for (key in obj) {
+            if (!__hasProp.call(obj, key)) continue;
+            val = obj[key];
+            out[key] = val;
+          }
+        }
+      }
+      return out;
+    };
+
+    removeClass = function (el, name) {
+      var cls, _i, _len, _ref, _results;
+      if (el.classList != null) {
+        _ref = name.split(' ');
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          cls = _ref[_i];
+          if (cls.trim()) {
+            _results.push(el.classList.remove(cls));
+          }
+        }
+        return _results;
+      } else {
+        return el.className = el.className.replace(new RegExp("(^| )" + name.split(' ').join('|') + "( |$)", 'gi'), ' ');
+      }
+    };
+
+    addClass = function (el, name) {
+      var cls, _i, _len, _ref, _results;
+      if (el.classList != null) {
+        _ref = name.split(' ');
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          cls = _ref[_i];
+          if (cls.trim()) {
+            _results.push(el.classList.add(cls));
+          }
+        }
+        return _results;
+      } else {
+        removeClass(el, name);
+        return el.className += " " + name;
+      }
+    };
+
+    hasClass = function (el, name) {
+      if (el.classList != null) {
+        return el.classList.contains(name);
+      } else {
+        return new RegExp("(^| )" + name + "( |$)", 'gi').test(el.className);
+      }
+    };
+
+    updateClasses = function (el, add, all) {
+      var cls, _i, _j, _len, _len1, _results;
+      for (_i = 0, _len = all.length; _i < _len; _i++) {
+        cls = all[_i];
+        if (__indexOf.call(add, cls) < 0) {
+          if (hasClass(el, cls)) {
+            removeClass(el, cls);
+          }
+        }
+      }
+      _results = [];
+      for (_j = 0, _len1 = add.length; _j < _len1; _j++) {
+        cls = add[_j];
+        if (!hasClass(el, cls)) {
+          _results.push(addClass(el, cls));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    deferred = [];
+
+    defer = function (fn) {
+      return deferred.push(fn);
+    };
+
+    flush = function () {
+      var fn, _results;
+      _results = [];
+      while (fn = deferred.pop()) {
+        _results.push(fn());
+      }
+      return _results;
+    };
+
+    Evented = function () {
+      function Evented() {}
+
+      Evented.prototype.on = function (event, handler, ctx, once) {
+        var _base;
+        if (once == null) {
+          once = false;
+        }
+        if (this.bindings == null) {
+          this.bindings = {};
+        }
+        if ((_base = this.bindings)[event] == null) {
+          _base[event] = [];
+        }
+        return this.bindings[event].push({
+          handler: handler,
+          ctx: ctx,
+          once: once
+        });
+      };
+
+      Evented.prototype.once = function (event, handler, ctx) {
+        return this.on(event, handler, ctx, true);
+      };
+
+      Evented.prototype.off = function (event, handler) {
+        var i, _ref, _results;
+        if (((_ref = this.bindings) != null ? _ref[event] : void 0) == null) {
+          return;
+        }
+        if (handler == null) {
+          return delete this.bindings[event];
+        } else {
+          i = 0;
+          _results = [];
+          while (i < this.bindings[event].length) {
+            if (this.bindings[event][i].handler === handler) {
+              _results.push(this.bindings[event].splice(i, 1));
+            } else {
+              _results.push(i++);
+            }
+          }
+          return _results;
+        }
+      };
+
+      Evented.prototype.trigger = function () {
+        var args, ctx, event, handler, i, once, _ref, _ref1, _results;
+        event = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+        if ((_ref = this.bindings) != null ? _ref[event] : void 0) {
+          i = 0;
+          _results = [];
+          while (i < this.bindings[event].length) {
+            _ref1 = this.bindings[event][i], handler = _ref1.handler, ctx = _ref1.ctx, once = _ref1.once;
+            handler.apply(ctx != null ? ctx : this, args);
+            if (once) {
+              _results.push(this.bindings[event].splice(i, 1));
+            } else {
+              _results.push(i++);
+            }
+          }
+          return _results;
+        }
+      };
+
+      return Evented;
+    }();
+
+    this.Tether.Utils = {
+      getScrollParent: getScrollParent,
+      getBounds: getBounds,
+      getOffsetParent: getOffsetParent,
+      extend: extend,
+      addClass: addClass,
+      removeClass: removeClass,
+      hasClass: hasClass,
+      updateClasses: updateClasses,
+      defer: defer,
+      flush: flush,
+      uniqueId: uniqueId,
+      Evented: Evented,
+      getScrollBarSize: getScrollBarSize
+    };
+  }).call(this);
+
+  (function () {
+    var MIRROR_LR,
+        MIRROR_TB,
+        OFFSET_MAP,
+        Tether,
+        addClass,
+        addOffset,
+        attachmentToOffset,
+        autoToFixedAttachment,
+        defer,
+        extend,
+        flush,
+        getBounds,
+        getOffsetParent,
+        getOuterSize,
+        getScrollBarSize,
+        getScrollParent,
+        getSize,
+        now,
+        offsetToPx,
+        parseAttachment,
+        parseOffset,
+        position,
+        removeClass,
+        tethers,
+        transformKey,
+        updateClasses,
+        within,
+        _Tether,
+        _ref,
+        __slice = [].slice,
+        __bind = function (fn, me) {
+      return function () {
+        return fn.apply(me, arguments);
+      };
+    };
+
+    if (this.Tether == null) {
+      throw new Error("You must include the utils.js file before tether.js");
+    }
+
+    Tether = this.Tether;
+
+    _ref = Tether.Utils, getScrollParent = _ref.getScrollParent, getSize = _ref.getSize, getOuterSize = _ref.getOuterSize, getBounds = _ref.getBounds, getOffsetParent = _ref.getOffsetParent, extend = _ref.extend, addClass = _ref.addClass, removeClass = _ref.removeClass, updateClasses = _ref.updateClasses, defer = _ref.defer, flush = _ref.flush, getScrollBarSize = _ref.getScrollBarSize;
+
+    within = function (a, b, diff) {
+      if (diff == null) {
+        diff = 1;
+      }
+      return a + diff >= b && b >= a - diff;
+    };
+
+    transformKey = function () {
+      var el, key, _i, _len, _ref1;
+      el = document.createElement('div');
+      _ref1 = ['transform', 'webkitTransform', 'OTransform', 'MozTransform', 'msTransform'];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        key = _ref1[_i];
+        if (el.style[key] !== void 0) {
+          return key;
+        }
+      }
+    }();
+
+    tethers = [];
+
+    position = function () {
+      var tether, _i, _len;
+      for (_i = 0, _len = tethers.length; _i < _len; _i++) {
+        tether = tethers[_i];
+        tether.position(false);
+      }
+      return flush();
+    };
+
+    now = function () {
+      var _ref1;
+      return (_ref1 = typeof performance !== "undefined" && performance !== null ? typeof performance.now === "function" ? performance.now() : void 0 : void 0) != null ? _ref1 : +new Date();
+    };
+
+    (function () {
+      var event, lastCall, lastDuration, pendingTimeout, tick, _i, _len, _ref1, _results;
+      lastCall = null;
+      lastDuration = null;
+      pendingTimeout = null;
+      tick = function () {
+        if (lastDuration != null && lastDuration > 16) {
+          lastDuration = Math.min(lastDuration - 16, 250);
+          pendingTimeout = setTimeout(tick, 250);
+          return;
+        }
+        if (lastCall != null && now() - lastCall < 10) {
+          return;
+        }
+        if (pendingTimeout != null) {
+          clearTimeout(pendingTimeout);
+          pendingTimeout = null;
+        }
+        lastCall = now();
+        position();
+        return lastDuration = now() - lastCall;
+      };
+      _ref1 = ['resize', 'scroll', 'touchmove'];
+      _results = [];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        event = _ref1[_i];
+        _results.push(window.addEventListener(event, tick));
+      }
+      return _results;
+    })();
+
+    MIRROR_LR = {
+      center: 'center',
+      left: 'right',
+      right: 'left'
+    };
+
+    MIRROR_TB = {
+      middle: 'middle',
+      top: 'bottom',
+      bottom: 'top'
+    };
+
+    OFFSET_MAP = {
+      top: 0,
+      left: 0,
+      middle: '50%',
+      center: '50%',
+      bottom: '100%',
+      right: '100%'
+    };
+
+    autoToFixedAttachment = function (attachment, relativeToAttachment) {
+      var left, top;
+      left = attachment.left, top = attachment.top;
+      if (left === 'auto') {
+        left = MIRROR_LR[relativeToAttachment.left];
+      }
+      if (top === 'auto') {
+        top = MIRROR_TB[relativeToAttachment.top];
+      }
+      return {
+        left: left,
+        top: top
+      };
+    };
+
+    attachmentToOffset = function (attachment) {
+      var _ref1, _ref2;
+      return {
+        left: (_ref1 = OFFSET_MAP[attachment.left]) != null ? _ref1 : attachment.left,
+        top: (_ref2 = OFFSET_MAP[attachment.top]) != null ? _ref2 : attachment.top
+      };
+    };
+
+    addOffset = function () {
+      var left, offsets, out, top, _i, _len, _ref1;
+      offsets = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      out = {
+        top: 0,
+        left: 0
+      };
+      for (_i = 0, _len = offsets.length; _i < _len; _i++) {
+        _ref1 = offsets[_i], top = _ref1.top, left = _ref1.left;
+        if (typeof top === 'string') {
+          top = parseFloat(top, 10);
+        }
+        if (typeof left === 'string') {
+          left = parseFloat(left, 10);
+        }
+        out.top += top;
+        out.left += left;
+      }
+      return out;
+    };
+
+    offsetToPx = function (offset, size) {
+      if (typeof offset.left === 'string' && offset.left.indexOf('%') !== -1) {
+        offset.left = parseFloat(offset.left, 10) / 100 * size.width;
+      }
+      if (typeof offset.top === 'string' && offset.top.indexOf('%') !== -1) {
+        offset.top = parseFloat(offset.top, 10) / 100 * size.height;
+      }
+      return offset;
+    };
+
+    parseAttachment = parseOffset = function (value) {
+      var left, top, _ref1;
+      _ref1 = value.split(' '), top = _ref1[0], left = _ref1[1];
+      return {
+        top: top,
+        left: left
+      };
+    };
+
+    _Tether = function () {
+      _Tether.modules = [];
+
+      function _Tether(options) {
+        this.position = __bind(this.position, this);
+        var module, _i, _len, _ref1, _ref2;
+        tethers.push(this);
+        this.history = [];
+        this.setOptions(options, false);
+        _ref1 = Tether.modules;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          module = _ref1[_i];
+          if ((_ref2 = module.initialize) != null) {
+            _ref2.call(this);
+          }
+        }
+        this.position();
+      }
+
+      _Tether.prototype.getClass = function (key) {
+        var _ref1, _ref2;
+        if ((_ref1 = this.options.classes) != null ? _ref1[key] : void 0) {
+          return this.options.classes[key];
+        } else if (((_ref2 = this.options.classes) != null ? _ref2[key] : void 0) !== false) {
+          if (this.options.classPrefix) {
+            return "" + this.options.classPrefix + "-" + key;
+          } else {
+            return key;
+          }
+        } else {
+          return '';
+        }
+      };
+
+      _Tether.prototype.setOptions = function (options, position) {
+        var defaults, key, _i, _len, _ref1, _ref2;
+        this.options = options;
+        if (position == null) {
+          position = true;
+        }
+        defaults = {
+          offset: '0 0',
+          targetOffset: '0 0',
+          targetAttachment: 'auto auto',
+          classPrefix: 'tether'
+        };
+        this.options = extend(defaults, this.options);
+        _ref1 = this.options, this.element = _ref1.element, this.target = _ref1.target, this.targetModifier = _ref1.targetModifier;
+        if (this.target === 'viewport') {
+          this.target = document.body;
+          this.targetModifier = 'visible';
+        } else if (this.target === 'scroll-handle') {
+          this.target = document.body;
+          this.targetModifier = 'scroll-handle';
+        }
+        _ref2 = ['element', 'target'];
+        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+          key = _ref2[_i];
+          if (this[key] == null) {
+            throw new Error("Tether Error: Both element and target must be defined");
+          }
+          if (this[key].jquery != null) {
+            this[key] = this[key][0];
+          } else if (typeof this[key] === 'string') {
+            this[key] = document.querySelector(this[key]);
+          }
+        }
+        addClass(this.element, this.getClass('element'));
+        addClass(this.target, this.getClass('target'));
+        if (!this.options.attachment) {
+          throw new Error("Tether Error: You must provide an attachment");
+        }
+        this.targetAttachment = parseAttachment(this.options.targetAttachment);
+        this.attachment = parseAttachment(this.options.attachment);
+        this.offset = parseOffset(this.options.offset);
+        this.targetOffset = parseOffset(this.options.targetOffset);
+        if (this.scrollParent != null) {
+          this.disable();
+        }
+        if (this.targetModifier === 'scroll-handle') {
+          this.scrollParent = this.target;
+        } else {
+          this.scrollParent = getScrollParent(this.target);
+        }
+        if (this.options.enabled !== false) {
+          return this.enable(position);
+        }
+      };
+
+      _Tether.prototype.getTargetBounds = function () {
+        var bounds, fitAdj, hasBottomScroll, height, out, scrollBottom, scrollPercentage, style, target;
+        if (this.targetModifier != null) {
+          switch (this.targetModifier) {
+            case 'visible':
+              if (this.target === document.body) {
+                return {
+                  top: pageYOffset,
+                  left: pageXOffset,
+                  height: innerHeight,
+                  width: innerWidth
+                };
+              } else {
+                bounds = getBounds(this.target);
+                out = {
+                  height: bounds.height,
+                  width: bounds.width,
+                  top: bounds.top,
+                  left: bounds.left
+                };
+                out.height = Math.min(out.height, bounds.height - (pageYOffset - bounds.top));
+                out.height = Math.min(out.height, bounds.height - (bounds.top + bounds.height - (pageYOffset + innerHeight)));
+                out.height = Math.min(innerHeight, out.height);
+                out.height -= 2;
+                out.width = Math.min(out.width, bounds.width - (pageXOffset - bounds.left));
+                out.width = Math.min(out.width, bounds.width - (bounds.left + bounds.width - (pageXOffset + innerWidth)));
+                out.width = Math.min(innerWidth, out.width);
+                out.width -= 2;
+                if (out.top < pageYOffset) {
+                  out.top = pageYOffset;
+                }
+                if (out.left < pageXOffset) {
+                  out.left = pageXOffset;
+                }
+                return out;
+              }
+              break;
+            case 'scroll-handle':
+              target = this.target;
+              if (target === document.body) {
+                target = document.documentElement;
+                bounds = {
+                  left: pageXOffset,
+                  top: pageYOffset,
+                  height: innerHeight,
+                  width: innerWidth
+                };
+              } else {
+                bounds = getBounds(target);
+              }
+              style = getComputedStyle(target);
+              hasBottomScroll = target.scrollWidth > target.clientWidth || 'scroll' === [style.overflow, style.overflowX] || this.target !== document.body;
+              scrollBottom = 0;
+              if (hasBottomScroll) {
+                scrollBottom = 15;
+              }
+              height = bounds.height - parseFloat(style.borderTopWidth) - parseFloat(style.borderBottomWidth) - scrollBottom;
+              out = {
+                width: 15,
+                height: height * 0.975 * (height / target.scrollHeight),
+                left: bounds.left + bounds.width - parseFloat(style.borderLeftWidth) - 15
+              };
+              fitAdj = 0;
+              if (height < 408 && this.target === document.body) {
+                fitAdj = -0.00011 * Math.pow(height, 2) - 0.00727 * height + 22.58;
+              }
+              if (this.target !== document.body) {
+                out.height = Math.max(out.height, 24);
+              }
+              scrollPercentage = this.target.scrollTop / (target.scrollHeight - height);
+              out.top = scrollPercentage * (height - out.height - fitAdj) + bounds.top + parseFloat(style.borderTopWidth);
+              if (this.target === document.body) {
+                out.height = Math.max(out.height, 24);
+              }
+              return out;
+          }
+        } else {
+          return getBounds(this.target);
+        }
+      };
+
+      _Tether.prototype.clearCache = function () {
+        return this._cache = {};
+      };
+
+      _Tether.prototype.cache = function (k, getter) {
+        if (this._cache == null) {
+          this._cache = {};
+        }
+        if (this._cache[k] == null) {
+          this._cache[k] = getter.call(this);
+        }
+        return this._cache[k];
+      };
+
+      _Tether.prototype.enable = function (position) {
+        if (position == null) {
+          position = true;
+        }
+        addClass(this.target, this.getClass('enabled'));
+        addClass(this.element, this.getClass('enabled'));
+        this.enabled = true;
+        if (this.scrollParent !== document) {
+          this.scrollParent.addEventListener('scroll', this.position);
+        }
+        if (position) {
+          return this.position();
+        }
+      };
+
+      _Tether.prototype.disable = function () {
+        removeClass(this.target, this.getClass('enabled'));
+        removeClass(this.element, this.getClass('enabled'));
+        this.enabled = false;
+        if (this.scrollParent != null) {
+          return this.scrollParent.removeEventListener('scroll', this.position);
+        }
+      };
+
+      _Tether.prototype.destroy = function () {
+        var i, tether, _i, _len, _results;
+        this.disable();
+        _results = [];
+        for (i = _i = 0, _len = tethers.length; _i < _len; i = ++_i) {
+          tether = tethers[i];
+          if (tether === this) {
+            tethers.splice(i, 1);
+            break;
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
+      _Tether.prototype.updateAttachClasses = function (elementAttach, targetAttach) {
+        var add,
+            all,
+            side,
+            sides,
+            _i,
+            _j,
+            _len,
+            _len1,
+            _ref1,
+            _this = this;
+        if (elementAttach == null) {
+          elementAttach = this.attachment;
+        }
+        if (targetAttach == null) {
+          targetAttach = this.targetAttachment;
+        }
+        sides = ['left', 'top', 'bottom', 'right', 'middle', 'center'];
+        if ((_ref1 = this._addAttachClasses) != null ? _ref1.length : void 0) {
+          this._addAttachClasses.splice(0, this._addAttachClasses.length);
+        }
+        add = this._addAttachClasses != null ? this._addAttachClasses : this._addAttachClasses = [];
+        if (elementAttach.top) {
+          add.push("" + this.getClass('element-attached') + "-" + elementAttach.top);
+        }
+        if (elementAttach.left) {
+          add.push("" + this.getClass('element-attached') + "-" + elementAttach.left);
+        }
+        if (targetAttach.top) {
+          add.push("" + this.getClass('target-attached') + "-" + targetAttach.top);
+        }
+        if (targetAttach.left) {
+          add.push("" + this.getClass('target-attached') + "-" + targetAttach.left);
+        }
+        all = [];
+        for (_i = 0, _len = sides.length; _i < _len; _i++) {
+          side = sides[_i];
+          all.push("" + this.getClass('element-attached') + "-" + side);
+        }
+        for (_j = 0, _len1 = sides.length; _j < _len1; _j++) {
+          side = sides[_j];
+          all.push("" + this.getClass('target-attached') + "-" + side);
+        }
+        return defer(function () {
+          if (_this._addAttachClasses == null) {
+            return;
+          }
+          updateClasses(_this.element, _this._addAttachClasses, all);
+          updateClasses(_this.target, _this._addAttachClasses, all);
+          return _this._addAttachClasses = void 0;
+        });
+      };
+
+      _Tether.prototype.position = function (flushChanges) {
+        var elementPos,
+            elementStyle,
+            height,
+            left,
+            manualOffset,
+            manualTargetOffset,
+            module,
+            next,
+            offset,
+            offsetBorder,
+            offsetParent,
+            offsetParentSize,
+            offsetParentStyle,
+            offsetPosition,
+            ret,
+            scrollLeft,
+            scrollTop,
+            scrollbarSize,
+            side,
+            targetAttachment,
+            targetOffset,
+            targetPos,
+            targetSize,
+            top,
+            width,
+            _i,
+            _j,
+            _len,
+            _len1,
+            _ref1,
+            _ref2,
+            _ref3,
+            _ref4,
+            _ref5,
+            _ref6,
+            _this = this;
+        if (flushChanges == null) {
+          flushChanges = true;
+        }
+        if (!this.enabled) {
+          return;
+        }
+        this.clearCache();
+        targetAttachment = autoToFixedAttachment(this.targetAttachment, this.attachment);
+        this.updateAttachClasses(this.attachment, targetAttachment);
+        elementPos = this.cache('element-bounds', function () {
+          return getBounds(_this.element);
+        });
+        width = elementPos.width, height = elementPos.height;
+        if (width === 0 && height === 0 && this.lastSize != null) {
+          _ref1 = this.lastSize, width = _ref1.width, height = _ref1.height;
+        } else {
+          this.lastSize = {
+            width: width,
+            height: height
+          };
+        }
+        targetSize = targetPos = this.cache('target-bounds', function () {
+          return _this.getTargetBounds();
+        });
+        offset = offsetToPx(attachmentToOffset(this.attachment), {
+          width: width,
+          height: height
+        });
+        targetOffset = offsetToPx(attachmentToOffset(targetAttachment), targetSize);
+        manualOffset = offsetToPx(this.offset, {
+          width: width,
+          height: height
+        });
+        manualTargetOffset = offsetToPx(this.targetOffset, targetSize);
+        offset = addOffset(offset, manualOffset);
+        targetOffset = addOffset(targetOffset, manualTargetOffset);
+        left = targetPos.left + targetOffset.left - offset.left;
+        top = targetPos.top + targetOffset.top - offset.top;
+        _ref2 = Tether.modules;
+        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+          module = _ref2[_i];
+          ret = module.position.call(this, {
+            left: left,
+            top: top,
+            targetAttachment: targetAttachment,
+            targetPos: targetPos,
+            attachment: this.attachment,
+            elementPos: elementPos,
+            offset: offset,
+            targetOffset: targetOffset,
+            manualOffset: manualOffset,
+            manualTargetOffset: manualTargetOffset,
+            scrollbarSize: scrollbarSize
+          });
+          if (ret == null || typeof ret !== 'object') {
+            continue;
+          } else if (ret === false) {
+            return false;
+          } else {
+            top = ret.top, left = ret.left;
+          }
+        }
+        next = {
+          page: {
+            top: top,
+            left: left
+          },
+          viewport: {
+            top: top - pageYOffset,
+            bottom: pageYOffset - top - height + innerHeight,
+            left: left - pageXOffset,
+            right: pageXOffset - left - width + innerWidth
+          }
+        };
+        if (document.body.scrollWidth > window.innerWidth) {
+          scrollbarSize = this.cache('scrollbar-size', getScrollBarSize);
+          next.viewport.bottom -= scrollbarSize.height;
+        }
+        if (document.body.scrollHeight > window.innerHeight) {
+          scrollbarSize = this.cache('scrollbar-size', getScrollBarSize);
+          next.viewport.right -= scrollbarSize.width;
+        }
+        if ((_ref3 = document.body.style.position) !== '' && _ref3 !== 'static' || (_ref4 = document.body.parentElement.style.position) !== '' && _ref4 !== 'static') {
+          next.page.bottom = document.body.scrollHeight - top - height;
+          next.page.right = document.body.scrollWidth - left - width;
+        }
+        if (((_ref5 = this.options.optimizations) != null ? _ref5.moveElement : void 0) !== false && this.targetModifier == null) {
+          offsetParent = this.cache('target-offsetparent', function () {
+            return getOffsetParent(_this.target);
+          });
+          offsetPosition = this.cache('target-offsetparent-bounds', function () {
+            return getBounds(offsetParent);
+          });
+          offsetParentStyle = getComputedStyle(offsetParent);
+          elementStyle = getComputedStyle(this.element);
+          offsetParentSize = offsetPosition;
+          offsetBorder = {};
+          _ref6 = ['Top', 'Left', 'Bottom', 'Right'];
+          for (_j = 0, _len1 = _ref6.length; _j < _len1; _j++) {
+            side = _ref6[_j];
+            offsetBorder[side.toLowerCase()] = parseFloat(offsetParentStyle["border" + side + "Width"]);
+          }
+          offsetPosition.right = document.body.scrollWidth - offsetPosition.left - offsetParentSize.width + offsetBorder.right;
+          offsetPosition.bottom = document.body.scrollHeight - offsetPosition.top - offsetParentSize.height + offsetBorder.bottom;
+          if (next.page.top >= offsetPosition.top + offsetBorder.top && next.page.bottom >= offsetPosition.bottom) {
+            if (next.page.left >= offsetPosition.left + offsetBorder.left && next.page.right >= offsetPosition.right) {
+              scrollTop = offsetParent.scrollTop;
+              scrollLeft = offsetParent.scrollLeft;
+              next.offset = {
+                top: next.page.top - offsetPosition.top + scrollTop - offsetBorder.top,
+                left: next.page.left - offsetPosition.left + scrollLeft - offsetBorder.left
+              };
+            }
+          }
+        }
+        this.move(next);
+        this.history.unshift(next);
+        if (this.history.length > 3) {
+          this.history.pop();
+        }
+        if (flushChanges) {
+          flush();
+        }
+        return true;
+      };
+
+      _Tether.prototype.move = function (position) {
+        var css,
+            elVal,
+            found,
+            key,
+            moved,
+            offsetParent,
+            point,
+            same,
+            transcribe,
+            type,
+            val,
+            write,
+            writeCSS,
+            _i,
+            _len,
+            _ref1,
+            _ref2,
+            _this = this;
+        if (this.element.parentNode == null) {
+          return;
+        }
+        same = {};
+        for (type in position) {
+          same[type] = {};
+          for (key in position[type]) {
+            found = false;
+            _ref1 = this.history;
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              point = _ref1[_i];
+              if (!within((_ref2 = point[type]) != null ? _ref2[key] : void 0, position[type][key])) {
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              same[type][key] = true;
+            }
+          }
+        }
+        css = {
+          top: '',
+          left: '',
+          right: '',
+          bottom: ''
+        };
+        transcribe = function (same, pos) {
+          var xPos, yPos, _ref3;
+          if (((_ref3 = _this.options.optimizations) != null ? _ref3.gpu : void 0) !== false) {
+            if (same.top) {
+              css.top = 0;
+              yPos = pos.top;
+            } else {
+              css.bottom = 0;
+              yPos = -pos.bottom;
+            }
+            if (same.left) {
+              css.left = 0;
+              xPos = pos.left;
+            } else {
+              css.right = 0;
+              xPos = -pos.right;
+            }
+            css[transformKey] = "translateX(" + Math.round(xPos) + "px) translateY(" + Math.round(yPos) + "px)";
+            if (transformKey !== 'msTransform') {
+              return css[transformKey] += " translateZ(0)";
+            }
+          } else {
+            if (same.top) {
+              css.top = "" + pos.top + "px";
+            } else {
+              css.bottom = "" + pos.bottom + "px";
+            }
+            if (same.left) {
+              return css.left = "" + pos.left + "px";
+            } else {
+              return css.right = "" + pos.right + "px";
+            }
+          }
+        };
+        moved = false;
+        if ((same.page.top || same.page.bottom) && (same.page.left || same.page.right)) {
+          css.position = 'absolute';
+          transcribe(same.page, position.page);
+        } else if ((same.viewport.top || same.viewport.bottom) && (same.viewport.left || same.viewport.right)) {
+          css.position = 'fixed';
+          transcribe(same.viewport, position.viewport);
+        } else if (same.offset != null && same.offset.top && same.offset.left) {
+          css.position = 'absolute';
+          offsetParent = this.cache('target-offsetparent', function () {
+            return getOffsetParent(_this.target);
+          });
+          if (getOffsetParent(this.element) !== offsetParent) {
+            defer(function () {
+              _this.element.parentNode.removeChild(_this.element);
+              return offsetParent.appendChild(_this.element);
+            });
+          }
+          transcribe(same.offset, position.offset);
+          moved = true;
+        } else {
+          css.position = 'absolute';
+          transcribe({
+            top: true,
+            left: true
+          }, position.page);
+        }
+        if (!moved && this.element.parentNode.tagName !== 'BODY') {
+          this.element.parentNode.removeChild(this.element);
+          document.body.appendChild(this.element);
+        }
+        writeCSS = {};
+        write = false;
+        for (key in css) {
+          val = css[key];
+          elVal = this.element.style[key];
+          if (elVal !== '' && val !== '' && (key === 'top' || key === 'left' || key === 'bottom' || key === 'right')) {
+            elVal = parseFloat(elVal);
+            val = parseFloat(val);
+          }
+          if (elVal !== val) {
+            write = true;
+            writeCSS[key] = css[key];
+          }
+        }
+        if (write) {
+          return defer(function () {
+            return extend(_this.element.style, writeCSS);
+          });
+        }
+      };
+
+      return _Tether;
+    }();
+
+    Tether.position = position;
+
+    this.Tether = extend(_Tether, Tether);
+  }).call(this);
+
+  (function () {
+    var BOUNDS_FORMAT,
+        MIRROR_ATTACH,
+        defer,
+        extend,
+        getBoundingRect,
+        getBounds,
+        getOuterSize,
+        getSize,
+        updateClasses,
+        _ref,
+        __indexOf = [].indexOf || function (item) {
+      for (var i = 0, l = this.length; i < l; i++) {
+        if (i in this && this[i] === item) return i;
+      }return -1;
+    };
+
+    _ref = this.Tether.Utils, getOuterSize = _ref.getOuterSize, getBounds = _ref.getBounds, getSize = _ref.getSize, extend = _ref.extend, updateClasses = _ref.updateClasses, defer = _ref.defer;
+
+    MIRROR_ATTACH = {
+      left: 'right',
+      right: 'left',
+      top: 'bottom',
+      bottom: 'top',
+      middle: 'middle'
+    };
+
+    BOUNDS_FORMAT = ['left', 'top', 'right', 'bottom'];
+
+    getBoundingRect = function (tether, to) {
+      var i, pos, side, size, style, _i, _len;
+      if (to === 'scrollParent') {
+        to = tether.scrollParent;
+      } else if (to === 'window') {
+        to = [pageXOffset, pageYOffset, innerWidth + pageXOffset, innerHeight + pageYOffset];
+      }
+      if (to === document) {
+        to = to.documentElement;
+      }
+      if (to.nodeType != null) {
+        pos = size = getBounds(to);
+        style = getComputedStyle(to);
+        to = [pos.left, pos.top, size.width + pos.left, size.height + pos.top];
+        for (i = _i = 0, _len = BOUNDS_FORMAT.length; _i < _len; i = ++_i) {
+          side = BOUNDS_FORMAT[i];
+          side = side[0].toUpperCase() + side.substr(1);
+          if (side === 'Top' || side === 'Left') {
+            to[i] += parseFloat(style["border" + side + "Width"]);
+          } else {
+            to[i] -= parseFloat(style["border" + side + "Width"]);
+          }
+        }
+      }
+      return to;
+    };
+
+    this.Tether.modules.push({
+      position: function (_arg) {
+        var addClasses,
+            allClasses,
+            attachment,
+            bounds,
+            changeAttachX,
+            changeAttachY,
+            cls,
+            constraint,
+            eAttachment,
+            height,
+            left,
+            oob,
+            oobClass,
+            p,
+            pin,
+            pinned,
+            pinnedClass,
+            removeClass,
+            side,
+            tAttachment,
+            targetAttachment,
+            targetHeight,
+            targetSize,
+            targetWidth,
+            to,
+            top,
+            width,
+            _i,
+            _j,
+            _k,
+            _l,
+            _len,
+            _len1,
+            _len2,
+            _len3,
+            _len4,
+            _len5,
+            _m,
+            _n,
+            _ref1,
+            _ref2,
+            _ref3,
+            _ref4,
+            _ref5,
+            _ref6,
+            _ref7,
+            _ref8,
+            _this = this;
+        top = _arg.top, left = _arg.left, targetAttachment = _arg.targetAttachment;
+        if (!this.options.constraints) {
+          return true;
+        }
+        removeClass = function (prefix) {
+          var side, _i, _len, _results;
+          _this.removeClass(prefix);
+          _results = [];
+          for (_i = 0, _len = BOUNDS_FORMAT.length; _i < _len; _i++) {
+            side = BOUNDS_FORMAT[_i];
+            _results.push(_this.removeClass("" + prefix + "-" + side));
+          }
+          return _results;
+        };
+        _ref1 = this.cache('element-bounds', function () {
+          return getBounds(_this.element);
+        }), height = _ref1.height, width = _ref1.width;
+        if (width === 0 && height === 0 && this.lastSize != null) {
+          _ref2 = this.lastSize, width = _ref2.width, height = _ref2.height;
+        }
+        targetSize = this.cache('target-bounds', function () {
+          return _this.getTargetBounds();
+        });
+        targetHeight = targetSize.height;
+        targetWidth = targetSize.width;
+        tAttachment = {};
+        eAttachment = {};
+        allClasses = [this.getClass('pinned'), this.getClass('out-of-bounds')];
+        _ref3 = this.options.constraints;
+        for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+          constraint = _ref3[_i];
+          if (constraint.outOfBoundsClass) {
+            allClasses.push(constraint.outOfBoundsClass);
+          }
+          if (constraint.pinnedClass) {
+            allClasses.push(constraint.pinnedClass);
+          }
+        }
+        for (_j = 0, _len1 = allClasses.length; _j < _len1; _j++) {
+          cls = allClasses[_j];
+          _ref4 = ['left', 'top', 'right', 'bottom'];
+          for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
+            side = _ref4[_k];
+            allClasses.push("" + cls + "-" + side);
+          }
+        }
+        addClasses = [];
+        tAttachment = extend({}, targetAttachment);
+        eAttachment = extend({}, this.attachment);
+        _ref5 = this.options.constraints;
+        for (_l = 0, _len3 = _ref5.length; _l < _len3; _l++) {
+          constraint = _ref5[_l];
+          to = constraint.to, attachment = constraint.attachment, pin = constraint.pin;
+          if (attachment == null) {
+            attachment = '';
+          }
+          if (__indexOf.call(attachment, ' ') >= 0) {
+            _ref6 = attachment.split(' '), changeAttachY = _ref6[0], changeAttachX = _ref6[1];
+          } else {
+            changeAttachX = changeAttachY = attachment;
+          }
+          bounds = getBoundingRect(this, to);
+          if (changeAttachY === 'target' || changeAttachY === 'both') {
+            if (top < bounds[1] && tAttachment.top === 'top') {
+              top += targetHeight;
+              tAttachment.top = 'bottom';
+            }
+            if (top + height > bounds[3] && tAttachment.top === 'bottom') {
+              top -= targetHeight;
+              tAttachment.top = 'top';
+            }
+          }
+          if (changeAttachY === 'together') {
+            if (top < bounds[1] && tAttachment.top === 'top') {
+              if (eAttachment.top === 'bottom') {
+                top += targetHeight;
+                tAttachment.top = 'bottom';
+                top += height;
+                eAttachment.top = 'top';
+              } else if (eAttachment.top === 'top') {
+                top += targetHeight;
+                tAttachment.top = 'bottom';
+                top -= height;
+                eAttachment.top = 'bottom';
+              }
+            }
+            if (top + height > bounds[3] && tAttachment.top === 'bottom') {
+              if (eAttachment.top === 'top') {
+                top -= targetHeight;
+                tAttachment.top = 'top';
+                top -= height;
+                eAttachment.top = 'bottom';
+              } else if (eAttachment.top === 'bottom') {
+                top -= targetHeight;
+                tAttachment.top = 'top';
+                top += height;
+                eAttachment.top = 'top';
+              }
+            }
+            if (tAttachment.top === 'middle') {
+              if (top + height > bounds[3] && eAttachment.top === 'top') {
+                top -= height;
+                eAttachment.top = 'bottom';
+              } else if (top < bounds[1] && eAttachment.top === 'bottom') {
+                top += height;
+                eAttachment.top = 'top';
+              }
+            }
+          }
+          if (changeAttachX === 'target' || changeAttachX === 'both') {
+            if (left < bounds[0] && tAttachment.left === 'left') {
+              left += targetWidth;
+              tAttachment.left = 'right';
+            }
+            if (left + width > bounds[2] && tAttachment.left === 'right') {
+              left -= targetWidth;
+              tAttachment.left = 'left';
+            }
+          }
+          if (changeAttachX === 'together') {
+            if (left < bounds[0] && tAttachment.left === 'left') {
+              if (eAttachment.left === 'right') {
+                left += targetWidth;
+                tAttachment.left = 'right';
+                left += width;
+                eAttachment.left = 'left';
+              } else if (eAttachment.left === 'left') {
+                left += targetWidth;
+                tAttachment.left = 'right';
+                left -= width;
+                eAttachment.left = 'right';
+              }
+            } else if (left + width > bounds[2] && tAttachment.left === 'right') {
+              if (eAttachment.left === 'left') {
+                left -= targetWidth;
+                tAttachment.left = 'left';
+                left -= width;
+                eAttachment.left = 'right';
+              } else if (eAttachment.left === 'right') {
+                left -= targetWidth;
+                tAttachment.left = 'left';
+                left += width;
+                eAttachment.left = 'left';
+              }
+            } else if (tAttachment.left === 'center') {
+              if (left + width > bounds[2] && eAttachment.left === 'left') {
+                left -= width;
+                eAttachment.left = 'right';
+              } else if (left < bounds[0] && eAttachment.left === 'right') {
+                left += width;
+                eAttachment.left = 'left';
+              }
+            }
+          }
+          if (changeAttachY === 'element' || changeAttachY === 'both') {
+            if (top < bounds[1] && eAttachment.top === 'bottom') {
+              top += height;
+              eAttachment.top = 'top';
+            }
+            if (top + height > bounds[3] && eAttachment.top === 'top') {
+              top -= height;
+              eAttachment.top = 'bottom';
+            }
+          }
+          if (changeAttachX === 'element' || changeAttachX === 'both') {
+            if (left < bounds[0] && eAttachment.left === 'right') {
+              left += width;
+              eAttachment.left = 'left';
+            }
+            if (left + width > bounds[2] && eAttachment.left === 'left') {
+              left -= width;
+              eAttachment.left = 'right';
+            }
+          }
+          if (typeof pin === 'string') {
+            pin = function () {
+              var _len4, _m, _ref7, _results;
+              _ref7 = pin.split(',');
+              _results = [];
+              for (_m = 0, _len4 = _ref7.length; _m < _len4; _m++) {
+                p = _ref7[_m];
+                _results.push(p.trim());
+              }
+              return _results;
+            }();
+          } else if (pin === true) {
+            pin = ['top', 'left', 'right', 'bottom'];
+          }
+          pin || (pin = []);
+          pinned = [];
+          oob = [];
+          if (top < bounds[1]) {
+            if (__indexOf.call(pin, 'top') >= 0) {
+              top = bounds[1];
+              pinned.push('top');
+            } else {
+              oob.push('top');
+            }
+          }
+          if (top + height > bounds[3]) {
+            if (__indexOf.call(pin, 'bottom') >= 0) {
+              top = bounds[3] - height;
+              pinned.push('bottom');
+            } else {
+              oob.push('bottom');
+            }
+          }
+          if (left < bounds[0]) {
+            if (__indexOf.call(pin, 'left') >= 0) {
+              left = bounds[0];
+              pinned.push('left');
+            } else {
+              oob.push('left');
+            }
+          }
+          if (left + width > bounds[2]) {
+            if (__indexOf.call(pin, 'right') >= 0) {
+              left = bounds[2] - width;
+              pinned.push('right');
+            } else {
+              oob.push('right');
+            }
+          }
+          if (pinned.length) {
+            pinnedClass = (_ref7 = this.options.pinnedClass) != null ? _ref7 : this.getClass('pinned');
+            addClasses.push(pinnedClass);
+            for (_m = 0, _len4 = pinned.length; _m < _len4; _m++) {
+              side = pinned[_m];
+              addClasses.push("" + pinnedClass + "-" + side);
+            }
+          }
+          if (oob.length) {
+            oobClass = (_ref8 = this.options.outOfBoundsClass) != null ? _ref8 : this.getClass('out-of-bounds');
+            addClasses.push(oobClass);
+            for (_n = 0, _len5 = oob.length; _n < _len5; _n++) {
+              side = oob[_n];
+              addClasses.push("" + oobClass + "-" + side);
+            }
+          }
+          if (__indexOf.call(pinned, 'left') >= 0 || __indexOf.call(pinned, 'right') >= 0) {
+            eAttachment.left = tAttachment.left = false;
+          }
+          if (__indexOf.call(pinned, 'top') >= 0 || __indexOf.call(pinned, 'bottom') >= 0) {
+            eAttachment.top = tAttachment.top = false;
+          }
+          if (tAttachment.top !== targetAttachment.top || tAttachment.left !== targetAttachment.left || eAttachment.top !== this.attachment.top || eAttachment.left !== this.attachment.left) {
+            this.updateAttachClasses(eAttachment, tAttachment);
+          }
+        }
+        defer(function () {
+          updateClasses(_this.target, addClasses, allClasses);
+          return updateClasses(_this.element, addClasses, allClasses);
+        });
+        return {
+          top: top,
+          left: left
+        };
+      }
+    });
+  }).call(this);
+
+  (function () {
+    var defer, getBounds, updateClasses, _ref;
+
+    _ref = this.Tether.Utils, getBounds = _ref.getBounds, updateClasses = _ref.updateClasses, defer = _ref.defer;
+
+    this.Tether.modules.push({
+      position: function (_arg) {
+        var abutted,
+            addClasses,
+            allClasses,
+            bottom,
+            height,
+            left,
+            right,
+            side,
+            sides,
+            targetPos,
+            top,
+            width,
+            _i,
+            _j,
+            _k,
+            _l,
+            _len,
+            _len1,
+            _len2,
+            _len3,
+            _ref1,
+            _ref2,
+            _ref3,
+            _ref4,
+            _ref5,
+            _this = this;
+        top = _arg.top, left = _arg.left;
+        _ref1 = this.cache('element-bounds', function () {
+          return getBounds(_this.element);
+        }), height = _ref1.height, width = _ref1.width;
+        targetPos = this.getTargetBounds();
+        bottom = top + height;
+        right = left + width;
+        abutted = [];
+        if (top <= targetPos.bottom && bottom >= targetPos.top) {
+          _ref2 = ['left', 'right'];
+          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+            side = _ref2[_i];
+            if ((_ref3 = targetPos[side]) === left || _ref3 === right) {
+              abutted.push(side);
+            }
+          }
+        }
+        if (left <= targetPos.right && right >= targetPos.left) {
+          _ref4 = ['top', 'bottom'];
+          for (_j = 0, _len1 = _ref4.length; _j < _len1; _j++) {
+            side = _ref4[_j];
+            if ((_ref5 = targetPos[side]) === top || _ref5 === bottom) {
+              abutted.push(side);
+            }
+          }
+        }
+        allClasses = [];
+        addClasses = [];
+        sides = ['left', 'top', 'right', 'bottom'];
+        allClasses.push(this.getClass('abutted'));
+        for (_k = 0, _len2 = sides.length; _k < _len2; _k++) {
+          side = sides[_k];
+          allClasses.push("" + this.getClass('abutted') + "-" + side);
+        }
+        if (abutted.length) {
+          addClasses.push(this.getClass('abutted'));
+        }
+        for (_l = 0, _len3 = abutted.length; _l < _len3; _l++) {
+          side = abutted[_l];
+          addClasses.push("" + this.getClass('abutted') + "-" + side);
+        }
+        defer(function () {
+          updateClasses(_this.target, addClasses, allClasses);
+          return updateClasses(_this.element, addClasses, allClasses);
+        });
+        return true;
+      }
+    });
+  }).call(this);
+
+  (function () {
+    this.Tether.modules.push({
+      position: function (_arg) {
+        var left, result, shift, shiftLeft, shiftTop, top, _ref;
+        top = _arg.top, left = _arg.left;
+        if (!this.options.shift) {
+          return;
+        }
+        result = function (val) {
+          if (typeof val === 'function') {
+            return val.call(this, {
+              top: top,
+              left: left
+            });
+          } else {
+            return val;
+          }
+        };
+        shift = result(this.options.shift);
+        if (typeof shift === 'string') {
+          shift = shift.split(' ');
+          shift[1] || (shift[1] = shift[0]);
+          shiftTop = shift[0], shiftLeft = shift[1];
+          shiftTop = parseFloat(shiftTop, 10);
+          shiftLeft = parseFloat(shiftLeft, 10);
+        } else {
+          _ref = [shift.top, shift.left], shiftTop = _ref[0], shiftLeft = _ref[1];
+        }
+        top += shiftTop;
+        left += shiftLeft;
+        return {
+          top: top,
+          left: left
+        };
+      }
+    });
+  }).call(this);
+
+  return this.Tether;
+});
+//
+!function (t, e) {
+  "function" == typeof define && define.amd ? define(["tether"], e) : "object" == typeof exports ? module.exports = e(require("tether")) : t.Shepherd = e(t.Tether);
+}(this, function (t) {
+  "use strict";
+  function e(t, e) {
+    if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function");
+  }function n(t, e) {
+    if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function, not " + typeof e);t.prototype = Object.create(e && e.prototype, { constructor: { value: t, enumerable: !1, writable: !0, configurable: !0 } }), e && (Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e);
+  }function i(t) {
+    return "undefined" == typeof t;
+  }function r(t) {
+    return t && t.constructor === Array;
+  }function o(t) {
+    return t && t.constructor === Object;
+  }function s(t) {
+    return "object" == typeof t;
+  }function h(t) {
+    var e = document.createElement("div");return e.innerHTML = t, e.children[0];
+  }function c(t, e) {
+    var n = void 0;return i(t.matches) ? i(t.matchesSelector) ? i(t.msMatchesSelector) ? i(t.webkitMatchesSelector) ? i(t.mozMatchesSelector) ? i(t.oMatchesSelector) || (n = t.oMatchesSelector) : n = t.mozMatchesSelector : n = t.webkitMatchesSelector : n = t.msMatchesSelector : n = t.matchesSelector : n = t.matches, n.call(t, e);
+  }function l(t) {
+    if (s(t)) return t.hasOwnProperty("element") && t.hasOwnProperty("on") ? t : null;var e = S.exec(t);if (!e) return null;var n = e[2];return "[" === n[0] && (n = n.substring(1, n.length - 1)), { element: e[1], on: n };
+  }function a(t, e) {
+    if (null === t || i(t)) return t;if (s(t)) return t;for (var n = t.split(" "), r = {}, o = e.length - 1, h = n.length - 1; h >= 0; h--) {
+      if (0 === o) {
+        r[e[o]] = n.slice(0, h + 1).join(" ");break;
+      }r[e[o]] = n[h], o--;
+    }return r;
+  }var u = function () {
+    function t(t, e) {
+      for (var n = 0; n < e.length; n++) {
+        var i = e[n];i.enumerable = i.enumerable || !1, i.configurable = !0, "value" in i && (i.writable = !0), Object.defineProperty(t, i.key, i);
+      }
+    }return function (e, n, i) {
+      return n && t(e.prototype, n), i && t(e, i), e;
+    };
+  }(),
+      d = function (t, e, n) {
+    for (var i = !0; i;) {
+      var r = t,
+          o = e,
+          s = n;i = !1, null === r && (r = Function.prototype);var h = Object.getOwnPropertyDescriptor(r, o);if (void 0 !== h) {
+        if ("value" in h) return h.value;var c = h.get;if (void 0 === c) return;return c.call(s);
+      }var l = Object.getPrototypeOf(r);if (null === l) return;t = l, e = o, n = s, i = !0, h = l = void 0;
+    }
+  },
+      p = t.Utils,
+      f = p.Evented,
+      v = p.addClass,
+      m = p.extend,
+      y = p.hasClass,
+      g = p.removeClass,
+      b = p.uniqueId,
+      w = new f(),
+      k = { "top right": "bottom left", "top left": "bottom right", "top center": "bottom center", "middle right": "middle left", "middle left": "middle right", "middle center": "middle center", "bottom left": "top right", "bottom right": "top left", "bottom center": "top center", top: "bottom center", left: "middle right", right: "middle left", bottom: "top center", center: "middle center", middle: "middle center" },
+      S = /^(.+) (top|left|right|bottom|center|\[[a-z ]+\])$/,
+      O = function (s) {
+    function p(t, n) {
+      return e(this, p), d(Object.getPrototypeOf(p.prototype), "constructor", this).call(this, t, n), this.tour = t, this.bindMethods(), this.setOptions(n), this;
+    }return n(p, s), u(p, [{ key: "bindMethods", value: function () {
+        var t = this,
+            e = ["_show", "show", "hide", "isOpen", "cancel", "complete", "scrollTo", "destroy", "render"];e.map(function (e) {
+          t[e] = t[e].bind(t);
+        });
+      } }, { key: "setOptions", value: function () {
+        var t = arguments.length <= 0 || void 0 === arguments[0] ? {} : arguments[0];this.options = t, this.destroy(), this.id = this.options.id || this.id || "step-" + b();var e = this.options.when;if (e) for (var n in e) if ({}.hasOwnProperty.call(e, n)) {
+          var s = e[n];this.on(n, s, this);
+        }var h = JSON.stringify(this.options.buttons),
+            c = i(h) || "true" === h,
+            l = "{}" === h || "[]" === h || "null" === h || "false" === h,
+            a = !c && r(this.options.buttons),
+            u = !c && o(this.options.buttons);c ? this.options.buttons = [{ text: "Next", action: this.tour.next, classes: "btn" }] : !l && u ? this.options.buttons = [this.options.buttons] : !l && a || (this.options.buttons = !1);
+      } }, { key: "getTour", value: function () {
+        return this.tour;
+      } }, { key: "bindAdvance", value: function () {
+        var t = this,
+            e = a(this.options.advanceOn, ["selector", "event"]),
+            n = e.event,
+            r = e.selector,
+            o = function (e) {
+          t.isOpen() && (i(r) ? t.el && e.target === t.el && t.tour.next() : c(e.target, r) && t.tour.next());
+        };document.body.addEventListener(n, o), this.on("destroy", function () {
+          return document.body.removeEventListener(n, o);
+        });
+      } }, { key: "getAttachTo", value: function () {
+        var t = l(this.options.attachTo) || {},
+            e = m({}, t);return "string" == typeof t.element && (e.element = document.querySelector(t.element), e.element || console.error("The element for this Shepherd step was not found " + t.element)), e;
+      } }, { key: "setupTether", value: function () {
+        if (i(t)) throw new Error("Using the attachment feature of Shepherd requires the Tether library");var e = this.getAttachTo(),
+            n = k[e.on] || k.right;i(e.element) && (e.element = "viewport", n = "middle center");var r = { classPrefix: "shepherd", element: this.el, constraints: [{ to: "window", pin: !0, attachment: "together" }], target: e.element, offset: e.offset || "0 0", attachment: n };this.tether && this.tether.destroy(), this.tether = new t(m(r, this.options.tetherOptions));
+      } }, { key: "show", value: function () {
+        var t = this;if (!i(this.options.beforeShowPromise)) {
+          var e = this.options.beforeShowPromise();if (!i(e)) return e.then(function () {
+            return t._show();
+          });
+        }this._show();
+      } }, { key: "_show", value: function () {
+        var t = this;this.trigger("before-show"), this.el || this.render(), v(this.el, "shepherd-open"), document.body.setAttribute("data-shepherd-step", this.id), this.setupTether(), this.options.scrollTo && setTimeout(function () {
+          t.scrollTo();
+        }), this.trigger("show");
+      } }, { key: "hide", value: function () {
+        this.trigger("before-hide"), g(this.el, "shepherd-open"), document.body.removeAttribute("data-shepherd-step"), this.tether && this.tether.destroy(), this.tether = null, this.trigger("hide");
+      } }, { key: "isOpen", value: function () {
+        return this.el && y(this.el, "shepherd-open");
+      } }, { key: "cancel", value: function () {
+        this.tour.cancel(), this.trigger("cancel");
+      } }, { key: "complete", value: function () {
+        this.tour.complete(), this.trigger("complete");
+      } }, { key: "scrollTo", value: function () {
+        var t = this.getAttachTo(),
+            e = t.element;i(this.options.scrollToHandler) ? i(e) || e.scrollIntoView() : this.options.scrollToHandler(e);
+      } }, { key: "destroy", value: function () {
+        !i(this.el) && this.el.parentNode && (this.el.parentNode.removeChild(this.el), delete this.el), this.tether && this.tether.destroy(), this.tether = null, this.trigger("destroy");
+      } }, { key: "render", value: function () {
+        var t = this;i(this.el) || this.destroy(), this.el = h("<div class='shepherd-step " + (this.options.classes || "") + "' data-id='" + this.id + "' " + (this.options.idAttribute ? 'id="' + this.options.idAttribute + '"' : "") + "></div>");var e = document.createElement("div");e.className = "shepherd-content", this.el.appendChild(e);var n = document.createElement("header");if (e.appendChild(n), this.options.title && (n.innerHTML += "<h3 class='shepherd-title'>" + this.options.title + "</h3>", this.el.className += " shepherd-has-title"), this.options.showCancelLink) {
+          var r = h("<a href class='shepherd-cancel-link'>✕</a>");n.appendChild(r), this.el.className += " shepherd-has-cancel-link", this.bindCancelLink(r);
+        }i(this.options.text) || !function () {
+          var n = h("<div class='shepherd-text'></div>"),
+              i = t.options.text;"function" == typeof i && (i = i.call(t, n)), i instanceof HTMLElement ? n.appendChild(i) : ("string" == typeof i && (i = [i]), i.map(function (t) {
+            n.innerHTML += "<p>" + t + "</p>";
+          })), e.appendChild(n);
+        }(), this.options.buttons && !function () {
+          var n = document.createElement("footer"),
+              i = h("<ul class='shepherd-buttons'></ul>");t.options.buttons.map(function (e) {
+            var n = h("<li><a class='shepherd-button " + (e.classes || "") + "'>" + e.text + "</a>");i.appendChild(n), t.bindButtonEvents(e, n.querySelector("a"));
+          }), n.appendChild(i), e.appendChild(n);
+        }(), document.body.appendChild(this.el), this.setupTether(), this.options.advanceOn && this.bindAdvance();
+      } }, { key: "bindCancelLink", value: function (t) {
+        var e = this;t.addEventListener("click", function (t) {
+          t.preventDefault(), e.cancel();
+        });
+      } }, { key: "bindButtonEvents", value: function (t, e) {
+        var n = this;t.events = t.events || {}, i(t.action) || (t.events.click = t.action);for (var r in t.events) if ({}.hasOwnProperty.call(t.events, r)) {
+          var o = t.events[r];"string" == typeof o && !function () {
+            var t = o;o = function () {
+              return n.tour.show(t);
+            };
+          }(), e.addEventListener(r, o);
+        }this.on("destroy", function () {
+          for (var n in t.events) if ({}.hasOwnProperty.call(t.events, n)) {
+            var i = t.events[n];e.removeEventListener(n, i);
+          }
+        });
+      } }]), p;
+  }(f),
+      T = function (t) {
+    function r() {
+      var t = this,
+          n = arguments.length <= 0 || void 0 === arguments[0] ? {} : arguments[0];e(this, r), d(Object.getPrototypeOf(r.prototype), "constructor", this).call(this, n), this.bindMethods(), this.options = n, this.steps = this.options.steps || [];var i = ["complete", "cancel", "hide", "start", "show", "active", "inactive"];return i.map(function (e) {
+        !function (e) {
+          t.on(e, function (n) {
+            n = n || {}, n.tour = t, w.trigger(e, n);
+          });
+        }(e);
+      }), this;
+    }return n(r, t), u(r, [{ key: "bindMethods", value: function () {
+        var t = this,
+            e = ["next", "back", "cancel", "complete", "hide"];e.map(function (e) {
+          t[e] = t[e].bind(t);
+        });
+      } }, { key: "addStep", value: function (t, e) {
+        return i(e) && (e = t), e instanceof O ? e.tour = this : ("string" != typeof t && "number" != typeof t || (e.id = t.toString()), e = m({}, this.options.defaults, e), e = new O(this, e)), this.steps.push(e), this;
+      } }, { key: "removeStep", value: function (t) {
+        for (var e = this.getCurrentStep(), n = 0; n < this.steps.length; ++n) {
+          var i = this.steps[n];if (i.id === t) {
+            i.isOpen() && i.hide(), i.destroy(), this.steps.splice(n, 1);break;
+          }
+        }e && e.id === t && (this.currentStep = void 0, this.steps.length ? this.show(0) : this.hide());
+      } }, { key: "getById", value: function (t) {
+        for (var e = 0; e < this.steps.length; ++e) {
+          var n = this.steps[e];if (n.id === t) return n;
+        }
+      } }, { key: "getCurrentStep", value: function () {
+        return this.currentStep;
+      } }, { key: "next", value: function () {
+        var t = this.steps.indexOf(this.currentStep);t === this.steps.length - 1 ? (this.hide(t), this.trigger("complete"), this.done()) : this.show(t + 1, !0);
+      } }, { key: "back", value: function () {
+        var t = this.steps.indexOf(this.currentStep);this.show(t - 1, !1);
+      } }, { key: "cancel", value: function () {
+        this.currentStep && this.currentStep.hide(), this.trigger("cancel"), this.done();
+      } }, { key: "complete", value: function () {
+        this.currentStep && this.currentStep.hide(), this.trigger("complete"), this.done();
+      } }, { key: "hide", value: function () {
+        this.currentStep && this.currentStep.hide(), this.trigger("hide"), this.done();
+      } }, { key: "done", value: function () {
+        w.activeTour = null, g(document.body, "shepherd-active"), this.trigger("inactive", { tour: this });
+      } }, { key: "show", value: function () {
+        var t = arguments.length <= 0 || void 0 === arguments[0] ? 0 : arguments[0],
+            e = arguments.length <= 1 || void 0 === arguments[1] || arguments[1];this.currentStep ? this.currentStep.hide() : (v(document.body, "shepherd-active"), this.trigger("active", { tour: this })), w.activeTour = this;var n = void 0;if (n = "string" == typeof t ? this.getById(t) : this.steps[t]) if (i(n.options.showOn) || n.options.showOn()) this.trigger("show", { step: n, previous: this.currentStep }), this.currentStep && this.currentStep.hide(), this.currentStep = n, n.show();else {
+          var r = this.steps.indexOf(n),
+              o = e ? r + 1 : r - 1;this.show(o, e);
+        }
+      } }, { key: "start", value: function () {
+        this.trigger("start"), this.currentStep = null, this.next();
+      } }]), r;
+  }(f);return m(w, { Tour: T, Step: O, Evented: f }), w;
+});
+//
+//var configStorage;
 // in the real world we will store config on the server
 // and do some CORS voodoo to fetch it.
-configStorage = {
+window.configStorage = {
   set: function (stuff) {
-    $.each(stuff, function (k, v) {
+    e$.each(stuff, function (k, v) {
       if (v !== null) {
         window.localStorage.setItem(k, v);
       } else {
         window.localStorage.removeItem(k);
       }
     });
-    $.extend(document.englishonConfig, stuff);
-    return $.Deferred().resolve();
+    e$.extend(document.englishonConfig, stuff);
+    return e$.Deferred().resolve();
   },
   get: function (stuff) {
     var r = {};
-    $.each(stuff, function (k, v) {
+    e$.each(stuff, function (k, v) {
       r[k] = window.localStorage.getItem(k) || v;
     });
-    return $.Deferred().resolve(r);
+    return e$.Deferred().resolve(r);
   }
 };
 //
@@ -3248,7 +5074,12 @@ var WEBSITE_I18N = {
   'www.bhol.co.il': {
     DIRECTION: RTL,
     DEFAULT_TARGET_LANGUAGE: 'en',
-    SITE_LANGUAGE: 'english'
+    SITE_LANGUAGE: 'hebrew'
+  },
+  'actualic.co.il': {
+    DIRECTION: RTL,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'hebrew'
   },
   'www.bloombergview.com': {
     DIRECTION: LTR,
@@ -3278,7 +5109,7 @@ Authenticator = function (base) {
 };
 
 Authenticator.prototype.getTokenFor = function (userToken) {
-  var promise = $.get(this.base + "/tokens/from-user-token/" + encodeURIComponent(userToken) + "/").then(function (response) {
+  var promise = e$.get(this.base + "/tokens/from-user-token/" + encodeURIComponent(userToken) + "/").then(function (response) {
     return response.token;
   });
   return promise;
@@ -3286,7 +5117,7 @@ Authenticator.prototype.getTokenFor = function (userToken) {
 
 Authenticator.prototype.getTokenForGuest = function () {
   console.log("getTokenForGuest****! base is: " + this.base);
-  var promise = $.post(this.base + "/tokens/create/").then(function (response) {
+  var promise = e$.post(this.base + "/tokens/create/").then(function (response) {
     return response.token;
   });
   return promise;
@@ -3295,10 +5126,10 @@ Authenticator.prototype.getTokenForGuest = function () {
 function showTOS() {
   var buttons = {};
   buttons[MESSAGES.CLOSE_TOS] = function () {
-    $(this).dialog("close");
+    e$(this).dialog("close");
   };
-  $.ajax(chrome.extension.getURL('terms_of_service.html')).done(function (tos) {
-    $('<div>')
+  e$.ajax(chrome.extension.getURL('terms_of_service.html')).done(function (tos) {
+    e$('<div>')
     // TODO: real RTL
     .attr('dir', 'rtl').html(tos).dialog({
       autoOpen: true,
@@ -3313,7 +5144,7 @@ function showTOS() {
 
 Authenticator.prototype.register = function (user) {
   console.log('register by mail)');
-  var res = $.post(this.base + '/tokens/register/', user, function (res) {
+  var res = e$.post(this.base + '/tokens/register/', user, function (res) {
     return res;
   });
   return res;
@@ -3321,9 +5152,9 @@ Authenticator.prototype.register = function (user) {
 
 Authenticator.prototype.validate = function (user) {
   emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-  //tips = $('#eo-login-msg');
-  allFields = $([]).add(user.email).add(user.password);
-  errors = $([]).add(user.email_msg).add(user.password_msg);
+  //tips = e$('#eo-login-msg');
+  allFields = e$([]).add(user.email).add(user.password);
+  errors = e$([]).add(user.email_msg).add(user.password_msg);
   errors.text('').removeClass('ui-state-highlight').parent().addClass('hidden');
   //user.password_msg.text('').removeClass('ui-state-highlight').parent().addClass('hidden');
   allFields.removeClass('eo-state-error');
@@ -3354,7 +5185,7 @@ Authenticator.prototype.validate = function (user) {
   }
 
   function updateTips(t, n) {
-    element = $('#login-' + n + '-msg');
+    element = e$('#login-' + n + '-msg');
     element.text(t);
     //.addClass("ui-state-highlight");
 
@@ -3378,7 +5209,7 @@ Authenticator.prototype.validate = function (user) {
 Authenticator.prototype.login = function (token) {
   if (token !== null) {
     console.log('Authenticator.prototype.login****Token is existing already. Didnt create a new one');
-    return $.Deferred().resolve(token);
+    return e$.Deferred().resolve(token);
   }
   console.log('Authenticator.prototype.login****There is no token. Create a new one for guest');
   return this.getTokenForGuest();
@@ -3402,7 +5233,7 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
       //xhr.setRequestHeader('Authorization', token);
     }
   };
-  return $.ajax(requestData).then(null, function (xhr, type) {
+  return e$.ajax(requestData).then(null, function (xhr, type) {
     console.log("Ajax error", xhr, type);
     if (xhr.status === 401) {
       // stale token, should only happen to us
@@ -3415,7 +5246,7 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
       return null;
     } else {
       // retry once
-      return $.ajax(requestData);
+      return e$.ajax(requestData);
     }
   });
 };
@@ -3473,14 +5304,14 @@ HerokuBackend.prototype.getArticle = function (address) {
   }.bind(this), function (data) {
 
     if (data.responseJSON && data.responseJSON.detail === 'Terms not accepted') {
-      return $.Deferred().reject('terms_not_accepted').promise();
+      return e$.Deferred().reject('terms_not_accepted').promise();
     }
   });
 };
 
 HerokuBackend.prototype.getSupportedLinks = function (urls) {
   // makeArray is essential, otherwise we get a jquery object with kilobytes of weird stuff
-  return this.ajax("POST", "/quiz/supported_urls/", { urls: $.makeArray(urls) }).then(function (data) {
+  return this.ajax("POST", "/quiz/supported_urls/", { urls: e$.makeArray(urls) }).then(function (data) {
     return data.supported_urls;
   });
 };
@@ -3511,12 +5342,6 @@ HerokuBackend.prototype.report = function (msg, data) {
   data.page = this.pageid;
   var r = this.ajax('POST', '/quiz/report/' + msg + '/', data);
   return r;
-};
-
-HerokuBackend.prototype.getTextToSpeechLink = function (language, phrase) {
-  return this.ajax('GET', '/tts/' + language + '/' + phrase).then(function (response) {
-    return response.url;
-  });
 };
 
 HerokuBackend.prototype.fetchDictionary = function () {
@@ -3554,7 +5379,7 @@ HerokuBackend.prototype.is_new_session = function () {
 };
 //
 Editor = function (overlay) {
-  this.paragraphs = $([overlay.subtitle, overlay.bodytext]);
+  this.paragraphs = e$([overlay.subtitle, overlay.bodytext]);
   this.overlay = overlay;
   var lines = document.eo_dictionary.split("\n");
   var internal_dic = {};
@@ -3576,18 +5401,18 @@ Editor.prototype.editMeanings = function (span) {
   var correct = span.find(".correct_answer").val();
   var delimiter = ' ';
   span.find('option').slice(2).each(function () {
-    $(this).prepend(delimiter);
+    e$(this).prepend(delimiter);
   });
   var old_meanings = span.find('option').slice(2).text();
   console.log('meaning: ' + span.find('option').text());
-  edit_meanings_dlg = $('<div id="dictionary_edit_dlg">').addClass('editor-dlg').append($('<div id="edit-meanings-dlg-content">').append($('<div>').addClass('editor-div').text('Edit meanings for the word: ' + hint)).append($('<input type="text" id="meanings">').val(old_meanings)).append($('<button>').text('Save').on('click', function () {
+  edit_meanings_dlg = e$('<div id="dictionary_edit_dlg">').addClass('editor-dlg').append(e$('<div id="edit-meanings-dlg-content">').append(e$('<div>').addClass('editor-div').text('Edit meanings for the word: ' + hint)).append(e$('<input type="text" id="meanings">').val(old_meanings)).append(e$('<button>').text('Save').on('click', function () {
     console.log('EDIT MEANINGS NOW.');
     var data = { 'word': hint + ' ' + edit_meanings_dlg.find('#meanings').val(), 'action': 'edit' };
     document.englishonBackend.dictionary(data);
     edit_meanings_dlg.dialog('close');
     edit_meanings_dlg.dialog('destroy');
     //TODO: check why the destroy is not doing the job
-  })).append($('<div>').addClass('editor-div').append($('<button>').text('Delete this word from dictionary').on('click', function () {
+  })).append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Delete this word from dictionary').on('click', function () {
     console.log('DELETE WORD NOW.');
     var deleted_word = { 'word': hint + ' ', 'action': 'delete' };
     document.englishonBackend.dictionary(deleted_word);
@@ -3600,7 +5425,7 @@ Editor.prototype.editMeanings = function (span) {
 
 Editor.prototype.createAutoQuestion = function (event) {
   event.preventDefault();
-  var span = $(event.target).parent();
+  var span = e$(event.target).parent();
   console.log('createAutoQuestion***** span is: ' + span);
   var replaced = span.data('preposition') + span.data('word');
   var hint = span.data('word');
@@ -3665,7 +5490,7 @@ Editor.prototype.createAutoQuestion = function (event) {
 Editor.prototype.question_onClick = function (event) {
   var test = this;
   event.preventDefault();
-  var span = $(event.target);
+  var span = e$(event.target);
   //var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
   var word = span.data('word');
   var context = span.data('context');
@@ -3674,10 +5499,10 @@ Editor.prototype.question_onClick = function (event) {
     'ctx': context
   };
   this.span = span;
-  var q_dialog = $('<div  align="left" dir="ltr">');
-  q_dialog.append($('<h3>').text('You are deleting question for this word: ' + word));
-  q_dialog.append($('<h3>').text('With this context: ' + context));
-  q_dialog.append($('<button>').text("Delete Question").click(function (event) {
+  var q_dialog = e$('<div  align="left" dir="ltr">');
+  q_dialog.append(e$('<h3>').text('You are deleting question for this word: ' + word));
+  q_dialog.append(e$('<h3>').text('With this context: ' + context));
+  q_dialog.append(e$('<button>').text("Delete Question").click(function (event) {
     q_dialog.dialog('close');
     document.englishonBackend.deleteQuestion(question).then(function (res) {
       console.log('Question deleted');
@@ -3691,7 +5516,7 @@ Editor.prototype.question_onClick = function (event) {
 };
 Editor.prototype.onClick = function (event) {
   event.preventDefault();
-  var span = $(event.target);
+  var span = e$(event.target);
   var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
   var word = span.data('word');
 
@@ -3701,13 +5526,13 @@ Editor.prototype.onClick = function (event) {
     return;
   }
   span.data('context', ctx);
-  var dia = $('<div>').addClass('editor-dlg');
-  var acc = $('<div>');
-  acc.append($('<h3>').text("Hebrew -> English"));
-  acc.append($('<h3>').text("Add to dictionary: " + word));
-  acc.append($('<div class="editor-div">').append($('<span>').text("edit choosen word")).append($('<input type="text" id="new-word">').val(word)));
-  acc.append($('<div class="editor-div">').append($('<span>').text("optional meanings")).append($('<input type="text" id="new-meanings">')));
-  acc.append($('<button>').text("Add").click(function (event) {
+  var dia = e$('<div>').addClass('editor-dlg');
+  var acc = e$('<div>');
+  acc.append(e$('<h3>').text("Hebrew -> English"));
+  acc.append(e$('<h3>').text("Add to dictionary: " + word));
+  acc.append(e$('<div class="editor-div">').append(e$('<span>').text("edit choosen word")).append(e$('<input type="text" id="new-word">').val(word)));
+  acc.append(e$('<div class="editor-div">').append(e$('<span>').text("optional meanings")).append(e$('<input type="text" id="new-meanings">')));
+  acc.append(e$('<button>').text("Add").click(function (event) {
     event.preventDefault();
     var data = { 'word': dia.find('#new-word').val() + ' ' + dia.find('#new-meanings').val(), 'action': 'add' };
     document.englishonBackend.dictionary(data);
@@ -3716,10 +5541,10 @@ Editor.prototype.onClick = function (event) {
     span.addClass('eo-editor-candidate');
   }));
 
-  acc.append($('<h3>').text("Remove from dictionary"));
-  acc.append($('<div class="editor-div">').append($('<span>').text("Remove choosen word")).append($('<input type="text" id="word_to_delete">')));
+  acc.append(e$('<h3>').text("Remove from dictionary"));
+  acc.append(e$('<div class="editor-div">').append(e$('<span>').text("Remove choosen word")).append(e$('<input type="text" id="word_to_delete">')));
 
-  acc.append($('<button>').text("Remove").click(function (event) {
+  acc.append(e$('<button>').text("Remove").click(function (event) {
     event.preventDefault();
     var data = { 'word': dia.find('#word_to_delete').val() + ' ', 'action': 'delete' };
     document.englishonBackend.dictionary(data);
@@ -3727,7 +5552,7 @@ Editor.prototype.onClick = function (event) {
     dia.dialog('destroy');
   }));
 
-  acc.append($('<div>').addClass('editor-div').append($('<button>').text('Close').click(function (event) {
+  acc.append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Close').click(function (event) {
     event.preventDefault();
     dia.dialog('close');
     dia.dialog('destroy');
@@ -3735,13 +5560,13 @@ Editor.prototype.onClick = function (event) {
 
   dia.append(acc);
   dia.dialog({ autoOpen: true, height: 'auto', width: 'auto', modal: 'true' });
-  $(".wrd").text(word);
+  e$(".wrd").text(word);
 };
 
 Editor.prototype.generateUI = function () {
-  return $('<div>').append($('<div>').addClass('language_specific')).append($('<div>').append($('<label>').text("Word:")).append($('<span>', { class: 'wrd' })))
-  //.append($('<input>', {type: 'text', id: 'wrd'})))
-  .append($('<div>').append($('<label>').text("Additional correct answers:")).append($('<input>', { type: 'text', name: 'additional' }))).append($('<div>').append($('<label>').text("Wrong answers:")).append($('<input>', { type: 'text', name: 'wrong' })));
+  return e$('<div>').append(e$('<div>').addClass('language_specific')).append(e$('<div>').append(e$('<label>').text("Word:")).append(e$('<span>', { class: 'wrd' })))
+  //.append(e$('<input>', {type: 'text', id: 'wrd'})))
+  .append(e$('<div>').append(e$('<label>').text("Additional correct answers:")).append(e$('<input>', { type: 'text', name: 'additional' }))).append(e$('<div>').append(e$('<label>').text("Wrong answers:")).append(e$('<input>', { type: 'text', name: 'wrong' })));
 };
 
 Editor.prototype.h2eui = function (span) {
@@ -3752,7 +5577,7 @@ Editor.prototype.h2eui = function (span) {
     //guy
     // var replaced = div.find(':radio:checked').data('heb');
     // var correct = div.find(':checkbox:checked').toArray().map(
-    //   function(cb) { return $(cb).data('eng'); });
+    //   function(cb) { return e$(cb).data('eng'); });
     var replaced = div.find('.wrd').text();
     var additional = parseCommaSeparated(div.find('input[name="additional"]').val());
     //correct = correct.concat(additional);
@@ -3799,11 +5624,11 @@ Editor.prototype.e2hui = function (span) {
 
   var div = this.generateUI();
   var languageSpecific = div.find('.language_specific');
-  $.each(dict, function (orig, engs) {
-    $.each(engs, function (ix, eng) {
-      languageSpecific.append($('<input type="radio" name="eo-editor-eng">').prop('checked', h1e1).data('orig', orig).data('eng', eng)).append($('<label>').text(eng));
-      $.each(document.dictionary.get(eng), function (jx, heb) {
-        languageSpecific.append($('<input type="checkbox">').data('heb', heb)).append($('<label>').text(heb));
+  e$.each(dict, function (orig, engs) {
+    e$.each(engs, function (ix, eng) {
+      languageSpecific.append(e$('<input type="radio" name="eo-editor-eng">').prop('checked', h1e1).data('orig', orig).data('eng', eng)).append(e$('<label>').text(eng));
+      e$.each(document.dictionary.get(eng), function (jx, heb) {
+        languageSpecific.append(e$('<input type="checkbox">').data('heb', heb)).append(e$('<label>').text(heb));
       });
     });
   });
@@ -3812,7 +5637,7 @@ Editor.prototype.e2hui = function (span) {
     var replaced = div.find(':radio:checked').data('orig');
     var hint = div.find(':radio:checked').data('eng');
     var correct = div.find(':checkbox:checked').toArray().map(function (cb) {
-      return $(cb).data('heb');
+      return e$(cb).data('heb');
     });
     var additional = parseCommaSeparated(div.find('input[name="additional"]').val());
     correct = correct.concat(additional);
@@ -3894,12 +5719,12 @@ Editor.prototype.highlight = function () {
       question_dict[questions[i].replaced].push(questions[i].context);
     }
   }
-  $('.artText a').text('HERE IS A LINK!!!!!!');
-  $('.artSubtitle a').text('HERE IS A LINK!!!!!!');
+  e$('.artText a').text('HERE IS A LINK!!!!!!');
+  e$('.artSubtitle a').text('HERE IS A LINK!!!!!!');
   //TODO: do the same with the content appearing after the last dote in the subtitle, because in main page it should be a link
   this.ps = [];
   this.paragraphs.each(function (i, p) {
-    p = $(p);
+    p = e$(p);
     var text = p.text();
     this.ps.push(text);
     p.empty();
@@ -3931,7 +5756,7 @@ Editor.prototype.highlight = function () {
             wordAndCotextMatch = true;
             console.log('found a ready question! word: ' + currentWord + ' context: ' + context);
             p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-            p.append($('<span>').addClass('eo-editor-question').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).data('context', context)
+            p.append(e$('<span>').addClass('eo-editor-question').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).data('context', context)
             //.off('click',Editor.prototype.onClick())
             .on('click', this.question_onClick.bind(this)));
           }
@@ -3957,20 +5782,20 @@ Editor.prototype.highlight = function () {
           //console.log('slice: ' + text.slice(lastIndex, match.index));
           p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, matchIndex)));
 
-          var select = $('<select>').addClass('correct_answer');
+          var select = e$('<select>').addClass('correct_answer');
           //.on('click',this.createQuestion.bind(this))
           //.on('change',this.createQuestion.bind(span))
-          var span = $('<span>').addClass('eo-editor-candidate').text(currentWord).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).data('preposition', preposition).append(select);
-          span.find('select').append($('<option>').text('').addClass('hide')).append($('<option>').text('Edit meanings').addClass('editor-btn')).on('change', this.createAutoQuestion.bind(this));
+          var span = e$('<span>').addClass('eo-editor-candidate').text(currentWord).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).data('preposition', preposition).append(select);
+          span.find('select').append(e$('<option>').text('').addClass('hide')).append(e$('<option>').text('Edit meanings').addClass('editor-btn')).on('change', this.createAutoQuestion.bind(this));
           for (var i = 0; i < this.eo_dictionary[currentWord].length; i++) {
-            select.append($('<option>').text(this.eo_dictionary[currentWord][i]));
+            select.append(e$('<option>').text(this.eo_dictionary[currentWord][i]));
           }
 
           p.append(span);
         } else //the current word is unrecognized word
           {
             p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-            p.append($('<span>').addClass('eo-editor-dictionary-candidate').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
+            p.append(e$('<span>').addClass('eo-editor-dictionary-candidate').text(match[0]).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', match[0]).on('click', this.onClick.bind(this)));
           }
       }
       lastIndex = re.lastIndex;
@@ -4008,12 +5833,12 @@ UserInfo = function () {
     document.englishonBackend.checkpersistence();
   };
   this.checkSRProgress = function () {
-    this.answered_promise = $.Deferred();
-    this.unAnswered_promise = $.Deferred();
+    this.answered_promise = e$.Deferred();
+    this.unAnswered_promise = e$.Deferred();
     this.getAnsweredSR();
     this.getUnAnsweredSR();
-    $('#srProgress').removeClass('sr-complete');
-    $.when(this.answered_promise, this.unAnswered_promise).done(function () {
+    e$('#srProgress').removeClass('sr-complete');
+    e$.when(this.answered_promise, this.unAnswered_promise).done(function () {
       val = document.eo_user.answered.sr_questions.length / (document.eo_user.answered.sr_questions.length + document.eo_user.unAnswered.sr_questions.length);
       //positive feedback if user doesn't get sr questions for today
       if (!(document.eo_user.answered.sr_questions.length + document.eo_user.unAnswered.sr_questions.length)) {
@@ -4024,7 +5849,7 @@ UserInfo = function () {
       };
       if (val == 1) {
         //adding success styles to progress bar 
-        $('#srProgress').addClass('sr-complete');
+        e$('#srProgress').addClass('sr-complete');
       }
 
       document.eo_user.sr_progress.animate(val);
@@ -4034,26 +5859,35 @@ UserInfo = function () {
     this.checkWeeklyPresence();
     this.checkSRProgress();
     this.milotrage();
-    $('#eo-live').removeClass('hidden vocabulary-open');
+    e$('#eo-live').removeClass('hidden vocabulary-open');
+    if (scraper.getHost() == 'actualic.co.il') {
+      //230-60
+      var val = Math.max(230 - $(window).scrollTop(), 60);
+      e$('#eo-live').css('top', val);
+      $(window).scroll(function () {
+        var val = Math.max(230 - $(window).scrollTop(), 60);
+        e$('#eo-live').css('top', val);
+      });
+    }
     if (document.englishonConfig.media == 'desktop') {
-      $('#eo-live').addClass('eo-live-maximize');
-      $($(document).on('click', function (e) {
+      e$('#eo-live').addClass('eo-live-maximize');
+      e$(e$(document).on('click', function (e) {
         e.preventDefault();
-        e.target = $(e.target);
+        e.target = e$(e.target);
         if (!e.target.is('.eo-question') && e.target.parents('.eo-question').length === 0) {
-          $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-          $('#vocabulary').addClass('hidden');
-          $('#eo-live-main').removeClass('hidden');
-          $(document).off('click');
+          e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+          e$('#vocabulary').addClass('hidden');
+          e$('#eo-live-main').removeClass('hidden');
+          e$(document).off('click');
         }
       }));
       this.setTimeOut = setTimeout(function () {
-        $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-        $('#vocabulary').addClass('hidden');
-        $('#eo-live-main').removeClass('hidden');
-        $(document).off('click');
+        e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+        e$('#vocabulary').addClass('hidden');
+        e$('#eo-live-main').removeClass('hidden');
+        e$(document).off('click');
       }, 10000);
-      $('#eo-live').on('click', function (e) {
+      e$('#eo-live').on('click', function (e) {
         clearTimeout(this.setTimeOut);
       }.bind(this));
     }
@@ -4067,18 +5901,18 @@ UserInfo = function () {
         // to get a value that is either negative, positive, or zero.
         return new Date(a.next_time) - new Date(b.next_time);
       });
-      $('#vocabulary').data('order', 'alphabet');
+      e$('#vocabulary').data('order', 'alphabet');
       this.renderVocabulary(this.srsByAlphabet);
     }.bind(this));
   };
   this.renderVocabulary = function (words_list) {
-    var content = $('<div>');
-    $.each(words_list, function (i, word_info) {
-      content.append($('<div>').addClass('')
+    var content = e$('<div>');
+    e$.each(words_list, function (i, word_info) {
+      content.append(e$('<div>').addClass('')
       //the text value is a hack to display the milotrage digits without the decimal point
-      .append($('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append($('<span>').addClass('vocabulary-word').text(word_info.word).on('click', function (e) {})).append($('<span>').addClass('vocabulary-translation hidden').text(word_info.translation)));
+      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-word').text(word_info.word).on('click', function (e) {})).append(e$('<span>').addClass('vocabulary-translation hidden').text(word_info.translation)));
     });
-    $('#vocabulary-content').html(content);
+    e$('#vocabulary-content').html(content);
     var el = document.getElementsByClassName('vocabulary-odometer');
     for (var i = 0; i < el.length; i++) {
       new Odometer({
@@ -4122,7 +5956,7 @@ UserInfo = function () {
         }
       });
     }
-    $('#srProgress').removeClass('sr-complete');
+    e$('#srProgress').removeClass('sr-complete');
 
     var el = document.querySelector('#eo-odometer');
 
@@ -4131,17 +5965,17 @@ UserInfo = function () {
       value: 0,
       format: 'd'
     });
-    $('#eo-live').off('click');
-    $('#eo-live').on('click', function (e) {
+    e$('#eo-live').off('click');
+    e$('#eo-live').on('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
-      e.target = $(e.target);
+      e.target = e$(e.target);
       if (e.target.is('#vocabulary-order')) {
-        if ($('#vocabulary').data('order') == 'alphabet') {
-          $('#vocabulary').data('order', 'srTime');
+        if (e$('#vocabulary').data('order') == 'alphabet') {
+          e$('#vocabulary').data('order', 'srTime');
           this.renderVocabulary(this.srsByTime);
         } else {
-          $('#vocabulary').data('order', 'alphabet');
+          e$('#vocabulary').data('order', 'alphabet');
           this.renderVocabulary(this.srsByAlphabet);
         }
         return;
@@ -4151,50 +5985,50 @@ UserInfo = function () {
         return;
       }
       if (e.target.is('.eo-close')) {
-        $('#eo-live').addClass('hidden');
-        $('#vocabulary').addClass('hidden');
-        $('#eo-live-main').removeClass('hidden');
-        $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+        e$('#eo-live').addClass('hidden');
+        e$('#vocabulary').addClass('hidden');
+        e$('#eo-live-main').removeClass('hidden');
+        e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
         return;
       }
-      if (e.target.parents('#srProgress').length || e.target.parents('#milotrage').length && $('#eo-live').hasClass('eo-live-maximize') || e.target.is('#vocabulary') || e.target.parents('#vocabulary').length) {
-        $('#eo-live-main').toggleClass('hidden');
-        $('#vocabulary').toggleClass('hidden');
-        if (!$('#vocabulary').hasClass('hidden')) {
-          $('#eo-live').addClass('vocabulary-open');
-          $('#vocabulary-content').html('');
+      if (e.target.parents('#srProgress').length || e.target.parents('#milotrage').length && e$('#eo-live').hasClass('eo-live-maximize') || e.target.is('#vocabulary') || e.target.parents('#vocabulary').length) {
+        e$('#eo-live-main').toggleClass('hidden');
+        e$('#vocabulary').toggleClass('hidden');
+        if (!e$('#vocabulary').hasClass('hidden')) {
+          e$('#eo-live').addClass('vocabulary-open');
+          e$('#vocabulary-content').html('');
           this.fetchVocabulary();
         } else {
-          $('#eo-live').removeClass('vocabulary-open');
+          e$('#eo-live').removeClass('vocabulary-open');
         };
         return;
       }
-      $('#eo-live').toggleClass('eo-live-maximize');
-      if (!$('#eo-live').hasClass('eo-live-maximize')) {
-        $('#eo-live-main').removeClass('hidden');
-        $('#vocabulary').addClass('hidden');
-        $('#eo-live').removeClass('vocabulary-open');
+      e$('#eo-live').toggleClass('eo-live-maximize');
+      if (!e$('#eo-live').hasClass('eo-live-maximize')) {
+        e$('#eo-live-main').removeClass('hidden');
+        e$('#vocabulary').addClass('hidden');
+        e$('#eo-live').removeClass('vocabulary-open');
         return;
       }
-      $(document).on('click', function (e) {
+      e$(document).on('click', function (e) {
         e.preventDefault();
-        e.target = $(e.target);
+        e.target = e$(e.target);
         if (e.target.is('.eo-question') || e.target.parents('.eo-question').length) {
           return;
         }
-        $('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-        $('#vocabulary').addClass('hidden');
-        $('#eo-live-main').removeClass('hidden');
-        $(document).off('click');
+        e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+        e$('#vocabulary').addClass('hidden');
+        e$('#eo-live-main').removeClass('hidden');
+        e$(document).off('click');
       });
     }.bind(this));
   };
   this.hideLiveActions = function () {
-    $('#eo-live').addClass('hidden');
+    e$('#eo-live').addClass('hidden');
   };
 
   this.checkWeeklyPresence = function () {
-    $(".day-bar").removeClass('eo-persistence');
+    e$(".day-bar").removeClass('eo-persistence');
     console.log('checkWeeklyPresence');
     document.englishonBackend.checkWeeklyPresence().then(function (data) {
       console.log('checkWeeklyPresence. got from server: ' + data);
@@ -4202,9 +6036,9 @@ UserInfo = function () {
         if (data.hasOwnProperty(day)) {
           console.log(day + ': weekday: ' + data[day].weekday + data[day].len);
           if (data[day].len) {
-            $($(".day-bar").get(day - 1)).addClass('eo-persistence');
+            e$(e$(".day-bar").get(day - 1)).addClass('eo-persistence');
           }
-          $($(".day-bar").get(day - 1)).text(data[day].weekday);
+          e$(e$(".day-bar").get(day - 1)).text(data[day].weekday);
         }
       }
     });
@@ -4213,7 +6047,7 @@ UserInfo = function () {
     document.englishonBackend.milotrage().then(function (data) {
       console.log('data.#words: ' + data['#words']);
       //'1000000' is a hack to display trailing zero... till not supported with format
-      $('#eo-odometer').text(1000000 + data['#words'] * 10);
+      e$('#eo-odometer').text(1000000 + data['#words'] * 10);
     });
   };
 };
@@ -4237,7 +6071,7 @@ Injector = function (paragraphs) {
           document.eo_user.checkWeeklyPresence();
         }
         //this should happen only if isCorrect=True!
-        if (!$('#vocabulary').hasClass('hidden') && this.isCorrect(res.answer)) {
+        if (!e$('#vocabulary').hasClass('hidden') && this.isCorrect(res.answer)) {
           document.eo_user.fetchVocabulary();
         }
       }
@@ -4254,7 +6088,7 @@ Injector = function (paragraphs) {
         }
       }
     }.bind(this));
-    if (msg === "CompletedQuestion" && $('.eo-question:not(.eo-answered)').length === 0) {
+    if (msg === "CompletedQuestion" && e$('.eo-question:not(.eo-answered)').length === 0) {
       report("CompletedQuiz");
     }
   };
@@ -4276,8 +6110,8 @@ Injector = function (paragraphs) {
       return;
     }
     this.isActive = false;
-    $('.eo-space').remove();
-    $(this.elements).each(function (i, q) {
+    e$('.eo-space').remove();
+    e$(this.elements).each(function (i, q) {
       q.replacement.replaceWith(q.original);
       //check if this is the right place!!!! 
       //it good when user signout, but what it's efect if user just on and off?
@@ -4294,7 +6128,7 @@ Injector = function (paragraphs) {
       return;
     }
     this.isActive = true;
-    $(this.elements).each(function (i, q) {
+    e$(this.elements).each(function (i, q) {
       var hint = q.qobj.data.preposition + q.qobj.data.hint;
       q.replacement = q.qobj.replacement();
       q.original.replaceWith(q.replacement);
@@ -4315,9 +6149,9 @@ Injector = function (paragraphs) {
       width > future_width && spaceInCurrentLine > lineWidth) {
         //a question which expected to go up after action
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
-        //$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').text('s').insertBefore(q.replacement);
+        //e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').text('s').insertBefore(q.replacement);
         //q.replacement.before("<br class ='eo-space'>");
-        q.replacement.before($('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
       }
     });
   };
@@ -4371,7 +6205,7 @@ Injector = function (paragraphs) {
 
     var found;
     // paragraphs.each(function(i, p) {
-    $.each(paragraphs, function (i, p) {
+    e$.each(paragraphs, function (i, p) {
       //maybe replace '&nbsp;' with ' '? it will help front page injector to find target
       //p.html(p.innerHTML.replace('&nbsp;',' '));
       findAndReplaceDOMText(p, {
@@ -4384,7 +6218,7 @@ Injector = function (paragraphs) {
           var ix = portion.text.indexOf(replaced);
           if (ix === -1) return portion.text;
           var before = document.createTextNode(portion.text.slice(0, ix));
-          var target = $('<span>').addClass('eo-injection-target').text(portion.text.slice(ix, ix + replaced.length));
+          var target = e$('<span>').addClass('eo-injection-target').text(portion.text.slice(ix, ix + replaced.length));
           var after = document.createTextNode(portion.text.slice(ix + replaced.length));
           var frag = document.createDocumentFragment();
           frag.appendChild(before);
@@ -4402,11 +6236,11 @@ Injector = function (paragraphs) {
 updateProgressBars = function () {
   // you'd think activating the current one would be enough... but since we want them to animate
   // from the previous state and not from 0, the easiest way is to update all of them always.
-  var all = $('.eo-question').length;
-  var answered = $('.eo-question.eo-answered').length;
-  //when update $('.eo-progress').text the inner element became hidden. don't know why
-  //$('.eo-progress').text(Math.ceil(100 * answered / all).toString() + '%');
-  $('.eo-progress-inner').css('width', (100 * answered / all).toString() + '%');
+  var all = e$('.eo-question').length;
+  var answered = e$('.eo-question.eo-answered').length;
+  //when update e$('.eo-progress').text the inner element became hidden. don't know why
+  //e$('.eo-progress').text(Math.ceil(100 * answered / all).toString() + '%');
+  e$('.eo-progress-inner').css('width', (100 * answered / all).toString() + '%');
 };
 
 var AbstractQuestion = function (qdata, toggleSound) {
@@ -4436,9 +6270,9 @@ AbstractQuestion.prototype.replacement = function () {
 AbstractQuestion.prototype.createElement = function () {
   var textWithPreposition = this.data.preposition + this.data.hint;
   var prepositionClass = this.data.preposition ? 'preposition' : '';
-  return $('<div>').addClass('eo-question').addClass(this.languageOrderClass())
-  //.append($('<span>').addClass('eo-correct').toggleHtml(this.correct[0]))
-  .append($('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append($('<span>').addClass('eo-hint').addClass(prepositionClass).text(textWithPreposition)).append($('<span>').addClass('eo-progress').append($('<span>').addClass('eo-progress-inner')));
+  return e$('<div>').addClass('eo-question').addClass(this.languageOrderClass())
+  //.append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0]))
+  .append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append(e$('<span>').addClass('eo-hint').addClass(prepositionClass).text(textWithPreposition)).append(e$('<span>').addClass('eo-progress').append(e$('<span>').addClass('eo-progress-inner')));
 };
 
 AbstractQuestion.prototype.bindInput = function () {
@@ -4460,10 +6294,10 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
         if (this.element.hasClass('eo-active')) {
           this.closeUnanswered();
         }
-        $(document).off('click', handler);
+        e$(document).off('click', handler);
       }
     }.bind(this);
-    $(document).on('click', handler);
+    e$(document).on('click', handler);
   }
 };
 
@@ -4501,7 +6335,7 @@ AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesT
 
 AbstractQuestion.prototype.QuestionAudio = function (e) {
   e.preventDefault();
-  var target = $(e.target);
+  var target = e$(e.target);
   var prepositionClass = this.data.preposition ? 'preposition' : '';
   target.toggleHtml(this.data.preposition + this.data.hint, this.practicedWord).toggleClass(prepositionClass);
   if (target.html() == this.practicedWord) {
@@ -4579,7 +6413,7 @@ AbstractQuestion.prototype.guess = function (answer, target) {
   } else {
     this.element.addClass('eo-show_solution');
     //this is not the right place for this code. pass it to multipleChoiseQuestion
-    if ($(target).data('translate')) $(target).toggleHtml($(target).data('translate'), $(target).data('word'));
+    if (e$(target).data('translate')) e$(target).toggleHtml(e$(target).data('translate'), e$(target).data('word'));
   }
 
   // don't count the same answer multiple times.
@@ -4642,7 +6476,7 @@ OpenQuestion.prototype.createElement = function () {
   console.log("EVENT OpenQuestion.prototype.createElement ??");
   var element = AbstractQuestion.prototype.createElement.call(this);
   element.addClass('eo-open');
-  this.input = $('<input>').addClass('eo-input');
+  this.input = e$('<input>').addClass('eo-input');
   element.find('.eo-hint').after(this.input);
   return element;
 };
@@ -4667,7 +6501,7 @@ OpenQuestion.prototype.onKeyPress = function (event) {
     return;
   } else if (lang !== this.lang) {
     if (!this.langWarning) {
-      this.langWarning = $('<div>').addClass('eo-layout-warning').addClass('eo-box').append($('<p dir="ltr">').text(MESSAGES.WRONG_KEYBOARD_LAYOUT)).append($('<p>').append($('<strong>').text(MESSAGES.WRONG_KEYBOARD_LAYOUT_HINT)));
+      this.langWarning = e$('<div>').addClass('eo-layout-warning').addClass('eo-box').append(e$('<p dir="ltr">').text(MESSAGES.WRONG_KEYBOARD_LAYOUT)).append(e$('<p>').append(e$('<strong>').text(MESSAGES.WRONG_KEYBOARD_LAYOUT_HINT)));
       this.element.prepend(this.langWarning);
 
       this.guess = function (answer) {
@@ -4760,15 +6594,15 @@ MultipleChoice.prototype.createElement = function () {
   var answers = this.data.wrong_answers;
   shuffle(answers);
   option_elements = answers.map(function (answer) {
-    var li = $('<li>').addClass('eo-option')
+    var li = e$('<li>').addClass('eo-option')
     //replacing '_' with none breakable HTML ENTITY, so the word will not displayed in two lines
-    .append($('<span>').html(answer.answer.replace('_', '&nbsp;')).data('translate', answer.translation).data('word', answer.answer));
+    .append(e$('<span>').html(answer.answer.replace('_', '&nbsp;')).data('translate', answer.translation).data('word', answer.answer));
     return li;
   }.bind(this));
-  option_elements.push($('<li>').addClass('eo-option eo-correct_option').append($('<span>').html(this.correct[0].replace('_', '&nbsp;')).data('word', this.correct[0])));
+  option_elements.push(e$('<li>').addClass('eo-option eo-correct_option').append(e$('<span>').html(this.correct[0].replace('_', '&nbsp;')).data('word', this.correct[0])));
   shuffle(option_elements);
 
-  this.options = $('<ul>').addClass('eo-options').append(option_elements);
+  this.options = e$('<ul>').addClass('eo-options').append(option_elements);
   element.find('.eo-hint').after(this.options);
   return element;
 };
@@ -4794,7 +6628,7 @@ MultipleChoice.prototype.bindInput = function () {
   if (this.element.hasClass('eo-answered')) {
     this.element.on('click', function (e) {
       e.preventDefault();
-      var target = $(e.target);
+      var target = e$(e.target);
       target.toggleHtml(this.data.hint, this.practicedWord);
       if (target.html() == this.practicedWord) {
         Speaker.speak(document.englishonConfig.targetLanguage, target.text());
@@ -4805,16 +6639,16 @@ MultipleChoice.prototype.bindInput = function () {
 
 MultipleChoice.prototype.optionOnClick = function (e) {
   e.preventDefault();
-  this.guess($(e.target).data('word'), e.target);
+  this.guess(e$(e.target).data('word'), e.target);
 };
 
 MultipleChoice.prototype.open = function () {
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
-    $(option).find('span').toggleHtml($(option).find('span').data('word'), $(option).find('span').data('translate'));
+    e$(option).find('span').toggleHtml(e$(option).find('span').data('word'), e$(option).find('span').data('translate'));
   });
   options_width_when_show_translations = this.options.outerWidth();
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
-    $(option).find('span').toggleHtml($(option).find('span').data('word'), $(option).find('span').data('translate'));
+    e$(option).find('span').toggleHtml(e$(option).find('span').data('word'), e$(option).find('span').data('translate'));
   });
   var width = Math.max(this.element.outerWidth(), this.options.outerWidth(), options_width_when_show_translations);
   //var width = Math.max(this.element.outerWidth(), this.options.outerWidth());
@@ -4895,7 +6729,6 @@ ExpiredMultipleChoiceQuestion.prototype.constructor = ExpiredMultipleChoiceQuest
 //
 document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
     <div id='eo-menu' class='hidden eo-area'>\
-        <audio id='player'></audio>\
         <div class='header'>\
             <div id='eo-account-area'>\
                 <div class='Grid u-textCenter eo-row eo-menu-inner'>\
@@ -4951,7 +6784,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
             <div id='coming_soon'>\
                 <div class='Grid-cell eo-row eo-menu-inner'>\
                     <div class='Grid'>\
-                        <span class='tooltip'>Coming soon</span>\
+                        <span class='eo-tooltip'>Coming soon</span>\
                         <div class='Grid-cell u-1of6 eo-low-layer'>\
                             <div class='flag sp-flag'></div>\
                         </div>\
@@ -4962,7 +6795,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
                 </div>\
                 <div class='Grid-cell eo-row eo-menu-inner' id='eo-last-option'>\
                     <div class='Grid'>\
-                        <span class='tooltip'>Coming soon</span>\
+                        <span class='eo-tooltip'>Coming soon</span>\
                         <div class='Grid-cell u-1of6 eo-low-layer'>\
                             <div class='flag fr-flag'></div>\
                         </div>\
@@ -5176,17 +7009,17 @@ ShturemOverlay = function () {
     return Promise.resolve();
   };
   this.insertContent = function (element) {
-    //element.insertBefore($('table:first'));
-    $('body').append(element);
+    //element.insertBefore(e$('table:first'));
+    e$('body').append(element);
   };
   this.markLinks = function (links) {};
 
   this.hideButtons = function () {
-    $('.eo-button').addClass('hidden');
+    e$('.eo-button').addClass('hidden');
   };
   this.showButtons = function () {
-    $('div#top_menu_block').append(EnglishOnButton.element);
-    $('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    e$('div#top_menu_block').append(EnglishOnButton.element);
+    e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
   };
@@ -5199,50 +7032,50 @@ ShturemOverlay = function () {
   };
   this.TermsDialog = function () {
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
-    $('#tos').html(messages.AGREE_TO_TOS);
+    e$('#tos').html(messages.AGREE_TO_TOS);
     if (document.englishonConfig.media == 'desktop') {
       if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
         var menuTop = 0;
       } else {
         var menuTop = (screen.height - 540) / 2;
       }
-      $('#eo-dlg-terms').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
+      e$('#eo-dlg-terms').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
     }
   };
   this.showTermsDialog = function (callback) {
-    $('#eo-accept-checkbox').off('change');
-    $('#eo-accept-checkbox').change(function (e) {
+    e$('#eo-accept-checkbox').off('change');
+    e$('#eo-accept-checkbox').change(function (e) {
       // this will contain a reference to the checkbox   
       if (e.target.checked) {
         document.englishonBackend.acceptedTerms().then(function () {
-          $('#terms-container').addClass('hidden');
-          $('#eo-dlg-terms').addClass('hidden');
-          $('#eo-accept-checkbox').click();
+          e$('#terms-container').addClass('hidden');
+          e$('#eo-dlg-terms').addClass('hidden');
+          e$('#eo-accept-checkbox').click();
           this.fetchQuestions().then(callback);
         }.bind(this));
       }
     }.bind(this));
-    $('.terms-close').on('click', this.rejectTerms);
-    $('#terms-container').removeClass('hidden');
-    $('#eo-dlg-terms').removeClass('hidden');
+    e$('.terms-close').on('click', this.rejectTerms);
+    e$('#terms-container').removeClass('hidden');
+    e$('#eo-dlg-terms').removeClass('hidden');
   };
 };
 ShturemOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines
-  $('body').addClass('question-injected');
+  e$('body').addClass('question-injected');
 };
 ShturemOverlay.prototype.hideQuestions = function () {
-  $('body').removeClass('question-injected');
+  e$('body').removeClass('question-injected');
 };
 ShturemFrontpageOverlay = function (parts) {
   this.parts = {};
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
-  $.each(parts, function (url, para) {
+  e$.each(parts, function (url, para) {
     this.parts[url] = {
       url: url,
-      paragraphs: $(para),
+      paragraphs: e$(para),
       questions: null,
       injector: null
     };
@@ -5259,7 +7092,7 @@ ShturemFrontpageOverlay = function (parts) {
     this.userAnswered = false;
     this.flag = '';
     //to enable fetch again after login
-    $.each(this.parts, function (url, part) {
+    e$.each(this.parts, function (url, part) {
       part.questions = [];
       if (part.injector) {
         part.injector.off();
@@ -5267,8 +7100,8 @@ ShturemFrontpageOverlay = function (parts) {
     });
     //remove only 'eo-injection-target' tags,not content
     //check if better do that native
-    $('.eo-injection-target').contents().unwrap();
-    var promises = $.map(this.parts, function (part, url) {
+    e$('.eo-injection-target').contents().unwrap();
+    var promises = e$.map(this.parts, function (part, url) {
       return backend.getArticle(url).then(function (questions) {
         for (var i = 0; i < questions.length; i++) {
           questions[i].location = part.paragraphs.context.textContent.indexOf(questions[i].context);
@@ -5290,13 +7123,13 @@ ShturemFrontpageOverlay = function (parts) {
 
   this.showQuestions = function () {
     ShturemOverlay.prototype.showQuestions.call(this);
-    $.each(this.parts, function (url, part) {
+    e$.each(this.parts, function (url, part) {
       if (part.injector) part.injector.on();
     });
   };
   this.hideQuestions = function () {
     ShturemOverlay.prototype.hideQuestions.call(this);
-    $.each(this.parts, function (url, part) {
+    e$.each(this.parts, function (url, part) {
       if (part.injector) part.injector.off();
     });
   };
@@ -5316,7 +7149,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     var backend = document.englishonBackend;
     //remove only 'eo-injection-target' tags,not content
     //check if better do that native
-    $('.eo-injection-target').contents().unwrap();
+    e$('.eo-injection-target').contents().unwrap();
     this.questions = []; //to enable fetch again after login
     if (this.injector) {
       this.injector.off();
@@ -5358,9 +7191,9 @@ CH10Overlay = function (url, subtitle, bodytext) {
   this.userAnswered = false;
   ShturemOverlay.call(this);
   this.showButtons = function () {
-    //$('div#top_menu_block').append(EnglishOnButton.element);
-    $('ul.menu').append(EnglishOnButton.element);
-    $('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    //e$('div#top_menu_block').append(EnglishOnButton.element);
+    e$('ul.menu').append(EnglishOnButton.element);
+    e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     //EnglishOnButton.registerHandlers(this);
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
@@ -5369,7 +7202,7 @@ CH10Overlay = function (url, subtitle, bodytext) {
     var backend = document.englishonBackend;
     //remove only 'eo-injection-target' tags,not content
     //check if better do that native
-    $('.eo-injection-target').contents().unwrap();
+    e$('.eo-injection-target').contents().unwrap();
     this.questions = []; //to enable fetch again after login
     if (this.injector) {
       this.injector.off();
@@ -5399,6 +7232,59 @@ CH10Overlay = function (url, subtitle, bodytext) {
     if (this.injector) this.injector.off();
   }.bind(this);
 };
+
+actualicOverlay = function (url, subtitle, bodytext) {
+  this.url = url;
+  this.subtitle = subtitle;
+  this.bodytext = bodytext;
+  this.paragraphs = [subtitle, bodytext];
+  this.interacted = false;
+  this.userAnswered = false;
+  ShturemOverlay.call(this);
+  this.showButtons = function () {
+    //e$('.site-header').find('.small-12.columns').append(EnglishOnButton.element);
+    e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
+    e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    //EnglishOnButton.registerHandlers(this);
+    // needs to be done here because registering event handlers
+    // only works correctly after inserting the element into DOM.
+  };
+  this.showQuestions = function () {
+    ShturemOverlay.prototype.showQuestions.call(this);
+    if (this.injector) this.injector.on();
+  }.bind(this);
+
+  this.hideQuestions = function () {
+    ShturemOverlay.prototype.hideQuestions.call(this);
+    if (this.injector) this.injector.off();
+  }.bind(this);
+
+  this.fetchQuestions = function () {
+    var backend = document.englishonBackend;
+    //remove only 'eo-injection-target' tags,not content
+    //check if better do that native
+    e$('.eo-injection-target').contents().unwrap();
+    this.questions = []; //to enable fetch again after login
+    if (this.injector) {
+      this.injector.off();
+    }
+    this.interacted = false;
+    this.userAnswered = false;
+    return backend.getArticle(this.url).then(function (questions) {
+      // for (var i = 0; i < questions.length; i++) {
+      //   questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context))
+      // }
+      // questions.sort(function(q1, q2) {
+      //   return q1.location - q2.location;
+      // });
+      this.questions = questions;
+      console.log("Num questions: " + questions.length);
+      this.injector = new Injector(this.paragraphs);
+      this.injector.setQuestions(questions);
+      return questions;
+    }.bind(this));
+  };
+};
 //
 ScraperFactory = function (location) {
   if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
@@ -5411,6 +7297,22 @@ ScraperFactory = function (location) {
   if (location.host === 'www.ch10.co.il') {
     return new CH10Scraper();
   }
+  if (location.host === 'actualic.co.il') {
+    return new actualicScraper();
+  }
+};
+
+var actualicScraper = function () {
+  this.getHost = function () {
+    return 'actualic.co.il';
+  };
+
+  this.scrape = function () {
+    url = ('http://actualic.co.il' + location.pathname + location.search).replace(/#.*$/, '');
+    var subtitle = e$('.entry-header').find('.excerpt')[0];
+    var bodytext = e$('.entry-content')[0];
+    return new actualicOverlay(url, subtitle, bodytext);
+  };
 };
 
 var CH10Scraper = function () {
@@ -5420,8 +7322,8 @@ var CH10Scraper = function () {
 
   this.scrape = function () {
     url = ('http://www.ch10.co.il' + location.pathname + location.search).replace(/#.*$/, '');
-    var subtitle = $('.main-post').find('.excerpt')[0];
-    var bodytext = $('.main-post').find('.content_content')[0];
+    var subtitle = e$('.header_txt').find('.excerpt');
+    var bodytext = e$('.entry-content');
     // Shturem article bodies are not divided internally to <p>s.
     // they're just blobs of text with the occasional double <br>.
     return new CH10Overlay(url, subtitle, bodytext);
@@ -5435,8 +7337,8 @@ var ShturemArticleScraper = function () {
 
   this.scrape = function () {
     url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
-    var subtitle = $('span.artSubtitle')[0];
-    var bodytext = $('div.artText')[0];
+    var subtitle = e$('span.artSubtitle')[0];
+    var bodytext = e$('div.artText')[0];
     // Shturem article bodies are not divided internally to <p>s.
     // they're just blobs of text with the occasional double <br>.
     return new ShturemArticleOverlay(url, subtitle, bodytext);
@@ -5450,12 +7352,12 @@ var ShturemFrontPageScraper = function () {
 
   this.scrape = function () {
     var parts = {};
-    $('td.mainpn_text').each(function (i, para) {
-      var url = $(para).closest('table').find('td.mainpn_bottom a')[0].href;
+    e$('td.mainpn_text').each(function (i, para) {
+      var url = e$(para).closest('table').find('td.mainpn_bottom a')[0].href;
       var fixed_url = 'http://www.shturem.net' + url.substr(url.indexOf('/index.php'));
       parts[fixed_url] = para;
       // hack to make answers visible
-      $(para).attr('style', 'overflow: visible;');
+      e$(para).attr('style', 'overflow: visible;');
     });
     return new ShturemFrontpageOverlay(parts);
   };
@@ -5468,8 +7370,8 @@ var EnglishonArticleScraper = function () {
 
   this.scrape = function () {
     url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
-    var subtitle = $('span.artSubtitle')[0];
-    var bodytext = $('div.artText')[0];
+    var subtitle = e$('span.artSubtitle')[0];
+    var bodytext = e$('div.artText')[0];
     // Shturem article bodies are not divided internally to <p>s.
     // they're just blobs of text with the occasional double <br>.
     return new ShturemArticleOverlay(url, subtitle, bodytext);
@@ -5521,21 +7423,20 @@ var Speaker = new function () {
     if (this.cache[key]) {
       return this.cache[key];
     }
-    var r = $.Deferred();
-    document.englishonBackend.getTextToSpeechLink(language, phrase).then(function (url) {
-      // can't use jQuery because it doesn't support arraybuffer yet
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', document.englishonBackend.base + url, true);
-      xhr.responseType = 'arraybuffer';
-      xhr.onload = function (e) {
-        audioContext.decodeAudioData(xhr.response, r.resolve.bind(r));
-      };
-      xhr.onerror = function (e) {
-        console.log('Error pronouncing phrase "' + key + '": ' + e.error);
-        console.log(e);
-      };
-      xhr.send();
-    });
+    var r = e$.Deferred();
+
+    // can't use jQuery because it doesn't support arraybuffer yet
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', document.englishonBackend.base + "/tts/speak/" + language + '/' + phrase, true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function (e) {
+      audioContext.decodeAudioData(xhr.response, r.resolve.bind(r));
+    };
+    xhr.onerror = function (e) {
+      console.log('Error pronouncing phrase "' + key + '": ' + e.error);
+      console.log(e);
+    };
+    xhr.send();
     this.cache[key] = r;
     return r;
   };
@@ -5559,16 +7460,154 @@ var Speaker = new function () {
 // source.buffer = Audiobuffer;
 // source.playbackRate.value = 1.5;
 //
+document.tour = new Shepherd.Tour({
+  defaults: {
+    classes: 'shepherd shepherd-theme-arrows shepherd-has-cancel-link rtl',
+    showCancelLink: true
+  }
+});
+var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = null) {
+  this.id = id;
+  this.attachTo = attachTo;
+  this.title = '<img src=' + document.staticUrl('img/menu-logotype.svg') + ' class = "tutorial-logo"/><img src=' + document.staticUrl('img/button-logo.svg') + ' class = "tutorial-icon"/>';
+  this.text = text;
+  this.advanceOn = advanceOn;
+  this.scroll_value = scroll_value;
+};
+
+document.tour.welcomeTutorial = function () {
+  steps = [];
+  // steps.push(['.eo-button left', 'welcome', 'welcome to Englishon , etc........', null, 'welcome_' + 0]);
+  // steps.push(['.eo-button top', 'englishon', 'Open the menu', '.eo-button click', 'welcome_' + 1]);
+  // steps.push(['#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', null, 'welcome_' + 2]);
+  steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'לחץ להפעלה והתחל ללמוד אנגלית תוך כדי גלישה ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
+  steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
+  this.initTutorial(steps);
+};
+
+document.tour.quizTutorial = function () {
+  steps = [];
+  e$('.eo-question').each(function (i, q) {
+    var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
+    e$(q).addClass('step_' + i);
+    steps.push(new step('.step_' + i + ' top', step_title, 'לחץ ובחר את המילה המתאימה', 'step_' + i));
+  });
+  steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'חזור להסבר מפורט על לוח בקרת ההתקדמות בכל עת', 'live_actions'));
+  steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
+  steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
+  this.initTutorial(steps);
+};
+document.tour.initTutorial = function (steps) {
+
+  for (i = 0; i < steps.length; i++) {
+    buttons = [];
+    //add exit button to first step
+    if (i == 0) {
+      buttons.push({
+        text: 'יציאה',
+        classes: 'shepherd-button-secondary',
+        action: function () {
+          return document.tour.hide();
+        }
+      });
+    }
+    // no back button at the start
+    if (i > 0) {
+      buttons.push({
+        text: 'הקודם',
+        classes: 'shepherd-button-secondary',
+        action: function () {
+          return document.tour.back();
+        }
+      });
+    }
+    // no next button on last step
+    if (i < steps.length - 1 && steps[i].id != 'welcome_0') {
+      buttons.push({
+        text: 'הבא',
+        classes: 'shepherd-button-primary',
+        action: function () {
+          if (document.tour.getCurrentStep().id === 'login') {
+            document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
+            window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
+          }
+          return document.tour.next();
+        }
+      });
+    }
+    // if ((i == steps.length - 1) && steps[i].id != 'welcome_1') {
+    //   buttons.push({
+    //     text: 'Done',
+    //     classes: 'shepherd-button-primary',
+    //     action: function() {
+    //       return document.tour.hide();
+    //     }
+    //   });
+
+    // }
+    // else {
+    //   buttons.push({
+    //     text: 'Close',
+    //     classes: 'shepherd-button-primary',
+    //     action: function() {
+    //       return document.tour.hide();
+    //     }
+    //   });
+    // }
+    var tetherOptionsDic = {};
+    if (steps[i].id.slice(0, 5) === 'step_') {
+      tetherOptionsDic.offset = '20px 0px';
+    }
+    if (steps[i].id === 'welcome_1') {
+      tetherOptionsDic.offset = '0px 20px';
+    }
+    document.tour.addStep(steps[i].id, {
+      text: steps[i].text,
+      title: steps[i].title,
+      attachTo: steps[i].attachTo,
+      //classes: 'shepherd shepherd-open shepherd-theme-arrows shepherd-transparent-text',
+      buttons: buttons,
+      advanceOn: steps[i].advanceOn,
+      tetherOptions: tetherOptionsDic,
+      when: {
+        show: function () {
+          if (document.tour.getCurrentStep().id === 'live_actions') {
+            if (!e$('#eo-live:not(.hidden)').length) {
+              document.eo_user.showLiveActions();
+              window.scrollTo(0, 10);
+            }
+          }
+          if (!(document.tour.getCurrentStep().id.slice(0, 5) == 'step_')) {
+            window.scrollTo(0, 0);
+          } else {
+            var val = e$('.' + document.tour.getCurrentStep().id).offset().top;
+            window.scrollTo(0, val - 370);
+            console.log('tour event------------------attachTo: ' + document.tour.getCurrentStep().id);
+          }
+          var val = Math.max(230 - $(window).scrollTop(), 60);
+          e$('#eo-live').css('top', val);
+        }
+      }
+    });
+  }
+};
+
+document.tour.turnOffGuide = function () {
+  document.tour.hide();
+};
+//
 // **************
 // Initialization
 // **************
+window.e$ = jQuery.noConflict(true);
 
-document.resources_promise = $.Deferred();
-document.loaded_promise = $.Deferred();
+document.resources_promise = e$.Deferred();
+document.loaded_promise = e$.Deferred();
+document.questions_promise = e$.Deferred();
 
 function englishon() {
   var staticUrl = undefined;
-  if ($('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
+  if (e$('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
     staticUrl = function (resource) {
       return 'http://localhost:8080/static/ex/' + resource;
     };
@@ -5604,15 +7643,18 @@ function englishon() {
   }
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES
-  url = window.location.toString().substr(0, window.location.toString().indexOf("id=") + 3);
-  if (url != 'http://shturem.net/index.php?section=news&id=' && url != 'http://www.shturem.net/index.php?section=news&id=' && url != 'http://www.englishon.org/hidden/shturem.html') {
+  sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org'];
+  if (sites.indexOf(window.location.host) == -1) {
     return;
   }
-  if (url != 'http://www.englishon.org/hidden/shturem.html') {
+
+  if (window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') {
     article_id = Number(window.location.search.substr(window.location.search.indexOf('id=') + 3));
     if (article_id < 91251 || article_id > 91551) {
       return;
     }
+  } else if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/חכ-שמוליהפכו-את-הקשישים-שלנו-לשקי-אגר/") {
+    return;
   }
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
@@ -5630,7 +7672,7 @@ function englishon() {
   var defaults = {
     'token': null,
     'backendUrl': DEFAULT_BACKEND_URL,
-    'isActive': true,
+    'isActive': false,
     'targetLanguage': I18N.DEFAULT_TARGET_LANGUAGE,
     'enableSound': true,
     'volume': 100,
@@ -5643,7 +7685,7 @@ function englishon() {
   // Store
   configStorage.get(defaults).then(function (config) {
     document.englishonConfig = config;
-    $('body').addClass('eo-language-' + config.targetLanguage);
+    e$('body').addClass('eo-language-' + config.targetLanguage);
     if (config.enableTutorial) {
       startTutorial();
     }
@@ -5670,27 +7712,30 @@ function englishon() {
 }
 
 var startTutorial = function () {
-  $('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
-  var onPickLanguage = function () {
-    $('.eo-language_picker-option').off('click', onPickLanguage);
-    $('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
+  // e$('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
+  // var onPickLanguage = function() {
+  //   e$('.eo-language_picker-option').off('click', onPickLanguage);
+  //   e$('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
 
-    // in case questions are still hidden, keep trying
-    var timer = setInterval(function () {
-      var questions = $('.eo-question');
-      if (questions.length > 0) {
-        questions.first().addClass('eo-first_question');
-        var onOpenQuestion = function () {
-          $('.eo-hint').off('click', onOpenQuestion);
-          $('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
-          configStorage.set({ enableTutorial: false });
-        };
-        $('.eo-hint').click(onOpenQuestion);
-        clearInterval(timer);
-      }
-    }, 100);
-  };
-  $('.eo-language_picker-option').click(onPickLanguage);
+  //   // in case questions are still hidden, keep trying
+  //   var timer = setInterval(function() {
+  //     var questions = e$('.eo-question');
+  //     if (questions.length > 0) {
+  //       questions.first().addClass('eo-first_question');
+  //       var onOpenQuestion = function() {
+  //         e$('.eo-hint').off('click', onOpenQuestion);
+  //         e$('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
+  //         configStorage.set({ enableTutorial: false });
+  //       };
+  //       e$('.eo-hint').click(onOpenQuestion);
+  //       clearInterval(timer);
+  //     }
+  //   }, 100);
+
+  // };
+  // e$('.eo-language_picker-option').click(onPickLanguage);
+
+
 };
 
 // **********
@@ -5709,13 +7754,13 @@ function languageOf(char) {
 function parseDictionary(data) {
   var dict = buckets.MultiDictionary();
   var lines = data.split('\r\n');
-  $(lines).each(function (ix, line) {
+  e$(lines).each(function (ix, line) {
     var parts = line.split(' ').map(function (part) {
       return part.trim().replace('_', ' ');
     });
     var heb = [];
     var eng = [];
-    $(parts).each(function (ix, part) {
+    e$(parts).each(function (ix, part) {
       if (part === '') {
         // do nothing, there was a bunch of adjacent whitespace chars.
       } else {
@@ -5724,8 +7769,8 @@ function parseDictionary(data) {
         if (lang === 'he') heb.push(part);
       }
     });
-    $(heb).each(function (ix, h) {
-      $(eng).each(function (jx, e) {
+    e$(heb).each(function (ix, h) {
+      e$(eng).each(function (jx, e) {
         dict.set(h, e);
         dict.set(e, h);
       });
@@ -5735,36 +7780,39 @@ function parseDictionary(data) {
 }
 
 // this line must be last!
-$(englishon);
+e$(englishon);
 //
 // ******
 // Button
 // ******
+
+
 var EnglishOnButton = new function () {
   this.showMainMenu = function (e) {
     e.preventDefault();
-    if (!$('#eo-menu').length) {
+    if (!e$('#eo-menu').length) {
       EnglishOnButton.loading();
       return;
     }
-    $('#eo-menu').removeClass('hidden');
-    $('#eo-area-container').removeClass('hidden');
+    e$('#eo-menu').removeClass('hidden');
+    e$('#eo-area-container').removeClass('hidden');
     window.history.pushState({ 'elementToShow': 'eo-menu' }, '');
-    $(document).mouseup(function (e) {
+
+    e$(document).mouseup(function (e) {
       e.preventDefault();
       e.stopPropagation();
-      var button = $('.eo-button');
+      var button = e$('.eo-button');
       if (button.is(e.target)) return;
-
-      if (!$(e.target).hasClass('eo-area') && !$(e.target).parents().hasClass('eo-area')) {
+      if (e$('[data-id="welcome_1"]').hasClass('shepherd-open')) return;
+      if (!e$(e.target).hasClass('eo-area') && !e$(e.target).parents().hasClass('eo-area')) {
         document.eoDialogs.hideDialogs(0);
         window.history.pushState({ 'elementToShow': 'shturem' }, '');
-        $(document).off('mouseup');
+        e$(document).off('mouseup');
       }
     });
   };
   this.currentState = 'eo-button-on';
-  this.element = $('<div>').addClass('eo-button').addClass(this.currentState);
+  this.element = e$('<div>').addClass('eo-button').addClass(this.currentState);
 
   this.changeState = function (state) {
     this.element.removeClass(this.currentState);
@@ -5798,36 +7846,36 @@ var EnglishOnDialogs = function () {
   };
 
   this.hideDialogs = function (milliseconds) {
-    $('#eo-area-container').addClass('hidden');
-    $('.eo-area').addClass('hidden');
-    $('.eo-inner-area').addClass('hidden');
-    $('.eo-message').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+    e$('#eo-area-container').addClass('hidden');
+    e$('.eo-area').addClass('hidden');
+    e$('.eo-inner-area').addClass('hidden');
+    e$('.eo-message').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
   };
   this.toggleDialog = function (element, action) {
     this.hideDialogs(0);
-    $('#eo-area-container').removeClass('hidden');
-    $('#eo-menu').removeClass('hidden'); //becouse it serves as container, giving the header and footer
-    var elementObj = $('#' + element);
+    e$('#eo-area-container').removeClass('hidden');
+    e$('#eo-menu').removeClass('hidden'); //becouse it serves as container, giving the header and footer
+    var elementObj = e$('#' + element);
     var elementsArray = [elementObj[0]];
     if (elementObj.parent().hasClass('eo-area')) {
       //case of partial element
       elementObj.parent().find('.eo-inner-area').addClass('hidden'); //hide other parts of element
       var elementParent = elementObj.parent()[0];
-      elementsArray = [elementObj[0], elementParent]; //looking after a normal syntax... $([]).add doesn't work
+      elementsArray = [elementObj[0], elementParent]; //looking after a normal syntax... e$([]).add doesn't work
     };
 
-    $(elementsArray).toggleClass('hidden', action == 'hide');
+    e$(elementsArray).toggleClass('hidden', action == 'hide');
   };
   this.toggleDialogTrigger = function (e) {
     e.preventDefault();
-    var element = $(e.target).data('elementToShowOnClick');
-    if ($('#' + element).hasClass('hidden')) {
+    var element = e$(e.target).data('elementToShowOnClick');
+    if (e$('#' + element).hasClass('hidden')) {
       this.toggleDialog(element, 'show');
     } else {
       this.toggleDialog(element, 'hide');
     }
     //don't do pushstate with DOMelement. after jquery selection of the element this will not work
-    var visibleNow = $('.eo-area').filter(':visible').last().find('.eo-inner-area').length ? $('.eo-area').filter(':visible').last().find('.eo-inner-area').filter(':visible') : $('.eo-area').filter(':visible').last();
+    var visibleNow = e$('.eo-area').filter(':visible').last().find('.eo-inner-area').length ? e$('.eo-area').filter(':visible').last().find('.eo-inner-area').filter(':visible') : e$('.eo-area').filter(':visible').last();
     window.history.pushState({ 'elementToShow': visibleNow.attr('id') }, '');
   }.bind(this);
 };
@@ -5837,7 +7885,7 @@ var EnglishOnDialogs = function () {
 // ****
 var EnglishOnMenu = function () {
   console.log('jquery extend before');
-  jQuery.fn.extend({
+  e$.fn.extend({
     toggleText: function (a, b) {
       if (this.text() != a && this.text() != b) {
         this.text(a);
@@ -5865,27 +7913,27 @@ var EnglishOnMenu = function () {
   console.log('jquery extend after');
   this.displayMenuMessages = function () {
     switch_text = JSON.parse(document.englishonConfig.isActive) ? 'On' : 'Off';
-    $('#eo-power-switch-text').text(switch_text);
+    e$('#eo-power-switch-text').text(switch_text);
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
-    $('#eo-picker-tittle').css({ direction: messages.DIRECTION });
-    if (!localStorage.getItem('email')) $('#eo-account-name').text(messages.MENU_TITLE);
-    $('#eo-language_header').text(messages.LANGUAGES_PICKER_TITLE);
-    $('#eo-help').find('a').text(messages.HELP);
-    $('#eo-contact').find('a').text(messages.CONTACT);
-    $('#dlg-sign-in-header').text(messages.LOGIN_SIGN_IN_TITLE);
-    $('#dlg-sign-up-header').text(messages.LOGIN_SIGN_UP_TITLE);
-    $('#subtitle').html(messages.LOGIN_SUBTITLE);
-    $('#or').text(messages.OR);
-    $('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);
-    $('#eo-mail-login-btn').text(messages.LOGIN_BUTTON);
-    $('#eo-choose-lang').text(messages.SITE_LANGUAGE);
-    $('#get-started').text(messages.GET_STARTED);
-    $('#signout_btn').text(messages.SIGN_OUT);
+    e$('#eo-picker-tittle').css({ direction: messages.DIRECTION });
+    if (!localStorage.getItem('email')) e$('#eo-account-name').text(messages.MENU_TITLE);
+    e$('#eo-language_header').text(messages.LANGUAGES_PICKER_TITLE);
+    e$('#eo-help').find('a').text(messages.HELP);
+    e$('#eo-contact').find('a').text(messages.CONTACT);
+    e$('#dlg-sign-in-header').text(messages.LOGIN_SIGN_IN_TITLE);
+    e$('#dlg-sign-up-header').text(messages.LOGIN_SIGN_UP_TITLE);
+    e$('#subtitle').html(messages.LOGIN_SUBTITLE);
+    e$('#or').text(messages.OR);
+    e$('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);
+    e$('#eo-mail-login-btn').text(messages.LOGIN_BUTTON);
+    e$('#eo-choose-lang').text(messages.SITE_LANGUAGE);
+    e$('#get-started').text(messages.GET_STARTED);
+    e$('#signout_btn').text(messages.SIGN_OUT);
   };
-  document.overlay.insertContent($(document.MENU_HTML));
-  document.overlay.insertContent($(document.LOGIN_DLG));
-  document.overlay.insertContent($(document.OPTIONS_DLG));
-  document.overlay.insertContent($(document.live_actions));
+  document.overlay.insertContent(e$(document.MENU_HTML));
+  document.overlay.insertContent(e$(document.LOGIN_DLG));
+  document.overlay.insertContent(e$(document.OPTIONS_DLG));
+  document.overlay.insertContent(e$(document.live_actions));
   /* returns a toggler function that both updates `configEntry`
      and calls the given `toggle()` function, useful when you want
      your saved configuration to always match what's on screen
@@ -5895,33 +7943,36 @@ var EnglishOnMenu = function () {
     // initialize
     var initial = JSON.parse(document.englishonConfig[configEntry]);
     toggle_func(initial);
-    $('body').toggleClass(cls, initial);
+    e$('body').toggleClass(cls, initial);
     return function () {
       enabled = !JSON.parse(document.englishonConfig[configEntry]);
       var config = {};
       config[configEntry] = enabled;
       configStorage.set(config);
       toggle_func(enabled);
-      $('body').toggleClass(cls, enabled);
+      e$('body').toggleClass(cls, enabled);
     };
   };
 
   var loginByMail = function () {
-    var email = $('#eo-login-email');
-    var password = $('#eo-login-password');
-    var email_msg = $('#login-email-msg');
-    var password_msg = $('#login-password-msg');
+    var email = e$('#eo-login-email');
+    var password = e$('#eo-login-password');
+    var email_msg = e$('#login-email-msg');
+    var password_msg = e$('#login-password-msg');
     var auth = new Authenticator(document.englishonConfig.backendUrl);
     if (auth.validate({ email: email, password: password, email_msg: email_msg, password_msg: password_msg })) {
       auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
         if (res.status == 'error') {
-          document.eoDialogs.displayMessage(res.message, $('#login-password-msg'));
+          document.eoDialogs.displayMessage(res.message, e$('#login-password-msg'));
           return;
         }
         document.englishonBackend.token = res.token;
-        $('#eo-account-area').removeClass('guest');
-        $('#eo-dlg-login').addClass('valid');
-        configStorage.set({ email: res.email, token: res.token, 'eo-user-name': $('#eo-login-email').val() });
+        e$('#eo-account-area').removeClass('guest');
+        e$('#eo-dlg-login').addClass('valid');
+        configStorage.set({ email: res.email, token: res.token, 'eo-user-name': e$('#eo-login-email').val() });
+        if (!document.englishonConfig.isUser) {
+          document.menu.firstTimeUser();
+        }
         var TODOAfterFetch = function () {
           document.eo_user.initial();
           document.menu.powerOn();
@@ -5933,56 +7984,62 @@ var EnglishOnMenu = function () {
             document.overlay.showTermsDialog(TODOAfterFetch);
           }
         });
-        $('#eo-account-name').text(email.val());
-        $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
-        $('body').addClass('logged').removeClass('guest');
+        e$('#eo-account-name').text(email.val());
+        e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
+        e$('body').addClass('logged').removeClass('guest');
         if (res.status == 'logged_in') {
           document.eoDialogs.hideDialogs(1000);
         } else if (res.status == 'registered') {
           document.eoDialogs.hideDialogs(0);
-          $('#eo-account-img').addClass('no-iamge');
+          e$('#eo-account-img').addClass('no-iamge');
         }
       });
     }
   };
   var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
   this.togglePower = toggler('eo-active', 'isActive', function (enable) {
-    var elem = $('#eo-power-switch-text');
+    var elem = e$('#eo-power-switch-text');
     elem.toggleText('On', 'Off');
     if (JSON.parse(enable)) {
       document.overlay.showQuestions();
+      document.questions_promise.resolve();
       if (!document.englishonConfig.isUser) {
-        configStorage.set({ 'isUser': true });
-        window.location.reload();
+        this.firstTimeUser();
       }
     } else {
       document.overlay.hideQuestions();
       if (document.eo_user) document.eo_user.hideLiveActions();
     }
-  });
-
+  }.bind(this));
+  this.firstTimeUser = function () {
+    configStorage.set({ 'isUser': true, 'isActive': true });
+    if (e$('[data-id="welcome_1"]').length) {
+      window.localStorage.setItem('show_quiz_tutorial', true);
+    }
+    window.location.reload();
+  };
   this.powerOn = function () {
     console.log('POWER ON#########');
     configStorage.set({ 'isActive': true });
-    $('#eo-power-switch-text').text('On');
-    $('body').addClass('eo-active', true);
+    e$('#eo-power-switch-text').text('On');
+    e$('body').addClass('eo-active', true);
     document.overlay.showQuestions();
+    document.questions_promise.resolve();
     document.eo_user.showLiveActions();
     if (!document.englishonConfig.isUser) {
-      configStorage.set({ 'isUser': true });
-      window.location.reload();
+      this.firstTimeUser();
     }
   };
   this.powerOff = function () {
     configStorage.set({ 'isActive': false });
-    $('#eo-power-switch-text').text('OFF');
-    $('body').removeClass('eo-active');
+    e$('#eo-power-switch-text').text('OFF');
+    e$('body').removeClass('eo-active');
     document.overlay.hideQuestions();
     document.eo_user.hideLiveActions();
   };
 
   this.signout = function () {
-    var popup = $('#eo-iframe')[0].contentWindow;
+    var popup = e$('#eo-iframe')[0].contentWindow;
     popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
     document.menu.powerOff();
     localStorage.removeItem('email');
@@ -5996,12 +8053,12 @@ var EnglishOnMenu = function () {
       //Give englishon the new guest token
       popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
 
-      $('#eo-account-area').addClass('guest');
-      $('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
-      $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
+      e$('#eo-account-area').addClass('guest');
+      e$('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
+      e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
       message = document.MESSAGES[document.englishonConfig.siteLanguage].SIGN_OUT_FEEDBACK;
       document.eoDialogs.hideDialogs();
-      $('body').addClass('guest').removeClass('logged');
+      e$('body').addClass('guest').removeClass('logged');
       //prepare questions for guest
       document.overlay.fetchQuestions().then(function () {
         document.eo_user.initial();
@@ -6010,13 +8067,13 @@ var EnglishOnMenu = function () {
   };
 
   if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') {
-    $('body').addClass('heroku-staging');
+    e$('body').addClass('heroku-staging');
   }
 
   EnglishOnButton.on();
   this.volume = new function () {
     this.changeVolume = function () {
-      var val = $('#eo-slider').slider('value');
+      var val = e$('#eo-slider').slider('value');
       configStorage.set({ volume: val });
       Speaker.changeVolume(val);
       if (val == '0') {
@@ -6027,17 +8084,17 @@ var EnglishOnMenu = function () {
     };
     this.syncWithSpeaker = function () {
       vol = JSON.parse(document.englishonConfig.enableSound) ? document.englishonConfig.volume : '0';
-      $('#eo-slider').slider('value', vol);
+      e$('#eo-slider').slider('value', vol);
     };
 
     vol = JSON.parse(document.englishonConfig.enableSound) ? document.englishonConfig.volume : '0';
-    $("#eo-slider").slider({
+    e$("#eo-slider").slider({
       range: "min",
       value: vol,
       stop: this.changeVolume
     });
   }();
-  //container = $('#progress-container1');
+  //container = e$('#progress-container1');
 
 
   this.displayMenuMessages();
@@ -6048,19 +8105,19 @@ var EnglishOnMenu = function () {
     } else {
       var menuTop = (screen.height - 540) / 2;
     }
-    $('#eo-menu').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
-    $('#eo-dlg-login').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
-    $('#eo-dlg-options').css({ top: menuTop + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' });
+    e$('#eo-menu').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
+    e$('#eo-dlg-login').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
+    e$('#eo-dlg-options').css({ top: menuTop + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' });
   }
   // ***********************
   // Register Event Handlers
   // ***********************
-  $('.available').on('click', function (e) {
-    $(e.target).parents().find('.available').addClass('checked-language');
+  e$('.available').on('click', function (e) {
+    e$(e.target).parents().find('.available').addClass('checked-language');
   });
-  $('#eo-power-switch').on('click', this.togglePower);
+  e$('#eo-power-switch').on('click', this.togglePower);
 
-  $('#eo-speaker-res').on('click', function () {
+  e$('#eo-speaker-res').on('click', function () {
     toggleSound();
     document.menu.volume.syncWithSpeaker();
   });
@@ -6068,30 +8125,30 @@ var EnglishOnMenu = function () {
 
   var uiLoginActions = function (state) {
     if (state == 'guest') {
-      $('body').addClass('guest').removeClass('logged');
-      $('#eo-account-area').addClass('guest');
-      $('#eo-account-img').addClass('no-image');
-      $('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
+      e$('body').addClass('guest').removeClass('logged');
+      e$('#eo-account-area').addClass('guest');
+      e$('#eo-account-img').addClass('no-image');
+      e$('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
     } else {
-      $('body').addClass('logged').removeClass('guest');
-      $('#eo-account-name').text(localStorage.getItem('eo-user-name'));
-      $('#eo-account-img').addClass('no-image');
+      e$('body').addClass('logged').removeClass('guest');
+      e$('#eo-account-name').text(localStorage.getItem('eo-user-name'));
+      e$('#eo-account-img').addClass('no-image');
     }
   };
-  $('#signout_btn').on('click', this.signout);
+  e$('#signout_btn').on('click', this.signout);
   if (!localStorage.getItem('email')) {
-    $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
+    e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
     uiLoginActions('guest');
   } else {
-    $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
+    e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
     uiLoginActions('logged');
   }
-  $('#eo-account-name').on('click', document.eoDialogs.toggleDialogTrigger);
+  e$('#eo-account-name').on('click', document.eoDialogs.toggleDialogTrigger);
   if (JSON.parse(document.englishonConfig.editor)) {
-    $('#eo-menu').addClass('menu-editor');
-    $('#editor-row').removeClass('hidden');
+    e$('#eo-menu').addClass('menu-editor');
+    e$('#editor-row').removeClass('hidden');
     document._editor = new Editor(document.overlay);
-    $('#eo-editor-btn').on('click', function (event) {
+    e$('#eo-editor-btn').on('click', function (event) {
       document.menu.powerOn();
       document.overlay.hideQuestions();
       document.eoDialogs.hideDialogs();
@@ -6106,19 +8163,19 @@ var EnglishOnMenu = function () {
       });
     });
   } else {
-    $('#eo-menu').removeClass('menu-editor');
+    e$('#eo-menu').removeClass('menu-editor');
   }
 
   //OPTIONS MENU HANDLERS
-  $('#account-dropdown').data('elementToShowOnClick', 'eo-dlg-options-main');
-  $('#account-dropdown').on('click', document.eoDialogs.toggleDialogTrigger);
-  $('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
-  $('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger);
-  $('#option-dlg-signin').data('elementToShowOnClick', 'eo-dlg-login');
-  $('#option-dlg-signin').on('click', document.eoDialogs.toggleDialogTrigger);
-  $('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
-  $('.eo-site-option').on('click', function (e) {
-    configStorage.set({ siteLanguage: $(e.target).attr('id') });
+  e$('#account-dropdown').data('elementToShowOnClick', 'eo-dlg-options-main');
+  e$('#account-dropdown').on('click', document.eoDialogs.toggleDialogTrigger);
+  e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
+  e$('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger);
+  e$('#option-dlg-signin').data('elementToShowOnClick', 'eo-dlg-login');
+  e$('#option-dlg-signin').on('click', document.eoDialogs.toggleDialogTrigger);
+  e$('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
+  e$('.eo-site-option').on('click', function (e) {
+    configStorage.set({ siteLanguage: e$(e.target).attr('id') });
     document.menu.displayMenuMessages();
     document.eoDialogs.toggleDialogTrigger(e);
   });
@@ -6126,27 +8183,27 @@ var EnglishOnMenu = function () {
   var token = encodeURIComponent(document.englishonBackend.token);
   if (document.englishonConfig.isUser) {
     var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
-    $('#google-iframe').append(google_login);
+    e$('#google-iframe').append(google_login);
   }
 
-  $('#eo-iframe').on('load', function () {
+  e$('#eo-iframe').on('load', function () {
     var popup = this.contentWindow;
     popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
   });
-  $('#eo-login-password').on('keydown', function (e) {
+  e$('#eo-login-password').on('keydown', function (e) {
     if (e.keyCode == 13) {
-      $('#eo-mail-login-btn').click();
+      e$('#eo-mail-login-btn').click();
     }
   });
-  $('#eo-mail-login-btn').on('click', loginByMail);
-  var _originalSize = $(window).width() + $(window).height();
-  $(window).resize(function () {
-    if ($(window).width() + $(window).height() != _originalSize) {
+  e$('#eo-mail-login-btn').on('click', loginByMail);
+  var _originalSize = e$(window).width() + e$(window).height();
+  e$(window).resize(function () {
+    if (e$(window).width() + e$(window).height() != _originalSize) {
       element = document.getElementById('eo-login-email');
       element.scrollIntoView(true);
     }
   });
-  $('#eo-login-email').on('click', function (e) {
+  e$('#eo-login-email').on('click', function (e) {
     //causing the keyboard to open 
     e.target.focus();
     //Shturem is misiing <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6155,11 +8212,19 @@ var EnglishOnMenu = function () {
   window.history.pushState({ 'elementToShow': 'shturem' }, '');
 };
 
-$(function () {
+e$(function () {
   document.loaded_promise.resolve();
 });
+e$.when(document.questions_promise).done(function () {
+  if (window.localStorage.getItem('show_quiz_tutorial')) {
+    //if (true) {
+    window.localStorage.removeItem('show_quiz_tutorial');
+    document.tour.quizTutorial();
+    document.tour.start();
+  }
+});
 
-$.when(document.resources_promise, document.loaded_promise).done(function () {
+e$.when(document.resources_promise, document.loaded_promise).done(function () {
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
   //register the handler for backspace/forward
@@ -6172,20 +8237,20 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
       document.eoDialogs.toggleDialog(e.state.elementToShow, 'show');
     }
   };
-  var scraper = ScraperFactory(location);
+  window.scraper = ScraperFactory(location);
   if (!scraper) {
     console.log("EnglishOn: unknown website");
     return;
   }
-  $('body').addClass(scraper.getHost().replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
+  e$('body').addClass(scraper.getHost().replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
 
   document.overlay = scraper.scrape();
   document.overlay.showButtons();
   if (browserInfo.browser == "Chrome")
-    //upgrade_link = $('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('here');
+    //upgrade_link = e$('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('here');
     upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";else if (browserInfo.browser == "Firefox") upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";
-  upgrade_dialog = $('<div id="eo-upgrade-dialog" title="englishON">').append($('<div>').addClass('upgrade-dlg').append($('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].UPGRADE_MESSAGE.replace('browswer_name', document.browserInfo.browser).replace('here', upgrade_link))));
-  //upgrade_dialog.insertBefore($($('table')[0]));
+  upgrade_dialog = e$('<div id="eo-upgrade-dialog" title="englishON">').append(e$('<div>').addClass('upgrade-dlg').append(e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].UPGRADE_MESSAGE.replace('browswer_name', document.browserInfo.browser).replace('here', upgrade_link))));
+  //upgrade_dialog.insertBefore(e$(e$('table')[0]));
   document.overlay.insertContent(upgrade_dialog);
   upgrade_dialog.dialog({
     autoOpen: false,
@@ -6196,20 +8261,20 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
   if (browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) <= 46 ||
   //if ((browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) > 46) ||
   browserInfo.browser == 'Firefox' && parseInt(browserInfo.version) < 49) {
-    $('.eo-button').off('click').on('click', function () {
-      $('#eo-upgrade-dialog').dialog('open');
+    e$('.eo-button').off('click').on('click', function () {
+      e$('#eo-upgrade-dialog').dialog('open');
     });
   }
-  document.overlay.insertContent($(document.TERMS_DLG));
+  document.overlay.insertContent(e$(document.TERMS_DLG));
   document.overlay.TermsDialog();
+  document.eoDialogs = new EnglishOnDialogs();
   if (document.englishonConfig.isUser) {
     document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
-    document.eoDialogs = new EnglishOnDialogs();
     var TODOAfterFetch = function () {
       document.menu = new EnglishOnMenu();
       document.eo_user = new UserInfo(document.englishonConfig.token);
       document.eo_user.initial();
-      if ($('.eo-expired').length) {
+      if (e$('.eo-expired').length) {
         document.eo_user.showLiveActions();
       }
     };
@@ -6222,6 +8287,22 @@ $.when(document.resources_promise, document.loaded_promise).done(function () {
     });
   } else {
     document.menu = new EnglishOnMenu();
+    document.tour.welcomeTutorial();
+    e$(".eo-button").on('mouseenter', function () {
+      if (e$('.shepherd-open').length) {
+        return;
+      }
+      document.tour.start();
+    });
+    e$(".eo-button").on('mouseleave', function () {
+      if (e$('[data-id="welcome_0"]').hasClass('shepherd-open')) {
+        setTimeout(function () {
+          if (!document.querySelectorAll(".shepherd:hover").length && e$('[data-id="welcome_0"]').hasClass('shepherd-open')) {
+            document.tour.hide();
+          }
+        }, 3000);
+      }
+    });
   }
 });
 
@@ -6236,15 +8317,15 @@ function receiveMessage(event) {
   var img = event.data.image;
   var email = event.data.email;
   var user_name = event.data.name;
-  $('#eo-account-img').css("background-image", "url(" + img + ")").removeClass('no-image');
-  $('#eo-account-name').text(user_name);
-  $('#eo-account-area').removeClass('guest');
+  e$('#eo-account-img').css("background-image", "url(" + img + ")").removeClass('no-image');
+  e$('#eo-account-name').text(user_name);
+  e$('#eo-account-area').removeClass('guest');
   if (!localStorage.getItem('email')) {
     //this is a real login, as google made many fictive logins
     configStorage.set({ token: django_token, 'eo-user-name': user_name });
     document.englishonBackend.token = django_token;
 
-    $('body').addClass('logged').removeClass('guest');
+    e$('body').addClass('logged').removeClass('guest');
     var TODOAfterFetch = function () {
       document.eo_user.initial();
       document.menu.powerOn();
@@ -6257,7 +8338,7 @@ function receiveMessage(event) {
       }
     });
     localStorage.setItem('email', email);
-    $('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
+    e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
     document.eoDialogs.hideDialogs(0);
   }
 }
