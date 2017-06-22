@@ -7469,7 +7469,7 @@ document.tour = new Shepherd.Tour({
 var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = null) {
   this.id = id;
   this.attachTo = attachTo;
-  this.title = '<img src=' + document.staticUrl('img/menu-logotype.svg') + ' class = "tutorial-logo"/><img src=' + document.staticUrl('img/button-logo.svg') + ' class = "tutorial-icon"/>';
+  this.title = '<img src=' + staticUrl('img/menu-logotype.svg') + ' class = "tutorial-logo"/><img src=' + staticUrl('img/button-logo.svg') + ' class = "tutorial-icon"/>';
   this.text = text;
   this.advanceOn = advanceOn;
   this.scroll_value = scroll_value;
@@ -7608,11 +7608,11 @@ document.questions_promise = e$.Deferred();
 function englishon() {
   var staticUrl = undefined;
   if (e$('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
-    staticUrl = function (resource) {
+    window.staticUrl = function (resource) {
       return 'http://localhost:8080/static/ex/' + resource;
     };
   } else {
-    staticUrl = function (resource) {
+    window.staticUrl = function (resource) {
       return 'http://www.englishon.org/v1/' + resource;
     };
   }
