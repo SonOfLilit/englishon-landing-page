@@ -5861,11 +5861,12 @@ UserInfo = function () {
     this.milotrage();
     e$('#eo-live').removeClass('hidden vocabulary-open');
     if (scraper.getHost() == 'actualic.co.il') {
-      if ($(window).scrollTop() < 159) {
-        e$('#eo-live').css('top', $('.eo-button').offset());
-      }
+      //230-60
+      var val = Math.max(230 - $(window).scrollTop(), 60);
+      e$('#eo-live').css('top', val);
       $(window).scroll(function () {
-        console.log('EVENT');
+        var val = Math.max(230 - $(window).scrollTop(), 60);
+        e$('#eo-live').css('top', val);
       });
     }
     if (document.englishonConfig.media == 'desktop') {
@@ -7513,7 +7514,7 @@ document.tour.initTutorial = function (steps) {
     // no back button at the start
     if (i > 0) {
       buttons.push({
-        text: 'Back',
+        text: 'חזור',
         classes: 'shepherd-button-secondary',
         action: function () {
           return document.tour.back();
@@ -7523,7 +7524,7 @@ document.tour.initTutorial = function (steps) {
     // no next button on last step
     if (i < steps.length - 1 && steps[i].id != 'welcome_0') {
       buttons.push({
-        text: 'Next',
+        text: 'יציאה',
         classes: 'shepherd-button-primary',
         action: function () {
           if (document.tour.getCurrentStep().id === 'login') {
@@ -7646,7 +7647,8 @@ function englishon() {
   }
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES
-  url = window.location.toString().substr(0, window.location.toString().indexOf("id=") + 3);
+  //var url = window.location.toString().substr(0, window.location.toString().indexOf("id=") + 3);
+  var url = window.location.toString();
   if (url != 'http://shturem.net/index.php?section=news&id=' && url != 'http://www.shturem.net/index.php?section=news&id=' && url != 'http://www.englishon.org/hidden/shturem.html') {
     //return;
   }
@@ -7655,6 +7657,9 @@ function englishon() {
     if (article_id < 91251 || article_id > 91551) {
       //return;
     }
+  }
+  if (decodeURIComponent(url) != "http://actualic.co.il/חכ-שמוליהפכו-את-הקשישים-שלנו-לשקי-אגר/") {
+    return;
   }
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
