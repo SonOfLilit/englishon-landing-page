@@ -7584,8 +7584,10 @@ document.tour.initTutorial = function (steps) {
             window.scrollTo(0, val - 370);
             console.log('tour event------------------attachTo: ' + document.tour.getCurrentStep().id);
           }
-          var val = Math.max(230 - $(window).scrollTop(), 60);
-          e$('#eo-live').css('top', val);
+          if (window.location.host == 'actualic.co.il') {
+            var val = Math.max(230 - $(window).scrollTop(), 60);
+            e$('#eo-live').css('top', val);
+          }
         }
       }
     });
