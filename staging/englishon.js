@@ -7655,9 +7655,13 @@ function englishon() {
     if (article_id < 91251 || article_id > 91551) {
       return;
     }
-  } else if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/חכ-שמוליהפכו-את-הקשישים-שלנו-לשקי-אגר/") {
-    return;
   }
+  // else if (window.location.host=='actualic.co.il' && 
+  //   (decodeURIComponent(window.location.toString()) != "http://actualic.co.il/חכ-שמוליהפכו-את-הקשישים-שלנו-לשקי-אגר/")
+  //   && decodeURIComponent(window.location.toString()!='http://actualic.co.il/category/משפחה/')) {
+  //   return;
+  // }
+
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
 
@@ -8218,7 +8222,8 @@ e$(function () {
   document.loaded_promise.resolve();
 });
 e$.when(document.questions_promise).done(function () {
-  if (window.localStorage.getItem('show_quiz_tutorial')) {
+  if (window.localStorage.getItem('show_quiz_tutorial') && document.overlay.questions.length) {
+
     //if (true) {
     window.localStorage.removeItem('show_quiz_tutorial');
     document.tour.quizTutorial();
