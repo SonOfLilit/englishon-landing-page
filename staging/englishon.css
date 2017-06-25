@@ -603,10 +603,7 @@
   font-weight: 700;
   src: url("http://www.englishon.org/v1/fonts/Ubuntu-B.ttf");
 }
-.eo-box, auto div.eo-question,
-div.eo-question > .eo-hint,
-div.eo-question > .eo-options > .eo-option,
-div.eo-question > .eo-correct {
+.eo-box {
   font-family: "Roboto";
 }
 
@@ -671,13 +668,6 @@ div.eo-question > .eo-correct {
   display: inline-block;
 }
 
-.www-shturem-net.question-injected .artText .artText, .www-shturem-net.question-injected .mainpn_text {
-  line-height: 150%;
-}
-.www-shturem-net.question-injected table {
-  cursor: default;
-}
-
 div.eo-question {
   border: 1px dashed #78909c;
   margin-bottom: 0px !important;
@@ -691,14 +681,7 @@ div.eo-question.eo-answered, div.eo-question.eo-expired {
   border: none;
 }
 auto div.eo-question,
-div.eo-question > .eo-hint,
-div.eo-question > .eo-options > .eo-option,
-div.eo-question > .eo-correct {
-  height: 18px;
-  letter-spacing: 0.05em;
-  line-height: 18px;
-}
-div.eo-question.eo-active > .eo-options > .eo-option:hover {
+div.eo-question > .eo-options > .eo-option, div.eo-question.eo-active > .eo-options > .eo-option:hover {
   font-weight: 700;
 }
 div.eo-question > .eo-options > .eo-option {
@@ -765,7 +748,6 @@ div.eo-question > .eo-options > .eo-option > span,
 div.eo-question > .eo-input,
 div.eo-question > .eo-correct {
   display: block;
-  padding-top: 2px;
   border-radius: 3px;
 }
 div.eo-question > .eo-hint {
@@ -1345,18 +1327,35 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 body.www-shturem-net .eo-button,
+body.shturem-net .eo-button,
 body.www-englishon-org .eo-button {
   position: absolute;
   padding-right: 30px;
   left: 50px;
   bottom: 24px;
 }
+body.www-shturem-net .eo-correct,
+body.shturem-net .eo-correct,
+body.www-englishon-org .eo-correct {
+  padding-top: 2px;
+  height: 18px;
+  line-height: 18px;
+  letter-spacing: 0.05em;
+}
 
 body.actualic-co-il .eo-button {
-  margin-right: 520px;
   top: 2px;
   position: absolute;
   width: 34px;
+}
+body.actualic-co-il .eo-question {
+  height: 20px;
+}
+body.actualic-co-il .eo-correct, body.actualic-co-il .eo-hint {
+  padding-top: 0px;
+  height: 19px;
+  line-height: 16px;
+  /*use this to locate the text into question*/
 }
 
 body.www-bhol-co-il .eo-layout-warning {
@@ -1365,6 +1364,13 @@ body.www-bhol-co-il .eo-layout-warning {
 body.www-bhol-co-il .eo-button {
   margin-right: 5px;
   position: relative;
+}
+
+.www-shturem-net.question-injected .artText .artText, .www-shturem-net.question-injected .mainpn_text {
+  line-height: 150%;
+}
+.www-shturem-net.question-injected table {
+  cursor: default;
 }
 
 body.www-bloombergview-com .eo-button {
@@ -2423,7 +2429,6 @@ eo-signout-layout .signout {
 
 /*LIVE ACTIONS AREA*/
 .actualic-co-il #eo-live {
-  left: 30px;
   top: 60px;
 }
 .actualic-co-il #eo-live.top {

@@ -5860,6 +5860,7 @@ UserInfo = function () {
     this.checkSRProgress();
     this.milotrage();
     e$('#eo-live').removeClass('hidden vocabulary-open');
+    e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
     if (scraper.getHost() == 'actualic.co.il') {
       //230-60
       var val = Math.max(230 - $(window).scrollTop(), 60);
@@ -6151,7 +6152,7 @@ Injector = function (paragraphs) {
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
         //e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').text('s').insertBefore(q.replacement);
         //q.replacement.before("<br class ='eo-space'>");
-        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+        //q.replacement.before(e$('<div>').addClass('eo-space').css('width',spaceInCurrentLine-10));//the width is not exact to give some spere 
       }
     });
   };
@@ -7245,6 +7246,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
     //e$('.site-header').find('.small-12.columns').append(EnglishOnButton.element);
     e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
     e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
     //EnglishOnButton.registerHandlers(this);
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
@@ -7493,8 +7495,10 @@ document.tour.quizTutorial = function () {
     steps.push(new step('.step_' + i + ' top', step_title, 'לחץ ובחר את המילה המתאימה', 'step_' + i));
   });
   steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'חזור להסבר מפורט על לוח בקרת ההתקדמות בכל עת', 'live_actions'));
-  steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
-  steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
+  if (!document.englishonConfig.email) {
+    steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
+    steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
+  }
   this.initTutorial(steps);
 };
 document.tour.initTutorial = function (steps) {
@@ -7583,6 +7587,11 @@ document.tour.initTutorial = function (steps) {
             var val = e$('.' + document.tour.getCurrentStep().id).offset().top;
             window.scrollTo(0, val - 370);
             console.log('tour event------------------attachTo: ' + document.tour.getCurrentStep().id);
+            var questionOpened = function (e) {
+              console.log('now i am hiding tutorial');
+              document.tout.hide();
+            };
+            e$(document).on('click', questionOpened);
           }
           if (window.location.host == 'actualic.co.il') {
             var val = Math.max(230 - $(window).scrollTop(), 60);
@@ -7686,7 +7695,8 @@ function englishon() {
     'editor': false,
     'isUser': false,
     'siteLanguage': I18N.SITE_LANGUAGE,
-    'media': media
+    'media': media,
+    'email': undefined
   };
   // Store
   configStorage.get(defaults).then(function (config) {
