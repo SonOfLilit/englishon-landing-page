@@ -5724,6 +5724,10 @@ Editor.prototype.highlight = function () {
   //TODO: do the same with the content appearing after the last dote in the subtitle, because in main page it should be a link
   this.ps = [];
   this.paragraphs.each(function (i, p) {
+    if (!p) {
+      console.log('paragraph number ' + i + ' is not exist in this article');
+      return;
+    }
     p = e$(p);
     var text = p.text();
     this.ps.push(text);
@@ -5860,6 +5864,7 @@ UserInfo = function () {
     this.checkSRProgress();
     this.milotrage();
     e$('#eo-live').removeClass('hidden vocabulary-open');
+    e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
     if (scraper.getHost() == 'actualic.co.il') {
       //230-60
       var val = Math.max(230 - $(window).scrollTop(), 60);
@@ -6151,7 +6156,7 @@ Injector = function (paragraphs) {
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
         //e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').text('s').insertBefore(q.replacement);
         //q.replacement.before("<br class ='eo-space'>");
-        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+        //q.replacement.before(e$('<div>').addClass('eo-space').css('width',spaceInCurrentLine-10));//the width is not exact to give some spere 
       }
     });
   };
@@ -6208,6 +6213,9 @@ Injector = function (paragraphs) {
     e$.each(paragraphs, function (i, p) {
       //maybe replace '&nbsp;' with ' '? it will help front page injector to find target
       //p.html(p.innerHTML.replace('&nbsp;',' '));
+      if (!p) {
+        return;
+      }
       findAndReplaceDOMText(p, {
         find: ctx,
         replace: function (portion, match) {
@@ -7245,6 +7253,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
     //e$('.site-header').find('.small-12.columns').append(EnglishOnButton.element);
     e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
     e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
     //EnglishOnButton.registerHandlers(this);
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
@@ -7490,11 +7499,13 @@ document.tour.quizTutorial = function () {
   e$('.eo-question').each(function (i, q) {
     var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
     e$(q).addClass('step_' + i);
-    steps.push(new step('.step_' + i + ' top', step_title, 'לחץ ובחר את המילה המתאימה', 'step_' + i));
+    steps.push(new step('.step_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'step_' + i));
   });
   steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'חזור להסבר מפורט על לוח בקרת ההתקדמות בכל עת', 'live_actions'));
-  steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
-  steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
+  if (!document.englishonConfig.email) {
+    steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
+    steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
+  }
   this.initTutorial(steps);
 };
 document.tour.initTutorial = function (steps) {
@@ -7556,7 +7567,7 @@ document.tour.initTutorial = function (steps) {
     // }
     var tetherOptionsDic = {};
     if (steps[i].id.slice(0, 5) === 'step_') {
-      tetherOptionsDic.offset = '20px 0px';
+      tetherOptionsDic.offset = '-20px 0px';
     }
     if (steps[i].id === 'welcome_1') {
       tetherOptionsDic.offset = '0px 20px';
@@ -7581,8 +7592,20 @@ document.tour.initTutorial = function (steps) {
             window.scrollTo(0, 0);
           } else {
             var val = e$('.' + document.tour.getCurrentStep().id).offset().top;
-            window.scrollTo(0, val - 370);
-            console.log('tour event------------------attachTo: ' + document.tour.getCurrentStep().id);
+            window.scrollTo(0, val - 170);
+            var questionOpened = function (e) {
+              var target = e$(e.target);
+              if (target.is(e$('.eo-question')) || target.parents('.eo-question').length) {
+                if (target.parents('.eo-correct_option').length) {
+                  document.tour.next();
+                  e$(document).off('click', questionOpened);
+                } else {
+                  document.tour.hide();
+                  console.log('now i am hiding tutorial');
+                }
+              }
+            };
+            e$(document).on('click', questionOpened);
           }
           if (window.location.host == 'actualic.co.il') {
             var val = Math.max(230 - $(window).scrollTop(), 60);
@@ -7655,9 +7678,10 @@ function englishon() {
     if (article_id < 91251 || article_id > 91551) {
       return;
     }
-  } else if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/חכ-שמוליהפכו-את-הקשישים-שלנו-לשקי-אגר/") {
+  } else if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/" && decodeURIComponent(window.location.toString() != 'http://actualic.co.il/category/משפחה/')) {
     return;
   }
+
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
 
@@ -7682,7 +7706,8 @@ function englishon() {
     'editor': false,
     'isUser': false,
     'siteLanguage': I18N.SITE_LANGUAGE,
-    'media': media
+    'media': media,
+    'email': undefined
   };
   // Store
   configStorage.get(defaults).then(function (config) {
@@ -8218,7 +8243,8 @@ e$(function () {
   document.loaded_promise.resolve();
 });
 e$.when(document.questions_promise).done(function () {
-  if (window.localStorage.getItem('show_quiz_tutorial')) {
+  if (window.localStorage.getItem('show_quiz_tutorial') && document.overlay.questions.length) {
+
     //if (true) {
     window.localStorage.removeItem('show_quiz_tutorial');
     document.tour.quizTutorial();
