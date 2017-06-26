@@ -1326,6 +1326,11 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   padding-top: 19px;
 }
 
+body.www-shturem-net .eo-live-maximize,
+body.shturem-net .eo-live-maximize,
+body.www-englishon-org .eo-live-maximize {
+  height: 170px;
+}
 body.www-shturem-net .eo-button,
 body.shturem-net .eo-button,
 body.www-englishon-org .eo-button {
@@ -1343,6 +1348,9 @@ body.www-englishon-org .eo-correct {
   letter-spacing: 0.05em;
 }
 
+body.actualic-co-il .eo-live-maximize {
+  height: 208px !important;
+}
 body.actualic-co-il .eo-button {
   top: 2px;
   position: absolute;
@@ -2457,7 +2465,6 @@ eo-signout-layout .signout {
 #eo-live.eo-live-maximize {
   cursor: arrow;
   padding: 20px;
-  height: 170px;
 }
 #eo-live.eo-live-maximize #milotrage {
   margin: 0px;

@@ -5724,6 +5724,10 @@ Editor.prototype.highlight = function () {
   //TODO: do the same with the content appearing after the last dote in the subtitle, because in main page it should be a link
   this.ps = [];
   this.paragraphs.each(function (i, p) {
+    if (!p) {
+      console.log('paragraph number ' + i + ' is not exist in this article');
+      return;
+    }
     p = e$(p);
     var text = p.text();
     this.ps.push(text);
@@ -6209,6 +6213,9 @@ Injector = function (paragraphs) {
     e$.each(paragraphs, function (i, p) {
       //maybe replace '&nbsp;' with ' '? it will help front page injector to find target
       //p.html(p.innerHTML.replace('&nbsp;',' '));
+      if (!p) {
+        return;
+      }
       findAndReplaceDOMText(p, {
         find: ctx,
         replace: function (portion, match) {
@@ -7492,7 +7499,7 @@ document.tour.quizTutorial = function () {
   e$('.eo-question').each(function (i, q) {
     var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
     e$(q).addClass('step_' + i);
-    steps.push(new step('.step_' + i + ' top', step_title, 'לחץ ובחר את המילה המתאימה', 'step_' + i));
+    steps.push(new step('.step_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'step_' + i));
   });
   steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'חזור להסבר מפורט על לוח בקרת ההתקדמות בכל עת', 'live_actions'));
   if (!document.englishonConfig.email) {
@@ -7560,7 +7567,7 @@ document.tour.initTutorial = function (steps) {
     // }
     var tetherOptionsDic = {};
     if (steps[i].id.slice(0, 5) === 'step_') {
-      tetherOptionsDic.offset = '20px 0px';
+      tetherOptionsDic.offset = '-20px 0px';
     }
     if (steps[i].id === 'welcome_1') {
       tetherOptionsDic.offset = '0px 20px';
@@ -7585,11 +7592,18 @@ document.tour.initTutorial = function (steps) {
             window.scrollTo(0, 0);
           } else {
             var val = e$('.' + document.tour.getCurrentStep().id).offset().top;
-            window.scrollTo(0, val - 370);
-            console.log('tour event------------------attachTo: ' + document.tour.getCurrentStep().id);
+            window.scrollTo(0, val - 170);
             var questionOpened = function (e) {
-              console.log('now i am hiding tutorial');
-              document.tout.hide();
+              var target = e$(e.target);
+              if (target.is(e$('.eo-question')) || target.parents('.eo-question').length) {
+                if (target.parents('.eo-correct_option').length) {
+                  document.tour.next();
+                  e$(document).off('click', questionOpened);
+                } else {
+                  document.tour.hide();
+                  console.log('now i am hiding tutorial');
+                }
+              }
             };
             e$(document).on('click', questionOpened);
           }
@@ -7664,12 +7678,9 @@ function englishon() {
     if (article_id < 91251 || article_id > 91551) {
       return;
     }
+  } else if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/" && decodeURIComponent(window.location.toString() != 'http://actualic.co.il/category/משפחה/')) {
+    return;
   }
-  // else if (window.location.host=='actualic.co.il' && 
-  //   (decodeURIComponent(window.location.toString()) != "http://actualic.co.il/חכ-שמוליהפכו-את-הקשישים-שלנו-לשקי-אגר/")
-  //   && decodeURIComponent(window.location.toString()!='http://actualic.co.il/category/משפחה/')) {
-  //   return;
-  // }
 
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
