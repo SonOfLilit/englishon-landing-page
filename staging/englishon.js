@@ -7489,7 +7489,7 @@ document.tour.welcomeTutorial = function () {
   // steps.push(['.eo-button left', 'welcome', 'welcome to Englishon , etc........', null, 'welcome_' + 0]);
   // steps.push(['.eo-button top', 'englishon', 'Open the menu', '.eo-button click', 'welcome_' + 1]);
   // steps.push(['#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', null, 'welcome_' + 2]);
-  steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'לחץ להפעלה והתחל ללמוד אנגלית תוך כדי גלישה ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
+  steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'גלוש בעברית ולמד אנגלית ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
   steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
   this.initTutorial(steps);
 };
@@ -7501,7 +7501,7 @@ document.tour.quizTutorial = function () {
     e$(q).addClass('step_' + i);
     steps.push(new step('.step_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'step_' + i));
   });
-  steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'חזור להסבר מפורט על לוח בקרת ההתקדמות בכל עת', 'live_actions'));
+  steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'לוח ההקדמות. לחץ להסבר', 'live_actions'));
   if (!document.englishonConfig.email) {
     steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
     steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
@@ -7525,9 +7525,12 @@ document.tour.initTutorial = function (steps) {
     // no back button at the start
     if (i > 0) {
       buttons.push({
-        text: 'הקודם',
+        text: 'חזור',
         classes: 'shepherd-button-secondary',
         action: function () {
+          if (document.tour.getCurrentStep().id === 'welcome_1' || document.tour.getCurrentStep().id === 'login2') {
+            document.eoDialogs.hideDialogs();
+          }
           return document.tour.back();
         }
       });
@@ -7535,7 +7538,7 @@ document.tour.initTutorial = function (steps) {
     // no next button on last step
     if (i < steps.length - 1 && steps[i].id != 'welcome_0') {
       buttons.push({
-        text: 'הבא',
+        text: 'המשך',
         classes: 'shepherd-button-primary',
         action: function () {
           if (document.tour.getCurrentStep().id === 'login') {
@@ -7594,18 +7597,25 @@ document.tour.initTutorial = function (steps) {
             var val = e$('.' + document.tour.getCurrentStep().id).offset().top;
             window.scrollTo(0, val - 170);
             var questionOpened = function (e) {
-              var target = e$(e.target);
-              if (target.is(e$('.eo-question')) || target.parents('.eo-question').length) {
-                if (target.parents('.eo-correct_option').length) {
-                  document.tour.next();
-                  e$(document).off('click', questionOpened);
-                } else {
-                  document.tour.hide();
-                  console.log('now i am hiding tutorial');
-                }
-              }
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('hellllllllooooooooo');
+              document.tour.hide();
+              console.log('now i am hiding tutorial');
             };
-            e$(document).on('click', questionOpened);
+            var questionAnswered = function (e) {
+              console.log('1111111111111111dffdh?????????????????????????');
+              e.preventDefault();
+              e.stopPropagation();
+              //e$(document).off('click', e$('.eo-question'), questionOpened);
+              e$('.eo-question .eo-hint').off('click', e$('.eo-question .eo-hint'), questionOpened);
+              e$('.eo-question .eo-correct_option span').off('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
+              document.tour.next();
+              console.log('222222222222222222222dffdh?????????????????????????');
+            };
+            //e$(document).on('click', questionOpened);
+            e$('.eo-question .eo-hint').on('click', e$('.eo-question .eo-hint'), questionOpened);
+            e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
           }
           if (window.location.host == 'actualic.co.il') {
             var val = Math.max(230 - $(window).scrollTop(), 60);
@@ -8046,6 +8056,9 @@ var EnglishOnMenu = function () {
     window.location.reload();
   };
   this.powerOn = function () {
+    if (!document.englishonConfig.isUser) {
+      this.firstTimeUser();
+    }
     console.log('POWER ON#########');
     configStorage.set({ 'isActive': true });
     e$('#eo-power-switch-text').text('On');
@@ -8053,9 +8066,6 @@ var EnglishOnMenu = function () {
     document.overlay.showQuestions();
     document.questions_promise.resolve();
     document.eo_user.showLiveActions();
-    if (!document.englishonConfig.isUser) {
-      this.firstTimeUser();
-    }
   };
   this.powerOff = function () {
     configStorage.set({ 'isActive': false });
@@ -8139,8 +8149,11 @@ var EnglishOnMenu = function () {
   // ***********************
   // Register Event Handlers
   // ***********************
-  e$('.available').on('click', function (e) {
+  e$('.languages_picker .available').on('click', function (e) {
     e$(e.target).parents().find('.available').addClass('checked-language');
+    if (!document.englishonConfig.isUser) {
+      document.menu.firstTimeUser();
+    }
   });
   e$('#eo-power-switch').on('click', this.togglePower);
 
@@ -8247,8 +8260,11 @@ e$.when(document.questions_promise).done(function () {
 
     //if (true) {
     window.localStorage.removeItem('show_quiz_tutorial');
-    document.tour.quizTutorial();
-    document.tour.start();
+    setTimeout(function () {
+      //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
+      document.tour.quizTutorial();
+      document.tour.start();
+    }, 1000);
   }
 });
 

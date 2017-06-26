@@ -1011,6 +1011,7 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 
 /* Button */
 .eo-button {
+  cursor: pointer;
   overflow: visible;
   display: inline-block;
   position: relative;
@@ -2287,6 +2288,9 @@ eo-signout-layout .signout {
   border: 1px solid #c7d1d7;
   font-family: Roboto-Light;
 }
+#eo-dlg-login .subtitle {
+  text-align: center;
+}
 
 #eo-menu,
 #eo-dlg-login,
@@ -2653,16 +2657,16 @@ eo-signout-layout .signout {
 /*TUTORIAL*/
 .tutorial-icon {
   background-size: 30px;
-  width: 30px;
-  height: 30px;
+  width: 21px;
+  height: 21px;
   position: absolute;
-  top: 8px;
-  right: 120px;
+  top: 11px;
+  right: 109px;
 }
 
 .tutorial-logo {
   background-size: 150px;
-  width: 90px;
+  width: 80px;
   height: 30px;
   right: 20px;
   position: absolute;
