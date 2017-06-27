@@ -2558,6 +2558,7 @@ eo-signout-layout .signout {
 #eo-live #vocabulary .Grid-cell #vocabulary-order {
   background-color: #2cc6a8;
   cursor: pointer;
+  letter-spacing: 0.01em;
 }
 
 .Grid#days-pannel {
@@ -2574,6 +2575,7 @@ eo-signout-layout .signout {
 }
 #eo-dlg-terms #tos {
   font-size: 12px;
+  text-align: center;
 }
 #eo-dlg-terms #tos:hover {
   color: #93a0a8;
@@ -2657,8 +2659,8 @@ eo-signout-layout .signout {
 /*TUTORIAL*/
 .tutorial-icon {
   background-size: 30px;
-  width: 21px;
-  height: 21px;
+  width: 23px;
+  height: 23px;
   position: absolute;
   top: 11px;
   right: 109px;

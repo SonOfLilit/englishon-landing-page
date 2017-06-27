@@ -5908,6 +5908,7 @@ UserInfo = function () {
       });
       e$('#vocabulary').data('order', 'alphabet');
       this.renderVocabulary(this.srsByAlphabet);
+      e$('#eo-live #vocabulary-order').text('המילים שלי -- -- סדר אלפבית');
     }.bind(this));
   };
   this.renderVocabulary = function (words_list) {
@@ -5979,9 +5980,11 @@ UserInfo = function () {
         if (e$('#vocabulary').data('order') == 'alphabet') {
           e$('#vocabulary').data('order', 'srTime');
           this.renderVocabulary(this.srsByTime);
+          e$('#eo-live #vocabulary-order').text('המילים שלי -- סדר עדיפות לתרגול');
         } else {
           e$('#vocabulary').data('order', 'alphabet');
           this.renderVocabulary(this.srsByAlphabet);
+          e$('#eo-live #vocabulary-order').text('המילים שלי -- סדר אלפבית');
         }
         return;
       }
@@ -7544,6 +7547,9 @@ document.tour.initTutorial = function (steps) {
           if (document.tour.getCurrentStep().id === 'login') {
             document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
             window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
+            e$('#eo-mail-login-btn').on('click', function () {
+              document.tour.hide();
+            });
           }
           return document.tour.next();
         }
