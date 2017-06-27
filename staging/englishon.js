@@ -7326,12 +7326,12 @@ actualicOverlay = function (url, subtitle, bodytext) {
 //
 ScraperFactory = function (location) {
   this.isHebrew = function (str) {
-    var isHebrew = true;
+    var isHebrewVar = true;
     var array = str.split('');
     e$(array).each(function (i, c) {
-      isHebrew = isHebrew && (c.charCodeAt(0) < 65 || str.charCodeAt(0) >= 1488 && str.charCodeAt(0) <= 1514);
+      isHebrewVar = isHebrewVar && (c.charCodeAt(0) < 65 || c.charCodeAt(0) >= 1488 && c.charCodeAt(0) <= 1514);
     });
-    return isHebrew;
+    return isHebrewVar;
   };
   if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
     if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
