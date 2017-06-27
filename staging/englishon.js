@@ -7689,7 +7689,7 @@ function englishon() {
     if (article_id < 91251 || article_id > 91551) {
       return;
     }
-  } else if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/" && decodeURIComponent(window.location.toString() != 'http://actualic.co.il/category/משפחה/')) {
+  } else if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/" && decodeURIComponent(window.location.toString()) != 'http://actualic.co.il/category/משפחה/') {
     return;
   }
 
