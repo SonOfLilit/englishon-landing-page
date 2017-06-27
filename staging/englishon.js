@@ -7243,6 +7243,32 @@ CH10Overlay = function (url, subtitle, bodytext) {
     if (this.injector) this.injector.off();
   }.bind(this);
 };
+actualicCategoryOverlay = function (url, subtitle, bodytext) {
+  this.url = url;
+  this.subtitle = subtitle;
+  this.bodytext = bodytext;
+  this.paragraphs = [subtitle, bodytext];
+  this.interacted = false;
+  this.userAnswered = false;
+  ShturemOverlay.call(this);
+
+  this.showButtons = function () {
+    if (document.englishonConfig.isUser) {
+      e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+      e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
+      e$('.row.single_post_right_image').find('.info').append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
+    };
+  };
+  this.fetchQuestions = function () {
+    //just to enable compile
+    return e$.Deferred().resolve().then(function () {
+      return [];
+    });
+  };
+  this.hideQuestions = function () {};
+  this.showQuestions = function () {};
+};
 
 actualicOverlay = function (url, subtitle, bodytext) {
   this.url = url;
@@ -7299,6 +7325,14 @@ actualicOverlay = function (url, subtitle, bodytext) {
 };
 //
 ScraperFactory = function (location) {
+  this.isHebrew = function (str) {
+    var isHebrew = true;
+    var array = str.split('');
+    e$(array).each(function (i, c) {
+      isHebrew = isHebrew && (c.charCodeAt(0) < 65 || str.charCodeAt(0) >= 1488 && str.charCodeAt(0) <= 1514);
+    });
+    return isHebrew;
+  };
   if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
     if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
     if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
@@ -7310,7 +7344,11 @@ ScraperFactory = function (location) {
     return new CH10Scraper();
   }
   if (location.host === 'actualic.co.il') {
-    return new actualicScraper();
+    if (this.isHebrew(decodeURIComponent(location.pathname))) {
+      return new actualicScraper();
+    } else if (location.pathname.startsWith('/category/')) {
+      return new actualicCategoryScraper();
+    }
   }
 };
 
@@ -7324,6 +7362,18 @@ var actualicScraper = function () {
     var subtitle = e$('.entry-header').find('.excerpt')[0];
     var bodytext = e$('.entry-content')[0];
     return new actualicOverlay(url, subtitle, bodytext);
+  };
+};
+var actualicCategoryScraper = function () {
+  this.getHost = function () {
+    return 'actualic.co.il';
+  };
+
+  this.scrape = function () {
+    url = ('http://actualic.co.il' + location.pathname + location.search).replace(/#.*$/, '');
+    var subtitle = e$('.entry-header').find('.excerpt')[0];
+    var bodytext = e$('.entry-content')[0];
+    return new actualicCategoryOverlay(url, subtitle, bodytext);
   };
 };
 

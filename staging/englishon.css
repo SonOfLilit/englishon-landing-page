@@ -1010,6 +1010,11 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 }
 
 /* Button */
+.category-icon {
+  width: 30px;
+  height: 30px;
+}
+
 .eo-button {
   cursor: pointer;
   overflow: visible;
