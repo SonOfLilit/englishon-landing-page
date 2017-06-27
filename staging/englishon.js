@@ -7606,10 +7606,9 @@ document.tour.initTutorial = function (steps) {
             var questionAnswered = function (e) {
               console.log('1111111111111111dffdh?????????????????????????');
               e.preventDefault();
-              e.stopPropagation();
               //e$(document).off('click', e$('.eo-question'), questionOpened);
-              e$('.eo-question .eo-hint').off('click', e$('.eo-question .eo-hint'), questionOpened);
-              e$('.eo-question .eo-correct_option span').off('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
+              e$('.eo-question .eo-hint').off('click', questionOpened);
+              e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
               document.tour.next();
               console.log('222222222222222222222dffdh?????????????????????????');
             };
