@@ -7599,20 +7599,16 @@ document.tour.initTutorial = function (steps) {
             var questionOpened = function (e) {
               e.preventDefault();
               e.stopPropagation();
-              console.log('hellllllllooooooooo');
               document.tour.hide();
-              console.log('now i am hiding tutorial');
             };
             var questionAnswered = function (e) {
-              console.log('1111111111111111dffdh?????????????????????????');
               e.preventDefault();
-              //e$(document).off('click', e$('.eo-question'), questionOpened);
               e$('.eo-question .eo-hint').off('click', questionOpened);
               e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
-              document.tour.next();
-              console.log('222222222222222222222dffdh?????????????????????????');
+              setTimeout(function () {
+                document.tour.next();
+              }, 1700);
             };
-            //e$(document).on('click', questionOpened);
             e$('.eo-question .eo-hint').on('click', e$('.eo-question .eo-hint'), questionOpened);
             e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
           }
