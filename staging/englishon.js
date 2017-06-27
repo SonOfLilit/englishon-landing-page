@@ -5499,9 +5499,9 @@ Editor.prototype.question_onClick = function (event) {
     'ctx': context
   };
   this.span = span;
-  var q_dialog = e$('<div  align="left" dir="ltr">');
-  q_dialog.append(e$('<h3>').text('You are deleting question for this word: ' + word));
-  q_dialog.append(e$('<h3>').text('With this context: ' + context));
+  var q_dialog = e$('<div align="left" dir="ltr" class="editor-dlg">');
+  q_dialog.append(e$('<h3>').html('You are deleting question for this word: </br>' + word));
+  q_dialog.append(e$('<h3>').html('With this context:  </br>' + context));
   q_dialog.append(e$('<button>').text("Delete Question").click(function (event) {
     q_dialog.dialog('close');
     document.englishonBackend.deleteQuestion(question).then(function (res) {
