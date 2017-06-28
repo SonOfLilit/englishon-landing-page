@@ -6898,10 +6898,10 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
 document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
     <div class='Grid Grid--full eo-inner-area hidden' id ='eo-dlg-options-main'>\
         <div class='Grid-cell option-dlg-guest'>\
-            <div id='option-dlg-signin' >sign in</div>\
+            <div id='tutorial-btn' >Quick Guide to EnglishOn</div>\
         </div>\
         <div class='Grid-cell option-dlg-guest'>\
-            <div id='get-started'>get started</div>\
+            <div id='progress-tutorial-btn'>Progress Bar Tutorial</div>\
         </div>\
         <div class='Grid-cell option'>\
             <div id='eo-choose-lang'>Choose site language</div>\
@@ -7243,11 +7243,9 @@ CH10Overlay = function (url, subtitle, bodytext) {
     if (this.injector) this.injector.off();
   }.bind(this);
 };
-actualicCategoryOverlay = function (url, subtitle, bodytext) {
-  this.url = url;
-  this.subtitle = subtitle;
-  this.bodytext = bodytext;
-  this.paragraphs = [subtitle, bodytext];
+actualicCategoryOverlay = function (parts, category_url) {
+  this.category_url = category_url;
+  this.parts = parts;
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
@@ -7257,7 +7255,14 @@ actualicCategoryOverlay = function (url, subtitle, bodytext) {
       e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
       e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
-      e$('.row.single_post_right_image').find('.info').append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
+      var promises = e$.map(this.parts, function (part, url) {
+        return document.englishonBackend.getArticle(url).then(function (questions) {
+          console.log("url: " + url + "Num questions: " + questions.length);
+          if (questions.length) {
+            e$(part).find('.info').append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
+          }
+        });
+      });
     };
   };
   this.fetchQuestions = function () {
@@ -7370,10 +7375,13 @@ var actualicCategoryScraper = function () {
   };
 
   this.scrape = function () {
-    url = ('http://actualic.co.il' + location.pathname + location.search).replace(/#.*$/, '');
-    var subtitle = e$('.entry-header').find('.excerpt')[0];
-    var bodytext = e$('.entry-content')[0];
-    return new actualicCategoryOverlay(url, subtitle, bodytext);
+    var parts = {};
+    e$('.row.single_post_right_image').each(function (i, para) {
+      var url = e$(para).find('a')[0].href;
+      parts[url] = para;
+    });
+    var category_url = window.location.pathname;
+    return new actualicCategoryOverlay(parts, category_url);
   };
 };
 
@@ -7537,6 +7545,12 @@ var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = nu
   this.scroll_value = scroll_value;
 };
 
+document.tour.progressTutorial = function () {
+  steps = [];
+  steps.push(new step('#eo-live left', 'progress------', 'progress------', 'progress_' + 0, 0, '.eo-button click'));
+  this.initTutorial(steps);
+};
+
 document.tour.welcomeTutorial = function () {
   steps = [];
   // steps.push(['.eo-button left', 'welcome', 'welcome to Englishon , etc........', null, 'welcome_' + 0]);
@@ -7605,25 +7619,6 @@ document.tour.initTutorial = function (steps) {
         }
       });
     }
-    // if ((i == steps.length - 1) && steps[i].id != 'welcome_1') {
-    //   buttons.push({
-    //     text: 'Done',
-    //     classes: 'shepherd-button-primary',
-    //     action: function() {
-    //       return document.tour.hide();
-    //     }
-    //   });
-
-    // }
-    // else {
-    //   buttons.push({
-    //     text: 'Close',
-    //     classes: 'shepherd-button-primary',
-    //     action: function() {
-    //       return document.tour.hide();
-    //     }
-    //   });
-    // }
     var tetherOptionsDic = {};
     if (steps[i].id.slice(0, 5) === 'step_') {
       tetherOptionsDic.offset = '-20px 0px';
@@ -7729,6 +7724,9 @@ function englishon() {
   }
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES
+  if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/") {
+    //return;
+  }
   sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org'];
   if (sites.indexOf(window.location.host) == -1) {
     return;
@@ -7739,7 +7737,7 @@ function englishon() {
     if (article_id < 91251 || article_id > 91551) {
       return;
     }
-  } else if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/" && decodeURIComponent(window.location.toString()) != 'http://actualic.co.il/category/משפחה/') {
+  } else if (window.location.host == 'actualic.co.il' && !e$('#breadcrumbs').find('a').eq(0).next().eq(0).text().startsWith('משפחה')) {
     return;
   }
 
@@ -8195,7 +8193,9 @@ var EnglishOnMenu = function () {
     }
     e$('#eo-menu').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
     e$('#eo-dlg-login').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
-    e$('#eo-dlg-options').css({ top: menuTop + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' });
+    e$('#eo-dlg-options').css({ top: menuTop + 55 + 'px', left: (screen.width - 360) / 2 + 'px' });
+    //FOR SHTUREM THE LEFT NEED DIFFERENT VALUE. check reason.
+    //e$('#eo-dlg-options').css({ top: menuTop + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' })
   }
   // ***********************
   // Register Event Handlers
@@ -8265,6 +8265,15 @@ var EnglishOnMenu = function () {
   e$('#option-dlg-signin').data('elementToShowOnClick', 'eo-dlg-login');
   e$('#option-dlg-signin').on('click', document.eoDialogs.toggleDialogTrigger);
   e$('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
+  e$('#progress-tutorial-btn').on('click', function () {
+    document.tour.progressTutorial();
+    document.tour.start();
+  });
+  e$('#tutorial-btn').on('click', function () {
+    document.tour.quizTutorial();
+    document.tour.start();
+  });
+
   e$('.eo-site-option').on('click', function (e) {
     configStorage.set({ siteLanguage: e$(e.target).attr('id') });
     document.menu.displayMenuMessages();
