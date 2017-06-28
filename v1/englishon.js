@@ -7259,7 +7259,7 @@ actualicCategoryOverlay = function (parts, category_url) {
         return document.englishonBackend.getArticle(url).then(function (questions) {
           console.log("url: " + url + "Num questions: " + questions.length);
           if (questions.length) {
-            part.find('.info').append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
+            e$(part).find('.info').append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
           }
         });
       });
@@ -7750,10 +7750,7 @@ function englishon() {
     if (article_id < 91251 || article_id > 91551) {
       return;
     }
-  } else if (window.location.host == 'actualic.co.il' && e$(e$(e$('#breadcrumbs').find('a')[0]).next()[0]).text() != 'משפחה') {
-    return;
-  }
-  if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/") {
+  } else if (window.location.host == 'actualic.co.il' && !e$(e$(e$('#breadcrumbs').find('a')[0]).next()[0]).text().startsWith('משפחה')) {
     return;
   }
 
