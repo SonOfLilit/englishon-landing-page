@@ -4989,7 +4989,7 @@ var MESSAGES = {
     FR: "French",
     ZH: "Chinese",
     HELP: 'Need Help?',
-    CONTACT: 'Conatct Us',
+    CONTACT: 'Contact Us',
     OR: 'OR',
     // Login dialog
     LOGIN_SIGN_IN_TITLE: 'Sign In',
@@ -5867,10 +5867,10 @@ UserInfo = function () {
     e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
     if (scraper.getHost() == 'actualic.co.il') {
       //230-60
-      var val = Math.max(230 - $(window).scrollTop(), 60);
+      var val = Math.max(208 - $(window).scrollTop(), 60);
       e$('#eo-live').css('top', val);
       $(window).scroll(function () {
-        var val = Math.max(230 - $(window).scrollTop(), 60);
+        var val = Math.max(208 - $(window).scrollTop(), 60);
         e$('#eo-live').css('top', val);
       });
     }
@@ -7677,7 +7677,7 @@ document.tour.initTutorial = function (steps) {
             e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
           }
           if (window.location.host == 'actualic.co.il') {
-            var val = Math.max(230 - $(window).scrollTop(), 60);
+            var val = Math.max(208 - $(window).scrollTop(), 60);
             e$('#eo-live').css('top', val);
           }
         }
