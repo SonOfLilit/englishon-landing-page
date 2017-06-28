@@ -5499,9 +5499,9 @@ Editor.prototype.question_onClick = function (event) {
     'ctx': context
   };
   this.span = span;
-  var q_dialog = e$('<div  align="left" dir="ltr">');
-  q_dialog.append(e$('<h3>').text('You are deleting question for this word: ' + word));
-  q_dialog.append(e$('<h3>').text('With this context: ' + context));
+  var q_dialog = e$('<div align="left" dir="ltr" class="editor-dlg">');
+  q_dialog.append(e$('<h3>').html('You are deleting question for this word: </br>' + word));
+  q_dialog.append(e$('<h3>').html('With this context:  </br>' + context));
   q_dialog.append(e$('<button>').text("Delete Question").click(function (event) {
     q_dialog.dialog('close');
     document.englishonBackend.deleteQuestion(question).then(function (res) {
@@ -5908,6 +5908,7 @@ UserInfo = function () {
       });
       e$('#vocabulary').data('order', 'alphabet');
       this.renderVocabulary(this.srsByAlphabet);
+      e$('#eo-live #vocabulary-order').text('המילים שלי -- -- סדר אלפבית');
     }.bind(this));
   };
   this.renderVocabulary = function (words_list) {
@@ -5979,9 +5980,11 @@ UserInfo = function () {
         if (e$('#vocabulary').data('order') == 'alphabet') {
           e$('#vocabulary').data('order', 'srTime');
           this.renderVocabulary(this.srsByTime);
+          e$('#eo-live #vocabulary-order').text('המילים שלי -- סדר עדיפות לתרגול');
         } else {
           e$('#vocabulary').data('order', 'alphabet');
           this.renderVocabulary(this.srsByAlphabet);
+          e$('#eo-live #vocabulary-order').text('המילים שלי -- סדר אלפבית');
         }
         return;
       }
@@ -7240,6 +7243,37 @@ CH10Overlay = function (url, subtitle, bodytext) {
     if (this.injector) this.injector.off();
   }.bind(this);
 };
+actualicCategoryOverlay = function (parts, category_url) {
+  this.category_url = category_url;
+  this.parts = parts;
+  this.interacted = false;
+  this.userAnswered = false;
+  ShturemOverlay.call(this);
+
+  this.showButtons = function () {
+    if (document.englishonConfig.isUser) {
+      e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+      e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
+      var promises = e$.map(this.parts, function (part, url) {
+        return document.englishonBackend.getArticle(url).then(function (questions) {
+          console.log("url: " + url + "Num questions: " + questions.length);
+          if (questions.length) {
+            part.find('.info').append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
+          }
+        });
+      });
+    };
+  };
+  this.fetchQuestions = function () {
+    //just to enable compile
+    return e$.Deferred().resolve().then(function () {
+      return [];
+    });
+  };
+  this.hideQuestions = function () {};
+  this.showQuestions = function () {};
+};
 
 actualicOverlay = function (url, subtitle, bodytext) {
   this.url = url;
@@ -7296,6 +7330,14 @@ actualicOverlay = function (url, subtitle, bodytext) {
 };
 //
 ScraperFactory = function (location) {
+  this.isHebrew = function (str) {
+    var isHebrewVar = true;
+    var array = str.split('');
+    e$(array).each(function (i, c) {
+      isHebrewVar = isHebrewVar && (c.charCodeAt(0) < 65 || c.charCodeAt(0) >= 1488 && c.charCodeAt(0) <= 1514);
+    });
+    return isHebrewVar;
+  };
   if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
     if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
     if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
@@ -7307,7 +7349,11 @@ ScraperFactory = function (location) {
     return new CH10Scraper();
   }
   if (location.host === 'actualic.co.il') {
-    return new actualicScraper();
+    if (this.isHebrew(decodeURIComponent(location.pathname))) {
+      return new actualicScraper();
+    } else if (location.pathname.startsWith('/category/')) {
+      return new actualicCategoryScraper();
+    }
   }
 };
 
@@ -7321,6 +7367,21 @@ var actualicScraper = function () {
     var subtitle = e$('.entry-header').find('.excerpt')[0];
     var bodytext = e$('.entry-content')[0];
     return new actualicOverlay(url, subtitle, bodytext);
+  };
+};
+var actualicCategoryScraper = function () {
+  this.getHost = function () {
+    return 'actualic.co.il';
+  };
+
+  this.scrape = function () {
+    var parts = {};
+    e$('.row.single_post_right_image').each(function (i, para) {
+      var url = e$(para).find('a')[0].href;
+      parts[url] = para;
+    });
+    var category_url = window.location.pathname;
+    return new actualicCategoryOverlay(parts, category_url);
   };
 };
 
@@ -7489,7 +7550,7 @@ document.tour.welcomeTutorial = function () {
   // steps.push(['.eo-button left', 'welcome', 'welcome to Englishon , etc........', null, 'welcome_' + 0]);
   // steps.push(['.eo-button top', 'englishon', 'Open the menu', '.eo-button click', 'welcome_' + 1]);
   // steps.push(['#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', null, 'welcome_' + 2]);
-  steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'לחץ להפעלה והתחל ללמוד אנגלית תוך כדי גלישה ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
+  steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'גלוש בעברית ולמד אנגלית ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
   steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
   this.initTutorial(steps);
 };
@@ -7501,7 +7562,7 @@ document.tour.quizTutorial = function () {
     e$(q).addClass('step_' + i);
     steps.push(new step('.step_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'step_' + i));
   });
-  steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'חזור להסבר מפורט על לוח בקרת ההתקדמות בכל עת', 'live_actions'));
+  steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'לוח ההקדמות. לחץ להסבר', 'live_actions'));
   if (!document.englishonConfig.email) {
     steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
     steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
@@ -7525,9 +7586,12 @@ document.tour.initTutorial = function (steps) {
     // no back button at the start
     if (i > 0) {
       buttons.push({
-        text: 'הקודם',
+        text: 'חזור',
         classes: 'shepherd-button-secondary',
         action: function () {
+          if (document.tour.getCurrentStep().id === 'welcome_1' || document.tour.getCurrentStep().id === 'login2') {
+            document.eoDialogs.hideDialogs();
+          }
           return document.tour.back();
         }
       });
@@ -7535,12 +7599,15 @@ document.tour.initTutorial = function (steps) {
     // no next button on last step
     if (i < steps.length - 1 && steps[i].id != 'welcome_0') {
       buttons.push({
-        text: 'הבא',
+        text: 'המשך',
         classes: 'shepherd-button-primary',
         action: function () {
           if (document.tour.getCurrentStep().id === 'login') {
             document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
             window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
+            e$('#eo-mail-login-btn').on('click', function () {
+              document.tour.hide();
+            });
           }
           return document.tour.next();
         }
@@ -7594,18 +7661,20 @@ document.tour.initTutorial = function (steps) {
             var val = e$('.' + document.tour.getCurrentStep().id).offset().top;
             window.scrollTo(0, val - 170);
             var questionOpened = function (e) {
-              var target = e$(e.target);
-              if (target.is(e$('.eo-question')) || target.parents('.eo-question').length) {
-                if (target.parents('.eo-correct_option').length) {
-                  document.tour.next();
-                  e$(document).off('click', questionOpened);
-                } else {
-                  document.tour.hide();
-                  console.log('now i am hiding tutorial');
-                }
-              }
+              e.preventDefault();
+              e.stopPropagation();
+              document.tour.hide();
             };
-            e$(document).on('click', questionOpened);
+            var questionAnswered = function (e) {
+              e.preventDefault();
+              e$('.eo-question .eo-hint').off('click', questionOpened);
+              e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
+              setTimeout(function () {
+                document.tour.next();
+              }, 1700);
+            };
+            e$('.eo-question .eo-hint').on('click', e$('.eo-question .eo-hint'), questionOpened);
+            e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
           }
           if (window.location.host == 'actualic.co.il') {
             var val = Math.max(230 - $(window).scrollTop(), 60);
@@ -7666,6 +7735,9 @@ function englishon() {
     console.log('BROWSER NOT SUPPORTED.');
     return;
   }
+  if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/") {
+    return;
+  }
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES
   sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org'];
@@ -7678,7 +7750,10 @@ function englishon() {
     if (article_id < 91251 || article_id > 91551) {
       return;
     }
-  } else if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/" && decodeURIComponent(window.location.toString() != 'http://actualic.co.il/category/משפחה/')) {
+  } else if (window.location.host == 'actualic.co.il' && e$(e$(e$('#breadcrumbs').find('a')[0]).next()[0]).text() != 'משפחה') {
+    return;
+  }
+  if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/") {
     return;
   }
 
@@ -8046,6 +8121,9 @@ var EnglishOnMenu = function () {
     window.location.reload();
   };
   this.powerOn = function () {
+    if (!document.englishonConfig.isUser) {
+      this.firstTimeUser();
+    }
     console.log('POWER ON#########');
     configStorage.set({ 'isActive': true });
     e$('#eo-power-switch-text').text('On');
@@ -8053,9 +8131,6 @@ var EnglishOnMenu = function () {
     document.overlay.showQuestions();
     document.questions_promise.resolve();
     document.eo_user.showLiveActions();
-    if (!document.englishonConfig.isUser) {
-      this.firstTimeUser();
-    }
   };
   this.powerOff = function () {
     configStorage.set({ 'isActive': false });
@@ -8139,8 +8214,11 @@ var EnglishOnMenu = function () {
   // ***********************
   // Register Event Handlers
   // ***********************
-  e$('.available').on('click', function (e) {
+  e$('.languages_picker .available').on('click', function (e) {
     e$(e.target).parents().find('.available').addClass('checked-language');
+    if (!document.englishonConfig.isUser) {
+      document.menu.firstTimeUser();
+    }
   });
   e$('#eo-power-switch').on('click', this.togglePower);
 
@@ -8247,8 +8325,11 @@ e$.when(document.questions_promise).done(function () {
 
     //if (true) {
     window.localStorage.removeItem('show_quiz_tutorial');
-    document.tour.quizTutorial();
-    document.tour.start();
+    setTimeout(function () {
+      //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
+      document.tour.quizTutorial();
+      document.tour.start();
+    }, 1000);
   }
 });
 

@@ -1010,7 +1010,13 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 }
 
 /* Button */
+.category-icon {
+  width: 20px;
+  height: 20px;
+}
+
 .eo-button {
+  cursor: pointer;
   overflow: visible;
   display: inline-block;
   position: relative;
@@ -2287,6 +2293,9 @@ eo-signout-layout .signout {
   border: 1px solid #c7d1d7;
   font-family: Roboto-Light;
 }
+#eo-dlg-login .subtitle {
+  text-align: center;
+}
 
 #eo-menu,
 #eo-dlg-login,
@@ -2395,6 +2404,9 @@ eo-signout-layout .signout {
 /*OPTIONS DIALOG*/
 #eo-dlg-options {
   cursor: pointer;
+}
+#eo-dlg-options #eo-dlg-options-main, #eo-dlg-options #eo-site-languages {
+  text-align: center;
 }
 #eo-dlg-options .option-dlg-guest:hover, #eo-dlg-options .option-dlg-logged:hover, #eo-dlg-options .option:hover, #eo-dlg-options .option:hover {
   background-color: #b8c6cf;
@@ -2554,6 +2566,7 @@ eo-signout-layout .signout {
 #eo-live #vocabulary .Grid-cell #vocabulary-order {
   background-color: #2cc6a8;
   cursor: pointer;
+  letter-spacing: 0.01em;
 }
 
 .Grid#days-pannel {
@@ -2570,6 +2583,7 @@ eo-signout-layout .signout {
 }
 #eo-dlg-terms #tos {
   font-size: 12px;
+  text-align: center;
 }
 #eo-dlg-terms #tos:hover {
   color: #93a0a8;
@@ -2593,6 +2607,9 @@ eo-signout-layout .signout {
 /*EDITOR POPUPS*/
 .editor-dlg {
   direction: ltr;
+  text-align: center;
+}
+.editor-dlg .ui-dialog-content {
   text-align: center;
 }
 .editor-dlg #new-word {
@@ -2653,16 +2670,16 @@ eo-signout-layout .signout {
 /*TUTORIAL*/
 .tutorial-icon {
   background-size: 30px;
-  width: 30px;
-  height: 30px;
+  width: 23px;
+  height: 23px;
   position: absolute;
-  top: 8px;
-  right: 120px;
+  top: 11px;
+  right: 109px;
 }
 
 .tutorial-logo {
   background-size: 150px;
-  width: 90px;
+  width: 80px;
   height: 30px;
   right: 20px;
   position: absolute;
