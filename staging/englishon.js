@@ -7658,7 +7658,7 @@ Tour = new function () {
                 window.scrollTo(0, 10);
               }
             }
-            if (!(document.tour.getCurrentStep().id.slice(0, 5) == 'question_')) {
+            if (!(document.tour.getCurrentStep().id.slice(0, 9) == 'question_')) {
               window.scrollTo(0, 0);
             } else {
               var val = e$('.' + document.tour.getCurrentStep().id).offset().top;
