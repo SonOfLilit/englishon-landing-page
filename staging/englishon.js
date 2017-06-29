@@ -4981,6 +4981,7 @@ window.cleanEnglishonCookies = function () {
   window.localStorage.removeItem('eo-user-name');
   window.localStorage.removeItem('isUser');
   window.localStorage.removeItem('editor');
+  window.localStorage.removeItem('isActive');
 };
 //
 var MESSAGES = {
