@@ -4974,6 +4974,13 @@ window.configStorage = {
     return e$.Deferred().resolve(r);
   }
 };
+
+window.cleanEnglishon = function () {
+  window.localStorage.removeItem('token');
+  window.localStorage.removeItem('email');
+  window.localStorage.removeItem('eo-user-name');
+  window.localStorage.removeItem('isUser');
+};
 //
 var MESSAGES = {
   'english': {
