@@ -2513,6 +2513,9 @@ eo-signout-layout .signout {
   height: 90%;
   width: 90%;
 }
+#eo-live #level {
+  height: 65px;
+}
 #eo-live .day-bar {
   border-radius: 25px;
   background-color: gray;
