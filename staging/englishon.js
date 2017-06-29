@@ -4975,11 +4975,12 @@ window.configStorage = {
   }
 };
 
-window.cleanEnglishon = function () {
+window.cleanEnglishonCookies = function () {
   window.localStorage.removeItem('token');
   window.localStorage.removeItem('email');
   window.localStorage.removeItem('eo-user-name');
   window.localStorage.removeItem('isUser');
+  window.localStorage.removeItem('editor');
 };
 //
 var MESSAGES = {
