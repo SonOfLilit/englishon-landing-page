@@ -5832,6 +5832,7 @@ UserInfo = function () {
     console.log('checkpersistence');
     document.englishonBackend.checkpersistence();
   };
+
   this.getLevel = function () {
     document.englishonBackend.getLevel().then(function (data) {
       $('#level').text(data.level.toFixed(2));
@@ -5874,7 +5875,13 @@ UserInfo = function () {
         e$('#eo-live').css('top', val);
       });
     }
-    this.getLevel();
+    //SHOW USER LEVEL JUST FOR TEAM
+    if (e$('#developement-only-version').length) {
+      if (!e$('#level').length) {
+        e$('#sr-cell').after(e$('<div>').addClass('Grid-cell').append(e$('<div id="level">').addClass('live-part v-align h-align')));
+      }
+      this.getLevel();
+    }
     $('#eo-live').removeClass('hidden vocabulary-open');
     if (document.englishonConfig.media == 'desktop') {
       e$('#eo-live').addClass('eo-live-maximize');
@@ -5961,7 +5968,7 @@ UserInfo = function () {
           circle.path.setAttribute('stroke', state.color);
           circle.path.setAttribute('stroke-width', state.width);
           text = document.eo_user.unAnswered.length + document.eo_user.answered.length;
-          if (!text || text == document.eo_user.answered.sr_questions.length) {
+          if (!text || text == document.eo_user.answered.length) {
             text = '&#10004;';
           };
           //var value = Math.round(circle.value() * 100);
@@ -6965,14 +6972,12 @@ document.live_actions = "<div class='hidden' id='eo-live'>\
         </div>\
         <div class='Grid-cell'>\
             <div class='Grid'>\
-                <div class='Grid-cell'>\
+                <div class='Grid-cell' id='sr-cell'>\
                     <div id='sr' class='live-part v-align h-align'>\
                         <div id='srProgress'></div>\
                     </div>\
                 </div>\
-                <div class='Grid-cell'>\
-                    <div id='level' class='live-part v-align h-align'></div>\
-                </div>\
+\
             </div>\
         </div>\
         <div class='Grid-cell'>\
@@ -7748,6 +7753,7 @@ var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = nu
 // **************
 // Initialization
 // **************
+//USE OF e$ IS IMPORTANT TO PREVENT PROBLEMS IN SITES WHICH HAVE THEIR OWN JQUERY FILE
 window.e$ = jQuery.noConflict(true);
 
 document.resources_promise = e$.Deferred();
@@ -7756,7 +7762,7 @@ document.questions_promise = e$.Deferred();
 
 function englishon() {
   var staticUrl = undefined;
-  if (e$('#englishon_link').attr('href') == 'http://localhost:8080/static/ex/englishon.css') {
+  if (e$('#developement-only-version').length) {
     window.staticUrl = function (resource) {
       return 'http://localhost:8080/static/ex/' + resource;
     };
@@ -7792,7 +7798,7 @@ function englishon() {
   }
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES ON PRODUCTION
-  if (!e$('#englishon_link').length) {
+  if (!e$('#developement-only-version').length) {
     if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/") {
       return;
     }
