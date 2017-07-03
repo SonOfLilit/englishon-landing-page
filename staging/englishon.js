@@ -5305,10 +5305,22 @@ HerokuBackend.prototype.rejectedTerms = function (address) {
   return this.ajax("POST", "/quiz/rejectedTerms/", { 'token': this.token });
 };
 
-HerokuBackend.prototype.getArticle = function (address) {
+HerokuBackend.prototype.getArticle = function (address, limit = 0) {
   this.url = encodeURIComponent(address) + '/';
   console.log('backend console *****token: ' + this.token);
-  return this.ajax("GET", "/quiz/page/" + this.url).then(function (data) {
+  return this.ajax("GET", "/quiz/page/" + limit + "/" + this.url).then(function (data) {
+    this.pageid = data.id;
+    return data.questions;
+  }.bind(this), function (data) {
+    if (data.responseJSON && data.responseJSON.detail === 'Terms not accepted') {
+      return e$.Deferred().reject('terms_not_accepted').promise();
+    }
+  });
+};
+HerokuBackend.prototype.getArticleForEditor = function (address) {
+  this.url = encodeURIComponent(address) + '/';
+  console.log('backend console *****token: ' + this.token);
+  return this.ajax("GET", "/quiz/editor/page/" + this.url).then(function (data) {
     this.pageid = data.id;
     return data.questions;
   }.bind(this), function (data) {
@@ -5668,10 +5680,8 @@ Editor.prototype.e2hui = function (span) {
       'wrong_answers': wrong_answers,
       'answer_language': 'he'
     };
-
     return question;
   });
-
   return div;
 };
 
@@ -5710,9 +5720,9 @@ Editor.prototype.autoContext = function (span) {
 
 Editor.prototype.fetchQuestions = function () {
   console.log("url: " + this.overlay.url);
-  return document.englishonBackend.getArticle(this.overlay.url).then(function (questions) {
+  return document.englishonBackend.getArticleForEditor(this.overlay.url).then(function (questions) {
     this.questions = questions;
-    // console.log("fetchQuestions***paragraphs: "+this.overlay.paragraphs);
+    console.log('got all questions for this url for editor. question number: ' + questions.length);
     console.log("fetchQuestions*** I brought questions for editor");
   }.bind(this));
 };
@@ -5747,7 +5757,6 @@ Editor.prototype.highlight = function () {
     while ((match = re.exec(text)) !== null) {
       var wordAndCotextMatch = false;
       var wordMatch = false;
-      //TODO: The code is duplicate. Fix it
       if (match[0] in question_dict) {
         //current word is exist in question_dict
         var currentWord = match[0];
@@ -5865,16 +5874,7 @@ UserInfo = function () {
     this.checkSRProgress();
     this.milotrage();
     e$('#eo-live').removeClass('hidden vocabulary-open');
-    e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
-    if (scraper.getHost() == 'actualic.co.il') {
-      //230-60
-      var val = Math.max(208 - $(window).scrollTop(), 60);
-      e$('#eo-live').css('top', val);
-      $(window).scroll(function () {
-        var val = Math.max(208 - $(window).scrollTop(), 60);
-        e$('#eo-live').css('top', val);
-      });
-    }
+    document.overlay.placeLiveActions();
     //SHOW USER LEVEL JUST FOR TEAM
     if (e$('#developement-only-version').length) {
       if (!e$('#level').length) {
@@ -6197,10 +6197,32 @@ Injector = function (paragraphs) {
     //enable setQuestion after login
     this.isBatch = true;
     for (var i = 0; i < questions.length; i++) {
-      this.addQuestion(questions[i], toggleSound);
+      //check spacing just for new questions. SRs add anyway for now
+      if (!questions[i].next_time) {
+        if (this.checkSpacing(questions[i])) {
+          this.addQuestion(questions[i], toggleSound);
+        }
+      }
     }
     this.isBatch = false;
     updateProgressBars();
+  };
+  this.checkSpacing = function (q) {
+    var questionsPerParagraph = 1;
+    var availablePlace = true;
+    e$.each(paragraphs, function (i, p) {
+      if (!p) {
+        return;
+      }
+      p = e$(p);
+      var ctx = q.context;
+      var location = p.text().indexOf(q.context);
+      var exist = p.find('.eo-injection-target').length;
+      if (p.text().indexOf(q.context) != -1 && p.find('.eo-injection-target').length >= questionsPerParagraph) {
+        availablePlace = false;
+      }
+    });
+    return availablePlace;
   };
 
   this.addQuestion = function (question, toggleSound) {
@@ -6240,10 +6262,7 @@ Injector = function (paragraphs) {
   this.findTarget = function (ctx, replaced) {
 
     var found;
-    // paragraphs.each(function(i, p) {
     e$.each(paragraphs, function (i, p) {
-      //maybe replace '&nbsp;' with ' '? it will help front page injector to find target
-      //p.html(p.innerHTML.replace('&nbsp;',' '));
       if (!p) {
         return;
       }
@@ -7161,7 +7180,7 @@ ShturemFrontpageOverlay = function (parts) {
     //check if better do that native
     e$('.eo-injection-target').contents().unwrap();
     var promises = e$.map(this.parts, function (part, url) {
-      return backend.getArticle(url).then(function (questions) {
+      return backend.getArticle(url, 15).then(function (questions) {
         for (var i = 0; i < questions.length; i++) {
           questions[i].location = part.paragraphs.context.textContent.indexOf(questions[i].context);
         }
@@ -7222,7 +7241,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     }
     this.interacted = false;
     this.userAnswered = false;
-    return backend.getArticle(this.url).then(function (questions) {
+    return backend.getArticle(this.url, 4).then(function (questions) {
       for (var i = 0; i < questions.length; i++) {
         questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context));
       }
@@ -7275,7 +7294,7 @@ CH10Overlay = function (url, subtitle, bodytext) {
     }
     this.interacted = false;
     this.userAnswered = false;
-    return backend.getArticle(this.url).then(function (questions) {
+    return backend.getArticle(this.url, 5).then(function (questions) {
       // for (var i = 0; i < questions.length; i++) {
       //   questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context))
       // }
@@ -7305,14 +7324,15 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.userAnswered = false;
   ShturemOverlay.call(this);
 
+  this.placeLiveActions = function () {};
+
   this.showButtons = function () {
     if (document.englishonConfig.isUser) {
       e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
       e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
       var promises = e$.map(this.parts, function (part, url) {
-        return document.englishonBackend.getArticle(url).then(function (questions) {
-          console.log("url: " + url + "Num questions: " + questions.length);
+        return document.englishonBackend.getArticle(url, 1).then(function (questions) {
           if (questions.length) {
             e$(part).find('.info').append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
           }
@@ -7330,14 +7350,30 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.showQuestions = function () {};
 };
 
+//----------------------------------------------------------------
+//-----------------------------------------------------------------
+//--------------------------------------------------------------
+
+
 actualicOverlay = function (url, subtitle, bodytext) {
   this.url = url;
   this.subtitle = subtitle;
   this.bodytext = bodytext;
-  this.paragraphs = [subtitle, bodytext];
+  //this.paragraphs = [subtitle, bodytext];
+  this.paragraphs = e$(bodytext).find('p').toArray().concat(subtitle);
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
+  this.placeLiveActions = function () {
+    var startPoint = 206;
+    e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
+    var val = Math.max(startPoint - $(window).scrollTop(), 60);
+    e$('#eo-live').css('top', val);
+    $(window).scroll(function () {
+      var val = Math.max(startPoint - $(window).scrollTop(), 60);
+      e$('#eo-live').css('top', val);
+    });
+  };
   this.showButtons = function () {
     //e$('.site-header').find('.small-12.columns').append(EnglishOnButton.element);
     e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
@@ -7357,6 +7393,18 @@ actualicOverlay = function (url, subtitle, bodytext) {
     if (this.injector) this.injector.off();
   }.bind(this);
 
+  this.getQuestionQuota = function () {
+    var total = 0;
+    e$(this.paragraphs).each(function (i, p) {
+      var text = e$(p).text();
+      var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
+      var match = [];
+      while ((match = re.exec(text)) !== null) {
+        total += 1;
+      }
+    });
+    return Math.max(1, Math.round(total / 100));
+  };
   this.fetchQuestions = function () {
     var backend = document.englishonBackend;
     //remove only 'eo-injection-target' tags,not content
@@ -7368,7 +7416,8 @@ actualicOverlay = function (url, subtitle, bodytext) {
     }
     this.interacted = false;
     this.userAnswered = false;
-    return backend.getArticle(this.url).then(function (questions) {
+    var limit = this.getQuestionQuota();
+    return backend.getArticle(this.url, limit).then(function (questions) {
       // for (var i = 0; i < questions.length; i++) {
       //   questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context))
       // }
@@ -7419,7 +7468,7 @@ var actualicScraper = function () {
 
   this.scrape = function () {
     url = ('http://actualic.co.il' + location.pathname + location.search).replace(/#.*$/, '');
-    var subtitle = e$('.entry-header').find('.excerpt')[0];
+    var subtitle = e$('.entry-content').find('h2');
     var bodytext = e$('.entry-content')[0];
     return new actualicOverlay(url, subtitle, bodytext);
   };
@@ -7789,10 +7838,16 @@ function englishon() {
     return { 'browser': M[0], 'version': M[1] };
   }();
   document.browserInfo = browserInfo;
+  var check_media = function () {
+    if (window.matchMedia("(min-width:1050px)").matches) return 'desktop';
+    return 'mobile';
+  };
+  var media = check_media();
+
   //Restrict none chrome browsers or chrome versions older than 49
   if (browserInfo.browser != 'Chrome' && (
   //(browserInfo.browser != 'Firefox' || !window.matchMedia("(min-width:1050px)").matches)) {
-  browserInfo.browser != 'Firefox' || !document.media == 'desktop')) {
+  browserInfo.browser != 'Firefox' || media != 'desktop')) {
     console.log('BROWSER NOT SUPPORTED.');
     return;
   }
@@ -7825,11 +7880,6 @@ function englishon() {
     return;
   }
   document.__englishon__ = true;
-  var check_media = function () {
-    if (window.matchMedia("(min-width:1050px)").matches) return 'desktop';
-    return 'mobile';
-  };
-  var media = check_media();
   var defaults = {
     'token': null,
     'backendUrl': DEFAULT_BACKEND_URL,
@@ -8431,6 +8481,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
 
   document.overlay = scraper.scrape();
   document.overlay.showButtons();
+  //TODO: move to separate function
   if (browserInfo.browser == "Chrome")
     //upgrade_link = e$('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('here');
     upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";else if (browserInfo.browser == "Firefox") upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";
@@ -8474,19 +8525,19 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     document.menu = new EnglishOnMenu();
     Tour.welcomeTutorial();
     e$(".eo-button").on('mouseenter', function () {
-      if (e$('.shepherd-open').length) {
-        return;
+      if (window.tourTimeout) {
+        clearTimeout(window.tourTimeout);
       }
+
       document.tour.start();
-    });
-    e$(".eo-button").on('mouseleave', function () {
-      if (e$('[data-id="welcome_0"]').hasClass('shepherd-open')) {
-        setTimeout(function () {
-          if (!document.querySelectorAll(".shepherd:hover").length && e$('[data-id="welcome_0"]').hasClass('shepherd-open')) {
-            document.tour.hide();
-          }
-        }, 3000);
-      }
+      window.tourTimeout = setTimeout(function () {
+        if (e$('.shepherd-open').length && !e$('[data-id="welcome_0"]').hasClass('shepherd-open')) {
+          return;
+        }
+        if (!document.querySelectorAll(".shepherd:hover").length && e$('[data-id="welcome_0"]').hasClass('shepherd-open')) {
+          document.tour.hide();
+        }
+      }, 3000);
     });
   }
 });
