@@ -5772,7 +5772,6 @@ Editor.prototype.highlight = function () {
           var context = question_dict[currentWord][i];
           var start_index = match.index - context.slice(0, context.indexOf(match[0])).length;
           var end_index = re.lastIndex + context.slice(context.indexOf(match[0]) + match[0].length, context.length).length;
-
           if (text.slice(start_index, end_index) == context) {
             //current word AND current context is match to one of the ready questions
             wordAndCotextMatch = true;
@@ -6198,10 +6197,8 @@ Injector = function (paragraphs) {
     this.isBatch = true;
     for (var i = 0; i < questions.length; i++) {
       //check spacing just for new questions. SRs add anyway for now
-      if (!questions[i].next_time) {
-        if (this.checkSpacing(questions[i])) {
-          this.addQuestion(questions[i], toggleSound);
-        }
+      if (this.checkSpacing(questions[i]) || questions[i].next_time) {
+        this.addQuestion(questions[i], toggleSound);
       }
     }
     this.isBatch = false;
@@ -6220,6 +6217,7 @@ Injector = function (paragraphs) {
       var exist = p.find('.eo-injection-target').length;
       if (p.text().indexOf(q.context) != -1 && p.find('.eo-injection-target').length >= questionsPerParagraph) {
         availablePlace = false;
+        console.log('no available space in this patagraph');
       }
     });
     return availablePlace;
