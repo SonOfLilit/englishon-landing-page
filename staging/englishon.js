@@ -5023,8 +5023,11 @@ var MESSAGES = {
     SIGN_OUT_FEEDBACK: "You've Signed Out",
     LOGGED_IN_FIDBACK: 'You signed in',
     GET_STARTED: 'Get Started',
+    START_PROGRESS_TUTORIAL: 'Progress Bar Tour',
+    START_TUTORIAL: 'Guided Tour',
     SITE_LANGUAGE: 'Site Language',
-    AGREE_TO_TOS: "By signing up, I agree to the</br> <a>Terms of Use</a> & <a>Privacy Policy</a>"
+    AGREE_TO_TOS: "By signing up, I agree to the</br> <a>Terms of Use</a> & <a>Privacy Policy</a>",
+    AGREE: "Yes, I agree. Let's start!"
   },
   'hebrew': {
     LANGUAGE: 'hebrew',
@@ -5064,8 +5067,11 @@ var MESSAGES = {
     SIGN_OUT_FEEDBACK: 'התנתקת מאינגלישאון...',
     LOGGED_IN_FIDBACK: 'התחברת לאינגלשיאון',
     GET_STARTED: 'התחל ללמוד שפות',
+    START_PROGRESS_TUTORIAL: 'מדריך ללוח ההתקדמות',
+    START_TUTORIAL: 'מדריך הפעלה',
     SITE_LANGUAGE: 'שפת התפריט',
-    AGREE_TO_TOS: "אני מסכים <a>לתנאי השימוש</a> ול<a>תנאי הפרטיות</a> "
+    AGREE_TO_TOS: "אני מסכים <a>לתנאי השימוש</a> ול<a>תנאי הפרטיות</a> ",
+    AGREE: "כן,אני מסכים. הבה נתחיל"
   }
 
 };
@@ -7058,7 +7064,7 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
                         <div class='Grid-cell checkbox-cell'>\
                             <input type='checkbox' id='eo-accept-checkbox' />\
                         </div>\
-                        <div class='Grid-cell checkbox-text-cell'> Yes, I agree. Let's start!</div>\
+                        <div class='Grid-cell checkbox-text-cell' id='agree'> Yes, I agree. Let's start!</div>\
                     </div>\
                 </div>\
             </div>\
@@ -7099,6 +7105,7 @@ ShturemOverlay = function () {
   this.TermsDialog = function () {
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
     e$('#tos').html(messages.AGREE_TO_TOS);
+    e$('#agree').html(messages.AGREE);
     if (document.englishonConfig.media == 'desktop') {
       if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
         var menuTop = 0;
@@ -7663,7 +7670,6 @@ Tour = new function () {
       e$(q).addClass('question_' + i);
       steps.push(new step('.question_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'question_' + i));
     });
-    steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'לוח ההקדמות. לחץ להסבר', 'live_actions'));
     if (!document.englishonConfig.email) {
       steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
       steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
@@ -7843,12 +7849,12 @@ function englishon() {
   var media = check_media();
 
   //Restrict none chrome browsers or chrome versions older than 49
-  if (browserInfo.browser != 'Chrome' && (
-  //(browserInfo.browser != 'Firefox' || !window.matchMedia("(min-width:1050px)").matches)) {
-  browserInfo.browser != 'Firefox' || media != 'desktop')) {
-    console.log('BROWSER NOT SUPPORTED.');
-    return;
-  }
+  if (browserInfo.browser != 'Chrome')
+    //&& (browserInfo.browser != 'Firefox' || media != 'desktop')
+    {
+      console.log('BROWSER NOT SUPPORTED.');
+      return;
+    }
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES ON PRODUCTION
   if (!e$('#developement-only-version').length) {
@@ -8145,6 +8151,8 @@ var EnglishOnMenu = function () {
     e$('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);
     e$('#eo-mail-login-btn').text(messages.LOGIN_BUTTON);
     e$('#eo-choose-lang').text(messages.SITE_LANGUAGE);
+    e$('#progress-tutorial-btn').text(messages.START_PROGRESS_TUTORIAL);
+    e$('#tutorial-btn').text(messages.START_TUTORIAL);
     e$('#get-started').text(messages.GET_STARTED);
     e$('#signout_btn').text(messages.SIGN_OUT);
   };

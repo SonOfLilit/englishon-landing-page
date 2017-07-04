@@ -1320,18 +1320,21 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
-#top_menu_block {
+body.www-shturem-net #top_menu_block,
+body.shturem-net #top_menu_block,
+body.www-englishon-org #top_menu_block {
   margin-top: 102px !important;
 }
-
-#top_menu_block > img {
+body.www-shturem-net #top_menu_block > img,
+body.shturem-net #top_menu_block > img,
+body.www-englishon-org #top_menu_block > img {
   padding-bottom: 3px;
 }
-
-#date_block {
+body.www-shturem-net #date_block,
+body.shturem-net #date_block,
+body.www-englishon-org #date_block {
   padding-top: 19px;
 }
-
 body.www-shturem-net.heroku-staging .newsHead,
 body.shturem-net.heroku-staging .newsHead,
 body.www-englishon-org.heroku-staging .newsHead {
@@ -1359,6 +1362,16 @@ body.www-englishon-org .eo-correct {
   letter-spacing: 0.05em;
 }
 
+.www-shturem-net #eo-live,
+.shturem-net #eo-live {
+  background-color: rgba(0, 0, 0, 0.2);
+  top: 10px;
+  right: 10px;
+}
+
+body.actualic-co-il #eo-live {
+  background-color: #eee;
+}
 body.actualic-co-il.heroku-staging {
   background-color: #e6e6e6;
 }
@@ -1760,14 +1773,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   -ms-flex: none !important;
   flex: none !important;
   width: 10% !important;
-}
-
-.checkbox-text-cell {
-  -webkit-box-flex: 0 !important;
-  -webkit-flex: none !important;
-  -ms-flex: none !important;
-  flex: none !important;
-  width: 90% !important;
 }
 
 .icon-cell {
@@ -2452,21 +2457,7 @@ eo-signout-layout .signout {
 }
 
 /*LIVE ACTIONS AREA*/
-.actualic-co-il #eo-live {
-  top: 60px;
-}
-.actualic-co-il #eo-live.top {
-  top: 230px;
-}
-
-.www-shturem-net #eo-live,
-.shturem-net #eo-live {
-  top: 10px;
-  right: 10px;
-}
-
 #eo-live {
-  background-color: rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
   border: solid transparent;
   border-width: 1px 1px 1px 6px;
@@ -2585,6 +2576,9 @@ eo-signout-layout .signout {
   font-family: Roboto-light;
   z-index: 20;
 }
+#eo-dlg-terms input[type=checkbox] {
+  margin: 0px;
+}
 #eo-dlg-terms .Grid {
   width: 100%;
 }
@@ -2595,11 +2589,19 @@ eo-signout-layout .signout {
 #eo-dlg-terms #tos:hover {
   color: #93a0a8;
 }
+#eo-dlg-terms #tos a {
+  font-family: Roboto-light;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #000;
+}
 #eo-dlg-terms #tos a:hover {
   color: #2cc6a8;
 }
 #eo-dlg-terms .Grid-cell.terms-header-cell, #eo-dlg-terms .checkbox-text-cell {
   font-size: 14px;
+  text-align: center;
 }
 #eo-dlg-terms #eo-dlg-inner {
   padding-top: 70px;
