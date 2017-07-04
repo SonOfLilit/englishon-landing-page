@@ -6175,11 +6175,8 @@ Injector = function (paragraphs) {
       q.original.replaceWith(q.replacement);
       //if the question after answering is too long - add spaces
       var width = q.replacement.outerWidth(); //2 pixels for the border and 4 is spere...
-      var parentoffset = q.replacement.parent().offset().left;
-      //var parentPadding = 30;
-      var parentPadding = document.overlay.constructor.name == 'ShturemArticleOverlay' ? 0 : 30;
-      var lineWidth = 385;
-      var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width - 6 - parentPadding; // a spere...
+      var [parentoffset, lineWidth] = document.overlay.getLineDetails();
+      var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width - 6;
       var curent_text = q.replacement.hasClass('eo-expired') ? q.qobj.practicedWord : q.qobj.data.replaced;
       var future_text = q.replacement.hasClass('eo-expired') ? q.qobj.data.replaced : q.qobj.practicedWord;
       var visible_element = q.replacement.hasClass('eo-expired') ? '.eo-correct' : '.eo-hint';
@@ -6192,7 +6189,7 @@ Injector = function (paragraphs) {
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
         //e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').text('s').insertBefore(q.replacement);
         //q.replacement.before("<br class ='eo-space'>");
-        //q.replacement.before(e$('<div>').addClass('eo-space').css('width',spaceInCurrentLine-10));//the width is not exact to give some spere 
+        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
       }
     });
   };
@@ -7074,8 +7071,14 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
 ";
 //
 ShturemOverlay = function () {
+  this.closeUnAnswered = function () {
+    $(this.injector.elements).each(function (i, q) {
+      if (q.qobj.element && q.qobj.element.is('.eo-active')) {
+        q.qobj.closeUnanswered();
+      }
+    });
+  };
   // stubs, just to make it "compile"
-
   this.setReporter = function (backend) {};
   this.fetchLinkStates = function (backend) {
     return Promise.resolve();
@@ -7153,7 +7156,12 @@ ShturemFrontpageOverlay = function (parts) {
       injector: null
     };
   }.bind(this));
-
+  this.getLineDetails = function () {
+    return {
+      parentoffset: e$('.artText').offset().left - 30,
+      lineWidth: 385
+    };
+  };
   this.closeUnAnswered = function () {
     $.each(this.parts, function (url, part) {
 
@@ -7228,13 +7236,13 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
-  this.closeUnAnswered = function () {
-    $(this.injector.elements).each(function (i, q) {
-      if (q.qobj.element && q.qobj.element.is('.eo-active')) {
-        q.qobj.closeUnanswered();
-      }
-    });
+  this.getLineDetails = function () {
+    return {
+      parentoffset: e$('.artText').offset().left,
+      lineWidth: 385
+    };
   };
+
   this.fetchQuestions = function () {
     var backend = document.englishonBackend;
     //remove only 'eo-injection-target' tags,not content
@@ -7329,6 +7337,13 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.userAnswered = false;
   ShturemOverlay.call(this);
 
+  this.getLineDetails = function () {
+    return {
+      parentoffset: e$('.artText').offset().left,
+      lineWidth: 385
+    };
+  };
+
   this.placeLiveActions = function () {};
 
   this.showButtons = function () {
@@ -7369,6 +7384,17 @@ actualicOverlay = function (url, subtitle, bodytext) {
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
+
+  // this.getLineDetails = function() {
+  //   return {
+  //     parentoffset: e$('.entry-content').offset().left,
+  //     lineWidth: e$('.entry-content').width(),
+  //   }
+  // } 
+  this.getLineDetails = function () {
+    return [e$('.entry-content').offset().left, e$('.entry-content').width()];
+  };
+
   this.placeLiveActions = function () {
     var startPoint = 206;
     e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
@@ -7650,9 +7676,6 @@ Tour = new function () {
 
   this.welcomeTutorial = function () {
     steps = [];
-    // steps.push(['.eo-button left', 'welcome', 'welcome to Englishon , etc........', null, 'welcome_' + 0]);
-    // steps.push(['.eo-button top', 'englishon', 'Open the menu', '.eo-button click', 'welcome_' + 1]);
-    // steps.push(['#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', null, 'welcome_' + 2]);
     steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'גלוש בעברית ולמד אנגלית ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
