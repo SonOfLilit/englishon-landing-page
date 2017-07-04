@@ -1332,6 +1332,11 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   padding-top: 19px;
 }
 
+body.www-shturem-net.heroku-staging .newsHead,
+body.shturem-net.heroku-staging .newsHead,
+body.www-englishon-org.heroku-staging .newsHead {
+  background-color: #e6e6e6;
+}
 body.www-shturem-net .eo-live-maximize,
 body.shturem-net .eo-live-maximize,
 body.www-englishon-org .eo-live-maximize {
@@ -1354,6 +1359,9 @@ body.www-englishon-org .eo-correct {
   letter-spacing: 0.05em;
 }
 
+body.actualic-co-il.heroku-staging {
+  background-color: #e6e6e6;
+}
 body.actualic-co-il .eo-live-maximize {
   height: 208px !important;
 }
@@ -1798,10 +1806,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 /*CSS FOR DESKTOP*/
 .hidden {
   display: none;
-}
-
-.heroku-staging .newsHead {
-  background-color: #e6e6e6;
 }
 
 #eo-area-container,
@@ -2512,6 +2516,9 @@ eo-signout-layout .signout {
 #eo-live #sr #eo-progress {
   height: 90%;
   width: 90%;
+}
+#eo-live #level {
+  height: 65px;
 }
 #eo-live .day-bar {
   border-radius: 25px;
