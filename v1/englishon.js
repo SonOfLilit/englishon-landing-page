@@ -5023,8 +5023,12 @@ var MESSAGES = {
     SIGN_OUT_FEEDBACK: "You've Signed Out",
     LOGGED_IN_FIDBACK: 'You signed in',
     GET_STARTED: 'Get Started',
+    START_PROGRESS_TUTORIAL: 'Progress Bar Tour',
+    START_TUTORIAL: 'Guided Tour',
     SITE_LANGUAGE: 'Site Language',
-    AGREE_TO_TOS: "By signing up, I agree to the</br> <a>Terms of Use</a> & <a>Privacy Policy</a>"
+    AGREE_TO_TOS: "By signing up, I agree to the</br> <a>Terms of Use</a> & <a>Privacy Policy</a>",
+    AGREE: "Yes, I agree. Let's start!",
+    NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>"
   },
   'hebrew': {
     LANGUAGE: 'hebrew',
@@ -5064,8 +5068,12 @@ var MESSAGES = {
     SIGN_OUT_FEEDBACK: 'התנתקת מאינגלישאון...',
     LOGGED_IN_FIDBACK: 'התחברת לאינגלשיאון',
     GET_STARTED: 'התחל ללמוד שפות',
+    START_PROGRESS_TUTORIAL: 'מדריך ללוח ההתקדמות',
+    START_TUTORIAL: 'מדריך הפעלה',
     SITE_LANGUAGE: 'שפת התפריט',
-    AGREE_TO_TOS: "אני מסכים <a>לתנאי השימוש</a> ול<a>תנאי הפרטיות</a> "
+    AGREE_TO_TOS: "אני מסכים <a>לתנאי השימוש</a> ול<a>תנאי הפרטיות</a> ",
+    AGREE: "כן,אני מסכים. הבה נתחיל",
+    NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>"
   }
 
 };
@@ -6169,11 +6177,8 @@ Injector = function (paragraphs) {
       q.original.replaceWith(q.replacement);
       //if the question after answering is too long - add spaces
       var width = q.replacement.outerWidth(); //2 pixels for the border and 4 is spere...
-      var parentoffset = q.replacement.parent().offset().left;
-      //var parentPadding = 30;
-      var parentPadding = document.overlay.constructor.name == 'ShturemArticleOverlay' ? 0 : 30;
-      var lineWidth = 385;
-      var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width - 6 - parentPadding; // a spere...
+      var [parentoffset, lineWidth] = document.overlay.getLineDetails();
+      var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width - 6;
       var curent_text = q.replacement.hasClass('eo-expired') ? q.qobj.practicedWord : q.qobj.data.replaced;
       var future_text = q.replacement.hasClass('eo-expired') ? q.qobj.data.replaced : q.qobj.practicedWord;
       var visible_element = q.replacement.hasClass('eo-expired') ? '.eo-correct' : '.eo-hint';
@@ -6184,9 +6189,7 @@ Injector = function (paragraphs) {
       width > future_width && spaceInCurrentLine > lineWidth) {
         //a question which expected to go up after action
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
-        //e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').text('s').insertBefore(q.replacement);
-        //q.replacement.before("<br class ='eo-space'>");
-        //q.replacement.before(e$('<div>').addClass('eo-space').css('width',spaceInCurrentLine-10));//the width is not exact to give some spere 
+        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
       }
     });
   };
@@ -6196,6 +6199,7 @@ Injector = function (paragraphs) {
     //enable setQuestion after login
     this.isBatch = true;
     for (var i = 0; i < questions.length; i++) {
+      //TODO: don't user all questions from server, use the overlay.limit
       //check spacing just for new questions. SRs add anyway for now
       if (this.checkSpacing(questions[i]) || questions[i].next_time) {
         this.addQuestion(questions[i], toggleSound);
@@ -7058,7 +7062,7 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
                         <div class='Grid-cell checkbox-cell'>\
                             <input type='checkbox' id='eo-accept-checkbox' />\
                         </div>\
-                        <div class='Grid-cell checkbox-text-cell'> Yes, I agree. Let's start!</div>\
+                        <div class='Grid-cell checkbox-text-cell' id='agree'> Yes, I agree. Let's start!</div>\
                     </div>\
                 </div>\
             </div>\
@@ -7068,8 +7072,14 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
 ";
 //
 ShturemOverlay = function () {
+  this.closeUnAnswered = function () {
+    $(this.injector.elements).each(function (i, q) {
+      if (q.qobj.element && q.qobj.element.is('.eo-active')) {
+        q.qobj.closeUnanswered();
+      }
+    });
+  };
   // stubs, just to make it "compile"
-
   this.setReporter = function (backend) {};
   this.fetchLinkStates = function (backend) {
     return Promise.resolve();
@@ -7099,6 +7109,7 @@ ShturemOverlay = function () {
   this.TermsDialog = function () {
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
     e$('#tos').html(messages.AGREE_TO_TOS);
+    e$('#agree').html(messages.AGREE);
     if (document.englishonConfig.media == 'desktop') {
       if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
         var menuTop = 0;
@@ -7146,7 +7157,12 @@ ShturemFrontpageOverlay = function (parts) {
       injector: null
     };
   }.bind(this));
-
+  this.getLineDetails = function () {
+    return {
+      parentoffset: e$('.artText').offset().left - 30,
+      lineWidth: 385
+    };
+  };
   this.closeUnAnswered = function () {
     $.each(this.parts, function (url, part) {
 
@@ -7221,13 +7237,13 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
-  this.closeUnAnswered = function () {
-    $(this.injector.elements).each(function (i, q) {
-      if (q.qobj.element && q.qobj.element.is('.eo-active')) {
-        q.qobj.closeUnanswered();
-      }
-    });
+  this.getLineDetails = function () {
+    return {
+      parentoffset: e$('.artText').offset().left,
+      lineWidth: 385
+    };
   };
+
   this.fetchQuestions = function () {
     var backend = document.englishonBackend;
     //remove only 'eo-injection-target' tags,not content
@@ -7322,6 +7338,13 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.userAnswered = false;
   ShturemOverlay.call(this);
 
+  this.getLineDetails = function () {
+    return {
+      parentoffset: e$('.artText').offset().left,
+      lineWidth: 385
+    };
+  };
+
   this.placeLiveActions = function () {};
 
   this.showButtons = function () {
@@ -7362,6 +7385,11 @@ actualicOverlay = function (url, subtitle, bodytext) {
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
+
+  this.getLineDetails = function () {
+    return [e$('.entry-content').offset().left, e$('.entry-content').width()];
+  };
+
   this.placeLiveActions = function () {
     var startPoint = 206;
     e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
@@ -7414,14 +7442,15 @@ actualicOverlay = function (url, subtitle, bodytext) {
     }
     this.interacted = false;
     this.userAnswered = false;
-    var limit = this.getQuestionQuota();
-    return backend.getArticle(this.url, limit).then(function (questions) {
-      // for (var i = 0; i < questions.length; i++) {
-      //   questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context))
-      // }
-      // questions.sort(function(q1, q2) {
-      //   return q1.location - q2.location;
-      // });
+    this.limit = this.getQuestionQuota();
+    return backend.getArticle(this.url, this.limit).then(function (questions) {
+      if (!questions.length) {
+        e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
+        e$('.eo-button').on('click', function () {
+          no_questions_dlg = e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>');
+          no_questions_dlg.dialog({ auto_open: true, modal: true });
+        });
+      }
       this.questions = questions;
       console.log("Num questions: " + questions.length);
       this.injector = new Injector(this.paragraphs);
@@ -7643,9 +7672,6 @@ Tour = new function () {
 
   this.welcomeTutorial = function () {
     steps = [];
-    // steps.push(['.eo-button left', 'welcome', 'welcome to Englishon , etc........', null, 'welcome_' + 0]);
-    // steps.push(['.eo-button top', 'englishon', 'Open the menu', '.eo-button click', 'welcome_' + 1]);
-    // steps.push(['#eo-power-switch left', 'englishon', 'Determine volume level and turn on englishon', null, 'welcome_' + 2]);
     steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'גלוש בעברית ולמד אנגלית ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
@@ -7663,7 +7689,6 @@ Tour = new function () {
       e$(q).addClass('question_' + i);
       steps.push(new step('.question_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'question_' + i));
     });
-    steps.push(new step('#eo-live left', 'לוח בקרת התקדמות', 'לוח ההקדמות. לחץ להסבר', 'live_actions'));
     if (!document.englishonConfig.email) {
       steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
       steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
@@ -7843,12 +7868,12 @@ function englishon() {
   var media = check_media();
 
   //Restrict none chrome browsers or chrome versions older than 49
-  if (browserInfo.browser != 'Chrome' && (
-  //(browserInfo.browser != 'Firefox' || !window.matchMedia("(min-width:1050px)").matches)) {
-  browserInfo.browser != 'Firefox' || media != 'desktop')) {
-    console.log('BROWSER NOT SUPPORTED.');
-    return;
-  }
+  if (browserInfo.browser != 'Chrome')
+    //&& (browserInfo.browser != 'Firefox' || media != 'desktop')
+    {
+      console.log('BROWSER NOT SUPPORTED.');
+      return;
+    }
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES ON PRODUCTION
   if (!e$('#developement-only-version').length) {
@@ -7856,7 +7881,7 @@ function englishon() {
       return;
     }
   }
-  sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org'];
+  sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il'];
   if (sites.indexOf(window.location.host) == -1) {
     return;
   }
@@ -8145,6 +8170,8 @@ var EnglishOnMenu = function () {
     e$('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);
     e$('#eo-mail-login-btn').text(messages.LOGIN_BUTTON);
     e$('#eo-choose-lang').text(messages.SITE_LANGUAGE);
+    e$('#progress-tutorial-btn').text(messages.START_PROGRESS_TUTORIAL);
+    e$('#tutorial-btn').text(messages.START_TUTORIAL);
     e$('#get-started').text(messages.GET_STARTED);
     e$('#signout_btn').text(messages.SIGN_OUT);
   };
@@ -8376,6 +8403,7 @@ var EnglishOnMenu = function () {
 
       document.overlay.hideButtons();
       document._editor.fetchQuestions().then(function () {
+        console.log('------------------------------questions for editor');
         document._editor.highlight();
       });
     });
@@ -8445,7 +8473,7 @@ e$(function () {
   document.loaded_promise.resolve();
 });
 e$.when(document.questions_promise).done(function () {
-  if (window.localStorage.getItem('show_quiz_tutorial') && document.overlay.questions.length) {
+  if (window.localStorage.getItem('show_quiz_tutorial') && document.overlay.questions && document.overlay.questions.length) {
 
     //if (true) {
     window.localStorage.removeItem('show_quiz_tutorial');

@@ -6189,8 +6189,6 @@ Injector = function (paragraphs) {
       width > future_width && spaceInCurrentLine > lineWidth) {
         //a question which expected to go up after action
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
-        //e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 2 + 'px').text('s').insertBefore(q.replacement);
-        //q.replacement.before("<br class ='eo-space'>");
         q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
       }
     });
@@ -6201,6 +6199,7 @@ Injector = function (paragraphs) {
     //enable setQuestion after login
     this.isBatch = true;
     for (var i = 0; i < questions.length; i++) {
+      //TODO: don't user all questions from server, use the overlay.limit
       //check spacing just for new questions. SRs add anyway for now
       if (this.checkSpacing(questions[i]) || questions[i].next_time) {
         this.addQuestion(questions[i], toggleSound);
@@ -7443,8 +7442,8 @@ actualicOverlay = function (url, subtitle, bodytext) {
     }
     this.interacted = false;
     this.userAnswered = false;
-    var limit = this.getQuestionQuota();
-    return backend.getArticle(this.url, limit).then(function (questions) {
+    this.limit = this.getQuestionQuota();
+    return backend.getArticle(this.url, this.limit).then(function (questions) {
       if (!questions.length) {
         e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
         e$('.eo-button').on('click', function () {
