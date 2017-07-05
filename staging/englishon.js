@@ -5027,7 +5027,8 @@ var MESSAGES = {
     START_TUTORIAL: 'Guided Tour',
     SITE_LANGUAGE: 'Site Language',
     AGREE_TO_TOS: "By signing up, I agree to the</br> <a>Terms of Use</a> & <a>Privacy Policy</a>",
-    AGREE: "Yes, I agree. Let's start!"
+    AGREE: "Yes, I agree. Let's start!",
+    NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>"
   },
   'hebrew': {
     LANGUAGE: 'hebrew',
@@ -5071,7 +5072,8 @@ var MESSAGES = {
     START_TUTORIAL: 'מדריך הפעלה',
     SITE_LANGUAGE: 'שפת התפריט',
     AGREE_TO_TOS: "אני מסכים <a>לתנאי השימוש</a> ול<a>תנאי הפרטיות</a> ",
-    AGREE: "כן,אני מסכים. הבה נתחיל"
+    AGREE: "כן,אני מסכים. הבה נתחיל",
+    NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>"
   }
 
 };
@@ -7385,12 +7387,6 @@ actualicOverlay = function (url, subtitle, bodytext) {
   this.userAnswered = false;
   ShturemOverlay.call(this);
 
-  // this.getLineDetails = function() {
-  //   return {
-  //     parentoffset: e$('.entry-content').offset().left,
-  //     lineWidth: e$('.entry-content').width(),
-  //   }
-  // } 
   this.getLineDetails = function () {
     return [e$('.entry-content').offset().left, e$('.entry-content').width()];
   };
@@ -7449,12 +7445,13 @@ actualicOverlay = function (url, subtitle, bodytext) {
     this.userAnswered = false;
     var limit = this.getQuestionQuota();
     return backend.getArticle(this.url, limit).then(function (questions) {
-      // for (var i = 0; i < questions.length; i++) {
-      //   questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context))
-      // }
-      // questions.sort(function(q1, q2) {
-      //   return q1.location - q2.location;
-      // });
+      if (!questions.length) {
+        e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
+        e$('.eo-button').on('click', function () {
+          no_questions_dlg = e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>');
+          no_questions_dlg.dialog({ auto_open: true, modal: true });
+        });
+      }
       this.questions = questions;
       console.log("Num questions: " + questions.length);
       this.injector = new Injector(this.paragraphs);
@@ -7885,7 +7882,7 @@ function englishon() {
       return;
     }
   }
-  sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org'];
+  sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il'];
   if (sites.indexOf(window.location.host) == -1) {
     return;
   }
@@ -8407,6 +8404,7 @@ var EnglishOnMenu = function () {
 
       document.overlay.hideButtons();
       document._editor.fetchQuestions().then(function () {
+        console.log('------------------------------questions for editor');
         document._editor.highlight();
       });
     });
@@ -8476,7 +8474,7 @@ e$(function () {
   document.loaded_promise.resolve();
 });
 e$.when(document.questions_promise).done(function () {
-  if (window.localStorage.getItem('show_quiz_tutorial') && document.overlay.questions.length) {
+  if (window.localStorage.getItem('show_quiz_tutorial') && document.overlay.questions && document.overlay.questions.length) {
 
     //if (true) {
     window.localStorage.removeItem('show_quiz_tutorial');

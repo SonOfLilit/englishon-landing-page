@@ -1835,18 +1835,6 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   z-index: 12;
 }
 
-#eo-upgrade-dialog {
-  background-color: #eceff1;
-  font-family: Roboto-Light;
-  font-size: 16px;
-}
-#eo-upgrade-dialog > div {
-  margin-top: 20px;
-}
-#eo-upgrade-dialog a {
-  color: #2cc6a8;
-}
-
 /*ENGLISHON LINES*/
 .eo-delimiter {
   height: 50%;
@@ -2571,7 +2559,35 @@ eo-signout-layout .signout {
   direction: rtl;
 }
 
-/*TERMS DIALOG*/
+/*POPUPS*/
+#eo-upgrade-dialog {
+  background-color: #eceff1;
+  font-family: Roboto-Light;
+  font-size: 16px;
+}
+#eo-upgrade-dialog > div {
+  margin-top: 20px;
+}
+#eo-upgrade-dialog a {
+  color: #2cc6a8;
+}
+
+.no-questions-dlg-icon {
+  width: 23px;
+  height: 23px;
+  position: absolute;
+  top: 34px;
+  right: 180px;
+}
+
+.no-question-div-1 {
+  text-align: center;
+}
+
+.no-question-div-2 {
+  padding-right: 65px;
+}
+
 #eo-dlg-terms {
   font-family: Roboto-light;
   z-index: 20;
