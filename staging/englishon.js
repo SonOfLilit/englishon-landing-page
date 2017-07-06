@@ -6199,14 +6199,22 @@ Injector = function (paragraphs) {
     //enable setQuestion after login
     this.isBatch = true;
     for (var i = 0; i < questions.length; i++) {
-      //TODO: don't user all questions from server, use the overlay.limit
       //check spacing just for new questions. SRs add anyway for now
-      if (this.checkSpacing(questions[i]) || questions[i].next_time) {
+      if (this.checkSpacing(questions[i]) && this.checkDuplicates(questions[i])) {
         this.addQuestion(questions[i], toggleSound);
       }
     }
     this.isBatch = false;
     updateProgressBars();
+  };
+  this.checkDuplicates = function (q) {
+    isDuplicate = false;
+    e$(this.elements).each(function (i, e) {
+      if (e.qobj.data.hint == q.hint && e.qobj.data.correct_answers[0].answer == q.correct_answers[0].answer) {
+        isDuplicate = true;
+      }
+    });
+    return !isDuplicate;
   };
   this.checkSpacing = function (q) {
     var questionsPerParagraph = 1;
@@ -7444,7 +7452,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
     this.userAnswered = false;
     this.limit = this.getQuestionQuota();
     return backend.getArticle(this.url, this.limit).then(function (questions) {
-      if (!questions.length) {
+      if (!document.englishonConfig.editor && !questions.length) {
         e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
         e$('.eo-button').on('click', function () {
           no_questions_dlg = e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>');
