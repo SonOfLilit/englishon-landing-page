@@ -4976,6 +4976,7 @@ window.configStorage = {
 };
 
 window.cleanEnglishonCookies = function () {
+  document.menu.signout();
   window.localStorage.removeItem('token');
   window.localStorage.removeItem('email');
   window.localStorage.removeItem('eo-user-name');
@@ -5892,28 +5893,9 @@ UserInfo = function () {
     $('#eo-live').removeClass('hidden vocabulary-open');
     if (document.englishonConfig.media == 'desktop') {
       e$('#eo-live').addClass('eo-live-maximize');
-      e$(document).on('click', function (e) {
-        e.preventDefault();
-        e.target = e$(e.target);
-        if (e$('.shepherd-open').length) {
-          return;
-        }
-        if (!e.target.is('.eo-question') && e.target.parents('.eo-question').length === 0) {
-          e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-          e$('#vocabulary').addClass('hidden');
-          e$('#eo-live-main').removeClass('hidden');
-          e$(document).off('click');
-        }
-      });
-      this.setTimeOut = setTimeout(function () {
-        if (e$('.shepherd-open').length) {
-          return;
-        }
-        e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-        e$('#vocabulary').addClass('hidden');
-        e$('#eo-live-main').removeClass('hidden');
-        e$(document).off('click');
-      }, 10000);
+      e$(document).on('click', this.minimize);
+
+      this.setTimeOut = setTimeout(this.minimize, 10000);
       e$('#eo-live').on('click', function (e) {
         clearTimeout(this.setTimeOut);
       }.bind(this));
@@ -5950,6 +5932,21 @@ UserInfo = function () {
       });
     }
   };
+
+  this.minimize = function (e) {
+    if (e) {
+      e.preventDefault();
+      e.target = e$(e.target);
+      if (e.target.is('.eo-question') || e.target.parents('.eo-question').length) {
+        return;
+      }
+    }
+    e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+    e$('#vocabulary').addClass('hidden');
+    e$('#eo-live-main').removeClass('hidden');
+    e$(document).off('click', this.minimize);
+  };
+
   this.initial = function () {
     this.unAnswered = { 'sr_questions': [] };
     this.answered = { 'sr_questions': [] };
@@ -6040,17 +6037,7 @@ UserInfo = function () {
         e$('#eo-live').removeClass('vocabulary-open');
         return;
       }
-      e$(document).on('click', function (e) {
-        e.preventDefault();
-        e.target = e$(e.target);
-        if (e.target.is('.eo-question') || e.target.parents('.eo-question').length) {
-          return;
-        }
-        e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-        e$('#vocabulary').addClass('hidden');
-        e$('#eo-live-main').removeClass('hidden');
-        e$(document).off('click');
-      });
+      e$(document).on('click', this.minimize);
     }.bind(this));
     if (window.localStorage.getItem('show_progress_tutorial')) {
       var showProgressTutorial = function () {
@@ -6195,18 +6182,27 @@ Injector = function (paragraphs) {
   };
 
   this.setQuestions = function (questions, toggleSound) {
+
     this.elements = [];
     //enable setQuestion after login
     this.isBatch = true;
     for (var i = 0; i < questions.length; i++) {
-      //TODO: don't user all questions from server, use the overlay.limit
       //check spacing just for new questions. SRs add anyway for now
-      if (this.checkSpacing(questions[i]) || questions[i].next_time) {
+      if (this.checkSpacing(questions[i]) && this.checkDuplicates(questions[i])) {
         this.addQuestion(questions[i], toggleSound);
       }
     }
     this.isBatch = false;
     updateProgressBars();
+  };
+  this.checkDuplicates = function (q) {
+    isDuplicate = false;
+    e$(this.elements).each(function (i, e) {
+      if (e.qobj.data.hint == q.hint && e.qobj.data.correct_answers[0].answer == q.correct_answers[0].answer) {
+        isDuplicate = true;
+      }
+    });
+    return !isDuplicate;
   };
   this.checkSpacing = function (q) {
     var questionsPerParagraph = 1;
@@ -6221,7 +6217,7 @@ Injector = function (paragraphs) {
       var exist = p.find('.eo-injection-target').length;
       if (p.text().indexOf(q.context) != -1 && p.find('.eo-injection-target').length >= questionsPerParagraph) {
         availablePlace = false;
-        console.log('no available space in this patagraph');
+        console.log('no available space in this paragraph');
       }
     });
     return availablePlace;
@@ -6874,8 +6870,8 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
             </div>\
             <div class='Grid-cell eo-row10 eo-menu-inner'>\
                 <div class='Grid'>\
-                    <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='http://englishon1.desk.com/'>Need Help?</a></div>\
-                    <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='http://englishon1.desk.com/'>Contact Us</a></div>\
+                    <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='https://englishonhelp.desk.com/'>Need Help?</a></div>\
+                    <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='https://englishonhelp.desk.com/'>Contact Us</a></div>\
                 </div>\
             </div>\
             <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
@@ -7444,7 +7440,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
     this.userAnswered = false;
     this.limit = this.getQuestionQuota();
     return backend.getArticle(this.url, this.limit).then(function (questions) {
-      if (!questions.length) {
+      if (!document.englishonConfig.editor && !questions.length) {
         e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
         e$('.eo-button').on('click', function () {
           no_questions_dlg = e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>');
@@ -7663,6 +7659,13 @@ var Speaker = new function () {
 //
 Tour = new function () {
   this.progressTutorial = function () {
+    e$('#eo-live').removeClass('vocabulary-open');
+    e$('#eo-live').addClass('eo-live-maximize');
+    e$('#vocabulary').addClass('hidden');
+    e$('#eo-live-main').removeClass('hidden');
+    clearTimeout(document.eo_user.setTimeOut);
+
+    e$(document).off('click', document.eo_user.minimize);
     steps = [];
     steps.push(new step('#milotrage right', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
     steps.push(new step('#days-pannel right', 'progress2------', 'הימים שתרגלתי ברציפות השבוע', 'progress_' + 1));
@@ -7672,7 +7675,7 @@ Tour = new function () {
 
   this.welcomeTutorial = function () {
     steps = [];
-    steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'גלוש בעברית ולמד אנגלית ללא עלות', 'welcome_' + 0, 0, '.eo-button click'));
+    steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-button click'));
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
   };
@@ -7680,9 +7683,7 @@ Tour = new function () {
   this.quizTutorial = function () {
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
-    e$('.shepherd-cancel-link').on('click', function () {
-      window.localStorage.removeItem('quiz_tutorial_not_finished');
-    });
+
     steps = [];
     e$('.eo-question').each(function (i, q) {
       var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
@@ -7690,7 +7691,7 @@ Tour = new function () {
       steps.push(new step('.question_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'question_' + i));
     });
     if (!document.englishonConfig.email) {
-      steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
+      steps.push(new step('.eo-button right', '', 'הרשם לשמירת התקדמות', 'login'));
       steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
     }
     this.initTutorial(steps);
@@ -7749,7 +7750,7 @@ Tour = new function () {
         });
       }
       var tetherOptionsDic = {};
-      if (steps[i].id.slice(0, 5) === 'question_') {
+      if (steps[i].id.slice(0, 9) === 'question_') {
         tetherOptionsDic.offset = '-20px 0px';
       }
       if (steps[i].id === 'welcome_1') {
@@ -7771,6 +7772,7 @@ Tour = new function () {
             if (document.tour.getCurrentStep().id === 'progress_2') {
               var closeTutorial = function () {
                 document.tour.hide();
+                e$(document).on('click', document.eo_user.minimize);
                 e$('#sr').off('click', closeTutorial);
               };
               e$('#sr').on('click', closeTutorial);
@@ -7801,7 +7803,13 @@ Tour = new function () {
               };
               e$('.eo-question .eo-hint').on('click', e$('.eo-question .eo-hint'), questionOpened);
               e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
+              e$('.shepherd-cancel-link').on('click', function () {
+                window.localStorage.removeItem('quiz_tutorial_not_finished');
+                e$('.eo-question .eo-hint').off('click', questionOpened);
+                e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
+              });
             }
+
             if (window.location.host == 'actualic.co.il') {
               var val = Math.max(230 - $(window).scrollTop(), 60);
               e$('#eo-live').css('top', val);
@@ -8486,6 +8494,7 @@ e$.when(document.questions_promise).done(function () {
 });
 
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
+  //addMixPannel();
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
   //register the handler for backspace/forward
@@ -8572,7 +8581,9 @@ function receiveMessage(event) {
   // Do we trust the sender of this message?  (might be
   // different from what we originally opened, for example). 
   var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
-  if (origin !== document.englishonBackend.base) return;
+  if (origin !== document.englishonBackend.base) {
+    return;
+  }
   // event.source is popup
 
   var django_token = event.data.token;
@@ -8604,6 +8615,17 @@ function receiveMessage(event) {
     document.eoDialogs.hideDialogs(0);
   }
 }
+
+addMixPannel = function () {
+  //   <!-- start Mixpanel --><script type="text/javascript">(function(e,a){if(!a.SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
+  // 0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+  // for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
+  // mixpanel.init("d717e9bb23923da98cd52a637644d933");</script><!-- end Mixpanel -->
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = document.englishonConfig.backendUrl + '/static/ex/mixpanel.js';
+  document.head.append(script);
+};
 //
 // *********
 // Name List
