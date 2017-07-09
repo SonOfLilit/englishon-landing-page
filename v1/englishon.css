@@ -1372,6 +1372,9 @@ body.www-englishon-org .eo-correct {
 body.actualic-co-il #eo-live {
   background-color: #eee;
 }
+body.actualic-co-il #eo-live.vocabulary-open {
+  background-color: black;
+}
 body.actualic-co-il.heroku-staging {
   background-color: #e6e6e6;
 }
