@@ -5893,28 +5893,9 @@ UserInfo = function () {
     $('#eo-live').removeClass('hidden vocabulary-open');
     if (document.englishonConfig.media == 'desktop') {
       e$('#eo-live').addClass('eo-live-maximize');
-      e$(document).on('click', function (e) {
-        e.preventDefault();
-        e.target = e$(e.target);
-        if (e$('.shepherd-open').length) {
-          return;
-        }
-        if (!e.target.is('.eo-question') && e.target.parents('.eo-question').length === 0) {
-          e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-          e$('#vocabulary').addClass('hidden');
-          e$('#eo-live-main').removeClass('hidden');
-          e$(document).off('click');
-        }
-      });
-      this.setTimeOut = setTimeout(function () {
-        if (e$('.shepherd-open').length) {
-          return;
-        }
-        e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-        e$('#vocabulary').addClass('hidden');
-        e$('#eo-live-main').removeClass('hidden');
-        e$(document).off('click');
-      }, 10000);
+      e$(document).on('click', this.minimize);
+
+      this.setTimeOut = setTimeout(this.minimize, 10000);
       e$('#eo-live').on('click', function (e) {
         clearTimeout(this.setTimeOut);
       }.bind(this));
@@ -5951,6 +5932,21 @@ UserInfo = function () {
       });
     }
   };
+
+  this.minimize = function (e) {
+    if (e) {
+      e.preventDefault();
+      e.target = e$(e.target);
+      if (e.target.is('.eo-question') || e.target.parents('.eo-question').length) {
+        return;
+      }
+    }
+    e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+    e$('#vocabulary').addClass('hidden');
+    e$('#eo-live-main').removeClass('hidden');
+    e$(document).off('click', this.minimize);
+  };
+
   this.initial = function () {
     this.unAnswered = { 'sr_questions': [] };
     this.answered = { 'sr_questions': [] };
@@ -6041,17 +6037,7 @@ UserInfo = function () {
         e$('#eo-live').removeClass('vocabulary-open');
         return;
       }
-      e$(document).on('click', function (e) {
-        e.preventDefault();
-        e.target = e$(e.target);
-        if (e.target.is('.eo-question') || e.target.parents('.eo-question').length) {
-          return;
-        }
-        e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-        e$('#vocabulary').addClass('hidden');
-        e$('#eo-live-main').removeClass('hidden');
-        e$(document).off('click');
-      });
+      e$(document).on('click', this.minimize);
     }.bind(this));
     if (window.localStorage.getItem('show_progress_tutorial')) {
       var showProgressTutorial = function () {
@@ -7673,6 +7659,13 @@ var Speaker = new function () {
 //
 Tour = new function () {
   this.progressTutorial = function () {
+    e$('#eo-live').removeClass('vocabulary-open');
+    e$('#eo-live').addClass('eo-live-maximize');
+    e$('#vocabulary').addClass('hidden');
+    e$('#eo-live-main').removeClass('hidden');
+    clearTimeout(document.eo_user.setTimeOut);
+
+    e$(document).off('click', document.eo_user.minimize);
     steps = [];
     steps.push(new step('#milotrage right', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
     steps.push(new step('#days-pannel right', 'progress2------', 'הימים שתרגלתי ברציפות השבוע', 'progress_' + 1));
@@ -7779,6 +7772,7 @@ Tour = new function () {
             if (document.tour.getCurrentStep().id === 'progress_2') {
               var closeTutorial = function () {
                 document.tour.hide();
+                e$(document).on('click', document.eo_user.minimize);
                 e$('#sr').off('click', closeTutorial);
               };
               e$('#sr').on('click', closeTutorial);
