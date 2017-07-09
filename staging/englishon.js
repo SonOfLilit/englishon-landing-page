@@ -7691,7 +7691,7 @@ Tour = new function () {
       steps.push(new step('.question_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'question_' + i));
     });
     if (!document.englishonConfig.email) {
-      steps.push(new step('.eo-button left', '', 'הרשם לשמירת התקדמות', 'login'));
+      steps.push(new step('.eo-button right', '', 'הרשם לשמירת התקדמות', 'login'));
       steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
     }
     this.initTutorial(steps);
