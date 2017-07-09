@@ -5752,7 +5752,7 @@ Editor.prototype.highlight = function () {
   //TODO: do the same with the content appearing after the last dote in the subtitle, because in main page it should be a link
   this.ps = [];
   this.paragraphs.each(function (i, p) {
-    if (!p) {
+    if (!p.length) {
       console.log('paragraph number ' + i + ' is not exist in this article');
       return;
     }
@@ -7766,6 +7766,12 @@ Tour = new function () {
         tetherOptions: tetherOptionsDic,
         when: {
           show: function () {
+            if (document.tour.getCurrentStep().id == 'login') {
+              e$('.eo-button').one('click', function () {
+                document.tour.hide();
+                window.localStorage.removeItem('quiz_tutorial_not_finished');
+              });
+            }
             if (document.tour.getCurrentStep().id == 'login2') {
               window.localStorage.removeItem('quiz_tutorial_not_finished');
             };
