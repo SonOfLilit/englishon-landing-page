@@ -5752,7 +5752,7 @@ Editor.prototype.highlight = function () {
   //TODO: do the same with the content appearing after the last dote in the subtitle, because in main page it should be a link
   this.ps = [];
   this.paragraphs.each(function (i, p) {
-    if (!p.length) {
+    if (!p || !(p.length == undefined) && !p.length) {
       console.log('paragraph number ' + i + ' is not exist in this article');
       return;
     }
@@ -7346,6 +7346,7 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.showButtons = function () {
     if (document.englishonConfig.isUser) {
       e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
+      e$(e$('.menu-item-361311')[0]).find('ul').append(EnglishOnButton.element);
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
       e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
       var promises = e$.map(this.parts, function (part, url) {
@@ -7399,6 +7400,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
   this.showButtons = function () {
     //e$('.site-header').find('.small-12.columns').append(EnglishOnButton.element);
     e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
+    e$(e$('.menu-item-361311')[0]).find('ul').append(EnglishOnButton.element);
     e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
     //EnglishOnButton.registerHandlers(this);
@@ -7905,7 +7907,7 @@ function englishon() {
     if (article_id < 91251 || article_id > 91551) {
       return;
     }
-  } else if (window.location.host == 'actualic.co.il' && !e$('#breadcrumbs').find('a').eq(0).next().eq(0).text().startsWith('משפחה')) {
+  } else if (window.location.host == 'actualic.co.il' && !e$('#breadcrumbs').find('a').eq(0).next().eq(0).text().startsWith('משפחה') && !e$('#breadcrumbs').find('a').eq(0).next().eq(0).text().startsWith('אקטואלשיק')) {
     return;
   }
 

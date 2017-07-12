@@ -1304,6 +1304,13 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   /*color: gray;*/
   background-color: #DCDCDC;
 }
+.eo-editor-irrelevant .correct_answer {
+  padding: 0px;
+  margin: 0px;
+  width: initial;
+  height: initial;
+  border: 1px solid black;
+}
 
 /* Misc. */
 /** School Roster **/
