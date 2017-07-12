@@ -7345,8 +7345,9 @@ actualicCategoryOverlay = function (parts, category_url) {
 
   this.showButtons = function () {
     if (document.englishonConfig.isUser) {
-      e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
-      e$(e$('.menu-item-361311')[0]).find('ul').append(EnglishOnButton.element);
+      //e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element());
+      //e$(e$('.menu-item-351135')[0]).find('ul').append(EnglishOnButton.element());
+      e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul').append(EnglishOnButton.element());
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
       e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
       var promises = e$.map(this.parts, function (part, url) {
@@ -7398,9 +7399,9 @@ actualicOverlay = function (url, subtitle, bodytext) {
     });
   };
   this.showButtons = function () {
-    //e$('.site-header').find('.small-12.columns').append(EnglishOnButton.element);
-    e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element);
-    e$(e$('.menu-item-361311')[0]).find('ul').append(EnglishOnButton.element);
+    //e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element());
+    //e$(e$('.menu-item-351135')[0]).find('ul').append(EnglishOnButton.element());
+    e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul').append(EnglishOnButton.element());
     e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
     //EnglishOnButton.registerHandlers(this);
@@ -7907,9 +7908,13 @@ function englishon() {
     if (article_id < 91251 || article_id > 91551) {
       return;
     }
-  } else if (window.location.host == 'actualic.co.il' && !e$('#breadcrumbs').find('a').eq(0).next().eq(0).text().startsWith('משפחה') && !e$('#breadcrumbs').find('a').eq(0).next().eq(0).text().startsWith('אקטואלשיק')) {
-    return;
   }
+  // else if (window.location.host == 'actualic.co.il' &&
+  //   !(e$('#breadcrumbs').find('a').eq(0).next().eq(0).text().startsWith('משפחה')) &&
+  //   !(e$('#breadcrumbs').find('a').eq(0).next().eq(0).text().startsWith('אקטואלשיק'))) {
+  //   return;
+  // }
+
 
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
@@ -8063,12 +8068,14 @@ var EnglishOnButton = new function () {
     });
   };
   this.currentState = 'eo-button-on';
-  this.element = e$('<div>').addClass('eo-button').addClass(this.currentState);
+  this.element = function () {
+    return e$('<div>').addClass('eo-button').addClass(this.currentState);
+  };
 
   this.changeState = function (state) {
-    this.element.removeClass(this.currentState);
+    e$('.eo-button').removeClass(this.currentState);
     this.currentState = state;
-    this.element.addClass(this.currentState);
+    e$('.eo-button').addClass(this.currentState);
   };
 
   this.on = function () {
