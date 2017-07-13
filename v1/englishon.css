@@ -1304,6 +1304,13 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   /*color: gray;*/
   background-color: #DCDCDC;
 }
+.eo-editor-irrelevant .correct_answer {
+  padding: 0px;
+  margin: 0px;
+  width: initial;
+  height: initial;
+  border: 1px solid black;
+}
 
 /* Misc. */
 /** School Roster **/
@@ -1385,6 +1392,13 @@ body.actualic-co-il .eo-button {
   top: 2px;
   position: absolute;
   width: 34px;
+}
+body.actualic-co-il .eo-button.front-page {
+  top: 173px;
+  position: absolute;
+  width: 34px;
+  left: 210px;
+  z-index: -1;
 }
 body.actualic-co-il .eo-question {
   height: 20px;
