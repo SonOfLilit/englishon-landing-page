@@ -7675,12 +7675,13 @@ Tour = new function () {
     this.initTutorial(steps);
   };
 
-  this.welcomeTutorial = function () {
-    steps = [];
-    steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-button click'));
+  this.welcomeTutorial = function() {
+    steps = []
+    e$('.eo-button').eq(2).addClass('eo-button-tour');
+    steps.push(new step('.eo-button-tour left', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-button click'));
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
-  };
+  }
 
   this.quizTutorial = function () {
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
