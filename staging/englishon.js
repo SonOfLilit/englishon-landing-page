@@ -7345,8 +7345,7 @@ actualicCategoryOverlay = function (parts, category_url) {
 
   this.showButtons = function () {
     if (document.englishonConfig.isUser) {
-      //e$(e$('.menu-item-346490')[0]).find('ul').append(EnglishOnButton.element());
-      //e$(e$('.menu-item-351135')[0]).find('ul').append(EnglishOnButton.element());
+      e$('.site-header').append(EnglishOnButton.element().addClass('front-page'));
       e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul').append(EnglishOnButton.element());
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
       e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
@@ -7479,10 +7478,10 @@ ScraperFactory = function (location) {
     return new CH10Scraper();
   }
   if (location.host === 'actualic.co.il') {
-    if (this.isHebrew(decodeURIComponent(location.pathname))) {
-      return new actualicScraper();
-    } else if (location.pathname.startsWith('/category/')) {
+    if (location.pathname.startsWith('/category/') || location.pathname == '/') {
       return new actualicCategoryScraper();
+    } else if (this.isHebrew(decodeURIComponent(location.pathname))) {
+      return new actualicScraper();
     }
   }
 };

@@ -1393,6 +1393,13 @@ body.actualic-co-il .eo-button {
   position: absolute;
   width: 34px;
 }
+body.actualic-co-il .eo-button.front-page {
+  top: 173px;
+  position: absolute;
+  width: 34px;
+  left: 210px;
+  z-index: -1;
+}
 body.actualic-co-il .eo-question {
   height: 20px;
 }
