@@ -7334,13 +7334,6 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.userAnswered = false;
   ShturemOverlay.call(this);
 
-  this.getLineDetails = function () {
-    return {
-      parentoffset: e$('.artText').offset().left,
-      lineWidth: 385
-    };
-  };
-
   this.placeLiveActions = function () {};
 
   this.showButtons = function () {
@@ -7352,7 +7345,7 @@ actualicCategoryOverlay = function (parts, category_url) {
       var promises = e$.map(this.parts, function (part, url) {
         return document.englishonBackend.getArticle(url, 1).then(function (questions) {
           if (questions.length) {
-            e$(part).find('.info').append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
+            element = e$(part).find('.show-for-large, .ttl').last().append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
           }
         });
       });
@@ -7505,7 +7498,7 @@ var actualicCategoryScraper = function () {
 
   this.scrape = function () {
     var parts = {};
-    e$('.row.single_post_right_image').each(function (i, para) {
+    e$('.kipke_post_block').each(function (i, para) {
       var url = e$(para).find('a')[0].href;
       parts[url] = para;
     });
@@ -7677,7 +7670,9 @@ Tour = new function () {
 
   this.welcomeTutorial = function () {
     steps = [];
-    steps.push(new step('.eo-button left', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-button click'));
+    //temporary work just for family section page
+    e$('.eo-button').eq(2).addClass('eo-button-tour');
+    steps.push(new step('.eo-button-tour left', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-button click'));
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
   };
