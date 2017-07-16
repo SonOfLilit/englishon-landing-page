@@ -7741,6 +7741,9 @@ Tour = new function () {
             if (document.tour.getCurrentStep().id === 'welcome_1' || document.tour.getCurrentStep().id === 'login2') {
               document.eoDialogs.hideDialogs();
             }
+            if (document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
+              document.overlay.injector.elements[0].qobj.closeUnanswered();
+            }
             return document.tour.back();
           }
         });
