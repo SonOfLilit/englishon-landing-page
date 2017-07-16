@@ -607,7 +607,7 @@
   font-family: "Roboto";
 }
 
-.eo-button {
+.eo-icon {
   height: 31px;
   width: 30px;
   background-repeat: no-repeat;
@@ -1016,24 +1016,45 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   margin-bottom: 10px;
 }
 
+.eo-logo {
+  position: absolute;
+  top: 3px;
+  left: 38px;
+  width: 150px;
+  height: 35px;
+  cursor: pointer;
+  overflow: visible;
+  display: inline-block;
+  padding-right: 30px;
+  background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
+  background-size: 120px;
+  background-repeat: no-repeat;
+}
+
+.eo-icon {
+  position: absolute;
+  left: 0px;
+  width: 34px;
+}
+.eo-icon.eo-button-loading {
+  background-image: url(http://www.englishon.org/v1/img/button-loading.svg);
+  background-size: 34px;
+}
+.eo-icon.eo-button-unavailable {
+  background-image: url(http://www.englishon.org/v1/img/button-unavailable.svg);
+  background-size: 34px;
+}
+.eo-icon.eo-button-off, .eo-icon.eo-button-on {
+  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-size: 34px;
+}
+
 .eo-button {
   cursor: pointer;
   overflow: visible;
   display: inline-block;
   position: relative;
   padding-right: 30px;
-}
-.eo-button.eo-button-loading {
-  background-image: url(http://www.englishon.org/v1/img/button-loading.svg);
-  background-size: 34px;
-}
-.eo-button.eo-button-unavailable {
-  background-image: url(http://www.englishon.org/v1/img/button-unavailable.svg);
-  background-size: 34px;
-}
-.eo-button.eo-button-off, .eo-button.eo-button-on {
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
-  background-size: 34px;
 }
 
 /* Menu */

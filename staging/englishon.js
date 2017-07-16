@@ -7349,8 +7349,7 @@ actualicCategoryOverlay = function (parts, category_url) {
       e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
       var promises = e$.map(this.parts, function (part, url) {
         return document.englishonBackend.getArticle(url, 1).then(function (questions) {
-          //if (questions.length) {
-          if (true) {
+          if (questions.length) {
             element = e$(part).find('.show-for-large, .ttl').last().append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
           }
         });
@@ -8073,13 +8072,13 @@ var EnglishOnButton = new function () {
   };
   this.currentState = 'eo-button-on';
   this.element = function () {
-    return e$('<div>').addClass('eo-button').addClass(this.currentState);
+    return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo'));
   };
 
   this.changeState = function (state) {
-    e$('.eo-button').removeClass(this.currentState);
+    e$('.eo-icon').removeClass(this.currentState);
     this.currentState = state;
-    e$('.eo-button').addClass(this.currentState);
+    e$('.eo-icon').addClass(this.currentState);
   };
 
   this.on = function () {
