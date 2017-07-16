@@ -7810,25 +7810,20 @@ Tour = new function () {
               //e$(document).off('click',document.overlay.injector.elements[0].qobj.open_question_handler);
             }
             if (!(document.tour.getCurrentStep().id.slice(0, 9) == 'question_')) {
-              //window.scrollTo(0, 0);
-            } else {
-              var val = e$('.' + document.tour.getCurrentStep().id).offset().top;
+              window.scrollTo(0, 0);
+            }
+            if (document.tour.getCurrentStep().id.slice(0, 9) == 'question_' || document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
+              var val = e$('.question_0').offset().top;
               window.scrollTo(0, val - 170);
-              var questionOpened = function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                document.tour.hide();
-              };
+            }
+            if (document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
               var questionAnswered = function (e) {
                 e.preventDefault();
-                e$('.eo-question .eo-hint').off('click', questionOpened);
                 e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
-                setTimeout(function () {
-                  document.tour.next();
-                }, 1700);
+                document.tour.hide();
               };
               //e$('.eo-question .eo-hint').on('click', e$('.eo-question .eo-hint'), questionOpened);
-              //e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
+              e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
               e$('.shepherd-cancel-link').on('click', function () {
                 window.localStorage.removeItem('quiz_tutorial_not_finished');
                 //e$('.eo-question .eo-hint').off('click', questionOpened);
