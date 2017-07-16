@@ -6338,6 +6338,18 @@ AbstractQuestion.prototype.bindInput = function () {
   this.element.find('.eo-hint').click(this.questionOnClick.bind(this));
 };
 
+AbstractQuestion.prototype.open_question_handler = function (e) {
+  if (e$('.shepherd-open').length) {
+    return;
+  }
+  if (this.element.has(e.target).length === 0) {
+    if (this.element.hasClass('eo-active')) {
+      this.closeUnanswered();
+    };
+    $(document).off('click', this.open_question_handler);
+  };
+};
+
 AbstractQuestion.prototype.questionOnClick = function (e) {
   e.preventDefault();
   e.stopPropagation();
@@ -6353,15 +6365,8 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
     document.overlay.closeUnAnswered();
   }
   this.open();
-  var handler = function (e) {
-    if (this.element.has(e.target).length === 0) {
-      if (this.element.hasClass('eo-active')) {
-        this.closeUnanswered();
-      };
-      $(document).off('click', handler);
-    };
-  }.bind(this);
-  $(document).on('click', handler);
+
+  $(document).on('click', this.open_question_handler.bind(this));
 };
 
 AbstractQuestion.prototype.open = function () {
@@ -7680,8 +7685,8 @@ Tour = new function () {
   this.welcomeTutorial = function () {
     steps = [];
     //temporary work just for family section page
-    e$('.eo-button').eq(2).addClass('eo-button-tour');
-    steps.push(new step('.eo-button-tour left', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-button click'));
+    e$('.eo-logo').eq(2).addClass('eo-button-tour');
+    steps.push(new step('.eo-button-tour left', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-logo click'));
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
   };
@@ -7691,15 +7696,17 @@ Tour = new function () {
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
 
     steps = [];
-    e$('.eo-question').each(function (i, q) {
+    e$('.eo-question').slice(0, 1).each(function (i, q) {
       var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
       e$(q).addClass('question_' + i);
       steps.push(new step('.question_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'question_' + i));
+      steps.push(new step('.question_' + i + ' .eo-option' + ' left', step_title, 'לחץ ובחר את המילה המתאימה', 'open_question_' + i));
     });
-    if (!document.englishonConfig.email) {
-      steps.push(new step('.eo-button right', '', 'הרשם לשמירת התקדמות', 'login'));
-      steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
-    }
+    /*    if (!document.englishonConfig.email) {
+          steps.push(new step('.eo-button right', '', 'הרשם לשמירת התקדמות', 'login'));
+          steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
+        }
+    */
     this.initTutorial(steps);
   };
   this.initTutorial = function (steps) {
@@ -7795,8 +7802,15 @@ Tour = new function () {
                 window.scrollTo(0, 10);
               }
             }
+
+            if (document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
+              //open the first question only
+              e$('.eo-question').eq(0).find('.eo-hint').click();
+              //this line didn't work. check it. for now- fix it into injectior
+              //e$(document).off('click',document.overlay.injector.elements[0].qobj.open_question_handler);
+            }
             if (!(document.tour.getCurrentStep().id.slice(0, 9) == 'question_')) {
-              window.scrollTo(0, 0);
+              //window.scrollTo(0, 0);
             } else {
               var val = e$('.' + document.tour.getCurrentStep().id).offset().top;
               window.scrollTo(0, val - 170);
@@ -7813,12 +7827,12 @@ Tour = new function () {
                   document.tour.next();
                 }, 1700);
               };
-              e$('.eo-question .eo-hint').on('click', e$('.eo-question .eo-hint'), questionOpened);
-              e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
+              //e$('.eo-question .eo-hint').on('click', e$('.eo-question .eo-hint'), questionOpened);
+              //e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
               e$('.shepherd-cancel-link').on('click', function () {
                 window.localStorage.removeItem('quiz_tutorial_not_finished');
-                e$('.eo-question .eo-hint').off('click', questionOpened);
-                e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
+                //e$('.eo-question .eo-hint').off('click', questionOpened);
+                //e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
               });
             }
 
@@ -8173,10 +8187,8 @@ var EnglishOnMenu = function () {
   });
   this.firstTimeUser = function () {
     configStorage.set({ 'isUser': true, 'isActive': true });
-    if (e$('[data-id="welcome_1"]').length) {
-      window.localStorage.setItem('show_quiz_tutorial', true);
-      window.localStorage.setItem('show_progress_tutorial', true);
-    }
+    window.localStorage.setItem('show_quiz_tutorial', true);
+    window.localStorage.setItem('show_progress_tutorial', true);
     window.location.reload();
   };
   console.log('jquery extend after');
@@ -8386,6 +8398,7 @@ var EnglishOnMenu = function () {
     }
   });
   e$('#eo-power-switch').on('click', this.togglePower);
+  e$('.languages_picker .available').on('click', this.powerOn);
 
   e$('#eo-speaker-res').on('click', function () {
     toggleSound();
@@ -8576,22 +8589,6 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     });
   } else {
     document.menu = new EnglishOnMenu();
-    Tour.welcomeTutorial();
-    e$(".eo-button").on('mouseenter', function () {
-      if (window.tourTimeout) {
-        clearTimeout(window.tourTimeout);
-      }
-
-      document.tour.start();
-      window.tourTimeout = setTimeout(function () {
-        if (e$('.shepherd-open').length && !e$('[data-id="welcome_0"]').hasClass('shepherd-open')) {
-          return;
-        }
-        if (!document.querySelectorAll(".shepherd:hover").length && e$('[data-id="welcome_0"]').hasClass('shepherd-open')) {
-          document.tour.hide();
-        }
-      }, 3000);
-    });
   }
 });
 
