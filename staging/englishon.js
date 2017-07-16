@@ -4976,7 +4976,9 @@ window.configStorage = {
 };
 
 window.cleanEnglishonCookies = function () {
-  document.menu.signout();
+  if (document.menu) {
+    document.menu.signout();
+  }
   window.localStorage.removeItem('token');
   window.localStorage.removeItem('email');
   window.localStorage.removeItem('eo-user-name');
@@ -5027,7 +5029,7 @@ var MESSAGES = {
     START_PROGRESS_TUTORIAL: 'Progress Bar Tour',
     START_TUTORIAL: 'Guided Tour',
     SITE_LANGUAGE: 'Site Language',
-    AGREE_TO_TOS: "By signing up, I agree to the</br> <a>Terms of Use</a> & <a>Privacy Policy</a>",
+    AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
     AGREE: "Yes, I agree. Let's start!",
     NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>"
   },
@@ -5072,7 +5074,7 @@ var MESSAGES = {
     START_PROGRESS_TUTORIAL: 'מדריך ללוח ההתקדמות',
     START_TUTORIAL: 'מדריך הפעלה',
     SITE_LANGUAGE: 'שפת התפריט',
-    AGREE_TO_TOS: "אני מסכים <a>לתנאי השימוש</a> ול<a>תנאי הפרטיות</a> ",
+    AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'> ול<a>תנאי הפרטיות</a> ",
     AGREE: "כן,אני מסכים. הבה נתחיל",
     NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>"
   }
@@ -5747,8 +5749,8 @@ Editor.prototype.highlight = function () {
       question_dict[questions[i].replaced].push(questions[i].context);
     }
   }
-  e$('.artText a').text('HERE IS A LINK!!!!!!');
-  e$('.artSubtitle a').text('HERE IS A LINK!!!!!!');
+  //e$('.artText a')
+  //e$('.artSubtitle a').text('HERE IS A LINK!!!!!!')
   //TODO: do the same with the content appearing after the last dote in the subtitle, because in main page it should be a link
   this.ps = [];
   this.paragraphs.each(function (i, p) {
@@ -5757,6 +5759,7 @@ Editor.prototype.highlight = function () {
       return;
     }
     p = e$(p);
+    p.find('a').text('HERE IS A LINK!!!!!!');
     var text = p.text();
     this.ps.push(text);
     p.empty();
@@ -7106,6 +7109,8 @@ ShturemOverlay = function () {
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
     e$('#tos').html(messages.AGREE_TO_TOS);
     e$('#agree').html(messages.AGREE);
+    e$('#tos_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
+    e$('#privacy_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
     if (document.englishonConfig.media == 'desktop') {
       if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
         var menuTop = 0;
@@ -7344,7 +7349,8 @@ actualicCategoryOverlay = function (parts, category_url) {
       e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
       var promises = e$.map(this.parts, function (part, url) {
         return document.englishonBackend.getArticle(url, 1).then(function (questions) {
-          if (questions.length) {
+          //if (questions.length) {
+          if (true) {
             element = e$(part).find('.show-for-large, .ttl').last().append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
           }
         });
@@ -7499,7 +7505,11 @@ var actualicCategoryScraper = function () {
   this.scrape = function () {
     var parts = {};
     e$('.kipke_post_block').each(function (i, para) {
-      var url = e$(para).find('a')[0].href;
+      if (e$(para).find('a').length) {
+        var url = e$(para).find('a')[0].href;
+      } else {
+        var url = e$(para).parent()[0].href;
+      }
       parts[url] = para;
     });
     var category_url = window.location.pathname;
@@ -7844,7 +7854,7 @@ document.loaded_promise = e$.Deferred();
 document.questions_promise = e$.Deferred();
 
 function englishon() {
-  var staticUrl = undefined;
+
   if (e$('#developement-only-version').length) {
     window.staticUrl = function (resource) {
       return 'http://localhost:8080/static/ex/' + resource;
