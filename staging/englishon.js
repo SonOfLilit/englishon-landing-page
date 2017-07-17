@@ -7726,13 +7726,8 @@ Tour = new function () {
       var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
       e$(q).addClass('question_' + i);
       steps.push(new step('.question_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'question_' + i));
-      steps.push(new step('.question_' + i + ' .eo-option' + ' left', step_title, 'לחץ ובחר את המילה המתאימה', 'open_question_' + i));
+      //steps.push(new step('.question_' + i + ' .eo-option' + ' left', step_title, 'לחץ ובחר את המילה המתאימה', 'open_question_' + i));
     });
-    /*    if (!document.englishonConfig.email) {
-          steps.push(new step('.eo-button right', '', 'הרשם לשמירת התקדמות', 'login'));
-          steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
-        }
-    */
     this.initTutorial(steps);
   };
   this.initTutorial = function (steps) {
@@ -7847,14 +7842,17 @@ Tour = new function () {
             if (document.tour.getCurrentStep().id.indexOf('question_') == -1) {
               window.scrollTo(0, 0);
             }
-            if (document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
+            if (document.tour.getCurrentStep().id.slice(0, 9) == 'question_') {
               var questionAnswered = function (e) {
                 e.preventDefault();
                 e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
                 document.tour.hide();
               };
-              //e$('.eo-question .eo-hint').on('click', e$('.eo-question .eo-hint'), questionOpened);
-              e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
+              var questionOpened = function () {
+                document.tour.hide();
+              };
+              e$('.eo-question .eo-hint').on('click', e$('.eo-question .eo-hint'), questionOpened);
+              //e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
               e$('.shepherd-cancel-link').on('click', function () {
                 window.localStorage.removeItem('quiz_tutorial_not_finished');
                 //e$('.eo-question .eo-hint').off('click', questionOpened);
@@ -8342,6 +8340,7 @@ var EnglishOnMenu = function () {
     document.menu.powerOff();
     localStorage.removeItem('email');
     localStorage.removeItem('eo-user-name');
+    localStorage.removeItem('editor');
     var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
     document.englishonConfig.token = null;
     auth.login(document.englishonConfig.token).then(function (token) {
@@ -8527,6 +8526,10 @@ var EnglishOnMenu = function () {
     //This is causing chrome to compute the body width as 980px anycase, in inspector too
   });
   window.history.pushState({ 'elementToShow': 'shturem' }, '');
+
+  $(window).unload(function () {
+    console.log('user leaving the page!');
+  });
 };
 
 e$(function () {
