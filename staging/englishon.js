@@ -7354,9 +7354,9 @@ actualicCategoryOverlay = function (parts, category_url) {
       e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
       var promises = e$.map(this.parts, function (part, url) {
         return document.englishonBackend.getArticle(url, 1).then(function (questions) {
-          if (questions.length) {
-            //if (true) {
-            element = e$(part).find('.show-for-large, .ttl').last().append(e$('<div>').addClass('category-icon'));
+          //if (questions.length) {
+          if (true) {
+            element = e$(part).find('.show-for-large, p, .ttl').last().append(e$('<div>').addClass('category-icon'));
           }
         });
       });
