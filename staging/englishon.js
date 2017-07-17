@@ -7352,18 +7352,6 @@ actualicCategoryOverlay = function (parts, category_url) {
     e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul').append(EnglishOnButton.element());
     e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
-    if (!document.englishonConfig.isUser) {
-      console.log('Quiz did not brought from server. This user never turn on enlishon');
-      return;
-    }
-    var promises = e$.map(this.parts, function (part, url) {
-      return document.englishonBackend.getArticle(url, 1).then(function (questions) {
-        if (questions.length) {
-          //if (true) {
-          element = e$(part).find('.show-for-large, p, .ttl').last().append(e$('<div>').addClass('category-icon'));
-        }
-      });
-    });
   };
   this.fetchQuestions = function () {
     //just to enable compile
@@ -7373,6 +7361,27 @@ actualicCategoryOverlay = function (parts, category_url) {
   };
   this.hideQuestions = function () {};
   this.showQuestions = function () {};
+  this.powerOn = function () {
+    if (!document.englishonConfig.isUser) {
+      console.log('Marks for edited articles did not display. This user never turn on enlishon');
+      return;
+    }
+    var promises = e$.map(this.parts, function (part, url) {
+      return document.englishonBackend.getArticle(url, 1).then(function (questions) {
+        if (questions.length) {
+          //if (true) {
+          if (!e$(part).find('.category-icon').length) {
+            e$(part).find('.show-for-large, p, .ttl').last().append(e$('<div>').addClass('category-icon'));
+          }
+        }
+      });
+    });
+  };
+  this.powerOff = function () {
+    if (!document.englishonConfig.email) {
+      e$('.category-icon').remove();
+    }
+  };
 };
 
 //----------------------------------------------------------------
@@ -7462,6 +7471,19 @@ actualicOverlay = function (url, subtitle, bodytext) {
       this.injector.setQuestions(questions);
       return questions;
     }.bind(this));
+  };
+  this.powerOn = function () {
+    this.showQuestions();
+    document.questions_promise.resolve();
+    if (e$('.eo-expired').length) {
+      document.eo_user.showLiveActions();
+    }
+  };
+  this.powerOff = function () {
+    this.hideQuestions();
+    if (document.eo_user) {
+      document.eo_user.hideLiveActions();
+    }
   };
 };
 //
@@ -8288,14 +8310,12 @@ var EnglishOnMenu = function () {
     var elem = e$('#eo-power-switch-text');
     elem.toggleText('On', 'Off');
     if (JSON.parse(enable)) {
-      document.overlay.showQuestions();
-      document.questions_promise.resolve();
+      document.overlay.powerOn();
       if (!document.englishonConfig.isUser) {
         this.firstTimeUser();
       }
     } else {
-      document.overlay.hideQuestions();
-      if (document.eo_user) document.eo_user.hideLiveActions();
+      document.overlay.powerOff();
     }
   }.bind(this));
 
@@ -8307,16 +8327,13 @@ var EnglishOnMenu = function () {
     configStorage.set({ 'isActive': true });
     e$('#eo-power-switch-text').text('On');
     e$('body').addClass('eo-active', true);
-    document.overlay.showQuestions();
-    document.questions_promise.resolve();
-    document.eo_user.showLiveActions();
+    document.overlay.powerOn();
   };
   this.powerOff = function () {
     configStorage.set({ 'isActive': false });
     e$('#eo-power-switch-text').text('OFF');
     e$('body').removeClass('eo-active');
-    document.overlay.hideQuestions();
-    document.eo_user.hideLiveActions();
+    document.overlay.powerOff();
   };
 
   this.signout = function () {
