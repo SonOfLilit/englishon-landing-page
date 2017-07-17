@@ -1021,7 +1021,7 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 
 .eo-logo {
   position: absolute;
-  top: 3px;
+  top: 6px;
   left: 38px;
   width: 150px;
   height: 35px;
@@ -1030,7 +1030,7 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   display: inline-block;
   padding-right: 30px;
   background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
-  background-size: 120px;
+  background-size: 96px;
   background-repeat: no-repeat;
 }
 
