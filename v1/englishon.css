@@ -607,7 +607,7 @@
   font-family: "Roboto";
 }
 
-.eo-button {
+.eo-icon {
   height: 31px;
   width: 30px;
   background-repeat: no-repeat;
@@ -1013,6 +1013,43 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 .category-icon {
   width: 20px;
   height: 20px;
+  margin-bottom: 10px;
+  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-size: 17px;
+  background-repeat: no-repeat;
+}
+
+.eo-logo {
+  position: absolute;
+  top: 6px;
+  left: 38px;
+  width: 150px;
+  height: 35px;
+  cursor: pointer;
+  overflow: visible;
+  display: inline-block;
+  padding-right: 30px;
+  background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
+  background-size: 96px;
+  background-repeat: no-repeat;
+}
+
+.eo-icon {
+  position: absolute;
+  left: 0px;
+  width: 34px;
+}
+.eo-icon.eo-button-loading {
+  background-image: url(http://www.englishon.org/v1/img/button-loading.svg);
+  background-size: 34px;
+}
+.eo-icon.eo-button-unavailable {
+  background-image: url(http://www.englishon.org/v1/img/button-unavailable.svg);
+  background-size: 34px;
+}
+.eo-icon.eo-button-off, .eo-icon.eo-button-on {
+  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-size: 34px;
 }
 
 .eo-button {
@@ -1021,18 +1058,6 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   display: inline-block;
   position: relative;
   padding-right: 30px;
-}
-.eo-button.eo-button-loading {
-  background-image: url(http://www.englishon.org/v1/img/button-loading.svg);
-  background-size: 34px;
-}
-.eo-button.eo-button-unavailable {
-  background-image: url(http://www.englishon.org/v1/img/button-unavailable.svg);
-  background-size: 34px;
-}
-.eo-button.eo-button-off, .eo-button.eo-button-on {
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
-  background-size: 34px;
 }
 
 /* Menu */
@@ -2726,380 +2751,4 @@ eo-signout-layout .signout {
   right: 20px;
   position: absolute;
   top: 8px;
-}
-/* responsive.scss */
-/*Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
-This is causing chrome to compute the body width as 980px anycase, in inspector too
-That is the reason to determine 980px as the media queries breakpoint */
-/*MENU FOR MOBILE*/
-@media (max-width: 981px) {
-  .Grid-cell {
-    font-size: 64px;
-  }
-
-  #eo-menu .Grid-cell,
-  #eo-dlg-login .Grid-cell,
-  #eo-dlg-options .Grid-cell {
-    font-size: 64px;
-  }
-
-  #eo-menu .eo-menu-footer,
-  #eo-dlg-login .eo-menu-footer,
-  #eo-dlg-options .eo-menu-footer {
-    font-size: 44px;
-  }
-
-  #eo-menu,
-  #eo-dlg-login,
-  #eo-dlg-terms {
-    position: fixed;
-    left: 0px;
-    top: 0px;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-  }
-
-  #eo-menu.menu-editor {
-    height: 100%;
-  }
-
-  #eo-menu .eo-menu-inner {
-    padding-left: 92px;
-    padding-right: 92px;
-  }
-
-  #eo-picker-tittle,
-  #eo-last-option {
-    border-bottom: 3px solid #d7dee3;
-  }
-
-  #eo-dlg-icon {
-    background-size: 122px;
-    background-position: top;
-    height: 100%;
-  }
-
-  .eo-row2 {
-    height: 163px;
-    margin-top: 48px;
-  }
-  .eo-row2 > .Grid {
-    height: 100%;
-  }
-
-  .eo-row3 {
-    height: 223px;
-    font-size: 60px;
-  }
-
-  .eo-row4 {
-    height: 220px;
-  }
-
-  .eo-row5 {
-    height: 83px;
-  }
-  .eo-row5 > .Grid {
-    height: 100%;
-  }
-
-  .eo-row6 {
-    margin-top: 40px;
-    height: 90px;
-  }
-
-  .eo-row7 {
-    height: 81px;
-  }
-
-  .eo-row8 {
-    height: 80px;
-    padding-top: 12px;
-    color: #d0021b;
-    font-family: Roboto-Light;
-  }
-
-  .eo-row9 {
-    height: 120px;
-  }
-  .eo-row9 > .Grid {
-    height: 100%;
-  }
-  .eo-row9 > .Grid > .Grid-cell {
-    height: 100%;
-  }
-
-  .eo-row10 {
-    height: 44px;
-    /*margin-top: 20px;*/
-  }
-  .eo-row10 .Grid {
-    height: 100%;
-  }
-
-  .eo-row11 {
-    height: 120px;
-  }
-
-  .eo-row12 {
-    height: 160px;
-  }
-
-  .eo-active #eo-power-switch {
-    padding-left: 16px;
-  }
-  .eo-active #eo-power-switch #eo-power-switch-text {
-    left: 44px;
-  }
-  .eo-active #eo-power-switch-circle {
-    left: 116px;
-  }
-
-  .subtitle {
-    font-size: 60px;
-  }
-
-  .eo-dlg-header {
-    font-size: 96px;
-  }
-
-  #eo-speaker-res {
-    background-size: 78px;
-  }
-  #eo-speaker-res:hover {
-    background-size: 96px;
-  }
-
-  .flag,
-  #eo-account-img {
-    background-size: 120px;
-  }
-
-  #eo-mail-login-btn {
-    width: 604px;
-    height: 106.64px;
-    border-radius: 12px;
-    font-size: 52px;
-  }
-
-  #eo-power-switch-circle {
-    background-color: #eceff1;
-    position: absolute;
-    height: 88px;
-    width: 88px;
-    top: -6px;
-    border: 1px solid #eceff1;
-    border-radius: 50px;
-    left: -5px;
-  }
-
-  #account-dropdown {
-    font-size: 144px;
-  }
-
-  .eo-row {
-    height: 204px;
-  }
-
-  #englishon-bottom {
-    margin-top: 16px;
-    height: 120px;
-  }
-
-  #eo-dlg-inner {
-    margin: 0px 104px;
-    overflow: auto;
-  }
-
-  #eo-picker-tittle {
-    height: 180px;
-  }
-
-  #eo-picker-footer {
-    height: 105.88235294117649px;
-  }
-
-  #eo-dlg-login .eo-input {
-    width: 720px;
-    font-size: 56px;
-  }
-
-  #eo-dlg-login .error {
-    font-size: 44px;
-  }
-
-  #eo-iframe {
-    transform: scale(3.5);
-  }
-
-  #google-iframe {
-    padding-top: 100px;
-  }
-
-  #eo-power-switch {
-    height: 80px;
-    width: 187px;
-    border-radius: 40px;
-    font-size: 44px;
-  }
-  #eo-power-switch #eo-power-switch-text {
-    top: 16px;
-    left: 98px;
-  }
-
-  #coming_soon .Grid-cell .Grid .tooltip {
-    font-size: 64px;
-    padding-top: 56px;
-    padding-left: 240px;
-  }
-
-  #coming_soon .Grid-cell:hover .u-1of6 {
-    padding-left: 87px;
-  }
-
-  #eo-dlg-options {
-    height: 1000px;
-    width: 100%;
-    overflow-y: auto;
-  }
-  #eo-dlg-options .Grid-cell {
-    height: 280px;
-  }
-
-  #eo-dlg-options .Grid--full .Grid-cell > div {
-    line-height: 320px;
-  }
-}
-/*LIVE ACTIONS FOR MOBILE*/
-@media (max-width: 981px) {
-  #eo-live {
-    bottom: 10px;
-    top: initial;
-    right: 0px;
-    width: 100%;
-    height: 138px;
-    overflow: auto;
-    z-index: 11;
-  }
-  #eo-live .live-part {
-    border-radius: 20px;
-    margin: 8px 30px 8px 30px;
-    font-size: 120px;
-  }
-  #eo-live .live-part #eo-odometer {
-    font-size: 80px;
-  }
-  #eo-live .live-part .Grid .Grid-cell {
-    font-size: 64px;
-  }
-  #eo-live #actions-logo {
-    height: 110px;
-    width: 110px;
-    background-size: 110px;
-    background-position-y: center;
-    margin-left: 45px;
-  }
-  #eo-live #srProgress,
-  #eo-live #progress2 {
-    margin: 12px 120px 12px 120px;
-    width: 200px;
-    height: 200px;
-    position: relative;
-  }
-  #eo-live #sr {
-    height: 260px;
-  }
-  #eo-live #sr .progressbar-text {
-    font-size: 120px;
-    color: #aaa;
-  }
-  #eo-live #sr .sr-complete {
-    border-radius: 100px;
-  }
-  #eo-live #sr .sr-complete .progressbar-text {
-    font-size: 120px;
-  }
-  #eo-live .actions-logo-cell {
-    width: 32% !important;
-  }
-  #eo-live .day-bar {
-    border-radius: 50px;
-    background-color: gray;
-    margin: 20px;
-    width: 92px;
-    height: 92px;
-    font-size: 48px;
-    color: white;
-  }
-  #eo-live .day-bar.eo-persistence {
-    background-color: #2cc6a8;
-  }
-  #eo-live > .Grid > .Grid-cell {
-    height: 100%;
-  }
-  #eo-live > .Grid > .Grid-cell #milotrage .Grid-cell {
-    font-size: 100px;
-  }
-  #eo-live.eo-live-maximize {
-    /*CHECK IF THERE IS A NEED FOR width:96% IN PRODUCTION*/
-    height: 520px;
-  }
-  #eo-live.eo-live-maximize #milotrage {
-    background-color: black;
-    margin: 8px 30px 8px 30px;
-  }
-  #eo-live.eo-live-maximize #milotrage #eo-odometer {
-    /*font-size: 80px;*/
-  }
-  #eo-live.eo-live-maximize .day-bar {
-    margin: 10px;
-  }
-  #eo-live #vocabulary .Grid-cell.cell1 {
-    height: 160px;
-  }
-  #eo-live #vocabulary .Grid-cell.cell2 {
-    height: 520px;
-  }
-
-  .Grid#days-pannel {
-    direction: rtl;
-  }
-}
-/*TERMS DIALOG FOR MOBILE*/
-@media (max-width: 981px) {
-  #eo-dlg-terms .Grid-cell {
-    font-size: 64px;
-  }
-  #eo-dlg-terms #tos {
-    font-size: 48px;
-  }
-  #eo-dlg-terms .Grid-cell.terms-header-cell, #eo-dlg-terms .checkbox-text-cell {
-    font-size: 56px;
-  }
-  #eo-dlg-terms #eo-dlg-inner {
-    padding-top: 280px;
-  }
-  #eo-dlg-terms #eo-accept-checkbox {
-    transform: scale(3.5);
-  }
-
-  .eo-close {
-    width: 60px;
-    height: 60px;
-    background-size: 60px;
-  }
-}
-/*CLOSE BUTTONS FOR MOBILE*/
-@media (max-width: 981px) {
-  .actions-close {
-    top: 13px;
-    right: 13px;
-    position: absolute;
-  }
-
-  .eo-live-maximize .actions-close {
-    top: 33px;
-    right: 50px;
-  }
 }

@@ -4976,7 +4976,9 @@ window.configStorage = {
 };
 
 window.cleanEnglishonCookies = function () {
-  document.menu.signout();
+  if (document.menu) {
+    document.menu.signout();
+  }
   window.localStorage.removeItem('token');
   window.localStorage.removeItem('email');
   window.localStorage.removeItem('eo-user-name');
@@ -5027,7 +5029,7 @@ var MESSAGES = {
     START_PROGRESS_TUTORIAL: 'Progress Bar Tour',
     START_TUTORIAL: 'Guided Tour',
     SITE_LANGUAGE: 'Site Language',
-    AGREE_TO_TOS: "By signing up, I agree to the</br> <a>Terms of Use</a> & <a>Privacy Policy</a>",
+    AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
     AGREE: "Yes, I agree. Let's start!",
     NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>"
   },
@@ -5072,7 +5074,7 @@ var MESSAGES = {
     START_PROGRESS_TUTORIAL: 'מדריך ללוח ההתקדמות',
     START_TUTORIAL: 'מדריך הפעלה',
     SITE_LANGUAGE: 'שפת התפריט',
-    AGREE_TO_TOS: "אני מסכים <a>לתנאי השימוש</a> ול<a>תנאי הפרטיות</a> ",
+    AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'> ול<a>תנאי הפרטיות</a> ",
     AGREE: "כן,אני מסכים. הבה נתחיל",
     NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>"
   }
@@ -5747,8 +5749,8 @@ Editor.prototype.highlight = function () {
       question_dict[questions[i].replaced].push(questions[i].context);
     }
   }
-  e$('.artText a').text('HERE IS A LINK!!!!!!');
-  e$('.artSubtitle a').text('HERE IS A LINK!!!!!!');
+  //e$('.artText a')
+  //e$('.artSubtitle a').text('HERE IS A LINK!!!!!!')
   //TODO: do the same with the content appearing after the last dote in the subtitle, because in main page it should be a link
   this.ps = [];
   this.paragraphs.each(function (i, p) {
@@ -5757,6 +5759,8 @@ Editor.prototype.highlight = function () {
       return;
     }
     p = e$(p);
+    p.find('a').text('HERE IS A LINK!!!!!!');
+    p.find('.featured_main_img_single').text('AREA FOR PICTURE!');
     var text = p.text();
     this.ps.push(text);
     p.empty();
@@ -6335,6 +6339,18 @@ AbstractQuestion.prototype.bindInput = function () {
   this.element.find('.eo-hint').click(this.questionOnClick.bind(this));
 };
 
+AbstractQuestion.prototype.open_question_handler = function (e) {
+  if (e$('.shepherd-open').length) {
+    return;
+  }
+  if (this.element.has(e.target).length === 0) {
+    if (this.element.hasClass('eo-active')) {
+      this.closeUnanswered();
+    };
+    $(document).off('click', this.open_question_handler);
+  };
+};
+
 AbstractQuestion.prototype.questionOnClick = function (e) {
   e.preventDefault();
   e.stopPropagation();
@@ -6350,15 +6366,8 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
     document.overlay.closeUnAnswered();
   }
   this.open();
-  var handler = function (e) {
-    if (this.element.has(e.target).length === 0) {
-      if (this.element.hasClass('eo-active')) {
-        this.closeUnanswered();
-      };
-      $(document).off('click', handler);
-    };
-  }.bind(this);
-  $(document).on('click', handler);
+
+  $(document).on('click', this.open_question_handler.bind(this));
 };
 
 AbstractQuestion.prototype.open = function () {
@@ -7106,6 +7115,8 @@ ShturemOverlay = function () {
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
     e$('#tos').html(messages.AGREE_TO_TOS);
     e$('#agree').html(messages.AGREE);
+    e$('#tos_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
+    e$('#privacy_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
     if (document.englishonConfig.media == 'desktop') {
       if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
         var menuTop = 0;
@@ -7334,29 +7345,13 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.userAnswered = false;
   ShturemOverlay.call(this);
 
-  this.getLineDetails = function () {
-    return {
-      parentoffset: e$('.artText').offset().left,
-      lineWidth: 385
-    };
-  };
-
   this.placeLiveActions = function () {};
 
   this.showButtons = function () {
-    if (document.englishonConfig.isUser) {
-      e$('.site-header').append(EnglishOnButton.element().addClass('front-page'));
-      e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul').append(EnglishOnButton.element());
-      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
-      e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
-      var promises = e$.map(this.parts, function (part, url) {
-        return document.englishonBackend.getArticle(url, 1).then(function (questions) {
-          if (questions.length) {
-            e$(part).find('.info').append(e$('<div>').html('<img src =' + staticUrl('img/button-logo.svg') + ' class = "category-icon"/>'));
-          }
-        });
-      });
-    };
+    e$('.site-header').append(EnglishOnButton.element().addClass('front-page'));
+    e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul').append(EnglishOnButton.element());
+    e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
   };
   this.fetchQuestions = function () {
     //just to enable compile
@@ -7366,6 +7361,27 @@ actualicCategoryOverlay = function (parts, category_url) {
   };
   this.hideQuestions = function () {};
   this.showQuestions = function () {};
+  this.powerOn = function () {
+    if (!document.englishonConfig.isUser) {
+      console.log('Marks for edited articles did not display. This user never turn on enlishon');
+      return;
+    }
+    var promises = e$.map(this.parts, function (part, url) {
+      return document.englishonBackend.getArticle(url, 1).then(function (questions) {
+        if (questions.length) {
+          //if (true) {
+          if (!e$(part).find('.category-icon').length) {
+            e$(part).find('.show-for-large, p, .ttl').last().append(e$('<div>').addClass('category-icon'));
+          }
+        }
+      });
+    });
+  };
+  this.powerOff = function () {
+    if (!document.englishonConfig.email) {
+      e$('.category-icon').remove();
+    }
+  };
 };
 
 //----------------------------------------------------------------
@@ -7456,6 +7472,19 @@ actualicOverlay = function (url, subtitle, bodytext) {
       return questions;
     }.bind(this));
   };
+  this.powerOn = function () {
+    this.showQuestions();
+    document.questions_promise.resolve();
+    if (document.eo_user && e$('.eo-expired').length) {
+      document.eo_user.showLiveActions();
+    }
+  };
+  this.powerOff = function () {
+    this.hideQuestions();
+    if (document.eo_user) {
+      document.eo_user.hideLiveActions();
+    }
+  };
 };
 //
 ScraperFactory = function (location) {
@@ -7505,8 +7534,12 @@ var actualicCategoryScraper = function () {
 
   this.scrape = function () {
     var parts = {};
-    e$('.row.single_post_right_image').each(function (i, para) {
-      var url = e$(para).find('a')[0].href;
+    e$('.kipke_post_block').each(function (i, para) {
+      if (e$(para).find('a').length) {
+        var url = e$(para).find('a')[0].href;
+      } else {
+        var url = e$(para).parent()[0].href;
+      }
       parts[url] = para;
     });
     var category_url = window.location.pathname;
@@ -7675,28 +7708,33 @@ Tour = new function () {
     this.initTutorial(steps);
   };
 
-  this.welcomeTutorial = function() {
-    steps = []
-    e$('.eo-button').eq(2).addClass('eo-button-tour');
-    steps.push(new step('.eo-button-tour left', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-button click'));
+  this.welcomeTutorial = function () {
+    steps = [];
+    //temporary work just for family section page
+    e$('.eo-logo').eq(2).addClass('eo-button-tour');
+    steps.push(new step('.eo-button-tour left', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-logo click'));
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
-  }
+  };
+  this.signinTutorial = function () {
+    steps = [];
+    document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
+    window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
+    steps.push(new step('#eo-dlg-login left', '', 'הירשם/התחבר לשמירת ההתקדמות בחינם!', 'login2'));
+    this.initTutorial(steps);
+  };
 
   this.quizTutorial = function () {
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
 
     steps = [];
-    e$('.eo-question').each(function (i, q) {
+    e$('.eo-question').slice(0, 1).each(function (i, q) {
       var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
       e$(q).addClass('question_' + i);
       steps.push(new step('.question_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'question_' + i));
+      //steps.push(new step('.question_' + i + ' .eo-option' + ' left', step_title, 'לחץ ובחר את המילה המתאימה', 'open_question_' + i));
     });
-    if (!document.englishonConfig.email) {
-      steps.push(new step('.eo-button right', '', 'הרשם לשמירת התקדמות', 'login'));
-      steps.push(new step('#eo-dlg-login left', '', 'הרשם בחינם', 'login2'));
-    }
     this.initTutorial(steps);
   };
   this.initTutorial = function (steps) {
@@ -7730,6 +7768,9 @@ Tour = new function () {
           action: function () {
             if (document.tour.getCurrentStep().id === 'welcome_1' || document.tour.getCurrentStep().id === 'login2') {
               document.eoDialogs.hideDialogs();
+            }
+            if (document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
+              document.overlay.injector.elements[0].qobj.closeUnanswered();
             }
             return document.tour.back();
           }
@@ -7792,30 +7833,37 @@ Tour = new function () {
                 window.scrollTo(0, 10);
               }
             }
-            if (!(document.tour.getCurrentStep().id.slice(0, 9) == 'question_')) {
-              window.scrollTo(0, 0);
-            } else {
-              var val = e$('.' + document.tour.getCurrentStep().id).offset().top;
+            if (document.tour.getCurrentStep().id.slice(0, 9) == 'question_' || document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
+              var val = e$('.question_0').offset().top;
               window.scrollTo(0, val - 170);
-              var questionOpened = function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                document.tour.hide();
-              };
+            }
+
+            if (document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
+              //open the first question only
+              e$('.eo-question').eq(0).find('.eo-hint').click();
+              //force the tutoriol box to adjust options list after it opened
+              window.scrollBy(0, 1);
+              //this line didn't work. check it. for now- fix it into injectior
+              //e$(document).off('click',document.overlay.injector.elements[0].qobj.open_question_handler);
+            }
+            if (document.tour.getCurrentStep().id.indexOf('question_') == -1) {
+              window.scrollTo(0, 0);
+            }
+            if (document.tour.getCurrentStep().id.slice(0, 9) == 'question_') {
               var questionAnswered = function (e) {
                 e.preventDefault();
-                e$('.eo-question .eo-hint').off('click', questionOpened);
                 e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
-                setTimeout(function () {
-                  document.tour.next();
-                }, 1700);
+                document.tour.hide();
+              };
+              var questionOpened = function () {
+                document.tour.hide();
               };
               e$('.eo-question .eo-hint').on('click', e$('.eo-question .eo-hint'), questionOpened);
-              e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
+              //e$('.eo-question .eo-correct_option span').on('click', e$('.eo-question .eo-correct_option span'), questionAnswered);
               e$('.shepherd-cancel-link').on('click', function () {
                 window.localStorage.removeItem('quiz_tutorial_not_finished');
-                e$('.eo-question .eo-hint').off('click', questionOpened);
-                e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
+                //e$('.eo-question .eo-hint').off('click', questionOpened);
+                //e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
               });
             }
 
@@ -7848,9 +7896,10 @@ window.e$ = jQuery.noConflict(true);
 document.resources_promise = e$.Deferred();
 document.loaded_promise = e$.Deferred();
 document.questions_promise = e$.Deferred();
+//document.show_signin_tutorial = e$.Deferred();
 
 function englishon() {
-  var staticUrl = undefined;
+
   if (e$('#developement-only-version').length) {
     window.staticUrl = function (resource) {
       return 'http://localhost:8080/static/ex/' + resource;
@@ -8069,13 +8118,13 @@ var EnglishOnButton = new function () {
   };
   this.currentState = 'eo-button-on';
   this.element = function () {
-    return e$('<div>').addClass('eo-button').addClass(this.currentState);
+    return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo'));
   };
 
   this.changeState = function (state) {
-    e$('.eo-button').removeClass(this.currentState);
+    e$('.eo-icon').removeClass(this.currentState);
     this.currentState = state;
-    e$('.eo-button').addClass(this.currentState);
+    e$('.eo-icon').addClass(this.currentState);
   };
 
   this.on = function () {
@@ -8170,10 +8219,8 @@ var EnglishOnMenu = function () {
   });
   this.firstTimeUser = function () {
     configStorage.set({ 'isUser': true, 'isActive': true });
-    if (e$('[data-id="welcome_1"]').length) {
-      window.localStorage.setItem('show_quiz_tutorial', true);
-      window.localStorage.setItem('show_progress_tutorial', true);
-    }
+    window.localStorage.setItem('show_quiz_tutorial', true);
+    window.localStorage.setItem('show_progress_tutorial', true);
     window.location.reload();
   };
   console.log('jquery extend after');
@@ -8269,14 +8316,12 @@ var EnglishOnMenu = function () {
     var elem = e$('#eo-power-switch-text');
     elem.toggleText('On', 'Off');
     if (JSON.parse(enable)) {
-      document.overlay.showQuestions();
-      document.questions_promise.resolve();
+      document.overlay.powerOn();
       if (!document.englishonConfig.isUser) {
         this.firstTimeUser();
       }
     } else {
-      document.overlay.hideQuestions();
-      if (document.eo_user) document.eo_user.hideLiveActions();
+      document.overlay.powerOff();
     }
   }.bind(this));
 
@@ -8288,16 +8333,13 @@ var EnglishOnMenu = function () {
     configStorage.set({ 'isActive': true });
     e$('#eo-power-switch-text').text('On');
     e$('body').addClass('eo-active', true);
-    document.overlay.showQuestions();
-    document.questions_promise.resolve();
-    document.eo_user.showLiveActions();
+    document.overlay.powerOn();
   };
   this.powerOff = function () {
     configStorage.set({ 'isActive': false });
     e$('#eo-power-switch-text').text('OFF');
     e$('body').removeClass('eo-active');
-    document.overlay.hideQuestions();
-    document.eo_user.hideLiveActions();
+    document.overlay.powerOff();
   };
 
   this.signout = function () {
@@ -8306,6 +8348,7 @@ var EnglishOnMenu = function () {
     document.menu.powerOff();
     localStorage.removeItem('email');
     localStorage.removeItem('eo-user-name');
+    localStorage.removeItem('editor');
     var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
     document.englishonConfig.token = null;
     auth.login(document.englishonConfig.token).then(function (token) {
@@ -8383,6 +8426,7 @@ var EnglishOnMenu = function () {
     }
   });
   e$('#eo-power-switch').on('click', this.togglePower);
+  e$('.languages_picker .available').on('click', this.powerOn);
 
   e$('#eo-speaker-res').on('click', function () {
     toggleSound();
@@ -8490,6 +8534,25 @@ var EnglishOnMenu = function () {
     //This is causing chrome to compute the body width as 980px anycase, in inspector too
   });
   window.history.pushState({ 'elementToShow': 'shturem' }, '');
+
+  $(window).on('beforeunload', function (e) {
+    e.preventDefault();
+    if (!document.englishonConfig.email && e$('.eo-answered').length) {
+      //if (true) {
+      console.log('user leaving the page!');
+      document.show_signin_tutorial = true;
+      document.tutorialInterval = setInterval(function () {
+        console.log('setTimeout----------------');
+        if (document.show_signin_tutorial) {
+          console.log('setTimeout!!!!!!!!!!!!');
+          Tour.signinTutorial();
+          document.tour.start();
+          clearInterval(document.tutorialInterval);
+        }
+      }, 3000);
+      return false;
+    }
+  });
 };
 
 e$(function () {
@@ -8507,6 +8570,10 @@ e$.when(document.questions_promise).done(function () {
     }, 1000);
   }
 });
+// e$.when(document.show_signin_tutorial).done(function() {
+//   Tour.signinTutorial();
+//   document.tour.start();
+// })
 
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
   //addMixPannel();
@@ -8573,22 +8640,6 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     });
   } else {
     document.menu = new EnglishOnMenu();
-    Tour.welcomeTutorial();
-    e$(".eo-button").on('mouseenter', function () {
-      if (window.tourTimeout) {
-        clearTimeout(window.tourTimeout);
-      }
-
-      document.tour.start();
-      window.tourTimeout = setTimeout(function () {
-        if (e$('.shepherd-open').length && !e$('[data-id="welcome_0"]').hasClass('shepherd-open')) {
-          return;
-        }
-        if (!document.querySelectorAll(".shepherd:hover").length && e$('[data-id="welcome_0"]').hasClass('shepherd-open')) {
-          document.tour.hide();
-        }
-      }, 3000);
-    });
   }
 });
 
