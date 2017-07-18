@@ -7475,7 +7475,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
   this.powerOn = function () {
     this.showQuestions();
     document.questions_promise.resolve();
-    if (e$('.eo-expired').length) {
+    if (document.eo_user && e$('.eo-expired').length) {
       document.eo_user.showLiveActions();
     }
   };
@@ -7716,6 +7716,13 @@ Tour = new function () {
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
   };
+  this.signinTutorial = function () {
+    steps = [];
+    document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
+    window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
+    steps.push(new step('#eo-dlg-login left', '', 'הירשם/התחבר לשמירת ההתקדמות בחינם!', 'login2'));
+    this.initTutorial(steps);
+  };
 
   this.quizTutorial = function () {
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
@@ -7889,6 +7896,7 @@ window.e$ = jQuery.noConflict(true);
 document.resources_promise = e$.Deferred();
 document.loaded_promise = e$.Deferred();
 document.questions_promise = e$.Deferred();
+//document.show_signin_tutorial = e$.Deferred();
 
 function englishon() {
 
@@ -8527,8 +8535,23 @@ var EnglishOnMenu = function () {
   });
   window.history.pushState({ 'elementToShow': 'shturem' }, '');
 
-  $(window).unload(function () {
-    console.log('user leaving the page!');
+  $(window).on('beforeunload', function (e) {
+    e.preventDefault();
+    if (!document.englishonConfig.email && e$('.eo-answered').length) {
+      //if (true) {
+      console.log('user leaving the page!');
+      document.show_signin_tutorial = true;
+      document.tutorialInterval = setInterval(function () {
+        console.log('setTimeout----------------');
+        if (document.show_signin_tutorial) {
+          console.log('setTimeout!!!!!!!!!!!!');
+          Tour.signinTutorial();
+          document.tour.start();
+          clearInterval(document.tutorialInterval);
+        }
+      }, 3000);
+      return false;
+    }
   });
 };
 
@@ -8547,6 +8570,10 @@ e$.when(document.questions_promise).done(function () {
     }, 1000);
   }
 });
+// e$.when(document.show_signin_tutorial).done(function() {
+//   Tour.signinTutorial();
+//   document.tour.start();
+// })
 
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
   //addMixPannel();
