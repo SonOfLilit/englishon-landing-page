@@ -1023,12 +1023,11 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   position: absolute;
   top: 6px;
   left: 38px;
-  width: 150px;
+  width: 110px;
   height: 35px;
   cursor: pointer;
   overflow: visible;
   display: inline-block;
-  padding-right: 30px;
   background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
   background-size: 96px;
   background-repeat: no-repeat;
