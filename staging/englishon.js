@@ -7739,8 +7739,8 @@ Tour = new function () {
     this.welcomeTutorial = function () {
         steps = [];
         //e$('.eo-logo').eq(2).addClass('eo-button-tour');
-        e$('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu.current-menu-item.active').eq(0).find('.eo-logo').addClass('eo-button-tour');
-        steps.push(new step('.eo-button-tour left', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-logo click'));
+        e$('.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children').eq(0).find('.eo-logo').addClass('eo-button-tour');
+        steps.push(new step('.eo-button-tour right', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-logo click'));
         steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
         this.initTutorial(steps);
     };
