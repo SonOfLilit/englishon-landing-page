@@ -6828,7 +6828,7 @@ ExpiredMultipleChoiceQuestion.prototype.constructor = ExpiredMultipleChoiceQuest
 //
 document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
   <div id='eo-menu' class='hidden eo-area'>\
-    <div class='eo-close eo-area'></div>\
+    <div class='eo-close close-dialog'></div>\
     <div class='header'>\
       <div id='eo-account-area'>\
         <div class='Grid u-textCenter eo-row eo-menu-inner'>\
@@ -8231,6 +8231,9 @@ var EnglishOnDialogs = function () {
     e$('.eo-area').addClass('hidden');
     e$('.eo-inner-area').addClass('hidden');
     e$('.eo-message').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+    if (document.tour) {
+      document.tour.hide();
+    }
   };
   this.toggleDialog = function (element, action) {
     this.hideDialogs(0);
@@ -8299,6 +8302,7 @@ var EnglishOnMenu = function () {
   };
   console.log('jquery extend after');
   this.displayMenuMessages = function () {
+    e$('#eo-menu').addClass(document.englishonConfig.siteLanguage);
     switch_text = JSON.parse(document.englishonConfig.isActive) ? 'On' : 'Off';
     e$('#eo-power-switch-text').text(switch_text);
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
@@ -8511,8 +8515,7 @@ var EnglishOnMenu = function () {
     toggleSound();
     document.menu.volume.syncWithSpeaker();
   });
-  //initializing volume slider
-
+  e$('.eo-close.close-dialog').on('click', document.eoDialogs.hideDialogs);
   var uiLoginActions = function (state) {
     if (state == 'guest') {
       e$('body').addClass('guest').removeClass('logged');

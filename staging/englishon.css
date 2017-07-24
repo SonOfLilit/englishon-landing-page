@@ -2288,6 +2288,13 @@ eo-signout-layout .signout {
   color: #2cc6a8;
 }
 
+#eo-menu.hebrew #eo-help {
+  flex: 0 1 55%;
+}
+#eo-menu.hebrew #eo-contact {
+  flex: 0 1 40%;
+}
+
 #eo-menu .eo-menu-footer:hover {
   color: #2cc6a8;
 }
@@ -2737,7 +2744,7 @@ eo-signout-layout .signout {
   background-color: gray;
 }
 
-.eo-close.eo-area {
+.eo-close.close-dialog {
   top: -15px;
   right: -15px;
   position: absolute;
