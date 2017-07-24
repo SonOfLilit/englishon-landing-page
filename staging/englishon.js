@@ -5011,6 +5011,8 @@ window.cleanEnglishonCookies = function () {
   window.localStorage.removeItem('isUser');
   window.localStorage.removeItem('editor');
   window.localStorage.removeItem('isActive');
+  window.localStorage.removeItem('got_no_questions_dialog');
+  window.localStorage.removeItem('show_quiz_tutorial');
 };
 //
 var MESSAGES = {
@@ -7173,8 +7175,12 @@ ShturemOverlay = function () {
     e$('#eo-dlg-terms').removeClass('hidden');
   };
   this.openNoQuestionsDialog = function () {
+    if (window.localStorage.getItem('got_no_questions_dialog')) {
+      return;
+    }
     no_questions_dlg = e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>');
     no_questions_dlg.dialog({ auto_open: true, modal: true });
+    window.localStorage.setItem('got_no_questions_dialog', true);
   };
 };
 
@@ -7391,8 +7397,8 @@ actualicCategoryOverlay = function (parts, category_url) {
     }
     e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul').append(EnglishOnButton.element());
     e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
-    if (window.localStorage.getItem('show_quiz_tutorial') && document.englishonConfig.email) {
-      this.openNoQuestionsDialog.bind(this);
+    if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
+      this.openNoQuestionsDialog();
       //e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     }
     e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
@@ -7502,9 +7508,9 @@ actualicOverlay = function (url, subtitle, bodytext) {
     this.userAnswered = false;
     this.limit = this.getQuestionQuota();
     return backend.getArticle(this.url, this.limit).then(function (questions) {
-      if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial') && document.englishonConfig.email) {
+      if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial')) {
         //e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
-        this.openNoQuestionsDialog.bind(this);
+        this.openNoQuestionsDialog();
       }
       this.questions = questions;
       console.log("Num questions: " + questions.length);
@@ -7756,7 +7762,7 @@ Tour = new function () {
     steps = [];
     e$(document.overlay.tutorial_selector).find('.eo-logo').addClass('eo-button-tour');
 
-    steps.push(new step('.eo-button-tour right', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-logo click'));
+    steps.push(new step('.eo-button-tour right', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש</br></br>', 'welcome_' + 0, 0, '.eo-logo click'));
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
     e$(".eo-button").on('mouseenter', function () {
