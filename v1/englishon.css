@@ -1023,12 +1023,11 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   position: absolute;
   top: 6px;
   left: 38px;
-  width: 150px;
+  width: 110px;
   height: 35px;
   cursor: pointer;
   overflow: visible;
   display: inline-block;
-  padding-right: 30px;
   background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
   background-size: 96px;
   background-repeat: no-repeat;
@@ -1410,6 +1409,9 @@ body.actualic-co-il #eo-live.vocabulary-open {
 body.actualic-co-il.heroku-staging {
   background-color: #e6e6e6;
 }
+body.actualic-co-il.localhost {
+  background-color: #F0FFFF;
+}
 body.actualic-co-il .eo-live-maximize {
   height: 208px !important;
 }
@@ -1423,7 +1425,6 @@ body.actualic-co-il .eo-button.front-page {
   position: absolute;
   width: 34px;
   left: 210px;
-  z-index: -1;
 }
 body.actualic-co-il .eo-question {
   height: 20px;
