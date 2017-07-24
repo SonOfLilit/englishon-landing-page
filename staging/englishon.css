@@ -1409,6 +1409,9 @@ body.actualic-co-il #eo-live.vocabulary-open {
 body.actualic-co-il.heroku-staging {
   background-color: #e6e6e6;
 }
+body.actualic-co-il.localhost {
+  background-color: #F0FFFF;
+}
 body.actualic-co-il .eo-live-maximize {
   height: 208px !important;
 }
@@ -1422,7 +1425,6 @@ body.actualic-co-il .eo-button.front-page {
   position: absolute;
   width: 34px;
   left: 210px;
-  z-index: -1;
 }
 body.actualic-co-il .eo-question {
   height: 20px;
