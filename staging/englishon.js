@@ -7813,7 +7813,7 @@ Tour = new function () {
     for (i = 0; i < steps.length; i++) {
       buttons = [];
       //add exit button to first step
-      if (i == 0) {
+      if (false) {
         buttons.push({
           text: 'יציאה',
           classes: 'shepherd-button-secondary',
