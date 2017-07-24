@@ -2723,9 +2723,10 @@ eo-signout-layout .signout {
 }
 
 .eo-close {
-  color: gray;
-  height: 15px;
+  position: absolute;
   width: 15px;
+  height: 15px;
+  color: gray;
   background-size: 15px;
   background-image: url(http://www.englishon.org/v1/img/close.png);
   z-index: 20;
@@ -2733,6 +2734,21 @@ eo-signout-layout .signout {
 .eo-close:hover {
   background-image: url(http://www.englishon.org/v1/img/close2.png);
   background-color: gray;
+}
+
+.eo-close.eo-area {
+  top: -15px;
+  right: -15px;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  color: gray;
+  background-size: 16px;
+  background-image: url(http://localhost:8080/static/ex/img/close.png);
+  z-index: 20;
+  background-color: white;
+  border-radius: 25px;
+  background-position: center;
 }
 
 /*TUTORIAL*/
