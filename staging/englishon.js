@@ -5268,9 +5268,6 @@ HerokuBackend = function (base, token) {
 
 HerokuBackend.prototype.ajax = function (method, url, data) {
   var token = this.token;
-  if (window.location.host == 'actualic.co.il') {
-    url = url.toLowerCase();
-  }
   var requestData = {
     method: method,
     url: this.base + url,
@@ -5346,7 +5343,7 @@ HerokuBackend.prototype.rejectedTerms = function (address) {
 };
 
 HerokuBackend.prototype.getArticle = function (address, limit = 0) {
-  this.url = encodeURIComponent(address) + '/';
+  this.url = encodeURIComponent(address) + '/'.toLowerCase();
   console.log('backend console *****token: ' + this.token);
   return this.ajax("GET", "/quiz/page/" + limit + "/" + this.url).then(function (data) {
     this.pageid = data.id;
@@ -5358,7 +5355,7 @@ HerokuBackend.prototype.getArticle = function (address, limit = 0) {
   });
 };
 HerokuBackend.prototype.getArticleForEditor = function (address) {
-  this.url = encodeURIComponent(address) + '/';
+  this.url = encodeURIComponent(address) + '/'.toLowerCase();
   console.log('backend console *****token: ' + this.token);
   return this.ajax("GET", "/quiz/editor/page/" + this.url).then(function (data) {
     this.pageid = data.id;
@@ -6970,7 +6967,7 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
             </div>\
             <div class='Grid-cell v-align right-align eo-row9'>\
                 <div class='v-align right-align eo-menu-footer'>\
-                    <a href='http://localhost:8080/recover' id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
+                    <a id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
                 </div>\
             </div>\
             <div class='Grid-cell eo-row12'>\
@@ -8310,6 +8307,7 @@ var EnglishOnMenu = function () {
     e$('#subtitle').html(messages.LOGIN_SUBTITLE);
     e$('#or').text(messages.OR);
     e$('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);
+    e$('#eo-forgot-psw').attr('href', document.englishonBackend.base + '/recover/');
     e$('#eo-mail-login-btn').text(messages.LOGIN_BUTTON);
     e$('#eo-choose-lang').text(messages.SITE_LANGUAGE);
     e$('#progress-tutorial-btn').text(messages.START_PROGRESS_TUTORIAL);
