@@ -2505,11 +2505,11 @@ eo-signout-layout .signout {
   position: fixed;
   height: 60px;
   width: 300px;
-  overflow: auto;
+  overflow: hidden;
   cursor: pointer;
 }
 #eo-live.eo-live-maximize {
-  cursor: arrow;
+  cursor: pointer;
   padding: 20px;
 }
 #eo-live.eo-live-maximize #milotrage {
