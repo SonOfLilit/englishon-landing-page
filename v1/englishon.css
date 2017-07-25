@@ -2753,7 +2753,7 @@ eo-signout-layout .signout {
   height: 20px;
   color: gray;
   background-size: 16px;
-  background-image: url(http://localhost:8080/static/ex/img/close.png);
+  background-image: url(http://www.englishon.org/v1/img/close.png);
   z-index: 20;
   background-color: white;
   border-radius: 25px;
@@ -2768,7 +2768,7 @@ eo-signout-layout .signout {
   height: 20px;
   color: gray;
   background-size: 16px;
-  background-image: url(http://localhost:8080/static/ex/img/close.png);
+  background-image: url(http://www.englishon.org/v1/img/close.png);
   z-index: 20;
   background-color: #eee;
   border-radius: 25px;
