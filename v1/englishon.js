@@ -5011,6 +5011,8 @@ window.cleanEnglishonCookies = function () {
   window.localStorage.removeItem('isUser');
   window.localStorage.removeItem('editor');
   window.localStorage.removeItem('isActive');
+  window.localStorage.removeItem('got_no_questions_dialog');
+  window.localStorage.removeItem('show_quiz_tutorial');
 };
 //
 var MESSAGES = {
@@ -6825,161 +6827,161 @@ ExpiredMultipleChoiceQuestion.prototype = Object.create(AbstractExpiredQuestion.
 ExpiredMultipleChoiceQuestion.prototype.constructor = ExpiredMultipleChoiceQuestion;
 //
 document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
-    <div id='eo-menu' class='hidden eo-area'>\
-        <div class='header'>\
-            <div id='eo-account-area'>\
-                <div class='Grid u-textCenter eo-row eo-menu-inner'>\
-                    <div class='Grid-cell u-2of10'>\
-                        <div id='eo-account-img'></div>\
-                    </div>\
-                    <div class='Grid-cell u-7of10  v-align h-align'>\
-                        <div id='eo-account-name'></div>\
-                    </div>\
-                    <div class='Grid-cell v-align u-1of10 right-align'>\
-                        <div id='account-dropdown'>&#9662;</div>\
-                    </div>\
-                </div>\
-            </div>\
-            <div class='Grid u-textCenter eo-row eo-menu-inner'>\
-                <div class='Grid-cell u-1of3 v-align'>\
-                    <div id='eo-power-switch'>\
-                        <span id='eo-power-switch-text'></span>\
-                        <div id='eo-power-switch-circle'></div>\
-                    </div>\
-                </div>\
-                <div class='Grid-cell delimiter'>\
-                    <div class='eo-line'></div>\
-                </div>\
-                <div class='Grid-cell'>\
-                    <div class='Grid'>\
-                        <div class='Grid-cell u-1of3 v-align h-align'>\
-                            <div id='eo-speaker-res'></div>\
-                        </div>\
-                        <div class='Grid-cell v-align right-align'>\
-                            <div id='eo-slider'></div>\
-                        </div>\
-                    </div>\
-                </div>\
-            </div>\
+  <div id='eo-menu' class='hidden eo-area'>\
+    <div class='eo-close close-dialog'></div>\
+    <div class='header'>\
+      <div id='eo-account-area'>\
+        <div class='Grid u-textCenter eo-row eo-menu-inner'>\
+          <div class='Grid-cell u-2of10'>\
+            <div id='eo-account-img'></div>\
+          </div>\
+          <div class='Grid-cell u-7of10  v-align h-align'>\
+            <div id='eo-account-name'></div>\
+          </div>\
+          <div class='Grid-cell v-align u-1of10 right-align'>\
+            <div id='account-dropdown'>&#9662;</div>\
+          </div>\
         </div>\
-        <div class='languages_picker'>\
-            <div class='Grid Grid--full'>\
-                <div class='Grid-cell v-align eo-menu-inner' id='eo-picker-tittle'>\
-                    <div id='eo-language_header'>Pick a language</div>\
-                </div>\
-                <div class='Grid-cell eo-menu-inner available'>\
-                    <div class='Grid eo-row'>\
-                        <div class='Grid-cell u-1of6'>\
-                            <div class='flag us-flag'></div>\
-                        </div>\
-                        <div class='Grid-cell v-align '>\
-                            <div class='eo-language-option-res'>English (US)</div>\
-                        </div>\
-                    </div>\
-                </div>\
-            </div>\
-            <div id='coming_soon'>\
-                <div class='Grid-cell eo-row eo-menu-inner'>\
-                    <div class='Grid'>\
-                        <span class='eo-tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6 eo-low-layer'>\
-                            <div class='flag sp-flag'></div>\
-                        </div>\
-                        <div class='Grid-cell v-align eo-low-layer'>\
-                            <div class='eo-language-option-res'>Spanish</div>\
-                        </div>\
-                    </div>\
-                </div>\
-                <div class='Grid-cell eo-row eo-menu-inner' id='eo-last-option'>\
-                    <div class='Grid'>\
-                        <span class='eo-tooltip'>Coming soon</span>\
-                        <div class='Grid-cell u-1of6 eo-low-layer'>\
-                            <div class='flag fr-flag'></div>\
-                        </div>\
-                        <div class='Grid-cell v-align eo-low-layer'>\
-                            <div class='eo-language-option-res'>French</div>\
-                        </div>\
-                    </div>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row11 h-align'>\
-                <div id='englishon-bottom'></div>\
-            </div>\
-            <div class='Grid-cell eo-row10 eo-menu-inner'>\
-                <div class='Grid'>\
-                    <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='https://englishonhelp.desk.com/'>Need Help?</a></div>\
-                    <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='https://englishonhelp.desk.com/'>Contact Us</a></div>\
-                </div>\
-            </div>\
-            <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
-                <div class='Grid-cell v-align h-align'>\
-                    <div id='eo-editor-btn' class='v-align h-align'>edit questions</div>\
-                </div>\
-            </div>\
+      </div>\
+      <div class='Grid u-textCenter eo-row eo-menu-inner'>\
+        <div class='Grid-cell u-1of3 v-align'>\
+          <div id='eo-power-switch'>\
+            <span id='eo-power-switch-text'></span>\
+            <div id='eo-power-switch-circle'></div>\
+          </div>\
         </div>\
+        <div class='Grid-cell delimiter'>\
+          <div class='eo-line'></div>\
+        </div>\
+        <div class='Grid-cell'>\
+          <div class='Grid'>\
+            <div class='Grid-cell u-1of3 v-align h-align'>\
+              <div id='eo-speaker-res'></div>\
+            </div>\
+            <div class='Grid-cell v-align right-align'>\
+              <div id='eo-slider'></div>\
+            </div>\
+          </div>\
+        </div>\
+      </div>\
     </div>\
-</div>\
-";
+    <div class='languages_picker'>\
+      <div class='Grid Grid--full'>\
+        <div class='Grid-cell v-align eo-menu-inner' id='eo-picker-tittle'>\
+          <div id='eo-language_header'>Pick a language</div>\
+        </div>\
+        <div class='Grid-cell eo-menu-inner available'>\
+          <div class='Grid eo-row'>\
+            <div class='Grid-cell u-1of6'>\
+              <div class='flag us-flag'></div>\
+            </div>\
+            <div class='Grid-cell v-align '>\
+              <div class='eo-language-option-res'>English (US)</div>\
+            </div>\
+          </div>\
+        </div>\
+      </div>\
+      <div id='coming_soon'>\
+        <div class='Grid-cell eo-row eo-menu-inner'>\
+          <div class='Grid'>\
+            <span class='eo-tooltip'>Coming soon</span>\
+            <div class='Grid-cell u-1of6 eo-low-layer'>\
+              <div class='flag sp-flag'></div>\
+            </div>\
+            <div class='Grid-cell v-align eo-low-layer'>\
+              <div class='eo-language-option-res'>Spanish</div>\
+            </div>\
+          </div>\
+        </div>\
+        <div class='Grid-cell eo-row eo-menu-inner' id='eo-last-option'>\
+          <div class='Grid'>\
+            <span class='eo-tooltip'>Coming soon</span>\
+            <div class='Grid-cell u-1of6 eo-low-layer'>\
+              <div class='flag fr-flag'></div>\
+            </div>\
+            <div class='Grid-cell v-align eo-low-layer'>\
+              <div class='eo-language-option-res'>French</div>\
+            </div>\
+          </div>\
+        </div>\
+      </div>\
+      <div class='Grid-cell eo-row11 h-align'>\
+        <div id='englishon-bottom'></div>\
+      </div>\
+      <div class='Grid-cell eo-row10 eo-menu-inner'>\
+        <div class='Grid'>\
+          <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='https://englishonhelp.desk.com/'>Need Help?</a></div>\
+          <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='https://englishonhelp.desk.com/'>Contact Us</a></div>\
+        </div>\
+      </div>\
+      <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
+        <div class='Grid-cell v-align h-align'>\
+          <div id='eo-editor-btn' class='v-align h-align'>edit questions</div>\
+        </div>\
+      </div>\
+    </div>\
+  </div>\
+</div>";
 //
 document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
-    <div id='eo-dlg-inner'>\
-        <div class='Grid Grid--full'>\
-            <div class='Grid-cell eo-row2'>\
-                <div class='Grid'>\
-                    <div class='Grid-cell header-cell right-align v-align'>\
-                        <div id='dlg-sign-in-header'>Sign In</div>\
-                    </div>\
-                    <div class='Grid-cell icon-cell'>\
-                        <div id='eo-dlg-icon'></div>\
-                    </div>\
-                    <div class='Grid-cell header-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row3 v-align h-align'>\
-                <div class='subtitle' id='subtitle'>Welcome to englishon. Learn english- fast and fun</div>\
-            </div>\
-            <div class='Grid-cell eo-row4'>\
-                <div id='google-iframe'></div>\
-            </div>\
-            <div class='Grid-cell hidden'>\
-                <div id='eo-google-msg' class='eo-message'></div>\
-            </div>\
-            <div class='Grid-cell eo-row5'>\
-                <div class='Grid'>\
-                    <div class='Grid-cell line eo-delimiter'></div>\
-                    <div class='Grid-cell v-align h-align'>\
-                        <span class='subtitle' id='or'>OR</span>\
-                    </div>\
-                    <div class='Grid-cell line eo-delimiter'></div>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row6'>\
-                <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' />\
-            </div>\
-            <div class='Grid-cell hidden eo-row8'>\
-                <div id='login-email-msg' class='error eo-message'></div>\
-            </div>\
-            <div class='Grid-cell eo-row6'>\
-                <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' />\
-            </div>\
-            <div class='Grid-cell hidden eo-row8'>\
-                <div id='login-password-msg' class='error eo-message'></div>\
-            </div>\
-            <div class='Grid-cell v-align right-align eo-row9'>\
-                <div class='v-align right-align eo-menu-footer'>\
-                    <a id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row12'>\
-            </div>\
-            <div class='Grid-cell eo-row7 v-align h-align'>\
-                <div id='eo-mail-login-btn' class='v-align h-align'>sign in</div>\
-            </div>\
+  <div class='eo-close close-dialog'></div>\
+  <div id='eo-dlg-inner'>\
+    <div class='Grid Grid--full'>\
+      <div class='Grid-cell eo-row2'>\
+        <div class='Grid'>\
+          <div class='Grid-cell header-cell right-align v-align'>\
+            <div id='dlg-sign-in-header'>Sign In</div>\
+          </div>\
+          <div class='Grid-cell icon-cell'>\
+            <div id='eo-dlg-icon'></div>\
+          </div>\
+          <div class='Grid-cell header-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
         </div>\
+      </div>\
+      <div class='Grid-cell eo-row3 v-align h-align'>\
+        <div class='subtitle' id='subtitle'>Welcome to englishon. Learn english- fast and fun</div>\
+      </div>\
+      <div class='Grid-cell eo-row4'>\
+        <div id='google-iframe'></div>\
+      </div>\
+      <div class='Grid-cell hidden'>\
+        <div id='eo-google-msg' class='eo-message'></div>\
+      </div>\
+      <div class='Grid-cell eo-row5'>\
+        <div class='Grid'>\
+          <div class='Grid-cell line eo-delimiter'></div>\
+          <div class='Grid-cell v-align h-align'>\
+            <span class='subtitle' id='or'>OR</span>\
+          </div>\
+          <div class='Grid-cell line eo-delimiter'></div>\
+        </div>\
+      </div>\
+      <div class='Grid-cell eo-row6'>\
+        <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' />\
+      </div>\
+      <div class='Grid-cell hidden eo-row8'>\
+        <div id='login-email-msg' class='error eo-message'></div>\
+      </div>\
+      <div class='Grid-cell eo-row6'>\
+        <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' />\
+      </div>\
+      <div class='Grid-cell hidden eo-row8'>\
+        <div id='login-password-msg' class='error eo-message'></div>\
+      </div>\
+      <div class='Grid-cell v-align right-align eo-row9'>\
+        <div class='v-align right-align eo-menu-footer'>\
+          <a id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
+        </div>\
+      </div>\
+      <div class='Grid-cell eo-row12'>\
+      </div>\
+      <div class='Grid-cell eo-row7 v-align h-align'>\
+        <div id='eo-mail-login-btn' class='v-align h-align'>sign in</div>\
+      </div>\
     </div>\
+  </div>\
 </div>\
-</div>\
-";
+</div>";
 //
 document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
     <div class='Grid Grid--full eo-inner-area hidden' id ='eo-dlg-options-main'>\
@@ -7012,7 +7014,7 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 ";
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
-    <div class='eo-close actions-close'></div>\
+    <div class='eo-close close-progress-bar'></div>\
     <div class='Grid Grid--full' id='eo-live-main'>\
         <div class='Grid-cell'>\
             <div class='Grid live-part' id='milotrage'>\
@@ -7173,8 +7175,12 @@ ShturemOverlay = function () {
     e$('#eo-dlg-terms').removeClass('hidden');
   };
   this.openNoQuestionsDialog = function () {
+    if (window.localStorage.getItem('got_no_questions_dialog')) {
+      return;
+    }
     no_questions_dlg = e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>');
     no_questions_dlg.dialog({ auto_open: true, modal: true });
+    window.localStorage.setItem('got_no_questions_dialog', true);
   };
 };
 
@@ -7390,11 +7396,10 @@ actualicCategoryOverlay = function (parts, category_url) {
       });
     }
     e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul').append(EnglishOnButton.element());
-    if (document.englishonConfig.isUser) {
-      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
-    } else {
-      //e$('.eo-button').on('click', this.openNoQuestionsDialog.bind(this));
-      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
+      this.openNoQuestionsDialog();
+      //e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     }
     e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
   };
@@ -7503,9 +7508,9 @@ actualicOverlay = function (url, subtitle, bodytext) {
     this.userAnswered = false;
     this.limit = this.getQuestionQuota();
     return backend.getArticle(this.url, this.limit).then(function (questions) {
-      if (!document.englishonConfig.editor && !questions.length) {
-        e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
-        e$('.eo-button').on('click', this.openNoQuestionsDialog.bind(this));
+      if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial')) {
+        //e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
+        this.openNoQuestionsDialog();
       }
       this.questions = questions;
       console.log("Num questions: " + questions.length);
@@ -7757,7 +7762,7 @@ Tour = new function () {
     steps = [];
     e$(document.overlay.tutorial_selector).find('.eo-logo').addClass('eo-button-tour');
 
-    steps.push(new step('.eo-button-tour right', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-logo click'));
+    steps.push(new step('.eo-button-tour right', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש</br></br>', 'welcome_' + 0, 0, '.eo-logo click'));
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
     e$(".eo-button").on('mouseenter', function () {
@@ -8226,6 +8231,9 @@ var EnglishOnDialogs = function () {
     e$('.eo-area').addClass('hidden');
     e$('.eo-inner-area').addClass('hidden');
     e$('.eo-message').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+    if (document.tour) {
+      document.tour.hide();
+    }
   };
   this.toggleDialog = function (element, action) {
     this.hideDialogs(0);
@@ -8294,6 +8302,7 @@ var EnglishOnMenu = function () {
   };
   console.log('jquery extend after');
   this.displayMenuMessages = function () {
+    e$('#eo-menu').addClass(document.englishonConfig.siteLanguage);
     switch_text = JSON.parse(document.englishonConfig.isActive) ? 'On' : 'Off';
     e$('#eo-power-switch-text').text(switch_text);
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
@@ -8479,7 +8488,7 @@ var EnglishOnMenu = function () {
   if (document.englishonConfig.media == 'desktop') {
     //top left values to display centered dialogs 
     if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
-      var menuTop = 0;
+      var menuTop = 60;
     } else {
       var menuTop = (screen.height - 540) / 2;
     }
@@ -8506,8 +8515,7 @@ var EnglishOnMenu = function () {
     toggleSound();
     document.menu.volume.syncWithSpeaker();
   });
-  //initializing volume slider
-
+  e$('.eo-close.close-dialog').on('click', document.eoDialogs.hideDialogs);
   var uiLoginActions = function (state) {
     if (state == 'guest') {
       e$('body').addClass('guest').removeClass('logged');
@@ -8639,7 +8647,7 @@ e$(function () {
 e$.when(document.questions_promise).done(function () {
   if (window.localStorage.getItem('show_quiz_tutorial')) {
     if (!document.overlay.questions || !document.overlay.questions.length) {
-      document.overlay.openNoQuestionsDialog();
+      //document.overlay.openNoQuestionsDialog();
       return;
     }
     //if (true) {
