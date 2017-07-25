@@ -7795,8 +7795,8 @@ Tour = new function () {
     steps = [];
     e$('.eo-question').slice(0, 1).each(function (i, q) {
       var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
-      e$(q).addClass('question_' + i);
-      steps.push(new step('.question_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'question_' + i));
+      e$(q).find('.eo-hint').addClass('hint_' + i);
+      steps.push(new step('.hint_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'question_' + i));
       //steps.push(new step('.question_' + i + ' .eo-option' + ' left', step_title, 'לחץ ובחר את המילה המתאימה', 'open_question_' + i));
     });
     this.initTutorial(steps);
@@ -7907,7 +7907,7 @@ Tour = new function () {
               }
             }
             if (document.tour.getCurrentStep().id.slice(0, 9) == 'question_' || document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
-              var val = e$('.question_0').offset().top;
+              var val = e$('.hint_0').offset().top;
               window.scrollTo(0, val - 170);
             }
 
