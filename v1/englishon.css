@@ -2508,9 +2508,15 @@ eo-signout-layout .signout {
   overflow: hidden;
   cursor: pointer;
 }
+#eo-live .eo-close {
+  display: block;
+}
 #eo-live.eo-live-maximize {
   cursor: pointer;
   padding: 20px;
+}
+#eo-live.eo-live-maximize .eo-close {
+  display: none;
 }
 #eo-live.eo-live-maximize #milotrage {
   margin: 0px;
@@ -2520,6 +2526,7 @@ eo-signout-layout .signout {
 }
 #eo-live.vocabulary-open {
   background-color: black;
+  overflow: auto;
 }
 #eo-live #srProgress,
 #eo-live #progress2 {
