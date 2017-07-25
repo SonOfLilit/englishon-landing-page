@@ -1052,6 +1052,11 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   background-size: 34px;
 }
 
+.registered_symbol {
+  left: 140px;
+  position: absolute;
+}
+
 .eo-button {
   cursor: pointer;
   overflow: visible;
@@ -2224,6 +2229,9 @@ eo-signout-layout .signout {
   position: relative;
 }
 
+.available {
+  cursor: pointer;
+}
 .available:hover {
   background-color: #b8c6cf;
 }
@@ -2732,6 +2740,7 @@ eo-signout-layout .signout {
 }
 
 .eo-close {
+  cursor: pointer;
   position: absolute;
   width: 15px;
   height: 15px;

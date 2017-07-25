@@ -7394,6 +7394,7 @@ actualicCategoryOverlay = function (parts, category_url) {
       e$('.site-header').find('.has-submenu').on('mouseleave', function () {
         e$('.front-page').show();
       });
+      this.tutorial_selector = '.front-page';
     }
     e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul').append(EnglishOnButton.element());
     e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
@@ -8192,7 +8193,7 @@ var EnglishOnButton = new function () {
   };
   this.currentState = 'eo-button-on';
   this.element = function () {
-    return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo'));
+    return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo')).append(e$('<div>').addClass('registered_symbol').html('&#174;'));
   };
 
   this.changeState = function (state) {
