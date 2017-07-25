@@ -6924,64 +6924,64 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
 </div>";
 //
 document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
-    <div id='eo-dlg-inner'>\
-        <div class='Grid Grid--full'>\
-            <div class='Grid-cell eo-row2'>\
-                <div class='Grid'>\
-                    <div class='Grid-cell header-cell right-align v-align'>\
-                        <div id='dlg-sign-in-header'>Sign In</div>\
-                    </div>\
-                    <div class='Grid-cell icon-cell'>\
-                        <div id='eo-dlg-icon'></div>\
-                    </div>\
-                    <div class='Grid-cell header-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row3 v-align h-align'>\
-                <div class='subtitle' id='subtitle'>Welcome to englishon. Learn english- fast and fun</div>\
-            </div>\
-            <div class='Grid-cell eo-row4'>\
-                <div id='google-iframe'></div>\
-            </div>\
-            <div class='Grid-cell hidden'>\
-                <div id='eo-google-msg' class='eo-message'></div>\
-            </div>\
-            <div class='Grid-cell eo-row5'>\
-                <div class='Grid'>\
-                    <div class='Grid-cell line eo-delimiter'></div>\
-                    <div class='Grid-cell v-align h-align'>\
-                        <span class='subtitle' id='or'>OR</span>\
-                    </div>\
-                    <div class='Grid-cell line eo-delimiter'></div>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row6'>\
-                <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' />\
-            </div>\
-            <div class='Grid-cell hidden eo-row8'>\
-                <div id='login-email-msg' class='error eo-message'></div>\
-            </div>\
-            <div class='Grid-cell eo-row6'>\
-                <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' />\
-            </div>\
-            <div class='Grid-cell hidden eo-row8'>\
-                <div id='login-password-msg' class='error eo-message'></div>\
-            </div>\
-            <div class='Grid-cell v-align right-align eo-row9'>\
-                <div class='v-align right-align eo-menu-footer'>\
-                    <a id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
-                </div>\
-            </div>\
-            <div class='Grid-cell eo-row12'>\
-            </div>\
-            <div class='Grid-cell eo-row7 v-align h-align'>\
-                <div id='eo-mail-login-btn' class='v-align h-align'>sign in</div>\
-            </div>\
+  <div class='eo-close close-dialog'></div>\
+  <div id='eo-dlg-inner'>\
+    <div class='Grid Grid--full'>\
+      <div class='Grid-cell eo-row2'>\
+        <div class='Grid'>\
+          <div class='Grid-cell header-cell right-align v-align'>\
+            <div id='dlg-sign-in-header'>Sign In</div>\
+          </div>\
+          <div class='Grid-cell icon-cell'>\
+            <div id='eo-dlg-icon'></div>\
+          </div>\
+          <div class='Grid-cell header-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
         </div>\
+      </div>\
+      <div class='Grid-cell eo-row3 v-align h-align'>\
+        <div class='subtitle' id='subtitle'>Welcome to englishon. Learn english- fast and fun</div>\
+      </div>\
+      <div class='Grid-cell eo-row4'>\
+        <div id='google-iframe'></div>\
+      </div>\
+      <div class='Grid-cell hidden'>\
+        <div id='eo-google-msg' class='eo-message'></div>\
+      </div>\
+      <div class='Grid-cell eo-row5'>\
+        <div class='Grid'>\
+          <div class='Grid-cell line eo-delimiter'></div>\
+          <div class='Grid-cell v-align h-align'>\
+            <span class='subtitle' id='or'>OR</span>\
+          </div>\
+          <div class='Grid-cell line eo-delimiter'></div>\
+        </div>\
+      </div>\
+      <div class='Grid-cell eo-row6'>\
+        <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' />\
+      </div>\
+      <div class='Grid-cell hidden eo-row8'>\
+        <div id='login-email-msg' class='error eo-message'></div>\
+      </div>\
+      <div class='Grid-cell eo-row6'>\
+        <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' />\
+      </div>\
+      <div class='Grid-cell hidden eo-row8'>\
+        <div id='login-password-msg' class='error eo-message'></div>\
+      </div>\
+      <div class='Grid-cell v-align right-align eo-row9'>\
+        <div class='v-align right-align eo-menu-footer'>\
+          <a id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
+        </div>\
+      </div>\
+      <div class='Grid-cell eo-row12'>\
+      </div>\
+      <div class='Grid-cell eo-row7 v-align h-align'>\
+        <div id='eo-mail-login-btn' class='v-align h-align'>sign in</div>\
+      </div>\
     </div>\
+  </div>\
 </div>\
-</div>\
-";
+</div>";
 //
 document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
     <div class='Grid Grid--full eo-inner-area hidden' id ='eo-dlg-options-main'>\
@@ -7014,7 +7014,7 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 ";
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
-    <div class='eo-close actions-close'></div>\
+    <div class='eo-close close-progress-bar'></div>\
     <div class='Grid Grid--full' id='eo-live-main'>\
         <div class='Grid-cell'>\
             <div class='Grid live-part' id='milotrage'>\
