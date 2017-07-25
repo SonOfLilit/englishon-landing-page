@@ -1053,8 +1053,9 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 }
 
 .registered_symbol {
-  left: 140px;
   position: absolute;
+  left: 140px;
+  top: 10px;
 }
 
 .eo-button {
