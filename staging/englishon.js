@@ -7124,7 +7124,6 @@ ShturemOverlay = function () {
     e$('body').append(element);
   };
   this.markLinks = function (links) {};
-
   this.hideButtons = function () {
     e$('.eo-button').addClass('hidden');
   };
@@ -7183,7 +7182,6 @@ ShturemOverlay = function () {
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
 };
-
 ShturemOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines
   e$('body').addClass('question-injected');
@@ -7212,7 +7210,6 @@ ShturemFrontpageOverlay = function (parts) {
   };
   this.closeUnAnswered = function () {
     $.each(this.parts, function (url, part) {
-
       $(part.injector.elements).each(function (i, q) {
         if (q.qobj.element && q.qobj.element.is('.eo-active')) {
           q.qobj.closeUnanswered();
@@ -7259,7 +7256,6 @@ ShturemFrontpageOverlay = function (parts) {
     }.bind(this));
     return Promise.all(promises);
   };
-
   this.showQuestions = function () {
     ShturemOverlay.prototype.showQuestions.call(this);
     e$.each(this.parts, function (url, part) {
@@ -7273,7 +7269,6 @@ ShturemFrontpageOverlay = function (parts) {
     });
   };
 };
-
 // this one will probably have some code that can be factored up
 // to a common superclass for single-article overlays
 ShturemArticleOverlay = function (url, subtitle, bodytext) {
@@ -7290,7 +7285,6 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
       lineWidth: 385
     };
   };
-
   this.fetchQuestions = function () {
     var backend = document.englishonBackend;
     //remove only 'eo-injection-target' tags,not content
@@ -7300,6 +7294,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     if (this.injector) {
       this.injector.off();
     }
+    e$('.eo-injection-target').contents().unwrap();
     this.interacted = false;
     this.userAnswered = false;
     return backend.getArticle(this.url, 4).then(function (questions) {
@@ -7316,18 +7311,15 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
       return questions;
     }.bind(this));
   };
-
   this.showQuestions = function () {
     ShturemOverlay.prototype.showQuestions.call(this);
     if (this.injector) this.injector.on();
   }.bind(this);
-
   this.hideQuestions = function () {
     ShturemOverlay.prototype.hideQuestions.call(this);
     if (this.injector) this.injector.off();
   }.bind(this);
 };
-
 CH10Overlay = function (url, subtitle, bodytext) {
   this.url = url;
   this.subtitle = subtitle;
@@ -7366,11 +7358,9 @@ CH10Overlay = function (url, subtitle, bodytext) {
       return questions;
     }.bind(this));
   };
-
   this.showQuestions = function () {
     if (this.injector) this.injector.on();
   }.bind(this);
-
   this.hideQuestions = function () {
     if (this.injector) this.injector.off();
   }.bind(this);
@@ -7382,9 +7372,7 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.userAnswered = false;
   ShturemOverlay.call(this);
   this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu';
-
   this.placeLiveActions = function () {};
-
   this.showButtons = function () {
     if (location.pathname == '/') {
       e$('.site-header').append(EnglishOnButton.element().addClass('front-page'));
@@ -7436,12 +7424,9 @@ actualicCategoryOverlay = function (parts, category_url) {
     }
   };
 };
-
 //----------------------------------------------------------------
 //-----------------------------------------------------------------
 //--------------------------------------------------------------
-
-
 actualicOverlay = function (url, subtitle, bodytext) {
   this.url = url.toLowerCase();
   this.subtitle = subtitle;
@@ -7452,11 +7437,9 @@ actualicOverlay = function (url, subtitle, bodytext) {
   this.userAnswered = false;
   ShturemOverlay.call(this);
   this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children';
-
   this.getLineDetails = function () {
     return [e$('.entry-content').offset().left, e$('.entry-content').width()];
   };
-
   this.placeLiveActions = function () {
     var startPoint = 206;
     e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
@@ -7478,12 +7461,10 @@ actualicOverlay = function (url, subtitle, bodytext) {
       this.injector.on();
     }
   }.bind(this);
-
   this.hideQuestions = function () {
     ShturemOverlay.prototype.hideQuestions.call(this);
     if (this.injector) this.injector.off();
   }.bind(this);
-
   this.getQuestionQuota = function () {
     var total = 0;
     e$(this.paragraphs).each(function (i, p) {
@@ -7498,13 +7479,13 @@ actualicOverlay = function (url, subtitle, bodytext) {
   };
   this.fetchQuestions = function () {
     var backend = document.englishonBackend;
-    //remove only 'eo-injection-target' tags,not content
-    //check if better do that native
-    e$('.eo-injection-target').contents().unwrap();
     this.questions = []; //to enable fetch again after login
     if (this.injector) {
       this.injector.off();
     }
+    //remove only 'eo-injection-target' tags,not content
+    //check if better do that native
+    e$('.eo-injection-target').contents().unwrap();
     this.interacted = false;
     this.userAnswered = false;
     this.limit = this.getQuestionQuota();
