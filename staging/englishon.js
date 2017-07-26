@@ -7750,7 +7750,6 @@ Tour = new function () {
     e$('#vocabulary').addClass('hidden');
     e$('#eo-live-main').removeClass('hidden');
     clearTimeout(document.eo_user.setTimeOut);
-
     e$(document).off('click', document.eo_user.minimize);
     steps = [];
     steps.push(new step('#milotrage right', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
@@ -7758,11 +7757,9 @@ Tour = new function () {
     steps.push(new step('#sr right', 'progress3------', 'לחץ בעיגול לרשימת המילים לתירגול', 'progress_' + 2));
     this.initTutorial(steps);
   };
-
   this.welcomeTutorial = function () {
     steps = [];
     e$(document.overlay.tutorial_selector).find('.eo-logo').addClass('eo-button-tour');
-
     steps.push(new step('.eo-button-tour right', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש</br></br>', 'welcome_' + 0, 0, '.eo-logo click'));
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
@@ -7788,11 +7785,9 @@ Tour = new function () {
     steps.push(new step('#eo-dlg-login left', '', 'הירשם/התחבר לשמירת ההתקדמות בחינם!', 'login2'));
     this.initTutorial(steps);
   };
-
   this.quizTutorial = function () {
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
-
     steps = [];
     e$('.eo-question').slice(0, 1).each(function (i, q) {
       var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
@@ -7812,9 +7807,17 @@ Tour = new function () {
         showCancelLink: true
       }
     });
-
     for (i = 0; i < steps.length; i++) {
       buttons = [];
+      if (steps[i].id == 'welcome_1') {
+        buttons.push({
+          text: 'הפעל',
+          classes: 'shepherd-button-primary',
+          action: function () {
+            document.menu.firstTimeUser();
+          }
+        });
+      }
       //add exit button to first step
       if (false) {
         buttons.push({
@@ -7826,7 +7829,7 @@ Tour = new function () {
         });
       }
       // no back button at the start
-      if (i > 0) {
+      if (i > 0 && steps[i].id != 'welcome_1') {
         buttons.push({
           text: 'חזור',
           classes: 'shepherd-button-secondary',
@@ -7855,7 +7858,6 @@ Tour = new function () {
               window.localStorage.setItem('leave_quesion_open', true);
               e$('.eo-question').eq(0).find('.eo-hint').click();
             }
-
             if (document.tour.getCurrentStep().id === 'login') {
               document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
               window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
@@ -7911,7 +7913,6 @@ Tour = new function () {
               var val = e$('.hint_0').offset().top;
               window.scrollTo(0, val - 170);
             }
-
             if (document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
               //open the first question only
               e$('.eo-question').eq(0).find('.eo-hint').click();
@@ -7940,7 +7941,6 @@ Tour = new function () {
                 //e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
               });
             }
-
             if (window.location.host == 'actualic.co.il') {
               var val = Math.max(230 - $(window).scrollTop(), 60);
               e$('#eo-live').css('top', val);
@@ -7951,7 +7951,6 @@ Tour = new function () {
     }
   };
 }();
-
 var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = null) {
   this.id = id;
   this.attachTo = attachTo;

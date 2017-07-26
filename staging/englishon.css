@@ -1055,7 +1055,9 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 .registered_symbol {
   position: absolute;
   left: 140px;
-  top: 10px;
+  top: 16px;
+  font-size: 14px;
+  color: #b1b4b6;
 }
 
 .eo-button {
@@ -1280,6 +1282,10 @@ body.eo-tutorial.eo-tutorial-1 .eo-menu::after {
   background-image: url(http://www.englishon.org/v1/img/tutorial-pick_language.png);
   height: 104px;
   width: 218px;
+}
+
+.sdfdf {
+  width: 19px;
 }
 
 body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
@@ -2701,6 +2707,12 @@ eo-signout-layout .signout {
   direction: ltr;
   text-align: center;
 }
+.editor-dlg input {
+  border: solid 1px;
+}
+.editor-dlg input:focus {
+  border: solid 1px;
+}
 .editor-dlg .ui-dialog-content {
   text-align: center;
 }
@@ -2709,9 +2721,6 @@ eo-signout-layout .signout {
 }
 .editor-dlg .editor-div {
   padding: 5px;
-}
-.editor-dlg .editor-div input {
-  border: solid 1px;
 }
 .editor-dlg button {
   background-color: #e9e9e9;
