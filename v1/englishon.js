@@ -4977,6 +4977,16 @@
 })(document, window.mixpanel || []);
 mixpanel.init("6077b9f24b24eccfecc454882f981304");
 //
+window.heap = window.heap || [], heap.load = function (e, t) {
+  window.heap.appid = e, window.heap.config = t = t || {};var r = t.forceSSL || "https:" === document.location.protocol,
+      a = document.createElement("script");a.type = "text/javascript", a.async = !0, a.src = (r ? "https:" : "http:") + "//cdn.heapanalytics.com/js/heap-" + e + ".js";var n = document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a, n);for (var o = function (e) {
+    return function () {
+      heap.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+    };
+  }, p = ["addEventProperties", "addUserProperties", "clearEventProperties", "identify", "removeEventProperty", "setEventProperties", "track", "unsetEventProperty"], c = 0; c < p.length; c++) heap[p[c]] = o(p[c]);
+};
+heap.load("3281332641");
+//
 //var configStorage;
 // in the real world we will store config on the server
 // and do some CORS voodoo to fetch it.
@@ -5914,7 +5924,7 @@ UserInfo = function () {
     this.checkSRProgress();
     this.milotrage();
     e$('#eo-live').removeClass('hidden vocabulary-open');
-    document.overlay.placeLiveActions();
+    document.overlay.settings.placeLiveActions();
     //SHOW USER LEVEL JUST FOR TEAM
     if (e$('#developement-only-version').length) {
       if (!e$('#level').length) {
@@ -7106,6 +7116,65 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
 </div>\
 ";
 //
+var overlay_settings = {
+  'actualic': {
+    'mobile': {
+      'pin_button_article': function () {
+        return e$('.entry-header').find('.row').find('.small-12.medium-6.columns').eq(0);
+      },
+      'pin_button_front': function () {
+        return e$('.site-header');
+      },
+      'pin_button_category': function () {
+        return e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul');
+      },
+      'button_left_value': function () {
+        return 9;
+      },
+      'button_top_value': function () {
+        return e$('.entry-header').find('.row').find('.small-12.medium-6.columns').eq(0).offset().top + 5;
+      },
+      'placeLiveActions': function () {
+        e$('#eo-live').css('bottom', '10px');
+        e$('#eo-live').css('bottom', '10px');
+      },
+      'pin-tutotial-article': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children',
+      'pin-tutotial-category': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu',
+      'pin-tutotial-front': '.front-page'
+    },
+    'desktop': {
+      'pin_button_article': function () {
+        return e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul');
+      },
+      'pin_button_front': function () {
+        return e$('.site-header');
+      },
+      'pin_button_category': function () {
+        return e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul');
+      },
+      'button_left_value': function () {
+        return e$('#s').offset().left + e$('#s').width() * 0.87;
+      },
+      'button_top_value': function () {
+        return 2;
+      },
+      'placeLiveActions': function () {
+        var startPoint = 206;
+        e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
+        var val = Math.max(startPoint - $(window).scrollTop(), 60);
+        e$('#eo-live').css('top', val);
+        $(window).scroll(function () {
+          var val = Math.max(startPoint - $(window).scrollTop(), 60);
+          e$('#eo-live').css('top', val);
+        });
+      },
+      'pin-tutotial-article': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children',
+      'pin-tutotial-category': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu',
+      'pin-tutotial-front': '.front-page'
+    }
+  },
+  'CH10': {}
+};
 ShturemOverlay = function () {
   this.closeUnAnswered = function () {
     $(this.injector.elements).each(function (i, q) {
@@ -7124,7 +7193,6 @@ ShturemOverlay = function () {
     e$('body').append(element);
   };
   this.markLinks = function (links) {};
-
   this.hideButtons = function () {
     e$('.eo-button').addClass('hidden');
   };
@@ -7183,7 +7251,6 @@ ShturemOverlay = function () {
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
 };
-
 ShturemOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines
   e$('body').addClass('question-injected');
@@ -7212,7 +7279,6 @@ ShturemFrontpageOverlay = function (parts) {
   };
   this.closeUnAnswered = function () {
     $.each(this.parts, function (url, part) {
-
       $(part.injector.elements).each(function (i, q) {
         if (q.qobj.element && q.qobj.element.is('.eo-active')) {
           q.qobj.closeUnanswered();
@@ -7259,7 +7325,6 @@ ShturemFrontpageOverlay = function (parts) {
     }.bind(this));
     return Promise.all(promises);
   };
-
   this.showQuestions = function () {
     ShturemOverlay.prototype.showQuestions.call(this);
     e$.each(this.parts, function (url, part) {
@@ -7273,7 +7338,6 @@ ShturemFrontpageOverlay = function (parts) {
     });
   };
 };
-
 // this one will probably have some code that can be factored up
 // to a common superclass for single-article overlays
 ShturemArticleOverlay = function (url, subtitle, bodytext) {
@@ -7290,7 +7354,6 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
       lineWidth: 385
     };
   };
-
   this.fetchQuestions = function () {
     var backend = document.englishonBackend;
     //remove only 'eo-injection-target' tags,not content
@@ -7300,6 +7363,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     if (this.injector) {
       this.injector.off();
     }
+    e$('.eo-injection-target').contents().unwrap();
     this.interacted = false;
     this.userAnswered = false;
     return backend.getArticle(this.url, 4).then(function (questions) {
@@ -7316,18 +7380,15 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
       return questions;
     }.bind(this));
   };
-
   this.showQuestions = function () {
     ShturemOverlay.prototype.showQuestions.call(this);
     if (this.injector) this.injector.on();
   }.bind(this);
-
   this.hideQuestions = function () {
     ShturemOverlay.prototype.hideQuestions.call(this);
     if (this.injector) this.injector.off();
   }.bind(this);
 };
-
 CH10Overlay = function (url, subtitle, bodytext) {
   this.url = url;
   this.subtitle = subtitle;
@@ -7366,11 +7427,9 @@ CH10Overlay = function (url, subtitle, bodytext) {
       return questions;
     }.bind(this));
   };
-
   this.showQuestions = function () {
     if (this.injector) this.injector.on();
   }.bind(this);
-
   this.hideQuestions = function () {
     if (this.injector) this.injector.off();
   }.bind(this);
@@ -7382,24 +7441,23 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.userAnswered = false;
   ShturemOverlay.call(this);
   this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu';
-
+  this.settings = overlay_settings['actualic'][document.englishonConfig.media];
   this.placeLiveActions = function () {};
-
   this.showButtons = function () {
     if (location.pathname == '/') {
-      e$('.site-header').append(EnglishOnButton.element().addClass('front-page'));
+      this.settings.pin_button_front().append(EnglishOnButton.element().addClass('front-page'));
       e$('.site-header').find('.has-submenu').on('mouseenter', function () {
         e$('.front-page').hide();
       });
       e$('.site-header').find('.has-submenu').on('mouseleave', function () {
         e$('.front-page').show();
       });
+      this.tutorial_selector = '.front-page';
     }
-    e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul').append(EnglishOnButton.element());
+    this.settings.pin_button_category().append(EnglishOnButton.element());
     e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
       this.openNoQuestionsDialog();
-      //e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     }
     e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
   };
@@ -7435,12 +7493,9 @@ actualicCategoryOverlay = function (parts, category_url) {
     }
   };
 };
-
 //----------------------------------------------------------------
 //-----------------------------------------------------------------
 //--------------------------------------------------------------
-
-
 actualicOverlay = function (url, subtitle, bodytext) {
   this.url = url.toLowerCase();
   this.subtitle = subtitle;
@@ -7451,25 +7506,15 @@ actualicOverlay = function (url, subtitle, bodytext) {
   this.userAnswered = false;
   ShturemOverlay.call(this);
   this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children';
-
+  this.settings = overlay_settings['actualic'][document.englishonConfig.media];
   this.getLineDetails = function () {
     return [e$('.entry-content').offset().left, e$('.entry-content').width()];
   };
-
-  this.placeLiveActions = function () {
-    var startPoint = 206;
-    e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
-    var val = Math.max(startPoint - $(window).scrollTop(), 60);
-    e$('#eo-live').css('top', val);
-    $(window).scroll(function () {
-      var val = Math.max(startPoint - $(window).scrollTop(), 60);
-      e$('#eo-live').css('top', val);
-    });
-  };
   this.showButtons = function () {
-    e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul').append(EnglishOnButton.element());
+    this.settings.pin_button_article().append(EnglishOnButton.element());
     e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
-    e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
+    e$('.eo-button').css('left', this.settings.button_left_value());
+    e$('.eo-button').css('top', this.settings.button_top_value());
   };
   this.showQuestions = function () {
     ShturemOverlay.prototype.showQuestions.call(this);
@@ -7477,12 +7522,10 @@ actualicOverlay = function (url, subtitle, bodytext) {
       this.injector.on();
     }
   }.bind(this);
-
   this.hideQuestions = function () {
     ShturemOverlay.prototype.hideQuestions.call(this);
     if (this.injector) this.injector.off();
   }.bind(this);
-
   this.getQuestionQuota = function () {
     var total = 0;
     e$(this.paragraphs).each(function (i, p) {
@@ -7497,13 +7540,13 @@ actualicOverlay = function (url, subtitle, bodytext) {
   };
   this.fetchQuestions = function () {
     var backend = document.englishonBackend;
-    //remove only 'eo-injection-target' tags,not content
-    //check if better do that native
-    e$('.eo-injection-target').contents().unwrap();
     this.questions = []; //to enable fetch again after login
     if (this.injector) {
       this.injector.off();
     }
+    //remove only 'eo-injection-target' tags,not content
+    //check if better do that native
+    e$('.eo-injection-target').contents().unwrap();
     this.interacted = false;
     this.userAnswered = false;
     this.limit = this.getQuestionQuota();
@@ -7749,7 +7792,6 @@ Tour = new function () {
     e$('#vocabulary').addClass('hidden');
     e$('#eo-live-main').removeClass('hidden');
     clearTimeout(document.eo_user.setTimeOut);
-
     e$(document).off('click', document.eo_user.minimize);
     steps = [];
     steps.push(new step('#milotrage right', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
@@ -7757,11 +7799,9 @@ Tour = new function () {
     steps.push(new step('#sr right', 'progress3------', 'לחץ בעיגול לרשימת המילים לתירגול', 'progress_' + 2));
     this.initTutorial(steps);
   };
-
   this.welcomeTutorial = function () {
     steps = [];
     e$(document.overlay.tutorial_selector).find('.eo-logo').addClass('eo-button-tour');
-
     steps.push(new step('.eo-button-tour right', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש</br></br>', 'welcome_' + 0, 0, '.eo-logo click'));
     steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
@@ -7787,11 +7827,9 @@ Tour = new function () {
     steps.push(new step('#eo-dlg-login left', '', 'הירשם/התחבר לשמירת ההתקדמות בחינם!', 'login2'));
     this.initTutorial(steps);
   };
-
   this.quizTutorial = function () {
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
-
     steps = [];
     e$('.eo-question').slice(0, 1).each(function (i, q) {
       var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
@@ -7811,9 +7849,17 @@ Tour = new function () {
         showCancelLink: true
       }
     });
-
     for (i = 0; i < steps.length; i++) {
       buttons = [];
+      if (steps[i].id == 'welcome_1') {
+        buttons.push({
+          text: 'הפעל',
+          classes: 'shepherd-button-primary',
+          action: function () {
+            document.menu.firstTimeUser();
+          }
+        });
+      }
       //add exit button to first step
       if (false) {
         buttons.push({
@@ -7825,7 +7871,7 @@ Tour = new function () {
         });
       }
       // no back button at the start
-      if (i > 0) {
+      if (i > 0 && steps[i].id != 'welcome_1') {
         buttons.push({
           text: 'חזור',
           classes: 'shepherd-button-secondary',
@@ -7854,7 +7900,6 @@ Tour = new function () {
               window.localStorage.setItem('leave_quesion_open', true);
               e$('.eo-question').eq(0).find('.eo-hint').click();
             }
-
             if (document.tour.getCurrentStep().id === 'login') {
               document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
               window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
@@ -7910,7 +7955,6 @@ Tour = new function () {
               var val = e$('.hint_0').offset().top;
               window.scrollTo(0, val - 170);
             }
-
             if (document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
               //open the first question only
               e$('.eo-question').eq(0).find('.eo-hint').click();
@@ -7939,7 +7983,6 @@ Tour = new function () {
                 //e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
               });
             }
-
             if (window.location.host == 'actualic.co.il') {
               var val = Math.max(230 - $(window).scrollTop(), 60);
               e$('#eo-live').css('top', val);
@@ -7950,7 +7993,6 @@ Tour = new function () {
     }
   };
 }();
-
 var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = null) {
   this.id = id;
   this.attachTo = attachTo;
@@ -8192,7 +8234,7 @@ var EnglishOnButton = new function () {
   };
   this.currentState = 'eo-button-on';
   this.element = function () {
-    return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo'));
+    return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo')).append(e$('<div>').addClass('registered_symbol').html('&#174;'));
   };
 
   this.changeState = function (state) {
