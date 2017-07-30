@@ -1022,7 +1022,7 @@ div.eo-question > .eo-progress > .eo-progress-inner {
 
 .eo-logo {
   position: absolute;
-  top: 6px;
+  top: 10px;
   left: 38px;
   width: 110px;
   height: 35px;
@@ -1030,26 +1030,27 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   overflow: visible;
   display: inline-block;
   background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
-  background-size: 96px;
+  background-size: 91px;
   background-repeat: no-repeat;
 }
 
 .eo-icon {
   position: absolute;
+  top: 3px;
   left: 0px;
   width: 34px;
 }
 .eo-icon.eo-button-loading {
   background-image: url(http://www.englishon.org/v1/img/button-loading.svg);
-  background-size: 34px;
+  background-size: 30px;
 }
 .eo-icon.eo-button-unavailable {
   background-image: url(http://www.englishon.org/v1/img/button-unavailable.svg);
-  background-size: 34px;
+  background-size: 30px;
 }
 .eo-icon.eo-button-off, .eo-icon.eo-button-on {
   background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
-  background-size: 34px;
+  background-size: 30px;
 }
 
 .registered_symbol {
@@ -1479,15 +1480,15 @@ body.www-bloombergview-com .eo-button:hover {
 }
 body.www-bloombergview-com .eo-button.eo-button-loading {
   background-image: url(http://www.englishon.org/v1/img/button-loading-white.svg);
-  background-size: 34px;
+  background-size: 30px;
 }
 body.www-bloombergview-com .eo-button.eo-button-unavailable {
   background-image: url(http://www.englishon.org/v1/img/button-unavailable-white.svg);
-  background-size: 34px;
+  background-size: 30px;
 }
 body.www-bloombergview-com .eo-button.eo-button-off, body.www-bloombergview-com .eo-button.eo-button-on {
   background-image: url(http://www.englishon.org/v1/img/button-logo-white.svg);
-  background-size: 34px;
+  background-size: 30px;
 }
 body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-off::before, body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-on::before {
   width: 17px;
@@ -2366,6 +2367,7 @@ eo-signout-layout .signout {
 #eo-dlg-terms {
   width: 240px;
   height: 360px;
+  font-family: Roboto-light;
   /*overflow-y: hidden;*/
   /*firefox need a smaller font for menu footer*/
 }
