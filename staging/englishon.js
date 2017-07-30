@@ -8626,6 +8626,8 @@ var EnglishOnMenu = function () {
   });
 
   e$('.eo-site-option').on('click', function (e) {
+    e$('.eo-menu').removeClass('hebrew english');
+    e$('.eo-menu').addClass(e$(e.target).attr('id'));
     configStorage.set({ siteLanguage: e$(e.target).attr('id') });
     document.menu.displayMenuMessages();
     document.eoDialogs.toggleDialogTrigger(e);
