@@ -1976,7 +1976,7 @@ eo-signout-layout .signout {
 
 .header {
   background-color: #4b5a66;
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   color: white;
   text-align: left;
   letter-spacing: 0.05em;
@@ -2120,13 +2120,13 @@ eo-signout-layout .signout {
 }
 
 #eo-language_header {
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   color: #3d4c58;
   line-height: 1.3;
 }
 
 .eo-language-option-res {
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   color: #3d4c58;
   letter-spacing: 0.05em;
   line-height: 1.3;
@@ -2225,7 +2225,7 @@ eo-signout-layout .signout {
 }
 
 #coming_soon .eo-tooltip {
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   font-size: 18px;
   color: white;
   letter-spacing: 0.02em;
@@ -2493,7 +2493,7 @@ eo-signout-layout .signout {
 #eo-dlg-options {
   height: 250px;
   background-color: #eceff1;
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   top: 210px;
   color: #3d4c58;
   position: fixed;
