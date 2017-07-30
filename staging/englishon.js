@@ -6842,21 +6842,20 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
     <div class='header'>\
       <div id='eo-account-area'>\
         <div class='Grid u-textCenter eo-row eo-menu-inner'>\
-          <div class='Grid-cell u-2of10'>\
+          <div class='Grid-cell user-pic-cell'>\
             <div id='eo-account-img'></div>\
           </div>\
-          <div class='Grid-cell u-7of10  v-align h-align'>\
+          <div class='Grid-cell user-name-cell  v-align h-align'>\
             <div id='eo-account-name'></div>\
           </div>\
-          <div class='Grid-cell v-align u-1of10 right-align'>\
-            <div id='account-dropdown'>&#9662;</div>\
+          <div class='Grid-cell v-align hamburger-cell right-align'>\
+            <div id='options-button'> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> </div>\
           </div>\
         </div>\
       </div>\
       <div class='Grid u-textCenter eo-row eo-menu-inner'>\
         <div class='Grid-cell u-1of3 v-align'>\
-          <div id='eo-power-switch'>\
-            <span id='eo-power-switch-text'></span>\
+          <div id='eo-power-switch'> <span id='eo-power-switch-text'></span>\
             <div id='eo-power-switch-circle'></div>\
           </div>\
         </div>\
@@ -6893,8 +6892,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
       </div>\
       <div id='coming_soon'>\
         <div class='Grid-cell eo-row eo-menu-inner'>\
-          <div class='Grid'>\
-            <span class='eo-tooltip'>Coming soon</span>\
+          <div class='Grid'> <span class='eo-tooltip'>Coming soon</span>\
             <div class='Grid-cell u-1of6 eo-low-layer'>\
               <div class='flag sp-flag'></div>\
             </div>\
@@ -6904,8 +6902,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
           </div>\
         </div>\
         <div class='Grid-cell eo-row eo-menu-inner' id='eo-last-option'>\
-          <div class='Grid'>\
-            <span class='eo-tooltip'>Coming soon</span>\
+          <div class='Grid'> <span class='eo-tooltip'>Coming soon</span>\
             <div class='Grid-cell u-1of6 eo-low-layer'>\
               <div class='flag fr-flag'></div>\
             </div>\
@@ -7948,7 +7945,6 @@ Tour = new function () {
             if (document.tour.getCurrentStep().id === 'live_actions') {
               if (!e$('#eo-live:not(.hidden)').length) {
                 document.eo_user.showLiveActions();
-                window.scrollTo(0, 10);
               }
             }
             if (document.tour.getCurrentStep().id.slice(0, 9) == 'question_' || document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
@@ -7964,7 +7960,7 @@ Tour = new function () {
               //e$(document).off('click',document.overlay.injector.elements[0].qobj.open_question_handler);
             }
             if (document.tour.getCurrentStep().id.indexOf('question_') == -1) {
-              window.scrollTo(0, 0);
+              //window.scrollTo(0, 0);
             }
             if (document.tour.getCurrentStep().id == 'question_0') {
               var questionAnswered = function (e) {
@@ -8206,8 +8202,6 @@ e$(englishon);
 // ******
 // Button
 // ******
-
-
 var EnglishOnButton = new function () {
   this.showMainMenu = function (e) {
     e.preventDefault();
@@ -8218,7 +8212,6 @@ var EnglishOnButton = new function () {
     e$('#eo-menu').removeClass('hidden');
     e$('#eo-area-container').removeClass('hidden');
     window.history.pushState({ 'elementToShow': 'eo-menu' }, '');
-
     e$(document).mouseup(function (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -8236,21 +8229,17 @@ var EnglishOnButton = new function () {
   this.element = function () {
     return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo')).append(e$('<div>').addClass('registered_symbol').html('&#174;'));
   };
-
   this.changeState = function (state) {
     e$('.eo-icon').removeClass(this.currentState);
     this.currentState = state;
     e$('.eo-icon').addClass(this.currentState);
   };
-
   this.on = function () {
     this.changeState('eo-button-on');
   };
-
   this.unavailable = function () {
     this.changeState('eo-button-unavailable');
   };
-
   this.off = function () {
     this.changeState('eo-button-off');
   };
@@ -8258,7 +8247,6 @@ var EnglishOnButton = new function () {
     this.changeState('eo-button-loading');
   };
 }();
-
 // ****
 // Dialogs
 // ****
@@ -8267,7 +8255,6 @@ var EnglishOnDialogs = function () {
     //element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
     element.text(msg).parent().removeClass('hidden');
   };
-
   this.hideDialogs = function (milliseconds) {
     e$('#eo-area-container').addClass('hidden');
     e$('.eo-area').addClass('hidden');
@@ -8289,7 +8276,6 @@ var EnglishOnDialogs = function () {
       var elementParent = elementObj.parent()[0];
       elementsArray = [elementObj[0], elementParent]; //looking after a normal syntax... e$([]).add doesn't work
     };
-
     e$(elementsArray).toggleClass('hidden', action == 'hide');
   };
   this.toggleDialogTrigger = function (e) {
@@ -8305,7 +8291,6 @@ var EnglishOnDialogs = function () {
     window.history.pushState({ 'elementToShow': visibleNow.attr('id') }, '');
   }.bind(this);
 };
-
 // ****
 // Menu
 // ****
@@ -8374,7 +8359,6 @@ var EnglishOnMenu = function () {
      and calls the given `toggle()` function, useful when you want
      your saved configuration to always match what's on screen
    */
-
   var toggler = function (cls, configEntry, toggle_func) {
     // initialize
     var initial = JSON.parse(document.englishonConfig[configEntry]);
@@ -8389,7 +8373,6 @@ var EnglishOnMenu = function () {
       e$('body').toggleClass(cls, enabled);
     };
   };
-
   var loginByMail = function () {
     var email = e$('#eo-login-email');
     var password = e$('#eo-login-password');
@@ -8445,7 +8428,6 @@ var EnglishOnMenu = function () {
       document.overlay.powerOff();
     }
   }.bind(this));
-
   this.powerOn = function () {
     if (!document.englishonConfig.isUser) {
       this.firstTimeUser();
@@ -8462,7 +8444,6 @@ var EnglishOnMenu = function () {
     e$('body').removeClass('eo-active');
     document.overlay.powerOff();
   };
-
   this.signout = function () {
     var popup = e$('#eo-iframe')[0].contentWindow;
     popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
@@ -8474,11 +8455,9 @@ var EnglishOnMenu = function () {
     document.englishonConfig.token = null;
     auth.login(document.englishonConfig.token).then(function (token) {
       configStorage.set({ token: token });
-
       document.englishonBackend.token = token;
       //Give englishon the new guest token
       popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
-
       e$('#eo-account-area').addClass('guest');
       e$('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
@@ -8491,14 +8470,12 @@ var EnglishOnMenu = function () {
       });
     });
   };
-
   if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') {
     e$('body').addClass('heroku-staging');
   }
   if (document.englishonBackend.base == 'http://localhost:8080') {
     e$('body').addClass('localhost');
   }
-
   EnglishOnButton.on();
   this.volume = new function () {
     this.changeVolume = function () {
@@ -8515,7 +8492,6 @@ var EnglishOnMenu = function () {
       vol = JSON.parse(document.englishonConfig.enableSound) ? document.englishonConfig.volume : '0';
       e$('#eo-slider').slider('value', vol);
     };
-
     vol = JSON.parse(document.englishonConfig.enableSound) ? document.englishonConfig.volume : '0';
     e$("#eo-slider").slider({
       range: "min",
@@ -8524,8 +8500,6 @@ var EnglishOnMenu = function () {
     });
   }();
   //container = e$('#progress-container1');
-
-
   this.displayMenuMessages();
   if (document.englishonConfig.media == 'desktop') {
     //top left values to display centered dialogs 
@@ -8552,7 +8526,6 @@ var EnglishOnMenu = function () {
   });
   e$('#eo-power-switch').on('click', this.togglePower);
   e$('.languages_picker .available').on('click', this.powerOn);
-
   e$('#eo-speaker-res').on('click', function () {
     toggleSound();
     document.menu.volume.syncWithSpeaker();
@@ -8585,7 +8558,6 @@ var EnglishOnMenu = function () {
     e$.when(document.dic_promise).done(function () {
       document._editor = new Editor(document.overlay);
     });
-
     e$('#eo-editor-btn').on('click', function (event) {
       document.menu.powerOn();
       document.overlay.hideQuestions();
@@ -8594,7 +8566,6 @@ var EnglishOnMenu = function () {
       document.eo_user.hideLiveActions();
       // after you've loaded the editor, there's no going back.
       // (for now. this should be fixed.)
-
       document.overlay.hideButtons();
       document._editor.fetchQuestions().then(function () {
         console.log('------------------------------questions for editor');
@@ -8604,10 +8575,14 @@ var EnglishOnMenu = function () {
   } else {
     e$('#eo-menu').removeClass('menu-editor');
   }
-
   //OPTIONS MENU HANDLERS
-  e$('#account-dropdown').data('elementToShowOnClick', 'eo-dlg-options-main');
-  e$('#account-dropdown').on('click', document.eoDialogs.toggleDialogTrigger);
+  e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
+  e$('#options-button').children().data('elementToShowOnClick', 'eo-dlg-options-main');
+  //e$('#options-button').on('click', document.eoDialogs.toggleDialogTrigger);
+  e$('#options-button').on('click', function (e) {
+    document.eoDialogs.toggleDialogTrigger(e);
+    e$('#options-button').toggleClass('open');
+  });
   e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
   e$('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger);
   e$('#option-dlg-signin').data('elementToShowOnClick', 'eo-dlg-login');
@@ -8624,7 +8599,6 @@ var EnglishOnMenu = function () {
     Tour.quizTutorial();
     document.tour.start();
   });
-
   e$('.eo-site-option').on('click', function (e) {
     e$('.eo-menu').removeClass('hebrew english');
     e$('.eo-menu').addClass(e$(e.target).attr('id'));
@@ -8638,7 +8612,6 @@ var EnglishOnMenu = function () {
     var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
     e$('#google-iframe').append(google_login);
   }
-
   e$('#eo-iframe').on('load', function () {
     var popup = this.contentWindow;
     popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
@@ -8664,7 +8637,6 @@ var EnglishOnMenu = function () {
   });
   //such a stupid line!!!!!!
   //window.history.pushState({ 'elementToShow': 'shturem' }, '');
-
   $(window).on('beforeunload', function (e) {
     e.preventDefault();
     if (!document.englishonConfig.email && e$('.eo-answered').length) {
@@ -8684,22 +8656,25 @@ var EnglishOnMenu = function () {
     }
   });
 };
-
 e$(function () {
   document.loaded_promise.resolve();
+  if (window.localStorage.getItem('show_quiz_tutorial')) {
+    e$('body').addClass('first-loading');
+  }
 });
 e$.when(document.questions_promise).done(function () {
   if (window.localStorage.getItem('show_quiz_tutorial')) {
     if (!document.overlay.questions || !document.overlay.questions.length) {
       //document.overlay.openNoQuestionsDialog();
       return;
-    }
+    };
     //if (true) {
     window.localStorage.removeItem('show_quiz_tutorial');
     setTimeout(function () {
       //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
       Tour.quizTutorial();
       document.tour.start();
+      e$('body').removeClass('first-loading');
     }, 1000);
   }
 });
@@ -8707,7 +8682,6 @@ e$.when(document.questions_promise).done(function () {
 //   Tour.signinTutorial();
 //   document.tour.start();
 // })
-
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
@@ -8727,7 +8701,6 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     return;
   }
   e$('body').addClass(scraper.getHost().replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
-
   document.overlay = scraper.scrape();
   document.overlay.showButtons();
   //TODO: move to separate function
@@ -8741,7 +8714,6 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     autoOpen: false,
     modal: true
   });
-
   browserInfo = document.browserInfo;
   if (browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) <= 46 ||
   //if ((browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) > 46) ||
@@ -8784,7 +8756,6 @@ function receiveMessage(event) {
     return;
   }
   // event.source is popup
-
   var django_token = event.data.token;
   var img = event.data.image;
   var email = event.data.email;
@@ -8796,7 +8767,6 @@ function receiveMessage(event) {
     //this is a real login, as google made many fictive logins
     configStorage.set({ token: django_token, 'eo-user-name': user_name });
     document.englishonBackend.token = django_token;
-
     e$('body').addClass('logged').removeClass('guest');
     var TODOAfterFetch = function () {
       document.eo_user.initial();

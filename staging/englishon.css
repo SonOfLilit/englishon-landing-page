@@ -1413,6 +1413,10 @@ body.www-englishon-org .eo-correct {
   right: 10px;
 }
 
+.first-loading {
+  background-color: rgba(80, 80, 80, 0.75);
+}
+
 body.actualic-co-il #eo-live {
   background-color: #eee;
 }
@@ -1766,6 +1770,14 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   width: 20% !important;
 }
 
+.hamburger-cell, .user-pic-cell {
+  width: 20% !important;
+}
+
+user-name-cell {
+  width: 60% !important;
+}
+
 .u-7of10 {
   width: 69% !important;
 }
@@ -1976,7 +1988,7 @@ eo-signout-layout .signout {
 
 .header {
   background-color: #4b5a66;
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   color: white;
   text-align: left;
   letter-spacing: 0.05em;
@@ -2047,6 +2059,102 @@ eo-signout-layout .signout {
 }
 #eo-power-switch-circle:hover {
   background-color: white;
+}
+
+#options-button {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 0px;
+  left: 175px;
+}
+
+#options-button span {
+  display: block;
+  position: absolute;
+  height: 6px;
+  width: 50%;
+  background: white;
+  opacity: 1;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: .25s ease-in-out;
+  -moz-transition: .25s ease-in-out;
+  -o-transition: .25s ease-in-out;
+  transition: .25s ease-in-out;
+}
+
+#options-button span:nth-child(even) {
+  left: 50%;
+  border-radius: 0 9px 9px 0;
+}
+
+#options-button span:nth-child(odd) {
+  left: 0px;
+  border-radius: 9px 0 0 9px;
+}
+
+#options-button span:nth-child(1),
+#options-button span:nth-child(2) {
+  top: 10px;
+}
+
+#options-button span:nth-child(3),
+#options-button span:nth-child(4) {
+  top: 24px;
+}
+
+#options-button span:nth-child(5),
+#options-button span:nth-child(6) {
+  top: 38px;
+}
+
+#options-button.open span:nth-child(1),
+#options-button.open span:nth-child(6) {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+#options-button.open span:nth-child(2),
+#options-button.open span:nth-child(5) {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+#options-button.open span:nth-child(1) {
+  left: 5px;
+  top: 7px;
+}
+
+#options-button.open span:nth-child(2) {
+  left: calc(50% - 5px);
+  top: 7px;
+}
+
+#options-button.open span:nth-child(3) {
+  left: -50%;
+  opacity: 0;
+}
+
+#options-button.open span:nth-child(4) {
+  left: 100%;
+  opacity: 0;
+}
+
+#options-button.open span:nth-child(5) {
+  left: 5px;
+  top: 29px;
+}
+
+#options-button.open span:nth-child(6) {
+  left: calc(50% - 5px);
+  top: 29px;
 }
 
 .flag,
@@ -2120,13 +2228,13 @@ eo-signout-layout .signout {
 }
 
 #eo-language_header {
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   color: #3d4c58;
   line-height: 1.3;
 }
 
 .eo-language-option-res {
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   color: #3d4c58;
   letter-spacing: 0.05em;
   line-height: 1.3;
@@ -2225,7 +2333,7 @@ eo-signout-layout .signout {
 }
 
 #coming_soon .eo-tooltip {
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   font-size: 18px;
   color: white;
   letter-spacing: 0.02em;
@@ -2493,7 +2601,7 @@ eo-signout-layout .signout {
 #eo-dlg-options {
   height: 250px;
   background-color: #eceff1;
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   top: 210px;
   color: #3d4c58;
   position: fixed;
