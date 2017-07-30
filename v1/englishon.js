@@ -7802,8 +7802,8 @@ Tour = new function () {
   this.welcomeTutorial = function () {
     steps = [];
     e$(document.overlay.tutorial_selector).find('.eo-logo').addClass('eo-button-tour');
-    steps.push(new step('.eo-button-tour right', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש</br></br>', 'welcome_' + 0, 0, '.eo-logo click'));
-    steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
+    steps.push(new step('.eo-button-tour right', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-logo click'));
+    //steps.push(new step('#eo-power-switch left', 'כפתור הפעלה', 'הפעל', 'welcome_' + 1));
     this.initTutorial(steps);
     e$(".eo-button").on('mouseenter', function () {
       if (window.tourTimeout) {
@@ -7851,7 +7851,7 @@ Tour = new function () {
     });
     for (i = 0; i < steps.length; i++) {
       buttons = [];
-      if (steps[i].id == 'welcome_1') {
+      if (steps[i].id == 'welcome_0') {
         buttons.push({
           text: 'הפעל',
           classes: 'shepherd-button-primary',
