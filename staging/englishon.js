@@ -7181,7 +7181,6 @@ ShturemOverlay = function () {
     return Promise.resolve();
   };
   this.insertContent = function (element) {
-    //element.insertBefore(e$('table:first'));
     e$('body').append(element);
   };
   this.markLinks = function (links) {};
@@ -8328,7 +8327,6 @@ var EnglishOnMenu = function () {
   };
   console.log('jquery extend after');
   this.displayMenuMessages = function () {
-    e$('#eo-menu').addClass(document.englishonConfig.siteLanguage);
     switch_text = JSON.parse(document.englishonConfig.isActive) ? 'On' : 'Off';
     e$('#eo-power-switch-text').text(switch_text);
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
@@ -8354,6 +8352,7 @@ var EnglishOnMenu = function () {
   document.overlay.insertContent(e$(document.LOGIN_DLG));
   document.overlay.insertContent(e$(document.OPTIONS_DLG));
   document.overlay.insertContent(e$(document.live_actions));
+  e$('#eo-menu, #eo-dlg-login, #eo-dlg-options, #eo-live').addClass(document.englishonConfig.siteLanguage);
   /* returns a toggler function that both updates `configEntry`
      and calls the given `toggle()` function, useful when you want
      your saved configuration to always match what's on screen

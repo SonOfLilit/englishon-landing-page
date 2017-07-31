@@ -5004,6 +5004,9 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-live .eo-close {
   display: block;
 }
+#eo-live.hebrew #vocabulary-order {
+  text-align: right;
+}
 #eo-live.eo-live-maximize {
   cursor: pointer;
   padding: 20px;
