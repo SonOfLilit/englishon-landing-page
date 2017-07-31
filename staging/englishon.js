@@ -7825,6 +7825,10 @@ Tour = new function () {
   this.quizTutorial = function () {
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
+    e$('.eo-question').eq(0).addClass('highlighted');
+    setTimeout(function () {
+      e$('.eo-question').eq(0).removeClass('highlighted');
+    }, 10000);
     steps = [];
     e$('.eo-question').slice(0, 1).each(function (i, q) {
       var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';

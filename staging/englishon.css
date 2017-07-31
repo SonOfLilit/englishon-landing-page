@@ -3336,6 +3336,9 @@ div.eo-question > .eo-progress > .eo-progress-inner {
   left: 0;
   z-index: -1;
 }
+div.eo-question.highlighted {
+  box-shadow: 0px 0px 7px 0px #2cc6a8;
+}
 
 /* in open questions, when you have the wrong keyboard language */
 .eo-layout-warning {
