@@ -5068,7 +5068,7 @@ var MESSAGES = {
     START_TUTORIAL: 'Guided Tour',
     SITE_LANGUAGE: 'Site Language',
     AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
-    AGREE: "Yes, I agree. Let's start!",
+    AGREE: "I agree.",
     NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>"
   },
   'hebrew': {
@@ -5113,7 +5113,7 @@ var MESSAGES = {
     START_TUTORIAL: 'מדריך הפעלה',
     SITE_LANGUAGE: 'שפת התפריט',
     AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'> ול<a>תנאי הפרטיות</a> ",
-    AGREE: "כן,אני מסכים. הבה נתחיל",
+    AGREE: "אני מסכים.",
     NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>"
   }
 
@@ -5878,7 +5878,6 @@ Editor.prototype.highlight = function () {
 //
 UserInfo = function () {
   this.scoreValue = { 'correct': 200, 'persistence': 300 };
-
   this.displaySRStatus = function () {
     var generall_sr = this.unAnswered.length + this.answered.length;
     console.log('you answered ' + this.answered.sr_questions.length + ' from: ' + generall_sr);
@@ -5891,7 +5890,6 @@ UserInfo = function () {
     console.log('checkpersistence');
     document.englishonBackend.checkpersistence();
   };
-
   this.getLevel = function () {
     document.englishonBackend.getLevel().then(function (data) {
       $('#level').text(data.level.toFixed(2));
@@ -5901,7 +5899,6 @@ UserInfo = function () {
     document.englishonBackend.getSRStatus().then(function (data) {
       this.answered = data.answered;
       this.unAnswered = data.unAnswered;
-
       $('#srProgress').removeClass('sr-complete');
       val = this.answered.length / (this.answered.length + this.unAnswered.length);
       //positive feedback if user doesn't get sr questions for today
@@ -5915,7 +5912,6 @@ UserInfo = function () {
         //adding success styles to progress bar 
         e$('#srProgress').addClass('sr-complete');
       }
-
       this.sr_progress.animate(val);
     }.bind(this));
   };
@@ -5936,7 +5932,6 @@ UserInfo = function () {
     if (document.englishonConfig.media == 'desktop') {
       e$('#eo-live').addClass('eo-live-maximize');
       e$(document).on('click', this.minimize);
-
       this.setTimeOut = setTimeout(this.minimize, 10000);
       e$('#eo-live').on('click', function (e) {
         clearTimeout(this.setTimeOut);
@@ -5960,9 +5955,9 @@ UserInfo = function () {
   this.renderVocabulary = function (words_list) {
     var content = e$('<div>');
     e$.each(words_list, function (i, word_info) {
-      content.append(e$('<div>').addClass('')
+      content.append(e$('<div>').addClass('vocabulary-word')
       //the text value is a hack to display the milotrage digits without the decimal point
-      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-word').text(word_info.word).on('click', function (e) {})).append(e$('<span>').addClass('vocabulary-translation hidden').text(word_info.translation)));
+      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-origin').text(word_info.word).on('click', function (e) {})).append(e$('<span>').addClass('vocabulary-translation').text('?').data('translation', word_info.translation)));
     });
     e$('#vocabulary-content').html(content);
     var el = document.getElementsByClassName('vocabulary-odometer');
@@ -5974,7 +5969,6 @@ UserInfo = function () {
       });
     }
   };
-
   this.minimize = function (e) {
     if (e) {
       e.preventDefault();
@@ -5988,7 +5982,6 @@ UserInfo = function () {
     e$('#eo-live-main').removeClass('hidden');
     e$(document).off('click', this.minimize);
   };
-
   this.initial = function () {
     this.unAnswered = { 'sr_questions': [] };
     this.answered = { 'sr_questions': [] };
@@ -6018,15 +6011,12 @@ UserInfo = function () {
             text = '&#10004;';
           };
           //var value = Math.round(circle.value() * 100);
-
           circle.setText(text);
         }
       });
     }
     e$('#srProgress').removeClass('sr-complete');
-
     var el = document.querySelector('#eo-odometer');
-
     this.odometer = new Odometer({
       el: el,
       value: 0,
@@ -6050,17 +6040,25 @@ UserInfo = function () {
         return;
       }
       if (e.target.is('.vocabulary-word')) {
-        e.target.next().toggleClass('hidden');
+        e.target.find('.vocabulary-translation').toggleText('?', e.target.find('.vocabulary-translation').data('translation'));
+        return;
+      }
+      if (e.target.parents('.vocabulary-word').length) {
+        e.target.parents('.vocabulary-word').find('.vocabulary-translation').toggleText('?', e.target.parents('.vocabulary-word').find('.vocabulary-translation').data('translation'));
         return;
       }
       if (e.target.is('.eo-close')) {
+        if (e$('#eo-live').hasClass('eo-live-maximize')) {
+          e$('#eo-live').removeClass('eo-live-maximize');
+          return;
+        }
         e$('#eo-live').addClass('hidden');
         e$('#vocabulary').addClass('hidden');
         e$('#eo-live-main').removeClass('hidden');
         e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
         return;
       }
-      if (e.target.parents('#srProgress').length || e.target.parents('#milotrage').length && e$('#eo-live').hasClass('eo-live-maximize') || e.target.is('#vocabulary') || e.target.parents('#vocabulary').length) {
+      if ((e.target.parents('#srProgress').length || e.target.parents('#milotrage').length || e.target.parents('#persistence').length || e.target.is('#vocabulary') || e.target.parents('#vocabulary').length) && e$('#eo-live').hasClass('eo-live-maximize')) {
         e$('#eo-live-main').toggleClass('hidden');
         e$('#vocabulary').toggleClass('hidden');
         if (!e$('#vocabulary').hasClass('hidden')) {
@@ -6097,7 +6095,6 @@ UserInfo = function () {
   this.hideLiveActions = function () {
     e$('#eo-live').addClass('hidden');
   };
-
   this.checkWeeklyPresence = function () {
     e$(".day-bar").removeClass('eo-persistence');
     console.log('checkWeeklyPresence');
@@ -7097,11 +7094,11 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
                     <div id='tos'>i agree to the Terms and Conditions</div>\
                 </div>\
                 <div class='Grid-cell eo-row4 v-align h-align'>\
-                    <div class='Grid v-align h-align'>\
+                    <div class='agree-Grid v-align h-align'>\
                         <div class='Grid-cell checkbox-cell'>\
                             <input type='checkbox' id='eo-accept-checkbox' />\
                         </div>\
-                        <div class='Grid-cell checkbox-text-cell' id='agree'> Yes, I agree. Let's start!</div>\
+                        <div class='Grid-cell checkbox-text-cell' id='agree'> I agree</div>\
                     </div>\
                 </div>\
             </div>\
@@ -7818,7 +7815,7 @@ Tour = new function () {
     steps = [];
     document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
     window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
-    steps.push(new step('#eo-dlg-login left', '', 'הירשם/התחבר לשמירת ההתקדמות בחינם!', 'login2'));
+    steps.push(new step('#eo-dlg-login right', '', 'הירשם/התחבר לשמירת ההתקדמות בחינם!', 'login2'));
     this.initTutorial(steps);
   };
   this.quizTutorial = function () {
@@ -8677,7 +8674,6 @@ e$.when(document.questions_promise).done(function () {
     }, 1000);
   }
 });
-
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
@@ -8719,6 +8715,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     });
   }
   document.overlay.insertContent(e$(document.TERMS_DLG));
+  e$('#eo-dlg-terms').addClass(document.englishonConfig.siteLanguage);
   document.overlay.TermsDialog();
   document.eoDialogs = new EnglishOnDialogs();
   if (document.englishonConfig.isUser) {

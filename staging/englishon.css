@@ -5008,11 +5008,8 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   cursor: pointer;
   padding: 20px;
 }
-#eo-live.eo-live-maximize .eo-close {
-  display: none;
-}
 #eo-live.eo-live-maximize #milotrage {
-  margin: 0px;
+  margin: 0px 0px 4px 0px;
 }
 #eo-live.eo-live-maximize .day-bar {
   margin: 5px;
@@ -5020,6 +5017,9 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-live.vocabulary-open {
   background-color: black;
   overflow: auto;
+}
+#eo-live.vocabulary-open .eo-close {
+  display: none;
 }
 #eo-live #srProgress,
 #eo-live #progress2 {
@@ -5068,7 +5068,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-live .live-part {
   border-radius: 12px;
   background-color: white;
-  margin: 4px 2px 4px 2px;
+  margin: 4px 0px 4px 0px;
   font-size: 30px;
 }
 #eo-live .live-part .Grid .Grid-cell {
@@ -5097,7 +5097,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-live #vocabulary .Grid-cell.cell2 {
   height: 130px;
 }
-#eo-live #vocabulary #vocabulary-content .vocabulary-odometer, #eo-live #vocabulary #vocabulary-content .vocabulary-word {
+#eo-live #vocabulary #vocabulary-content .vocabulary-odometer, #eo-live #vocabulary #vocabulary-content .vocabulary-origin {
   padding-right: 30px;
 }
 #eo-live #vocabulary .Grid-cell #vocabulary-order {
@@ -5143,8 +5143,14 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   font-family: Roboto-Light, sans-serif;
   z-index: 20;
 }
+#eo-dlg-terms.hebrew .agree-Grid {
+  direction: rtl;
+}
 #eo-dlg-terms input[type=checkbox] {
   margin: 0px;
+}
+#eo-dlg-terms .agree-Grid {
+  width: 50%;
 }
 #eo-dlg-terms .Grid {
   width: 100%;
