@@ -6848,9 +6848,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
           <div class='Grid-cell user-name-cell  v-align h-align'>\
             <div id='eo-account-name'></div>\
           </div>\
-          <div class='Grid-cell v-align hamburger-cell right-align'>\
-            <div id='options-button'> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> </div>\
-          </div>\
+          <div class='Grid-cell v-align hamburger-cell right-align'> <i class='fa fa-bars' aria-hidden='true' id='options-button'></i> </div>\
         </div>\
       </div>\
       <div class='Grid u-textCenter eo-row eo-menu-inner'>\
@@ -8577,8 +8575,6 @@ var EnglishOnMenu = function () {
   }
   //OPTIONS MENU HANDLERS
   e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
-  e$('#options-button').children().data('elementToShowOnClick', 'eo-dlg-options-main');
-  //e$('#options-button').on('click', document.eoDialogs.toggleDialogTrigger);
   e$('#options-button').on('click', function (e) {
     document.eoDialogs.toggleDialogTrigger(e);
     e$('#options-button').toggleClass('open');
