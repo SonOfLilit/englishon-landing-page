@@ -8678,10 +8678,7 @@ e$.when(document.questions_promise).done(function () {
     }, 1000);
   }
 });
-// e$.when(document.show_signin_tutorial).done(function() {
-//   Tour.signinTutorial();
-//   document.tour.start();
-// })
+
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);

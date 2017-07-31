@@ -4110,12 +4110,16 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   width: 20% !important;
 }
 
-.hamburger-cell, .user-pic-cell {
+.hamburger-cell {
+  width: 13% !important;
+}
+
+.user-pic-cell {
   width: 20% !important;
 }
 
 .user-name-cell {
-  width: 60% !important;
+  width: 67% !important;
 }
 
 .u-7of10 {
@@ -4408,7 +4412,7 @@ eo-signout-layout .signout {
   width: 40px;
   height: 40px;
   font-size: 24px;
-  margin-top: 12px;
+  margin-top: 15px;
 }
 #options-button:hover {
   color: #2cc6a8;
