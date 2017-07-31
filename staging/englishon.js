@@ -5046,12 +5046,10 @@ var MESSAGES = {
     LOGIN_SIGN_UP_TITLE: 'Sign Up',
     LOGIN_SUBTITLE: 'EnglishON</br>Improve Language Skills</br>Fun, Easy, Free',
     FORGOT_PASSWORD: 'Forgot password?',
-
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
     REGISTER_MESSAGE: 'Thank you for registering! A confirmation message sent to the given email.',
     ENABLE: "Enable EnglishON",
     DISABLE: "Disable EnglishON",
-
     WRONG_KEYBOARD_LAYOUT: "Please switch keyboard layout.",
     WRONG_KEYBOARD_LAYOUT_HINT: "Alt + Shift",
     LOGGED_IN_AS: "You logged in",
@@ -5059,7 +5057,6 @@ var MESSAGES = {
     LOGIN_AS: "Log in as:",
     LOGIN_BUTTON: "LEARN FOR FREE",
     SIGN_OUT: 'Sign out',
-
     UPGRADE_MESSAGE: 'Your browswer_name browser is outdated</br>.Please press here to update..',
     SIGN_OUT_FEEDBACK: "You've Signed Out",
     LOGGED_IN_FIDBACK: 'You signed in',
@@ -5069,7 +5066,8 @@ var MESSAGES = {
     SITE_LANGUAGE: 'Site Language',
     AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
     AGREE: "I agree.",
-    NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>"
+    NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>",
+    COMPLETE_QUIZ: 'well done!</br>you finished all the questions!</br>log in'
   },
   'hebrew': {
     LANGUAGE: 'hebrew',
@@ -5095,7 +5093,6 @@ var MESSAGES = {
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
     ENABLE: "Enable EnglishON",
     DISABLE: "Disable EnglishON",
-
     WRONG_KEYBOARD_LAYOUT: "Please switch keyboard layout.",
     WRONG_KEYBOARD_LAYOUT_HINT: "Alt + Shift",
     LOGGED_IN_AS: "You logged in",
@@ -5114,12 +5111,11 @@ var MESSAGES = {
     SITE_LANGUAGE: 'שפת התפריט',
     AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'> ול<a>תנאי הפרטיות</a> ",
     AGREE: "אני מסכים.",
-    NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>"
+    NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>",
+    COMPLETE_QUIZ: '!כל הכבוד</br>!סיימת את כל השאלות במאמר</br>הירשם לשמירת התקדמותך'
   }
-
 };
 // Until we have real RTL, it's important not to finish sentences with periods, because they'll align wrong
-
 document.MESSAGES = MESSAGES;
 var RTL = 'rtl',
     LTR = 'ltr';
@@ -6158,7 +6154,12 @@ Injector = function (paragraphs) {
       }
     }.bind(this));
     if (msg === "CompletedQuestion" && e$('.eo-question:not(.eo-answered)').length === 0) {
+
       report("CompletedQuiz");
+      if (!document.englishonConfig.email) {
+        e$('#eo-dlg-login').find('#subtitle').html(document.MESSAGES[document.englishonConfig.siteLanguage].COMPLETE_QUIZ);
+        document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
+      }
     }
   };
 
