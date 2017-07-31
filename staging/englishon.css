@@ -4138,6 +4138,14 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   width: 25% !important;
 }
 
+.signin-cell {
+  width: 39% !important;
+}
+
+.signup-cell {
+  width: 33% !important;
+}
+
 .u-1of3,
 .u-1of4,
 .u-2of3,
@@ -4149,7 +4157,9 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 .u-full,
 .hamburger-cell,
 .user-pic-cell,
-.user-name-cell {
+.user-name-cell,
+.signin-cell,
+.signup-cell {
   -webkit-box-flex: 0 !important;
   -webkit-flex: none !important;
   -ms-flex: none !important;
@@ -4195,7 +4205,8 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   -webkit-flex: none !important;
   -ms-flex: none !important;
   flex: none !important;
-  width: 20% !important;
+  width: 17% !important;
+  margin: 0px 6px 0px 6px;
 }
 
 .terms-icon-cell {
@@ -4605,7 +4616,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 
 .eo-row3 {
-  height: 55.75px;
+  height: 70.75px;
   line-height: 1.3;
   font-size: 15px;
 }
@@ -4627,7 +4638,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 
 .eo-row7 {
-  height: 20.25px;
+  height: 40.25px;
 }
 
 .eo-row8 {

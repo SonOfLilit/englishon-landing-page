@@ -6845,7 +6845,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
           <div class='Grid-cell user-pic-cell'>\
             <div id='eo-account-img'></div>\
           </div>\
-          <div class='Grid-cell user-name-cell  v-align h-align'>\
+          <div class='Grid-cell user-name-cell v-align h-align'>\
             <div id='eo-account-name'></div>\
           </div>\
           <div class='Grid-cell v-align hamburger-cell right-align'> <i class='fa fa-bars' aria-hidden='true' id='options-button'></i> </div>\
@@ -6934,13 +6934,13 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
     <div class='Grid Grid--full'>\
       <div class='Grid-cell eo-row2'>\
         <div class='Grid'>\
-          <div class='Grid-cell header-cell right-align v-align'>\
+          <div class='Grid-cell signin-cell right-align v-align'>\
             <div id='dlg-sign-in-header'>Sign In</div>\
           </div>\
           <div class='Grid-cell icon-cell'>\
             <div id='eo-dlg-icon'></div>\
           </div>\
-          <div class='Grid-cell header-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
+          <div class='Grid-cell signup-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
         </div>\
       </div>\
       <div class='Grid-cell eo-row3 v-align h-align'>\
@@ -6978,8 +6978,7 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
           <a id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
         </div>\
       </div>\
-      <div class='Grid-cell eo-row12'>\
-      </div>\
+\
       <div class='Grid-cell eo-row7 v-align h-align'>\
         <div id='eo-mail-login-btn' class='v-align h-align'>sign in</div>\
       </div>\
