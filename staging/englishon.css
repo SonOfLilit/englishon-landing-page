@@ -5031,6 +5031,8 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 #eo-live.vocabulary-open .eo-close {
   background-color: black;
+  top: 185px;
+  left: 255px;
 }
 #eo-live #srProgress,
 #eo-live #progress2 {
