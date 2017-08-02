@@ -5089,7 +5089,7 @@ var MESSAGES = {
     // Login dialog
     LOGIN_SIGN_IN_TITLE: 'התחבר',
     LOGIN_SIGN_UP_TITLE: 'הירשם',
-    LOGIN_SUBTITLE: 'שפר את המיומנות שלך באנגלית </br>בכייף בקלות ובחינם',
+    LOGIN_SUBTITLE: 'אנגלית בקליק </br>בכייף בקלות וללא עלות',
     FORGOT_PASSWORD: '?שכחת סיסמה',
     REGISTER_MESSAGE: 'Thank you for registering! A confirmation message sent to the given email.',
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
@@ -6877,8 +6877,12 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
           <div class='Grid-cell signup-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
         </div>\
       </div>\
-      <div class='Grid-cell eo-row3 v-align h-align'>\
-        <div class='subtitle' id='subtitle'>Welcome to englishon. Learn english- fast and fun</div>\
+      <div class='Grid-cell eo-row12 v-align h-align'>\
+        <div class='eo-logo'></div>\
+        <div class='registered_symbol'>&#174;</div>\
+      </div>\
+      <div class='Grid-cell eo-row13 v-align h-align'>\
+        <div class='subtitle' id='subtitle'></div>\
       </div>\
       <div class='Grid-cell eo-row4'>\
         <div id='google-iframe'></div>\
@@ -6889,30 +6893,23 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
       <div class='Grid-cell eo-row5'>\
         <div class='Grid'>\
           <div class='Grid-cell line eo-delimiter'></div>\
-          <div class='Grid-cell v-align h-align'>\
-            <span class='subtitle' id='or'>OR</span>\
-          </div>\
+          <div class='Grid-cell v-align h-align'> <span class='subtitle' id='or'>OR</span> </div>\
           <div class='Grid-cell line eo-delimiter'></div>\
         </div>\
       </div>\
       <div class='Grid-cell eo-row6'>\
-        <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' />\
-      </div>\
+        <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' /> </div>\
       <div class='Grid-cell hidden eo-row8'>\
         <div id='login-email-msg' class='error eo-message'></div>\
       </div>\
       <div class='Grid-cell eo-row6'>\
-        <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' />\
-      </div>\
+        <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' /> </div>\
       <div class='Grid-cell hidden eo-row8'>\
         <div id='login-password-msg' class='error eo-message'></div>\
       </div>\
       <div class='Grid-cell v-align right-align eo-row9'>\
-        <div class='v-align right-align eo-menu-footer'>\
-          <a id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
-        </div>\
+        <div class='v-align right-align eo-menu-footer'> <a id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a> </div>\
       </div>\
-\
       <div class='Grid-cell eo-row7 v-align h-align'>\
         <div id='eo-mail-login-btn' class='v-align h-align'>sign in</div>\
       </div>\
@@ -7017,34 +7014,35 @@ document.live_actions = "<div class='hidden' id='eo-live'>\
 </div>";
 //
 document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
-    <div id='eo-dlg-terms' class='hidden'>\
+  <div id='eo-dlg-terms' class='hidden'>\
     <div class='eo-close terms-close'></div>\
-        <div id='eo-dlg-inner'>\
-            <div class='Grid Grid--full'>\
-                <div class='Grid-cell eo-row2'>\
-                    <div class='Grid h-align'>\
-                        <div class='Grid-cell terms-icon-cell'>\
-                            <div id='eo-dlg-icon'></div>\
-                        </div>\
-                        <div class='Grid-cell header-cell left-align v-align' id='dlg-terms-header'>Englishon</div>\
-                    </div>\
-                </div>\
-                <div class='Grid-cell eo-row3 v-align h-align'>\
-                    <div id='tos'>i agree to the Terms and Conditions</div>\
-                </div>\
-                <div class='Grid-cell eo-row4 v-align h-align'>\
-                    <div class='agree-Grid v-align h-align'>\
-                        <div class='Grid-cell checkbox-cell'>\
-                            <input type='checkbox' id='eo-accept-checkbox' />\
-                        </div>\
-                        <div class='Grid-cell checkbox-text-cell' id='agree'> I agree</div>\
-                    </div>\
-                </div>\
+    <div id='eo-dlg-inner'>\
+      <div class='Grid Grid--full'>\
+        <div class='Grid-cell eo-row2'>\
+          <div class='Grid h-align'>\
+            <div class='Grid-cell terms-icon-cell'>\
+              <div id='eo-dlg-icon'></div>\
             </div>\
+            <div class='Grid-cell header-cell left-align v-align' id='dlg-terms-header'>\
+              <div class='eo-logo'></div>\
+              <div class='registered_symbol'>&#174;</div>\
+            </div>\
+          </div>\
         </div>\
+        <div class='Grid-cell eo-row3 v-align h-align'>\
+          <div id='tos'>i agree to the Terms and Conditions</div>\
+        </div>\
+        <div class='Grid-cell eo-row4 v-align h-align'>\
+          <div class='agree-Grid v-align h-align'>\
+            <div class='Grid-cell checkbox-cell'>\
+              <input type='checkbox' id='eo-accept-checkbox' /> </div>\
+            <div class='Grid-cell checkbox-text-cell' id='agree'> I agree</div>\
+          </div>\
+        </div>\
+      </div>\
     </div>\
-</div>\
-";
+  </div>\
+</div>";
 //
 var overlay_settings = {
   'actualic': {
