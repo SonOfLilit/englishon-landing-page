@@ -7104,6 +7104,10 @@ var overlay_settings = {
   'CH10': {}
 };
 ShturemOverlay = function () {
+  if (window.localStorage.getItem('show_quiz_tutorial')) {
+    e$('body').addClass('first-loading');
+    console.log('adding class first-loading');
+  };
   this.closeUnAnswered = function () {
     $(this.injector.elements).each(function (i, q) {
       if (q.qobj.element && q.qobj.element.is('.eo-active')) {
@@ -7177,6 +7181,10 @@ ShturemOverlay = function () {
     no_questions_dlg.dialog({ auto_open: true, modal: true });
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
+};
+ShturemOverlay.prototype.powerOn = function () {
+  e$('body').removeClass('first-loading');
+  console.log('remove class first-loading');
 };
 ShturemOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines
@@ -7401,6 +7409,7 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.hideQuestions = function () {};
   this.showQuestions = function () {};
   this.powerOn = function () {
+    ShturemOverlay.prototype.powerOn.call(this);
     if (!document.englishonConfig.isUser) {
       console.log('Marks for edited articles did not display. This user never turn on enlishon');
       return;
@@ -7502,6 +7511,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
       return;
     }
     this.showQuestions();
+    ShturemOverlay.prototype.powerOn.call(this);
     document.questions_promise.resolve();
     if (document.eo_user && e$('.eo-expired').length) {
       document.eo_user.showLiveActions();
@@ -8150,6 +8160,7 @@ e$(englishon);
 // ******
 // Button
 // ******
+
 document.firstTimeUser = function () {
   configStorage.set({ 'isUser': true, 'isActive': true });
   window.localStorage.setItem('show_quiz_tutorial', true);
@@ -8604,9 +8615,6 @@ var EnglishOnMenu = function () {
 };
 e$(function () {
   document.loaded_promise.resolve();
-  if (window.localStorage.getItem('show_quiz_tutorial')) {
-    e$('body').addClass('first-loading');
-  }
 });
 e$.when(document.questions_promise).done(function () {
   if (window.localStorage.getItem('show_quiz_tutorial')) {
@@ -8620,7 +8628,6 @@ e$.when(document.questions_promise).done(function () {
       //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
       Tour.quizTutorial();
       document.tour.start();
-      e$('body').removeClass('first-loading');
     }, 1000);
   }
 });
