@@ -4122,6 +4122,10 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   width: 67% !important;
 }
 
+.vocabulary-cog-cell {
+  width: 12% !important;
+}
+
 .u-7of10 {
   width: 69% !important;
 }
@@ -4159,7 +4163,8 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 .user-pic-cell,
 .user-name-cell,
 .signin-cell,
-.signup-cell {
+.signup-cell,
+.vocabulary-cog-cell {
   -webkit-box-flex: 0 !important;
   -webkit-flex: none !important;
   -ms-flex: none !important;
@@ -5004,6 +5009,9 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-live .eo-close {
   display: block;
 }
+#eo-live.hebrew .Grid#vocabulary-title {
+  direction: rtl;
+}
 #eo-live.hebrew #vocabulary-order {
   text-align: right;
 }
@@ -5022,7 +5030,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   overflow: auto;
 }
 #eo-live.vocabulary-open .eo-close {
-  display: none;
+  background-color: black;
 }
 #eo-live #srProgress,
 #eo-live #progress2 {
@@ -5103,10 +5111,14 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-live #vocabulary #vocabulary-content .vocabulary-odometer, #eo-live #vocabulary #vocabulary-content .vocabulary-origin {
   padding-right: 30px;
 }
-#eo-live #vocabulary .Grid-cell #vocabulary-order {
+#eo-live #vocabulary .Grid-cell #vocabulary-title {
   background-color: #2cc6a8;
   cursor: pointer;
   letter-spacing: 0.01em;
+}
+#eo-live #vocabulary .Grid-cell .vocabulary-cog-cell {
+  text-align: center;
+  color: white;
 }
 
 .Grid#days-pannel {

@@ -5067,7 +5067,9 @@ var MESSAGES = {
     AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
     AGREE: "I agree.",
     NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>",
-    COMPLETE_QUIZ: 'well done!</br>you finished all the questions!</br>log in'
+    COMPLETE_QUIZ: 'well done!</br>you finished all the questions!</br>log in',
+    ALPHABET_VOCABULARY: 'By Alphabetical Order',
+    SR_VOCABULARY: 'Prioritized'
   },
   'hebrew': {
     LANGUAGE: 'hebrew',
@@ -5112,7 +5114,9 @@ var MESSAGES = {
     AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'> ול<a>תנאי הפרטיות</a> ",
     AGREE: "אני מסכים.",
     NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>",
-    COMPLETE_QUIZ: '!כל הכבוד</br>!סיימת את כל השאלות במאמר</br>הירשם לשמירת התקדמותך'
+    COMPLETE_QUIZ: '!כל הכבוד</br>!סיימת את כל השאלות במאמר</br>הירשם לשמירת התקדמותך',
+    ALPHABET_VOCABULARY: 'לפי סדר אלפבית',
+    SR_VOCABULARY: 'לפי סדר עדיפות לתרגול'
   }
 };
 // Until we have real RTL, it's important not to finish sentences with periods, because they'll align wrong
@@ -5945,7 +5949,7 @@ UserInfo = function () {
       });
       e$('#vocabulary').data('order', 'alphabet');
       this.renderVocabulary(this.srsByAlphabet);
-      e$('#eo-live #vocabulary-order').text('המילים שלי -- -- סדר אלפבית');
+      e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].ALPHABET_VOCABULARY);
     }.bind(this));
   };
   this.renderVocabulary = function (words_list) {
@@ -6027,11 +6031,13 @@ UserInfo = function () {
         if (e$('#vocabulary').data('order') == 'alphabet') {
           e$('#vocabulary').data('order', 'srTime');
           this.renderVocabulary(this.srsByTime);
-          e$('#eo-live #vocabulary-order').text('המילים שלי -- סדר עדיפות לתרגול');
+          //e$('#eo-live #vocabulary-order').text('לפי סדר עדיפות לתרגול');
+          e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].SR_VOCABULARY);
         } else {
           e$('#vocabulary').data('order', 'alphabet');
           this.renderVocabulary(this.srsByAlphabet);
-          e$('#eo-live #vocabulary-order').text('המילים שלי -- סדר אלפבית');
+          //e$('#eo-live #vocabulary-order').text('לפי סדר אלפבית');
+          e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].ALPHABET_VOCABULARY);
         }
         return;
       }
@@ -6045,7 +6051,9 @@ UserInfo = function () {
       }
       if (e.target.is('.eo-close')) {
         if (e$('#eo-live').hasClass('eo-live-maximize')) {
-          e$('#eo-live').removeClass('eo-live-maximize');
+          e$('#vocabulary').addClass('hidden');
+          e$('#eo-live-main').removeClass('hidden');
+          e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
           return;
         }
         e$('#eo-live').addClass('hidden');
@@ -6054,7 +6062,7 @@ UserInfo = function () {
         e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
         return;
       }
-      if ((e.target.parents('#srProgress').length || e.target.parents('#milotrage').length || e.target.parents('#persistence').length || e.target.is('#vocabulary') || e.target.parents('#vocabulary').length) && e$('#eo-live').hasClass('eo-live-maximize')) {
+      if ((e.target.parents('#sr').length || e.target.is('#sr') || e.target.parents('#milotrage').length || e.target.parents('#persistence').length || e.target.is('#vocabulary') || e.target.parents('#vocabulary').length) && e$('#eo-live').hasClass('eo-live-maximize')) {
         e$('#eo-live-main').toggleClass('hidden');
         e$('#vocabulary').toggleClass('hidden');
         if (!e$('#vocabulary').hasClass('hidden')) {
@@ -7016,67 +7024,69 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 ";
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
-    <div class='eo-close close-progress-bar'></div>\
-    <div class='Grid Grid--full' id='eo-live-main'>\
-        <div class='Grid-cell'>\
-            <div class='Grid live-part' id='milotrage'>\
-                <div class='Grid-cell actions-logo-cell v-align h-align'>\
-                    <div id='actions-logo'></div>\
-                </div>\
-                <div class='Grid-cell v-align'>\
-                    <div id='eo-odometer' class='odometer'>1234567</div>\
-                </div>\
-            </div>\
+  <div class='eo-close close-progress-bar'></div>\
+  <div class='Grid Grid--full' id='eo-live-main'>\
+    <div class='Grid-cell'>\
+      <div class='Grid live-part' id='milotrage'>\
+        <div class='Grid-cell actions-logo-cell v-align h-align'>\
+          <div id='actions-logo'></div>\
         </div>\
-        <div class='Grid-cell'>\
-            <div class='Grid'>\
-                <div class='Grid-cell' id='sr-cell'>\
-                    <div id='sr' class='live-part v-align h-align'>\
-                        <div id='srProgress'></div>\
-                    </div>\
-                </div>\
-\
-            </div>\
+        <div class='Grid-cell v-align'>\
+          <div id='eo-odometer' class='odometer'>1234567</div>\
         </div>\
-        <div class='Grid-cell'>\
-            <div id='persistence' class='live-part'>\
-                <div class='Grid' id='days-pannel'>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day1'>1</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day2'>2</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day3'>3</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day4'>4</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day5'>5</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day6'>6</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day7'>7</div>\
-                    </div>\
-                </div>\
-            </div>\
-        </div>\
+      </div>\
     </div>\
-    <div id='vocabulary' class='Grid Grid--full hidden'>\
-        <div class='Grid-cell cell1'>\
-            <div id='vocabulary-order'>change the list order</div>\
+    <div class='Grid-cell'>\
+      <div class='Grid'>\
+        <div class='Grid-cell' id='sr-cell'>\
+          <div id='sr' class='live-part v-align h-align'>\
+            <div id='srProgress'></div>\
+          </div>\
         </div>\
-        <div class='Grid-cell cell2'>\
-            <div id='vocabulary-content'>\
-            </div>\
-        </div>\
+      </div>\
     </div>\
-</div>\
-";
+    <div class='Grid-cell'>\
+      <div id='persistence' class='live-part'>\
+        <div class='Grid' id='days-pannel'>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day1'>1</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day2'>2</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day3'>3</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day4'>4</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day5'>5</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day6'>6</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day7'>7</div>\
+          </div>\
+        </div>\
+      </div>\
+    </div>\
+  </div>\
+  <div id='vocabulary' class='Grid Grid--full hidden'>\
+    <div class='Grid-cell cell1'>\
+      <div class='Grid' id='vocabulary-title'>\
+        <div class='Grid-cell vocabulary-cog-cell'> <i class='fa fa-cog' aria-hidden='true' id='vocabulary-order-icon'></i> </div>\
+        <div class='Grid-cell'>\
+          <div id='vocabulary-order'>change the list order</div>\
+        </div>\
+      </div>\
+    </div>\
+    <div class='Grid-cell cell2'>\
+      <div id='vocabulary-content'> </div>\
+    </div>\
+  </div>\
+</div>";
 //
 document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
     <div id='eo-dlg-terms' class='hidden'>\
