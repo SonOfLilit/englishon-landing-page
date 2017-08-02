@@ -7030,13 +7030,13 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
           </div>\
         </div>\
         <div class='Grid-cell eo-row3 v-align h-align'>\
-          <div id='tos'>i agree to the Terms and Conditions</div>\
+          <div id='tos'></div>\
         </div>\
         <div class='Grid-cell eo-row4 v-align h-align'>\
           <div class='agree-Grid v-align h-align'>\
             <div class='Grid-cell checkbox-cell'>\
               <input type='checkbox' id='eo-accept-checkbox' /> </div>\
-            <div class='Grid-cell checkbox-text-cell' id='agree'> I agree</div>\
+            <div class='Grid-cell checkbox-text-cell' id='agree'></div>\
           </div>\
         </div>\
       </div>\
@@ -7859,6 +7859,12 @@ Tour = new function () {
         tetherOptions: tetherOptionsDic,
         when: {
           show: function () {
+            if (document.tour.getCurrentStep().id.indexOf('progress') != -1) {
+              e$('.shepherd-cancel-link').on('click', function () {
+                e$(document).on('click', document.eo_user.minimize);
+                console.log('<<<<<<<>>>>>>>>>>>>>>');
+              });
+            }
             if (document.tour.getCurrentStep().id == 'login') {
               e$('.eo-button').one('click', function () {
                 document.tour.hide();

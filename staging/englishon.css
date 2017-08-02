@@ -3362,7 +3362,7 @@ div.eo-question.highlighted {
 
 .eo-logo {
   width: 110px;
-  height: 35px;
+  height: 23px;
   cursor: pointer;
   overflow: visible;
   background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
@@ -3392,6 +3392,7 @@ div.eo-question.highlighted {
 .registered_symbol {
   font-size: 14px;
   color: #b1b4b6;
+  margin: 9px 0px 0px 8px;
 }
 
 .eo-button {
@@ -3409,7 +3410,7 @@ div.eo-question.highlighted {
 .eo-button .registered_symbol {
   position: absolute;
   left: 140px;
-  top: 16px;
+  top: 6px;
 }
 
 /* Menu */
@@ -4198,7 +4199,7 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
 }
 
 .header-cell {
-  width: 59% !important;
+  width: 65% !important;
 }
 
 .checkbox-cell {
