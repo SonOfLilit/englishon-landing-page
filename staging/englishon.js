@@ -5067,7 +5067,7 @@ var MESSAGES = {
     AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
     AGREE: "I agree.",
     NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>",
-    COMPLETE_QUIZ: 'well done!</br>you finished all the questions!</br>log in',
+    COMPLETE_QUIZ: 'Well Done!</br>Sign up for Free</br> to Save your Work!',
     ALPHABET_VOCABULARY: 'By Alphabetical Order',
     SR_VOCABULARY: 'Prioritized for Review'
   },
@@ -6866,7 +6866,7 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
   <div class='eo-close close-dialog'></div>\
   <div id='eo-dlg-inner'>\
     <div class='Grid Grid--full'>\
-      <div class='Grid-cell eo-row2'>\
+      <div class='Grid-cell eo-row14'>\
         <div class='Grid'>\
           <div class='Grid-cell signin-cell right-align v-align'>\
             <div id='dlg-sign-in-header'>Sign In</div>\
