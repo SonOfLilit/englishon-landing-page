@@ -5114,7 +5114,7 @@ var MESSAGES = {
     AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'> ול<a>תנאי הפרטיות</a> ",
     AGREE: "אני מסכים.",
     NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>",
-    COMPLETE_QUIZ: '!כל הכבוד</br>!סיימת את כל השאלות במאמר</br>הירשם לשמירת התקדמותך',
+    COMPLETE_QUIZ: '!כל הכבוד</br>הירשם בחינם</br>לשמירת התקדמותך',
     ALPHABET_VOCABULARY: 'לפי סדר אלפבית',
     SR_VOCABULARY: 'לפי סדר עדיפות לתרגול'
   }
@@ -6125,10 +6125,8 @@ UserInfo = function () {
 };
 //
 Injector = function (paragraphs) {
-
   report = function (msg, data) {
     if (!data) data = {};
-
     post = document.englishonBackend.report(msg, data);
     post.done(function (res) {
       if (msg === 'TriedAnswer') {
@@ -6148,7 +6146,6 @@ Injector = function (paragraphs) {
           document.eo_user.fetchVocabulary();
         }
       }
-
       if (msg === "StartedQuestion" && !document.overlay.interacted) {
         document.overlay.interacted = true;
         report("StartedQuiz");
@@ -6162,18 +6159,17 @@ Injector = function (paragraphs) {
       }
     }.bind(this));
     if (msg === "CompletedQuestion" && e$('.eo-question:not(.eo-answered)').length === 0) {
-
       report("CompletedQuiz");
       if (!document.englishonConfig.email) {
-        e$('#eo-dlg-login').find('#subtitle').html(document.MESSAGES[document.englishonConfig.siteLanguage].COMPLETE_QUIZ);
-        document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
+        setTimeout(function () {
+          e$('#eo-dlg-login').find('#subtitle').html(document.MESSAGES[document.englishonConfig.siteLanguage].COMPLETE_QUIZ);
+          document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
+        }, 2000);
       }
     }
   };
-
   this.elements = [];
   this.isActive = false;
-
   this.toggle = function (value) {
     if (value) {
       this.on();
@@ -6181,9 +6177,7 @@ Injector = function (paragraphs) {
       this.off();
     }
   };
-
   this.off = function () {
-
     if (!this.isActive) {
       return;
     }
@@ -6196,7 +6190,6 @@ Injector = function (paragraphs) {
       q.qobj.touched = false;
       q.qobj.tried = [];
     });
-
     //this.interacted = false;
     //this.userAnswered = false;
     console.log("hide questions now");
@@ -6228,9 +6221,7 @@ Injector = function (paragraphs) {
       }
     });
   };
-
   this.setQuestions = function (questions, toggleSound) {
-
     this.elements = [];
     //enable setQuestion after login
     this.isBatch = true;
@@ -6270,17 +6261,14 @@ Injector = function (paragraphs) {
     });
     return availablePlace;
   };
-
   this.addQuestion = function (question, toggleSound) {
     var target = this.findTarget(question.context, question.replaced);
     if (!target) {
       console.log("addQuestion***Could not find question: ", question);
       return;
     }
-
     var q = new Question(question, toggleSound);
     this.elements.push({ qobj: q, original: target });
-
     if (!this.isBatch) {
       updateProgressBars();
     }
@@ -6304,9 +6292,7 @@ Injector = function (paragraphs) {
     r.report = report.bind(r);
     return r;
   }
-
   this.findTarget = function (ctx, replaced) {
-
     var found;
     e$.each(paragraphs, function (i, p) {
       if (!p) {
@@ -6336,7 +6322,6 @@ Injector = function (paragraphs) {
     return found;
   };
 };
-
 updateProgressBars = function () {
   // you'd think activating the current one would be enough... but since we want them to animate
   // from the previous state and not from 0, the easiest way is to update all of them always.
@@ -6346,23 +6331,19 @@ updateProgressBars = function () {
   //e$('.eo-progress').text(Math.ceil(100 * answered / all).toString() + '%');
   e$('.eo-progress-inner').css('width', (100 * answered / all).toString() + '%');
 };
-
 var AbstractQuestion = function (qdata, toggleSound) {
   this.data = qdata;
   if (typeof this.data.correct_answer === 'string') this.correct = [this.data.correct_answer];else // multiple correct answers
     this.correct = this.data.correct_answers.map(function (a) {
       return a.answer;
     });
-
   this.practicedWord = this.data.hint_language === document.englishonConfig.targetLanguage ? this.data.hint : this.correct[0];
-
   this.toggleSound = toggleSound;
   this.tried = [];
   this.maxtime = 40;
   this.maxattempts = 3;
   this.touched = false;
 };
-
 AbstractQuestion.prototype.replacement = function () {
   if (!this.element) {
     this.element = this.createElement();
@@ -6370,7 +6351,6 @@ AbstractQuestion.prototype.replacement = function () {
   this.bindInput();
   return this.element;
 };
-
 AbstractQuestion.prototype.createElement = function () {
   var textWithPreposition = this.data.preposition + this.data.hint;
   var prepositionClass = this.data.preposition ? 'preposition' : '';
@@ -6378,11 +6358,9 @@ AbstractQuestion.prototype.createElement = function () {
   //.append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0]))
   .append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append(e$('<span>').addClass('eo-hint').addClass(prepositionClass).text(textWithPreposition)).append(e$('<span>').addClass('eo-progress').append(e$('<span>').addClass('eo-progress-inner')));
 };
-
 AbstractQuestion.prototype.bindInput = function () {
   this.element.find('.eo-hint').click(this.questionOnClick.bind(this));
 };
-
 AbstractQuestion.prototype.open_question_handler = function (e) {
   //if (e$('.shepherd-open').length) {
   if (window.localStorage.getItem('leave_quesion_open') || e$('.shepherd-open').length) {
@@ -6396,7 +6374,6 @@ AbstractQuestion.prototype.open_question_handler = function (e) {
     $(document).off('click', this.open_question_handler);
   };
 };
-
 AbstractQuestion.prototype.questionOnClick = function (e) {
   e.preventDefault();
   e.stopPropagation();
@@ -6412,15 +6389,12 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
     document.overlay.closeUnAnswered();
   }
   this.open();
-
   $(document).on('click', this.open_question_handler.bind(this));
 };
-
 AbstractQuestion.prototype.open = function () {
   // placeholder, you probably want to call not super() but animateStateChange() directly
   this.element.addClass('eo-active');
 };
-
 AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesToRemove, finalWidth) {
   var offset = this.element.offset().left;
   var future_point = offset - (finalWidth - Number(this.element.css('width').replace(/[^\d\.\-]/g, '')));
@@ -6447,7 +6421,6 @@ AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesT
     this.element.removeAttr('style');
   }
 };
-
 AbstractQuestion.prototype.QuestionAudio = function (e) {
   e.preventDefault();
   var target = e$(e.target);
@@ -6457,15 +6430,12 @@ AbstractQuestion.prototype.QuestionAudio = function (e) {
     Speaker.speak(document.englishonConfig.targetLanguage, target.text());
   }
 };
-
 AbstractQuestion.prototype.closeUnanswered = function () {
   this.animateStateChange(null, 'eo-active', this.element.find('.eo-hint').outerWidth());
 };
-
 AbstractQuestion.prototype.closeAnswered = function () {
   this.animateStateChange('eo-answered', 'eo-active', this.element.find('.eo-correct').outerWidth());
 };
-
 AbstractQuestion.prototype.isCorrect = function (answer) {
   var _iteratorNormalCompletion = true;
   var _didIteratorError = false;
@@ -6494,7 +6464,6 @@ AbstractQuestion.prototype.isCorrect = function (answer) {
 
   return false;
 };
-
 AbstractQuestion.prototype.touch = function (event) {
   if (!this.touched) {
     this.report('StartedQuestion', {
@@ -6512,7 +6481,6 @@ AbstractQuestion.prototype.touch = function (event) {
     this.touched = true;
   }
 };
-
 AbstractQuestion.prototype.guess = function (answer, target) {
   var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
   if (isAnswerInTargetLanguage) {
@@ -6530,7 +6498,6 @@ AbstractQuestion.prototype.guess = function (answer, target) {
     //this is not the right place for this code. pass it to multipleChoiseQuestion
     if (e$(target).data('translate')) e$(target).toggleHtml(e$(target).data('translate'), e$(target).data('word'));
   }
-
   // don't count the same answer multiple times.
   if (this.tried.indexOf(answer) !== -1) return;
   this.tried.push(answer);
@@ -6541,7 +6508,6 @@ AbstractQuestion.prototype.guess = function (answer, target) {
       trial_num: this.tried.length
     });
   }
-
   if (isCorrect) {
     if (!this.element.hasClass('lost_focus')) {
       this.report('CompletedQuestion', {
@@ -6556,11 +6522,9 @@ AbstractQuestion.prototype.guess = function (answer, target) {
     }
   }
 };
-
 AbstractQuestion.prototype.languageOrderClass = function () {
   return this.practicedWord !== this.data.hint ? 'eo-dest_hint' : 'eo-source_hint';
 };
-
 AbstractQuestion.prototype.markAnswered = function () {
   var correct = this.element.find('.eo-correct');
   var finalWidth = correct.outerWidth();
@@ -6572,21 +6536,17 @@ AbstractQuestion.prototype.markAnswered = function () {
   // change state
   this.element.removeClass('eo-active');
   this.element.addClass('eo-answered');
-
   // force repaint
   correct.width();
   // explicitly set target and width
   this.element.css('width', finalWidth + 1);
 };
-
 var OpenQuestion = function (question, toggleSound) {
   AbstractQuestion.call(this, question, toggleSound);
   this.lang = languageOf(this.correct[0].charCodeAt(0));
 };
-
 OpenQuestion.prototype = Object.create(AbstractQuestion.prototype);
 OpenQuestion.prototype.constructor = OpenQuestion;
-
 OpenQuestion.prototype.createElement = function () {
   console.log("EVENT OpenQuestion.prototype.createElement ??");
   var element = AbstractQuestion.prototype.createElement.call(this);
@@ -6595,15 +6555,12 @@ OpenQuestion.prototype.createElement = function () {
   element.find('.eo-hint').after(this.input);
   return element;
 };
-
 OpenQuestion.prototype.bindInput = function () {
   AbstractQuestion.prototype.bindInput.call(this);
-
   this.input.on('keypress', this.onKeyPress.bind(this)).on('focus', this.touch.bind(this)).on('blur', function (event) {
     if (this.langWarning) this.langWarning.hide();
   }.bind(this)).autocomplete({ source: document.wordlist }).on('autocompleteselect', this.onSelect.bind(this));
 };
-
 OpenQuestion.prototype.onKeyPress = function (event) {
   var key = event.keyCode;
   if (key === 13 || key === 10) {
@@ -6618,7 +6575,6 @@ OpenQuestion.prototype.onKeyPress = function (event) {
     if (!this.langWarning) {
       this.langWarning = e$('<div>').addClass('eo-layout-warning').addClass('eo-box').append(e$('<p dir="ltr">').text(MESSAGES.WRONG_KEYBOARD_LAYOUT)).append(e$('<p>').append(e$('<strong>').text(MESSAGES.WRONG_KEYBOARD_LAYOUT_HINT)));
       this.element.prepend(this.langWarning);
-
       this.guess = function (answer) {
         if (this.langWarning) this.langWarning.hide();
         AbstractQuestion.prototype.guess.call(this, answer);
@@ -6629,18 +6585,15 @@ OpenQuestion.prototype.onKeyPress = function (event) {
     if (this.langWarning) this.langWarning.hide();
   }
 };
-
 OpenQuestion.prototype.onSelect = function (event, ui) {
   this.input.val(ui.item.value);
   this.guess(this.input.val());
 };
-
 OpenQuestion.prototype.open = function () {
   //console.log("EVENT open question ??");
   this.animateStateChange('eo-active', null, this.element.outerWidth() + this.input.outerWidth());
   this.input.focus();
 };
-
 OpenQuestion.prototype.closeUnanswered = function () {
   AbstractQuestion.prototype.closeUnanswered.call(this);
   if (!this.element.hasClass('eo-answered')) {
@@ -6649,7 +6602,6 @@ OpenQuestion.prototype.closeUnanswered = function () {
     }
   }
 };
-
 OpenQuestion.prototype.guess = function (answer) {
   var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
   if (isAnswerInTargetLanguage) {
@@ -6660,17 +6612,14 @@ OpenQuestion.prototype.guess = function (answer) {
   this.closeAnswered();
   updateProgressBars();
   var isCorrect = this.isCorrect(answer);
-
   // don't count the same answer multiple times.
   if (this.tried.indexOf(answer) !== -1) return;
   this.tried.push(answer);
-
   this.report('TriedAnswer', {
     question: this.data.id,
     answer: answer,
     trial_num: this.tried.length
   });
-
   if (isCorrect) {
     this.element.addClass('eo-correct_answer');
     this.report('CompletedQuestion', {
@@ -6685,11 +6634,9 @@ OpenQuestion.prototype.guess = function (answer) {
     });
   }
 };
-
 var MultipleChoice = function (question, toggleSound) {
   AbstractQuestion.call(this, question, toggleSound);
 };
-
 MultipleChoice.prototype = Object.create(AbstractQuestion.prototype);
 MultipleChoice.prototype.constructor = MultipleChoice;
 MultipleChoice.prototype.replacement = function () {
@@ -6699,7 +6646,6 @@ MultipleChoice.prototype.replacement = function () {
   if (!this.element || !this.element.hasClass('eo-answered')) {
     this.element = this.createElement();
   }
-
   this.bindInput();
   return this.element;
 };
@@ -6716,7 +6662,6 @@ MultipleChoice.prototype.createElement = function () {
   }.bind(this));
   option_elements.push(e$('<li>').addClass('eo-option eo-correct_option').append(e$('<span>').html(this.correct[0].replace('_', '&nbsp;')).data('word', this.correct[0])));
   shuffle(option_elements);
-
   this.options = e$('<ul>').addClass('eo-options').append(option_elements);
   element.find('.eo-hint').after(this.options);
   return element;
@@ -6734,7 +6679,6 @@ function shuffle(arr) {
     arr[j] = temp;
   }
 };
-
 MultipleChoice.prototype.bindInput = function () {
   AbstractQuestion.prototype.bindInput.call(this);
   this.element.find('.eo-option').click(this.optionOnClick.bind(this));
@@ -6751,12 +6695,10 @@ MultipleChoice.prototype.bindInput = function () {
     }.bind(this));
   }
 };
-
 MultipleChoice.prototype.optionOnClick = function (e) {
   e.preventDefault();
   this.guess(e$(e.target).data('word'), e.target);
 };
-
 MultipleChoice.prototype.open = function () {
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
     e$(option).find('span').toggleHtml(e$(option).find('span').data('word'), e$(option).find('span').data('translate'));
@@ -6772,7 +6714,6 @@ MultipleChoice.prototype.open = function () {
   this.animateStateChange('eo-active', null, width);
   this.options.width(width + 1);
 };
-
 MultipleChoice.prototype.closeUnanswered = function () {
   AbstractQuestion.prototype.closeUnanswered.call(this);
   if (!this.element.hasClass('eo-answered')) {
@@ -6782,7 +6723,6 @@ MultipleChoice.prototype.closeUnanswered = function () {
     }
   }
 };
-
 MultipleChoice.prototype.closeAnswered = function () {
   // see super for more documentation
   var correctOption = this.element.find('.eo-option.eo-correct_option span');
@@ -6795,35 +6735,26 @@ MultipleChoice.prototype.closeAnswered = function () {
   AbstractQuestion.prototype.closeAnswered.call(this);
   correct.css('top', 0);
 };
-
 // completely non-interactive
 var AbstractExpiredQuestion = function (question) {
   AbstractQuestion.call(this, question);
 };
-
 AbstractExpiredQuestion.prototype = Object.create(AbstractQuestion.prototype);
 AbstractExpiredQuestion.prototype.constructor = AbstractExpiredQuestion;
-
 AbstractExpiredQuestion.prototype.createElement = function () {
   var element = AbstractQuestion.prototype.createElement.call(this).addClass('eo-answered').addClass('eo-expired');
-
   return element;
 };
-
 AbstractExpiredQuestion.prototype.bindInput = function () {
   this.element.click(this.QuestionAudio.bind(this));
 };
-
 var ExpiredOpenQuestion = function (question) {
   AbstractExpiredQuestion.call(this, question);
 };
-
 ExpiredOpenQuestion.prototype = Object.create(AbstractExpiredQuestion.prototype);
 ExpiredOpenQuestion.prototype.constructor = ExpiredOpenQuestion;
-
 ExpiredOpenQuestion.prototype.createElement = function () {
   var element = AbstractExpiredQuestion.prototype.createElement.call(this);
-
   var tried = this.data.tried.slice();
   var lastAnswer = tried.pop();
   if (this.isCorrect(lastAnswer)) {
@@ -6831,14 +6762,11 @@ ExpiredOpenQuestion.prototype.createElement = function () {
   } else {
     element.addClass('eo-wrong_answer');
   }
-
   return element;
 };
-
 var ExpiredMultipleChoiceQuestion = function (question) {
   AbstractExpiredQuestion.call(this, question);
 };
-
 ExpiredMultipleChoiceQuestion.prototype = Object.create(AbstractExpiredQuestion.prototype);
 ExpiredMultipleChoiceQuestion.prototype.constructor = ExpiredMultipleChoiceQuestion;
 //
