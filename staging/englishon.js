@@ -5069,7 +5069,7 @@ var MESSAGES = {
     NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>",
     COMPLETE_QUIZ: 'well done!</br>you finished all the questions!</br>log in',
     ALPHABET_VOCABULARY: 'By Alphabetical Order',
-    SR_VOCABULARY: 'Prioritized'
+    SR_VOCABULARY: 'Prioritized for Review'
   },
   'hebrew': {
     LANGUAGE: 'hebrew',
@@ -6027,7 +6027,7 @@ UserInfo = function () {
       e.preventDefault();
       e.stopPropagation();
       e.target = e$(e.target);
-      if (e.target.is('#vocabulary-order')) {
+      if (e.target.is('#vocabulary-title') || e.target.parents('#vocabulary-title').length) {
         if (e$('#vocabulary').data('order') == 'alphabet') {
           e$('#vocabulary').data('order', 'srTime');
           this.renderVocabulary(this.srsByTime);
