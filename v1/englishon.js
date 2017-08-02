@@ -5068,8 +5068,11 @@ var MESSAGES = {
     START_TUTORIAL: 'Guided Tour',
     SITE_LANGUAGE: 'Site Language',
     AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
-    AGREE: "Yes, I agree. Let's start!",
-    NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>"
+    AGREE: "I agree.",
+    NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>",
+    COMPLETE_QUIZ: 'Well Done!</br>Sign up for Free</br> to Save your Work!',
+    ALPHABET_VOCABULARY: 'By Alphabetical Order',
+    SR_VOCABULARY: 'Prioritized for Review'
   },
   'hebrew': {
     LANGUAGE: 'hebrew',
@@ -5089,13 +5092,12 @@ var MESSAGES = {
     // Login dialog
     LOGIN_SIGN_IN_TITLE: 'התחבר',
     LOGIN_SIGN_UP_TITLE: 'הירשם',
-    LOGIN_SUBTITLE: 'שפר את המיומנות שלך באנגלית </br>בכייף בקלות ובחינם',
+    LOGIN_SUBTITLE: 'אנגלית בקליק </br>בכייף בקלות וללא עלות',
     FORGOT_PASSWORD: '?שכחת סיסמה',
     REGISTER_MESSAGE: 'Thank you for registering! A confirmation message sent to the given email.',
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
     ENABLE: "Enable EnglishON",
     DISABLE: "Disable EnglishON",
-
     WRONG_KEYBOARD_LAYOUT: "Please switch keyboard layout.",
     WRONG_KEYBOARD_LAYOUT_HINT: "Alt + Shift",
     LOGGED_IN_AS: "You logged in",
@@ -5113,13 +5115,14 @@ var MESSAGES = {
     START_TUTORIAL: 'מדריך הפעלה',
     SITE_LANGUAGE: 'שפת התפריט',
     AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'> ול<a>תנאי הפרטיות</a> ",
-    AGREE: "כן,אני מסכים. הבה נתחיל",
-    NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>"
+    AGREE: "אני מסכים.",
+    NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>",
+    COMPLETE_QUIZ: '!כל הכבוד</br>הירשם בחינם</br>לשמירת התקדמותך',
+    ALPHABET_VOCABULARY: 'לפי סדר אלפבית',
+    SR_VOCABULARY: 'לפי סדר עדיפות לתרגול'
   }
-
 };
 // Until we have real RTL, it's important not to finish sentences with periods, because they'll align wrong
-
 document.MESSAGES = MESSAGES;
 var RTL = 'rtl',
     LTR = 'ltr';
@@ -5954,15 +5957,15 @@ UserInfo = function () {
       });
       e$('#vocabulary').data('order', 'alphabet');
       this.renderVocabulary(this.srsByAlphabet);
-      e$('#eo-live #vocabulary-order').text('המילים שלי -- -- סדר אלפבית');
+      e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].ALPHABET_VOCABULARY);
     }.bind(this));
   };
   this.renderVocabulary = function (words_list) {
     var content = e$('<div>');
     e$.each(words_list, function (i, word_info) {
-      content.append(e$('<div>').addClass('')
+      content.append(e$('<div>').addClass('vocabulary-word')
       //the text value is a hack to display the milotrage digits without the decimal point
-      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-word').text(word_info.word).on('click', function (e) {})).append(e$('<span>').addClass('vocabulary-translation hidden').text(word_info.translation)));
+      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-origin').text(word_info.word).on('click', function (e) {})).append(e$('<span>').addClass('vocabulary-translation').text('?').data('translation', word_info.translation)));
     });
     e$('#vocabulary-content').html(content);
     var el = document.getElementsByClassName('vocabulary-odometer');
@@ -6037,30 +6040,42 @@ UserInfo = function () {
       e.preventDefault();
       e.stopPropagation();
       e.target = e$(e.target);
-      if (e.target.is('#vocabulary-order')) {
+      if (e.target.is('#vocabulary-title') || e.target.parents('#vocabulary-title').length) {
         if (e$('#vocabulary').data('order') == 'alphabet') {
           e$('#vocabulary').data('order', 'srTime');
           this.renderVocabulary(this.srsByTime);
-          e$('#eo-live #vocabulary-order').text('המילים שלי -- סדר עדיפות לתרגול');
+          //e$('#eo-live #vocabulary-order').text('לפי סדר עדיפות לתרגול');
+          e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].SR_VOCABULARY);
         } else {
           e$('#vocabulary').data('order', 'alphabet');
           this.renderVocabulary(this.srsByAlphabet);
-          e$('#eo-live #vocabulary-order').text('המילים שלי -- סדר אלפבית');
+          //e$('#eo-live #vocabulary-order').text('לפי סדר אלפבית');
+          e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].ALPHABET_VOCABULARY);
         }
         return;
       }
       if (e.target.is('.vocabulary-word')) {
-        e.target.next().toggleClass('hidden');
+        e.target.find('.vocabulary-translation').toggleText('?', e.target.find('.vocabulary-translation').data('translation'));
+        return;
+      }
+      if (e.target.parents('.vocabulary-word').length) {
+        e.target.parents('.vocabulary-word').find('.vocabulary-translation').toggleText('?', e.target.parents('.vocabulary-word').find('.vocabulary-translation').data('translation'));
         return;
       }
       if (e.target.is('.eo-close')) {
+        if (e$('#eo-live').hasClass('eo-live-maximize')) {
+          e$('#vocabulary').addClass('hidden');
+          e$('#eo-live-main').removeClass('hidden');
+          e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+          return;
+        }
         e$('#eo-live').addClass('hidden');
         e$('#vocabulary').addClass('hidden');
         e$('#eo-live-main').removeClass('hidden');
         e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
         return;
       }
-      if (e.target.parents('#srProgress').length || e.target.parents('#milotrage').length && e$('#eo-live').hasClass('eo-live-maximize') || e.target.is('#vocabulary') || e.target.parents('#vocabulary').length) {
+      if ((e.target.parents('#sr').length || e.target.is('#sr') || e.target.parents('#milotrage').length || e.target.parents('#persistence').length || e.target.is('#vocabulary') || e.target.parents('#vocabulary').length) && e$('#eo-live').hasClass('eo-live-maximize')) {
         e$('#eo-live-main').toggleClass('hidden');
         e$('#vocabulary').toggleClass('hidden');
         if (!e$('#vocabulary').hasClass('hidden')) {
@@ -6162,12 +6177,16 @@ Injector = function (paragraphs) {
     }.bind(this));
     if (msg === "CompletedQuestion" && e$('.eo-question:not(.eo-answered)').length === 0) {
       report("CompletedQuiz");
+      if (!document.englishonConfig.email) {
+        setTimeout(function () {
+          e$('#eo-dlg-login').find('#subtitle').html(document.MESSAGES[document.englishonConfig.siteLanguage].COMPLETE_QUIZ);
+          document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
+        }, 2000);
+      }
     }
   };
-
   this.elements = [];
   this.isActive = false;
-
   this.toggle = function (value) {
     if (value) {
       this.on();
@@ -6298,9 +6317,7 @@ Injector = function (paragraphs) {
     r.report = report.bind(r);
     return r;
   }
-
   this.findTarget = function (ctx, replaced) {
-
     var found;
     e$.each(paragraphs, function (i, p) {
       if (!p) {
@@ -6330,7 +6347,6 @@ Injector = function (paragraphs) {
     return found;
   };
 };
-
 updateProgressBars = function () {
   // you'd think activating the current one would be enough... but since we want them to animate
   // from the previous state and not from 0, the easiest way is to update all of them always.
@@ -6364,7 +6380,6 @@ AbstractQuestion.prototype.replacement = function () {
   this.bindInput();
   return this.element;
 };
-
 AbstractQuestion.prototype.createElement = function () {
   var textWithPreposition = this.data.preposition + this.data.hint;
   var prepositionClass = this.data.preposition ? 'preposition' : '';
@@ -6372,11 +6387,9 @@ AbstractQuestion.prototype.createElement = function () {
   //.append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0]))
   .append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append(e$('<span>').addClass('eo-hint').addClass(prepositionClass).text(textWithPreposition)).append(e$('<span>').addClass('eo-progress').append(e$('<span>').addClass('eo-progress-inner')));
 };
-
 AbstractQuestion.prototype.bindInput = function () {
   this.element.find('.eo-hint').click(this.questionOnClick.bind(this));
 };
-
 AbstractQuestion.prototype.open_question_handler = function (e) {
   //if (e$('.shepherd-open').length) {
   if (window.localStorage.getItem('leave_quesion_open') || e$('.shepherd-open').length) {
@@ -6451,15 +6464,12 @@ AbstractQuestion.prototype.QuestionAudio = function (e) {
     Speaker.speak(document.englishonConfig.targetLanguage, target.text());
   }
 };
-
 AbstractQuestion.prototype.closeUnanswered = function () {
   this.animateStateChange(null, 'eo-active', this.element.find('.eo-hint').outerWidth());
 };
-
 AbstractQuestion.prototype.closeAnswered = function () {
   this.animateStateChange('eo-answered', 'eo-active', this.element.find('.eo-correct').outerWidth());
 };
-
 AbstractQuestion.prototype.isCorrect = function (answer) {
   var _iteratorNormalCompletion = true;
   var _didIteratorError = false;
@@ -6488,7 +6498,6 @@ AbstractQuestion.prototype.isCorrect = function (answer) {
 
   return false;
 };
-
 AbstractQuestion.prototype.touch = function (event) {
   if (!this.touched) {
     this.report('StartedQuestion', {
@@ -6566,21 +6575,17 @@ AbstractQuestion.prototype.markAnswered = function () {
   // change state
   this.element.removeClass('eo-active');
   this.element.addClass('eo-answered');
-
   // force repaint
   correct.width();
   // explicitly set target and width
   this.element.css('width', finalWidth + 1);
 };
-
 var OpenQuestion = function (question, toggleSound) {
   AbstractQuestion.call(this, question, toggleSound);
   this.lang = languageOf(this.correct[0].charCodeAt(0));
 };
-
 OpenQuestion.prototype = Object.create(AbstractQuestion.prototype);
 OpenQuestion.prototype.constructor = OpenQuestion;
-
 OpenQuestion.prototype.createElement = function () {
   console.log("EVENT OpenQuestion.prototype.createElement ??");
   var element = AbstractQuestion.prototype.createElement.call(this);
@@ -6589,15 +6594,12 @@ OpenQuestion.prototype.createElement = function () {
   element.find('.eo-hint').after(this.input);
   return element;
 };
-
 OpenQuestion.prototype.bindInput = function () {
   AbstractQuestion.prototype.bindInput.call(this);
-
   this.input.on('keypress', this.onKeyPress.bind(this)).on('focus', this.touch.bind(this)).on('blur', function (event) {
     if (this.langWarning) this.langWarning.hide();
   }.bind(this)).autocomplete({ source: document.wordlist }).on('autocompleteselect', this.onSelect.bind(this));
 };
-
 OpenQuestion.prototype.onKeyPress = function (event) {
   var key = event.keyCode;
   if (key === 13 || key === 10) {
@@ -6612,7 +6614,6 @@ OpenQuestion.prototype.onKeyPress = function (event) {
     if (!this.langWarning) {
       this.langWarning = e$('<div>').addClass('eo-layout-warning').addClass('eo-box').append(e$('<p dir="ltr">').text(MESSAGES.WRONG_KEYBOARD_LAYOUT)).append(e$('<p>').append(e$('<strong>').text(MESSAGES.WRONG_KEYBOARD_LAYOUT_HINT)));
       this.element.prepend(this.langWarning);
-
       this.guess = function (answer) {
         if (this.langWarning) this.langWarning.hide();
         AbstractQuestion.prototype.guess.call(this, answer);
@@ -6710,7 +6711,6 @@ MultipleChoice.prototype.createElement = function () {
   }.bind(this));
   option_elements.push(e$('<li>').addClass('eo-option eo-correct_option').append(e$('<span>').html(this.correct[0].replace('_', '&nbsp;')).data('word', this.correct[0])));
   shuffle(option_elements);
-
   this.options = e$('<ul>').addClass('eo-options').append(option_elements);
   element.find('.eo-hint').after(this.options);
   return element;
@@ -6789,35 +6789,26 @@ MultipleChoice.prototype.closeAnswered = function () {
   AbstractQuestion.prototype.closeAnswered.call(this);
   correct.css('top', 0);
 };
-
 // completely non-interactive
 var AbstractExpiredQuestion = function (question) {
   AbstractQuestion.call(this, question);
 };
-
 AbstractExpiredQuestion.prototype = Object.create(AbstractQuestion.prototype);
 AbstractExpiredQuestion.prototype.constructor = AbstractExpiredQuestion;
-
 AbstractExpiredQuestion.prototype.createElement = function () {
   var element = AbstractQuestion.prototype.createElement.call(this).addClass('eo-answered').addClass('eo-expired');
-
   return element;
 };
-
 AbstractExpiredQuestion.prototype.bindInput = function () {
   this.element.click(this.QuestionAudio.bind(this));
 };
-
 var ExpiredOpenQuestion = function (question) {
   AbstractExpiredQuestion.call(this, question);
 };
-
 ExpiredOpenQuestion.prototype = Object.create(AbstractExpiredQuestion.prototype);
 ExpiredOpenQuestion.prototype.constructor = ExpiredOpenQuestion;
-
 ExpiredOpenQuestion.prototype.createElement = function () {
   var element = AbstractExpiredQuestion.prototype.createElement.call(this);
-
   var tried = this.data.tried.slice();
   var lastAnswer = tried.pop();
   if (this.isCorrect(lastAnswer)) {
@@ -6842,21 +6833,18 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
     <div class='header'>\
       <div id='eo-account-area'>\
         <div class='Grid u-textCenter eo-row eo-menu-inner'>\
-          <div class='Grid-cell u-2of10'>\
+          <div class='Grid-cell user-pic-cell'>\
             <div id='eo-account-img'></div>\
           </div>\
-          <div class='Grid-cell u-7of10  v-align h-align'>\
+          <div class='Grid-cell user-name-cell v-align h-align'>\
             <div id='eo-account-name'></div>\
           </div>\
-          <div class='Grid-cell v-align u-1of10 right-align'>\
-            <div id='account-dropdown'>&#9662;</div>\
-          </div>\
+          <div class='Grid-cell v-align hamburger-cell right-align'> <i class='fa fa-bars' aria-hidden='true' id='options-button'></i> </div>\
         </div>\
       </div>\
       <div class='Grid u-textCenter eo-row eo-menu-inner'>\
         <div class='Grid-cell u-1of3 v-align'>\
-          <div id='eo-power-switch'>\
-            <span id='eo-power-switch-text'></span>\
+          <div id='eo-power-switch'> <span id='eo-power-switch-text'></span>\
             <div id='eo-power-switch-circle'></div>\
           </div>\
         </div>\
@@ -6893,8 +6881,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
       </div>\
       <div id='coming_soon'>\
         <div class='Grid-cell eo-row eo-menu-inner'>\
-          <div class='Grid'>\
-            <span class='eo-tooltip'>Coming soon</span>\
+          <div class='Grid'> <span class='eo-tooltip'>Coming soon</span>\
             <div class='Grid-cell u-1of6 eo-low-layer'>\
               <div class='flag sp-flag'></div>\
             </div>\
@@ -6904,8 +6891,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
           </div>\
         </div>\
         <div class='Grid-cell eo-row eo-menu-inner' id='eo-last-option'>\
-          <div class='Grid'>\
-            <span class='eo-tooltip'>Coming soon</span>\
+          <div class='Grid'> <span class='eo-tooltip'>Coming soon</span>\
             <div class='Grid-cell u-1of6 eo-low-layer'>\
               <div class='flag fr-flag'></div>\
             </div>\
@@ -6937,19 +6923,23 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
   <div class='eo-close close-dialog'></div>\
   <div id='eo-dlg-inner'>\
     <div class='Grid Grid--full'>\
-      <div class='Grid-cell eo-row2'>\
+      <div class='Grid-cell eo-row14'>\
         <div class='Grid'>\
-          <div class='Grid-cell header-cell right-align v-align'>\
+          <div class='Grid-cell signin-cell right-align v-align'>\
             <div id='dlg-sign-in-header'>Sign In</div>\
           </div>\
           <div class='Grid-cell icon-cell'>\
             <div id='eo-dlg-icon'></div>\
           </div>\
-          <div class='Grid-cell header-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
+          <div class='Grid-cell signup-cell left-align v-align' id='dlg-sign-up-header'>Sign Up</div>\
         </div>\
       </div>\
-      <div class='Grid-cell eo-row3 v-align h-align'>\
-        <div class='subtitle' id='subtitle'>Welcome to englishon. Learn english- fast and fun</div>\
+      <div class='Grid-cell eo-row12 v-align h-align'>\
+        <div class='eo-logo'></div>\
+        <div class='registered_symbol'>&#174;</div>\
+      </div>\
+      <div class='Grid-cell eo-row13 v-align h-align'>\
+        <div class='subtitle' id='subtitle'></div>\
       </div>\
       <div class='Grid-cell eo-row4'>\
         <div id='google-iframe'></div>\
@@ -6960,30 +6950,22 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
       <div class='Grid-cell eo-row5'>\
         <div class='Grid'>\
           <div class='Grid-cell line eo-delimiter'></div>\
-          <div class='Grid-cell v-align h-align'>\
-            <span class='subtitle' id='or'>OR</span>\
-          </div>\
+          <div class='Grid-cell v-align h-align'> <span class='subtitle' id='or'>OR</span> </div>\
           <div class='Grid-cell line eo-delimiter'></div>\
         </div>\
       </div>\
       <div class='Grid-cell eo-row6'>\
-        <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' />\
-      </div>\
+        <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' /> </div>\
       <div class='Grid-cell hidden eo-row8'>\
         <div id='login-email-msg' class='error eo-message'></div>\
       </div>\
       <div class='Grid-cell eo-row6'>\
-        <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' />\
-      </div>\
+        <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' /> </div>\
       <div class='Grid-cell hidden eo-row8'>\
         <div id='login-password-msg' class='error eo-message'></div>\
       </div>\
       <div class='Grid-cell v-align right-align eo-row9'>\
-        <div class='v-align right-align eo-menu-footer'>\
-          <a id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a>\
-        </div>\
-      </div>\
-      <div class='Grid-cell eo-row12'>\
+        <div class='v-align right-align eo-menu-footer'> <a id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a> </div>\
       </div>\
       <div class='Grid-cell eo-row7 v-align h-align'>\
         <div id='eo-mail-login-btn' class='v-align h-align'>sign in</div>\
@@ -7024,97 +7006,100 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 ";
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
-    <div class='eo-close close-progress-bar'></div>\
-    <div class='Grid Grid--full' id='eo-live-main'>\
-        <div class='Grid-cell'>\
-            <div class='Grid live-part' id='milotrage'>\
-                <div class='Grid-cell actions-logo-cell v-align h-align'>\
-                    <div id='actions-logo'></div>\
-                </div>\
-                <div class='Grid-cell v-align'>\
-                    <div id='eo-odometer' class='odometer'>1234567</div>\
-                </div>\
-            </div>\
+  <div class='eo-close close-progress-bar'></div>\
+  <div class='Grid Grid--full' id='eo-live-main'>\
+    <div class='Grid-cell'>\
+      <div class='Grid live-part' id='milotrage'>\
+        <div class='Grid-cell actions-logo-cell v-align h-align'>\
+          <div id='actions-logo'></div>\
         </div>\
-        <div class='Grid-cell'>\
-            <div class='Grid'>\
-                <div class='Grid-cell' id='sr-cell'>\
-                    <div id='sr' class='live-part v-align h-align'>\
-                        <div id='srProgress'></div>\
-                    </div>\
-                </div>\
-\
-            </div>\
+        <div class='Grid-cell v-align'>\
+          <div id='eo-odometer' class='odometer'>1234567</div>\
         </div>\
-        <div class='Grid-cell'>\
-            <div id='persistence' class='live-part'>\
-                <div class='Grid' id='days-pannel'>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day1'>1</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day2'>2</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day3'>3</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day4'>4</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day5'>5</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day6'>6</div>\
-                    </div>\
-                    <div class='Grid-cell'>\
-                        <div class='day-bar v-align h-align' id='eo-day7'>7</div>\
-                    </div>\
-                </div>\
-            </div>\
-        </div>\
+      </div>\
     </div>\
-    <div id='vocabulary' class='Grid Grid--full hidden'>\
-        <div class='Grid-cell cell1'>\
-            <div id='vocabulary-order'>change the list order</div>\
+    <div class='Grid-cell'>\
+      <div class='Grid'>\
+        <div class='Grid-cell' id='sr-cell'>\
+          <div id='sr' class='live-part v-align h-align'>\
+            <div id='srProgress'></div>\
+          </div>\
         </div>\
-        <div class='Grid-cell cell2'>\
-            <div id='vocabulary-content'>\
-            </div>\
-        </div>\
+      </div>\
     </div>\
-</div>\
-";
+    <div class='Grid-cell'>\
+      <div id='persistence' class='live-part'>\
+        <div class='Grid' id='days-pannel'>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day1'>1</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day2'>2</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day3'>3</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day4'>4</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day5'>5</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day6'>6</div>\
+          </div>\
+          <div class='Grid-cell'>\
+            <div class='day-bar v-align h-align' id='eo-day7'>7</div>\
+          </div>\
+        </div>\
+      </div>\
+    </div>\
+  </div>\
+  <div id='vocabulary' class='Grid Grid--full hidden'>\
+    <div class='Grid-cell cell1'>\
+      <div class='Grid' id='vocabulary-title'>\
+        <div class='Grid-cell vocabulary-cog-cell'> <i class='fa fa-cog' aria-hidden='true' id='vocabulary-order-icon'></i> </div>\
+        <div class='Grid-cell'>\
+          <div id='vocabulary-order'>change the list order</div>\
+        </div>\
+      </div>\
+    </div>\
+    <div class='Grid-cell cell2'>\
+      <div id='vocabulary-content'> </div>\
+    </div>\
+  </div>\
+</div>";
 //
 document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
-    <div id='eo-dlg-terms' class='hidden'>\
+  <div id='eo-dlg-terms' class='hidden'>\
     <div class='eo-close terms-close'></div>\
-        <div id='eo-dlg-inner'>\
-            <div class='Grid Grid--full'>\
-                <div class='Grid-cell eo-row2'>\
-                    <div class='Grid h-align'>\
-                        <div class='Grid-cell terms-icon-cell'>\
-                            <div id='eo-dlg-icon'></div>\
-                        </div>\
-                        <div class='Grid-cell header-cell left-align v-align' id='dlg-terms-header'>Englishon</div>\
-                    </div>\
-                </div>\
-                <div class='Grid-cell eo-row3 v-align h-align'>\
-                    <div id='tos'>i agree to the Terms and Conditions</div>\
-                </div>\
-                <div class='Grid-cell eo-row4 v-align h-align'>\
-                    <div class='Grid v-align h-align'>\
-                        <div class='Grid-cell checkbox-cell'>\
-                            <input type='checkbox' id='eo-accept-checkbox' />\
-                        </div>\
-                        <div class='Grid-cell checkbox-text-cell' id='agree'> Yes, I agree. Let's start!</div>\
-                    </div>\
-                </div>\
+    <div id='eo-dlg-inner'>\
+      <div class='Grid Grid--full'>\
+        <div class='Grid-cell eo-row2'>\
+          <div class='Grid h-align'>\
+            <div class='Grid-cell terms-icon-cell'>\
+              <div id='eo-dlg-icon'></div>\
             </div>\
+            <div class='Grid-cell header-cell left-align v-align' id='dlg-terms-header'>\
+              <div class='eo-logo'></div>\
+              <div class='registered_symbol'>&#174;</div>\
+            </div>\
+          </div>\
         </div>\
+        <div class='Grid-cell eo-row3 v-align h-align'>\
+          <div id='tos'></div>\
+        </div>\
+        <div class='Grid-cell eo-row4 v-align h-align'>\
+          <div class='agree-Grid v-align h-align'>\
+            <div class='Grid-cell checkbox-cell'>\
+              <input type='checkbox' id='eo-accept-checkbox' /> </div>\
+            <div class='Grid-cell checkbox-text-cell' id='agree'></div>\
+          </div>\
+        </div>\
+      </div>\
     </div>\
-</div>\
-";
+  </div>\
+</div>";
 //
 var overlay_settings = {
   'actualic': {
@@ -7176,6 +7161,10 @@ var overlay_settings = {
   'CH10': {}
 };
 ShturemOverlay = function () {
+  if (window.localStorage.getItem('show_quiz_tutorial')) {
+    e$('body').addClass('first-loading');
+    console.log('adding class first-loading');
+  };
   this.closeUnAnswered = function () {
     $(this.injector.elements).each(function (i, q) {
       if (q.qobj.element && q.qobj.element.is('.eo-active')) {
@@ -7189,7 +7178,6 @@ ShturemOverlay = function () {
     return Promise.resolve();
   };
   this.insertContent = function (element) {
-    //element.insertBefore(e$('table:first'));
     e$('body').append(element);
   };
   this.markLinks = function (links) {};
@@ -7250,6 +7238,10 @@ ShturemOverlay = function () {
     no_questions_dlg.dialog({ auto_open: true, modal: true });
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
+};
+ShturemOverlay.prototype.powerOn = function () {
+  e$('body').removeClass('first-loading');
+  console.log('remove class first-loading');
 };
 ShturemOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines
@@ -7455,7 +7447,11 @@ actualicCategoryOverlay = function (parts, category_url) {
       this.tutorial_selector = '.front-page';
     }
     this.settings.pin_button_category().append(EnglishOnButton.element());
-    e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    if (document.englishonConfig.isUser) {
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    } else {
+      e$('.eo-button').on('click', document.firstTimeUser);
+    }
     if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
       this.openNoQuestionsDialog();
     }
@@ -7470,6 +7466,7 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.hideQuestions = function () {};
   this.showQuestions = function () {};
   this.powerOn = function () {
+    ShturemOverlay.prototype.powerOn.call(this);
     if (!document.englishonConfig.isUser) {
       console.log('Marks for edited articles did not display. This user never turn on enlishon');
       return;
@@ -7493,9 +7490,12 @@ actualicCategoryOverlay = function (parts, category_url) {
     }
   };
 };
+
 //----------------------------------------------------------------
 //-----------------------------------------------------------------
 //--------------------------------------------------------------
+
+
 actualicOverlay = function (url, subtitle, bodytext) {
   this.url = url.toLowerCase();
   this.subtitle = subtitle;
@@ -7512,7 +7512,11 @@ actualicOverlay = function (url, subtitle, bodytext) {
   };
   this.showButtons = function () {
     this.settings.pin_button_article().append(EnglishOnButton.element());
-    e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    if (document.englishonConfig.isUser) {
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    } else {
+      e$('.eo-button').on('click', document.firstTimeUser);
+    }
     e$('.eo-button').css('left', this.settings.button_left_value());
     e$('.eo-button').css('top', this.settings.button_top_value());
   };
@@ -7567,6 +7571,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
       return;
     }
     this.showQuestions();
+    ShturemOverlay.prototype.powerOn.call(this);
     document.questions_promise.resolve();
     if (document.eo_user && e$('.eo-expired').length) {
       document.eo_user.showLiveActions();
@@ -7824,12 +7829,16 @@ Tour = new function () {
     steps = [];
     document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
     window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
-    steps.push(new step('#eo-dlg-login left', '', 'הירשם/התחבר לשמירת ההתקדמות בחינם!', 'login2'));
+    steps.push(new step('#eo-dlg-login right', '', 'הירשם/התחבר לשמירת ההתקדמות בחינם!', 'login2'));
     this.initTutorial(steps);
   };
   this.quizTutorial = function () {
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
+    e$('.eo-question').eq(0).addClass('highlighted');
+    setTimeout(function () {
+      e$('.eo-question').eq(0).removeClass('highlighted');
+    }, 10000);
     steps = [];
     e$('.eo-question').slice(0, 1).each(function (i, q) {
       var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
@@ -7900,6 +7909,7 @@ Tour = new function () {
               window.localStorage.setItem('leave_quesion_open', true);
               e$('.eo-question').eq(0).find('.eo-hint').click();
             }
+
             if (document.tour.getCurrentStep().id === 'login') {
               document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
               window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
@@ -7928,6 +7938,12 @@ Tour = new function () {
         tetherOptions: tetherOptionsDic,
         when: {
           show: function () {
+            if (document.tour.getCurrentStep().id.indexOf('progress') != -1) {
+              e$('.shepherd-cancel-link').on('click', function () {
+                e$(document).on('click', document.eo_user.minimize);
+                console.log('<<<<<<<>>>>>>>>>>>>>>');
+              });
+            }
             if (document.tour.getCurrentStep().id == 'login') {
               e$('.eo-button').one('click', function () {
                 document.tour.hide();
@@ -7948,7 +7964,6 @@ Tour = new function () {
             if (document.tour.getCurrentStep().id === 'live_actions') {
               if (!e$('#eo-live:not(.hidden)').length) {
                 document.eo_user.showLiveActions();
-                window.scrollTo(0, 10);
               }
             }
             if (document.tour.getCurrentStep().id.slice(0, 9) == 'question_' || document.tour.getCurrentStep().id.slice(0, 14) == 'open_question_') {
@@ -7964,7 +7979,7 @@ Tour = new function () {
               //e$(document).off('click',document.overlay.injector.elements[0].qobj.open_question_handler);
             }
             if (document.tour.getCurrentStep().id.indexOf('question_') == -1) {
-              window.scrollTo(0, 0);
+              //window.scrollTo(0, 0);
             }
             if (document.tour.getCurrentStep().id == 'question_0') {
               var questionAnswered = function (e) {
@@ -7983,6 +7998,7 @@ Tour = new function () {
                 //e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
               });
             }
+
             if (window.location.host == 'actualic.co.il') {
               var val = Math.max(230 - $(window).scrollTop(), 60);
               e$('#eo-live').css('top', val);
@@ -7993,6 +8009,7 @@ Tour = new function () {
     }
   };
 }();
+
 var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = null) {
   this.id = id;
   this.attachTo = attachTo;
@@ -8207,7 +8224,12 @@ e$(englishon);
 // Button
 // ******
 
-
+document.firstTimeUser = function () {
+  configStorage.set({ 'isUser': true, 'isActive': true });
+  window.localStorage.setItem('show_quiz_tutorial', true);
+  window.localStorage.setItem('show_progress_tutorial', true);
+  window.location.reload();
+};
 var EnglishOnButton = new function () {
   this.showMainMenu = function (e) {
     e.preventDefault();
@@ -8218,7 +8240,6 @@ var EnglishOnButton = new function () {
     e$('#eo-menu').removeClass('hidden');
     e$('#eo-area-container').removeClass('hidden');
     window.history.pushState({ 'elementToShow': 'eo-menu' }, '');
-
     e$(document).mouseup(function (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -8236,21 +8257,17 @@ var EnglishOnButton = new function () {
   this.element = function () {
     return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo')).append(e$('<div>').addClass('registered_symbol').html('&#174;'));
   };
-
   this.changeState = function (state) {
     e$('.eo-icon').removeClass(this.currentState);
     this.currentState = state;
     e$('.eo-icon').addClass(this.currentState);
   };
-
   this.on = function () {
     this.changeState('eo-button-on');
   };
-
   this.unavailable = function () {
     this.changeState('eo-button-unavailable');
   };
-
   this.off = function () {
     this.changeState('eo-button-off');
   };
@@ -8258,7 +8275,6 @@ var EnglishOnButton = new function () {
     this.changeState('eo-button-loading');
   };
 }();
-
 // ****
 // Dialogs
 // ****
@@ -8336,15 +8352,8 @@ var EnglishOnMenu = function () {
       return this;
     }
   });
-  this.firstTimeUser = function () {
-    configStorage.set({ 'isUser': true, 'isActive': true });
-    window.localStorage.setItem('show_quiz_tutorial', true);
-    window.localStorage.setItem('show_progress_tutorial', true);
-    window.location.reload();
-  };
   console.log('jquery extend after');
   this.displayMenuMessages = function () {
-    e$('#eo-menu').addClass(document.englishonConfig.siteLanguage);
     switch_text = JSON.parse(document.englishonConfig.isActive) ? 'On' : 'Off';
     e$('#eo-power-switch-text').text(switch_text);
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
@@ -8370,11 +8379,11 @@ var EnglishOnMenu = function () {
   document.overlay.insertContent(e$(document.LOGIN_DLG));
   document.overlay.insertContent(e$(document.OPTIONS_DLG));
   document.overlay.insertContent(e$(document.live_actions));
+  e$('.eo-area, #eo-live').addClass(document.englishonConfig.siteLanguage);
   /* returns a toggler function that both updates `configEntry`
      and calls the given `toggle()` function, useful when you want
      your saved configuration to always match what's on screen
    */
-
   var toggler = function (cls, configEntry, toggle_func) {
     // initialize
     var initial = JSON.parse(document.englishonConfig[configEntry]);
@@ -8407,7 +8416,7 @@ var EnglishOnMenu = function () {
         e$('#eo-dlg-login').addClass('valid');
         configStorage.set({ email: res.email, token: res.token, 'eo-user-name': e$('#eo-login-email').val() });
         if (!document.englishonConfig.isUser) {
-          document.menu.firstTimeUser();
+          document.firstTimeUser();
         }
         var TODOAfterFetch = function () {
           document.eo_user.initial();
@@ -8439,16 +8448,15 @@ var EnglishOnMenu = function () {
     if (JSON.parse(enable)) {
       document.overlay.powerOn();
       if (!document.englishonConfig.isUser) {
-        this.firstTimeUser();
+        document.firstTimeUser();
       }
     } else {
       document.overlay.powerOff();
     }
   }.bind(this));
-
   this.powerOn = function () {
     if (!document.englishonConfig.isUser) {
-      this.firstTimeUser();
+      document.firstTimeUser();
     }
     console.log('POWER ON#########');
     configStorage.set({ 'isActive': true });
@@ -8547,12 +8555,11 @@ var EnglishOnMenu = function () {
     e$(e.target).parents().find('.available').addClass('checked-language');
     if (!document.englishonConfig.isUser) {
       document.menu.powerOn();
-      document.menu.firstTimeUser();
+      document.firstTimeUser();
     }
   });
   e$('#eo-power-switch').on('click', this.togglePower);
   e$('.languages_picker .available').on('click', this.powerOn);
-
   e$('#eo-speaker-res').on('click', function () {
     toggleSound();
     document.menu.volume.syncWithSpeaker();
@@ -8604,10 +8611,12 @@ var EnglishOnMenu = function () {
   } else {
     e$('#eo-menu').removeClass('menu-editor');
   }
-
   //OPTIONS MENU HANDLERS
-  e$('#account-dropdown').data('elementToShowOnClick', 'eo-dlg-options-main');
-  e$('#account-dropdown').on('click', document.eoDialogs.toggleDialogTrigger);
+  e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
+  e$('#options-button').on('click', function (e) {
+    document.eoDialogs.toggleDialogTrigger(e);
+    e$('#options-button').toggleClass('open');
+  });
   e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
   e$('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger);
   e$('#option-dlg-signin').data('elementToShowOnClick', 'eo-dlg-login');
@@ -8624,10 +8633,9 @@ var EnglishOnMenu = function () {
     Tour.quizTutorial();
     document.tour.start();
   });
-
   e$('.eo-site-option').on('click', function (e) {
-    e$('.eo-menu').removeClass('hebrew english');
-    e$('.eo-menu').addClass(e$(e.target).attr('id'));
+    e$('.eo-area, #eo-live').removeClass('hebrew english');
+    e$('.eo-area, #eo-live').addClass(e$(e.target).attr('id'));
     configStorage.set({ siteLanguage: e$(e.target).attr('id') });
     document.menu.displayMenuMessages();
     document.eoDialogs.toggleDialogTrigger(e);
@@ -8684,7 +8692,6 @@ var EnglishOnMenu = function () {
     }
   });
 };
-
 e$(function () {
   document.loaded_promise.resolve();
 });
@@ -8693,7 +8700,7 @@ e$.when(document.questions_promise).done(function () {
     if (!document.overlay.questions || !document.overlay.questions.length) {
       //document.overlay.openNoQuestionsDialog();
       return;
-    }
+    };
     //if (true) {
     window.localStorage.removeItem('show_quiz_tutorial');
     setTimeout(function () {
@@ -8703,11 +8710,6 @@ e$.when(document.questions_promise).done(function () {
     }, 1000);
   }
 });
-// e$.when(document.show_signin_tutorial).done(function() {
-//   Tour.signinTutorial();
-//   document.tour.start();
-// })
-
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
@@ -8727,7 +8729,6 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     return;
   }
   e$('body').addClass(scraper.getHost().replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
-
   document.overlay = scraper.scrape();
   document.overlay.showButtons();
   //TODO: move to separate function
@@ -8741,7 +8742,6 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     autoOpen: false,
     modal: true
   });
-
   browserInfo = document.browserInfo;
   if (browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) <= 46 ||
   //if ((browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) > 46) ||
@@ -8751,6 +8751,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     });
   }
   document.overlay.insertContent(e$(document.TERMS_DLG));
+  e$('#eo-dlg-terms').addClass(document.englishonConfig.siteLanguage);
   document.overlay.TermsDialog();
   document.eoDialogs = new EnglishOnDialogs();
   if (document.englishonConfig.isUser) {
@@ -8796,7 +8797,6 @@ function receiveMessage(event) {
     //this is a real login, as google made many fictive logins
     configStorage.set({ token: django_token, 'eo-user-name': user_name });
     document.englishonBackend.token = django_token;
-
     e$('body').addClass('logged').removeClass('guest');
     var TODOAfterFetch = function () {
       document.eo_user.initial();
