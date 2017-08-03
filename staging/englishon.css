@@ -721,25 +721,9 @@ div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option {
 div.eo-question > .eo-correct:hover {
   /*background-color: $correct-hover-color;*/
 }
-div.eo-question .eo-options > .eo-option.eo-correct_option::after {
-  display: inline-block;
-  position: absolute;
-  margin-top: -33px;
-  /* This is the only way I found to do "top: x", since that would stick it always in the first row */
-  right: -8px;
-  width: 31px;
-  height: 32px;
-  padding-left: 8px;
-  padding-right: 8px;
-  visibility: hidden;
-  content: "";
-  background-image: url(http://www.englishon.org/v1/img/correct.svg);
-  background-size: 15px;
-  background-repeat: no-repeat;
-  background-position: center;
-  visibility: hidden;
-  transition: opacity 5s;
-  opacity: 0;
+div.eo-question .eo-options > .eo-option .feedback {
+  position: relative;
+  top: -25px;
 }
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option::after {
   visibility: visible;
@@ -759,7 +743,7 @@ div.eo-question > .eo-hint {
   border-radius: 3px;
 }
 div.eo-question > .eo-options > .eo-option > span {
-  padding: 6px 31px 6px 10px;
+  padding: 6px 25px 6px 10px;
   text-align: left;
 }
 div.eo-question > .eo-input {
