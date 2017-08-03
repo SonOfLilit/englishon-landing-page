@@ -6047,12 +6047,20 @@ UserInfo = function () {
         }
         return;
       }
+      var displayTranslation = function (element) {
+        element.toggleText('?', element.data('translation'));
+        if (element.text() != '?') {
+          element.addClass('show').removeClass('vocabulary-translation-big');
+        } else {
+          element.removeClass('show');
+        }
+      };
       if (e.target.is('.vocabulary-word')) {
-        e.target.find('.vocabulary-translation').toggleText('?', e.target.find('.vocabulary-translation').data('translation'));
+        displayTranslation(e.target.find('.vocabulary-translation'));
         return;
       }
       if (e.target.parents('.vocabulary-word').length) {
-        e.target.parents('.vocabulary-word').find('.vocabulary-translation').toggleText('?', e.target.parents('.vocabulary-word').find('.vocabulary-translation').data('translation'));
+        displayTranslation(e.target.parents('.vocabulary-word').find('.vocabulary-translation'));
         return;
       }
       if (e.target.is('.eo-close')) {
@@ -6078,7 +6086,7 @@ UserInfo = function () {
           e$('#vocabulary-content').html('');
           this.fetchVocabulary();
           document.vocabulary_interval = setInterval(function () {
-            e$('.vocabulary-translation').toggleClass('vocabulary-translation-big');
+            e$('.vocabulary-translation:not(.show)').toggleClass('vocabulary-translation-big');
           }, 2000);
         } else {
           e$('#eo-live').removeClass('vocabulary-open');
