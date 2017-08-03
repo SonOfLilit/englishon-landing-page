@@ -6053,6 +6053,7 @@ UserInfo = function () {
           element.addClass('show').removeClass('vocabulary-translation-big');
         } else {
           element.removeClass('show');
+          e$('.vocabulary-translation').addClass('vocabulary-translation-big');
         }
       };
       if (e.target.is('.vocabulary-word')) {
