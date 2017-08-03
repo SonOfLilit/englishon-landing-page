@@ -6946,28 +6946,31 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
 </div>";
 //
 document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
-    <div class='Grid Grid--full eo-inner-area hidden' id ='eo-dlg-options-main'>\
-        <div class='Grid-cell option'>\
-            <div id='tutorial-btn'>Quick Guide to EnglishOn</div>\
-        </div>\
-        <div class='Grid-cell option'>\
-            <div id='progress-tutorial-btn'>Progress Bar Tutorial</div>\
-        </div>\
-        <div class='Grid-cell option'>\
-            <div id='eo-choose-lang'>Choose site language</div>\
-        </div>\
+  <div id='eo-dlg-options-main' class='Grid Grid--full eo-inner-area hidden'>\
+    <div class='Grid-cell option'>\
+      <div id='tutorial-btn'>Quick Guide to EnglishOn</div>\
     </div>\
-    <div id='eo-site-languages' class='hidden Grid Grid--full eo-inner-area'>\
-        <div class='Grid-cell option'>\
-            <div class='eo-site-option' id='english'>English</div>\
-        </div>\
-        <div class='Grid-cell option'>\
-            <div class='eo-site-option' id='hebrew'>עברית</div>\
-        </div>\
-    </div>    \
-</div>\
-\
-";
+    <div class='Grid-cell option'>\
+      <div id='progress-tutorial-btn'>Progress Bar Tutorial</div>\
+    </div>\
+    <div class='Grid-cell option'>\
+      <div id='eo-choose-lang'>Choose site language</div>\
+    </div>\
+  </div>\
+  <div id='eo-dlg-options-logged' class='Grid Grid--full eo-inner-area hidden'>\
+    <div class='Grid-cell option-dlg-logged'>\
+      <div id='signout_btn'>Sign out</div>\
+    </div>\
+  </div>\
+  <div id='eo-site-languages' class='hidden Grid Grid--full eo-inner-area'>\
+    <div class='Grid-cell option'>\
+      <div class='eo-site-option' id='english'>English</div>\
+    </div>\
+    <div class='Grid-cell option'>\
+      <div class='eo-site-option' id='hebrew'>עברית</div>\
+    </div>\
+  </div>\
+</div>";
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
   <div class='eo-close close-progress-bar'></div>\
@@ -8394,7 +8397,7 @@ var EnglishOnMenu = function () {
           }
         });
         e$('#eo-account-name').text(email.val());
-        e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
+        e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
         e$('body').addClass('logged').removeClass('guest');
         if (res.status == 'logged_in') {
           document.eoDialogs.hideDialogs(1000);
@@ -8546,7 +8549,7 @@ var EnglishOnMenu = function () {
     e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
     uiLoginActions('guest');
   } else {
-    e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-main');
+    e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
     uiLoginActions('logged');
   }
   e$('#eo-account-name').on('click', document.eoDialogs.toggleDialogTrigger);

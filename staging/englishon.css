@@ -2611,8 +2611,11 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-dlg-options {
   cursor: pointer;
 }
-#eo-dlg-options #eo-dlg-options-main, #eo-dlg-options #eo-site-languages {
+#eo-dlg-options #eo-dlg-options-main, #eo-dlg-options #eo-site-languages, #eo-dlg-options #eo-dlg-options-logged {
   text-align: center;
+}
+#eo-dlg-options #eo-dlg-options-logged .Grid-cell {
+  border-bottom: 1px solid #d7dee3;
 }
 #eo-dlg-options .option-dlg-guest:hover, #eo-dlg-options .option-dlg-logged:hover, #eo-dlg-options .option:hover, #eo-dlg-options .option:hover {
   background-color: #b8c6cf;
