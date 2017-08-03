@@ -6515,8 +6515,10 @@ AbstractQuestion.prototype.guess = function (answer, target) {
     if (!isAnswerInTargetLanguage) {
       Speaker.speak(document.englishonConfig.targetLanguage, this.practicedWord.replace('_', ' '));
     }
-    this.closeAnswered();
-    updateProgressBars();
+    setTimeout(function () {
+      this.closeAnswered();
+      updateProgressBars();
+    }.bind(this), 1000);
   } else {
     this.element.addClass('eo-show_solution');
     //this is not the right place for this code. pass it to multipleChoiseQuestion
@@ -6685,7 +6687,9 @@ MultipleChoice.prototype.createElement = function () {
     return li;
   }.bind(this));
   option_elements.push(e$('<li>').addClass('eo-option eo-correct_option').append(e$('<span>').html(this.correct[0].replace('_', '&nbsp;')).data('word', this.correct[0])).append(e$('<i aria-hidden="true">').addClass('fa fa-thumbs-o-up feedback hidden')));
-  shuffle(option_elements);this.options = e$('<ul>').addClass('eo-options').append(option_elements);element.find('.eo-hint').after(this.options);
+  shuffle(option_elements);
+  this.options = e$('<ul>').addClass('eo-options').append(option_elements);
+  element.find('.eo-hint').after(this.options);
   return element;
 };
 
