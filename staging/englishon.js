@@ -5044,7 +5044,7 @@ var MESSAGES = {
     // Login dialog
     LOGIN_SIGN_IN_TITLE: 'Sign In',
     LOGIN_SIGN_UP_TITLE: 'Sign Up',
-    LOGIN_SUBTITLE: 'EnglishON</br>Improve Language Skills</br>Fun, Easy, Free',
+    LOGIN_SUBTITLE: 'Improve Language Skills</br>Fun, Easy, Free',
     FORGOT_PASSWORD: 'Forgot password?',
 
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
@@ -6947,20 +6947,14 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
 //
 document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
     <div class='Grid Grid--full eo-inner-area hidden' id ='eo-dlg-options-main'>\
-        <div class='Grid-cell option-dlg-guest'>\
-            <div id='tutorial-btn' >Quick Guide to EnglishOn</div>\
+        <div class='Grid-cell option'>\
+            <div id='tutorial-btn'>Quick Guide to EnglishOn</div>\
         </div>\
-        <div class='Grid-cell option-dlg-guest'>\
+        <div class='Grid-cell option'>\
             <div id='progress-tutorial-btn'>Progress Bar Tutorial</div>\
         </div>\
         <div class='Grid-cell option'>\
             <div id='eo-choose-lang'>Choose site language</div>\
-        </div>\
-        <div class='Grid-cell option-dlg-logged'>\
-            <div id='signout_btn'>Sign out</div>\
-        </div>\
-        <div class='Grid-cell v-align h-align'>\
-            <div id='eo-signout-msg'></div>\
         </div>\
     </div>\
     <div id='eo-site-languages' class='hidden Grid Grid--full eo-inner-area'>\
