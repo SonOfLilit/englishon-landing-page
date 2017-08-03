@@ -726,11 +726,11 @@ div.eo-question .eo-options > .eo-option.eo-correct_option::after {
   position: absolute;
   margin-top: -33px;
   /* This is the only way I found to do "top: x", since that would stick it always in the first row */
-  right: -12px;
-  width: 39px;
+  right: -8px;
+  width: 31px;
   height: 32px;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 8px;
+  padding-right: 8px;
   visibility: hidden;
   content: "";
   background-image: url(http://www.englishon.org/v1/img/correct.svg);
@@ -759,7 +759,7 @@ div.eo-question > .eo-hint {
   border-radius: 3px;
 }
 div.eo-question > .eo-options > .eo-option > span {
-  padding: 6px 39px 6px 10px;
+  padding: 6px 31px 6px 10px;
   text-align: left;
 }
 div.eo-question > .eo-input {
@@ -2786,7 +2786,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   padding-right: 30px;
 }
 #eo-live #vocabulary .vocabulary-translation-big {
-  font-size: 22px;
+  font-size: 24px;
   line-height: 0.5;
 }
 #eo-live #vocabulary .Grid-cell #vocabulary-title {

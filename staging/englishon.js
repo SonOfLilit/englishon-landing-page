@@ -5923,6 +5923,7 @@ UserInfo = function () {
     this.checkSRProgress();
     this.milotrage();
     e$('#eo-live').removeClass('hidden vocabulary-open');
+    clearInterval(document.vocabulary_interval);
     document.overlay.settings.placeLiveActions();
     //SHOW USER LEVEL JUST FOR TEAM
     if (e$('#developement-only-version').length) {
@@ -5932,6 +5933,7 @@ UserInfo = function () {
       this.getLevel();
     }
     $('#eo-live').removeClass('hidden vocabulary-open');
+    clearInterval(document.vocabulary_interval);
     if (document.englishonConfig.media == 'desktop') {
       e$('#eo-live').addClass('eo-live-maximize');
       e$(document).on('click', this.minimize);
@@ -5981,6 +5983,7 @@ UserInfo = function () {
       }
     }
     e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+    clearInterval(document.vocabulary_interval);
     e$('#vocabulary').addClass('hidden');
     e$('#eo-live-main').removeClass('hidden');
     e$(document).off('click', this.minimize);
@@ -6057,12 +6060,14 @@ UserInfo = function () {
           e$('#vocabulary').addClass('hidden');
           e$('#eo-live-main').removeClass('hidden');
           e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+          clearInterval(document.vocabulary_interval);
           return;
         }
         e$('#eo-live').addClass('hidden');
         e$('#vocabulary').addClass('hidden');
         e$('#eo-live-main').removeClass('hidden');
         e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
+        clearInterval(document.vocabulary_interval);
         return;
       }
       if ((e.target.parents('#sr').length || e.target.is('#sr') || e.target.parents('#milotrage').length || e.target.parents('#persistence').length || e.target.is('#vocabulary') || e.target.parents('#vocabulary').length) && e$('#eo-live').hasClass('eo-live-maximize')) {
@@ -6072,11 +6077,12 @@ UserInfo = function () {
           e$('#eo-live').addClass('vocabulary-open');
           e$('#vocabulary-content').html('');
           this.fetchVocabulary();
-          var vocabulary_interval = setInterval(function () {
+          document.vocabulary_interval = setInterval(function () {
             e$('.vocabulary-translation').toggleClass('vocabulary-translation-big');
-          }, 3000);
+          }, 2000);
         } else {
           e$('#eo-live').removeClass('vocabulary-open');
+          clearInterval(document.vocabulary_interval);
         };
         return;
       }
@@ -6085,6 +6091,7 @@ UserInfo = function () {
         e$('#eo-live-main').removeClass('hidden');
         e$('#vocabulary').addClass('hidden');
         e$('#eo-live').removeClass('vocabulary-open');
+        clearInterval(document.vocabulary_interval);
         return;
       }
       e$(document).on('click', this.minimize);
