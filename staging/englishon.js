@@ -5046,10 +5046,12 @@ var MESSAGES = {
     LOGIN_SIGN_UP_TITLE: 'Sign Up',
     LOGIN_SUBTITLE: 'EnglishON</br>Improve Language Skills</br>Fun, Easy, Free',
     FORGOT_PASSWORD: 'Forgot password?',
+
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
     REGISTER_MESSAGE: 'Thank you for registering! A confirmation message sent to the given email.',
     ENABLE: "Enable EnglishON",
     DISABLE: "Disable EnglishON",
+
     WRONG_KEYBOARD_LAYOUT: "Please switch keyboard layout.",
     WRONG_KEYBOARD_LAYOUT_HINT: "Alt + Shift",
     LOGGED_IN_AS: "You logged in",
@@ -5057,6 +5059,7 @@ var MESSAGES = {
     LOGIN_AS: "Log in as:",
     LOGIN_BUTTON: "LEARN FOR FREE",
     SIGN_OUT: 'Sign out',
+
     UPGRADE_MESSAGE: 'Your browswer_name browser is outdated</br>.Please press here to update..',
     SIGN_OUT_FEEDBACK: "You've Signed Out",
     LOGGED_IN_FIDBACK: 'You signed in',
@@ -6069,6 +6072,9 @@ UserInfo = function () {
           e$('#eo-live').addClass('vocabulary-open');
           e$('#vocabulary-content').html('');
           this.fetchVocabulary();
+          var vocabulary_interval = setInterval(function () {
+            e$('.vocabulary-translation').toggleClass('vocabulary-translation-big');
+          }, 3000);
         } else {
           e$('#eo-live').removeClass('vocabulary-open');
         };
@@ -6125,8 +6131,10 @@ UserInfo = function () {
 };
 //
 Injector = function (paragraphs) {
+
   report = function (msg, data) {
     if (!data) data = {};
+
     post = document.englishonBackend.report(msg, data);
     post.done(function (res) {
       if (msg === 'TriedAnswer') {
@@ -6146,6 +6154,7 @@ Injector = function (paragraphs) {
           document.eo_user.fetchVocabulary();
         }
       }
+
       if (msg === "StartedQuestion" && !document.overlay.interacted) {
         document.overlay.interacted = true;
         report("StartedQuiz");
@@ -6177,7 +6186,9 @@ Injector = function (paragraphs) {
       this.off();
     }
   };
+
   this.off = function () {
+
     if (!this.isActive) {
       return;
     }
@@ -6190,6 +6201,7 @@ Injector = function (paragraphs) {
       q.qobj.touched = false;
       q.qobj.tried = [];
     });
+
     //this.interacted = false;
     //this.userAnswered = false;
     console.log("hide questions now");
@@ -6221,7 +6233,9 @@ Injector = function (paragraphs) {
       }
     });
   };
+
   this.setQuestions = function (questions, toggleSound) {
+
     this.elements = [];
     //enable setQuestion after login
     this.isBatch = true;
@@ -6261,14 +6275,17 @@ Injector = function (paragraphs) {
     });
     return availablePlace;
   };
+
   this.addQuestion = function (question, toggleSound) {
     var target = this.findTarget(question.context, question.replaced);
     if (!target) {
       console.log("addQuestion***Could not find question: ", question);
       return;
     }
+
     var q = new Question(question, toggleSound);
     this.elements.push({ qobj: q, original: target });
+
     if (!this.isBatch) {
       updateProgressBars();
     }
@@ -6331,19 +6348,23 @@ updateProgressBars = function () {
   //e$('.eo-progress').text(Math.ceil(100 * answered / all).toString() + '%');
   e$('.eo-progress-inner').css('width', (100 * answered / all).toString() + '%');
 };
+
 var AbstractQuestion = function (qdata, toggleSound) {
   this.data = qdata;
   if (typeof this.data.correct_answer === 'string') this.correct = [this.data.correct_answer];else // multiple correct answers
     this.correct = this.data.correct_answers.map(function (a) {
       return a.answer;
     });
+
   this.practicedWord = this.data.hint_language === document.englishonConfig.targetLanguage ? this.data.hint : this.correct[0];
+
   this.toggleSound = toggleSound;
   this.tried = [];
   this.maxtime = 40;
   this.maxattempts = 3;
   this.touched = false;
 };
+
 AbstractQuestion.prototype.replacement = function () {
   if (!this.element) {
     this.element = this.createElement();
@@ -6374,6 +6395,7 @@ AbstractQuestion.prototype.open_question_handler = function (e) {
     $(document).off('click', this.open_question_handler);
   };
 };
+
 AbstractQuestion.prototype.questionOnClick = function (e) {
   e.preventDefault();
   e.stopPropagation();
@@ -6389,12 +6411,15 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
     document.overlay.closeUnAnswered();
   }
   this.open();
+
   $(document).on('click', this.open_question_handler.bind(this));
 };
+
 AbstractQuestion.prototype.open = function () {
   // placeholder, you probably want to call not super() but animateStateChange() directly
   this.element.addClass('eo-active');
 };
+
 AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesToRemove, finalWidth) {
   var offset = this.element.offset().left;
   var future_point = offset - (finalWidth - Number(this.element.css('width').replace(/[^\d\.\-]/g, '')));
@@ -6421,6 +6446,7 @@ AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesT
     this.element.removeAttr('style');
   }
 };
+
 AbstractQuestion.prototype.QuestionAudio = function (e) {
   e.preventDefault();
   var target = e$(e.target);
@@ -6481,6 +6507,7 @@ AbstractQuestion.prototype.touch = function (event) {
     this.touched = true;
   }
 };
+
 AbstractQuestion.prototype.guess = function (answer, target) {
   var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
   if (isAnswerInTargetLanguage) {
@@ -6498,6 +6525,7 @@ AbstractQuestion.prototype.guess = function (answer, target) {
     //this is not the right place for this code. pass it to multipleChoiseQuestion
     if (e$(target).data('translate')) e$(target).toggleHtml(e$(target).data('translate'), e$(target).data('word'));
   }
+
   // don't count the same answer multiple times.
   if (this.tried.indexOf(answer) !== -1) return;
   this.tried.push(answer);
@@ -6508,6 +6536,7 @@ AbstractQuestion.prototype.guess = function (answer, target) {
       trial_num: this.tried.length
     });
   }
+
   if (isCorrect) {
     if (!this.element.hasClass('lost_focus')) {
       this.report('CompletedQuestion', {
@@ -6522,9 +6551,11 @@ AbstractQuestion.prototype.guess = function (answer, target) {
     }
   }
 };
+
 AbstractQuestion.prototype.languageOrderClass = function () {
   return this.practicedWord !== this.data.hint ? 'eo-dest_hint' : 'eo-source_hint';
 };
+
 AbstractQuestion.prototype.markAnswered = function () {
   var correct = this.element.find('.eo-correct');
   var finalWidth = correct.outerWidth();
@@ -6585,15 +6616,18 @@ OpenQuestion.prototype.onKeyPress = function (event) {
     if (this.langWarning) this.langWarning.hide();
   }
 };
+
 OpenQuestion.prototype.onSelect = function (event, ui) {
   this.input.val(ui.item.value);
   this.guess(this.input.val());
 };
+
 OpenQuestion.prototype.open = function () {
   //console.log("EVENT open question ??");
   this.animateStateChange('eo-active', null, this.element.outerWidth() + this.input.outerWidth());
   this.input.focus();
 };
+
 OpenQuestion.prototype.closeUnanswered = function () {
   AbstractQuestion.prototype.closeUnanswered.call(this);
   if (!this.element.hasClass('eo-answered')) {
@@ -6602,6 +6636,7 @@ OpenQuestion.prototype.closeUnanswered = function () {
     }
   }
 };
+
 OpenQuestion.prototype.guess = function (answer) {
   var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
   if (isAnswerInTargetLanguage) {
@@ -6612,14 +6647,17 @@ OpenQuestion.prototype.guess = function (answer) {
   this.closeAnswered();
   updateProgressBars();
   var isCorrect = this.isCorrect(answer);
+
   // don't count the same answer multiple times.
   if (this.tried.indexOf(answer) !== -1) return;
   this.tried.push(answer);
+
   this.report('TriedAnswer', {
     question: this.data.id,
     answer: answer,
     trial_num: this.tried.length
   });
+
   if (isCorrect) {
     this.element.addClass('eo-correct_answer');
     this.report('CompletedQuestion', {
@@ -6634,9 +6672,11 @@ OpenQuestion.prototype.guess = function (answer) {
     });
   }
 };
+
 var MultipleChoice = function (question, toggleSound) {
   AbstractQuestion.call(this, question, toggleSound);
 };
+
 MultipleChoice.prototype = Object.create(AbstractQuestion.prototype);
 MultipleChoice.prototype.constructor = MultipleChoice;
 MultipleChoice.prototype.replacement = function () {
@@ -6646,6 +6686,7 @@ MultipleChoice.prototype.replacement = function () {
   if (!this.element || !this.element.hasClass('eo-answered')) {
     this.element = this.createElement();
   }
+
   this.bindInput();
   return this.element;
 };
@@ -6679,6 +6720,7 @@ function shuffle(arr) {
     arr[j] = temp;
   }
 };
+
 MultipleChoice.prototype.bindInput = function () {
   AbstractQuestion.prototype.bindInput.call(this);
   this.element.find('.eo-option').click(this.optionOnClick.bind(this));
@@ -6695,10 +6737,12 @@ MultipleChoice.prototype.bindInput = function () {
     }.bind(this));
   }
 };
+
 MultipleChoice.prototype.optionOnClick = function (e) {
   e.preventDefault();
   this.guess(e$(e.target).data('word'), e.target);
 };
+
 MultipleChoice.prototype.open = function () {
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
     e$(option).find('span').toggleHtml(e$(option).find('span').data('word'), e$(option).find('span').data('translate'));
@@ -6714,6 +6758,7 @@ MultipleChoice.prototype.open = function () {
   this.animateStateChange('eo-active', null, width);
   this.options.width(width + 1);
 };
+
 MultipleChoice.prototype.closeUnanswered = function () {
   AbstractQuestion.prototype.closeUnanswered.call(this);
   if (!this.element.hasClass('eo-answered')) {
@@ -6723,6 +6768,7 @@ MultipleChoice.prototype.closeUnanswered = function () {
     }
   }
 };
+
 MultipleChoice.prototype.closeAnswered = function () {
   // see super for more documentation
   var correctOption = this.element.find('.eo-option.eo-correct_option span');
@@ -6762,11 +6808,14 @@ ExpiredOpenQuestion.prototype.createElement = function () {
   } else {
     element.addClass('eo-wrong_answer');
   }
+
   return element;
 };
+
 var ExpiredMultipleChoiceQuestion = function (question) {
   AbstractExpiredQuestion.call(this, question);
 };
+
 ExpiredMultipleChoiceQuestion.prototype = Object.create(AbstractExpiredQuestion.prototype);
 ExpiredMultipleChoiceQuestion.prototype.constructor = ExpiredMultipleChoiceQuestion;
 //
@@ -6849,7 +6898,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
       </div>\
       <div class='Grid-cell eo-row10 eo-menu-inner'>\
         <div class='Grid'>\
-          <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='https://englishonhelp.desk.com/'>Need Help?</a></div>\
+          <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='https://englishon2.helpdocsonline.com/home'>Need Help?</a></div>\
           <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='https://englishonhelp.desk.com/'>Contact Us</a></div>\
         </div>\
       </div>\
@@ -7433,9 +7482,12 @@ actualicCategoryOverlay = function (parts, category_url) {
     }
   };
 };
+
 //----------------------------------------------------------------
 //-----------------------------------------------------------------
 //--------------------------------------------------------------
+
+
 actualicOverlay = function (url, subtitle, bodytext) {
   this.url = url.toLowerCase();
   this.subtitle = subtitle;
@@ -7805,7 +7857,7 @@ Tour = new function () {
           text: 'הפעל',
           classes: 'shepherd-button-primary',
           action: function () {
-            document.menu.firstTimeUser();
+            document.firstTimeUser();
           }
         });
       }
@@ -7849,6 +7901,7 @@ Tour = new function () {
               window.localStorage.setItem('leave_quesion_open', true);
               e$('.eo-question').eq(0).find('.eo-hint').click();
             }
+
             if (document.tour.getCurrentStep().id === 'login') {
               document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
               window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
@@ -7937,6 +7990,7 @@ Tour = new function () {
                 //e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
               });
             }
+
             if (window.location.host == 'actualic.co.il') {
               var val = Math.max(230 - $(window).scrollTop(), 60);
               e$('#eo-live').css('top', val);
@@ -7947,6 +8001,7 @@ Tour = new function () {
     }
   };
 }();
+
 var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = null) {
   this.id = id;
   this.attachTo = attachTo;
@@ -8220,6 +8275,7 @@ var EnglishOnDialogs = function () {
     //element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
     element.text(msg).parent().removeClass('hidden');
   };
+
   this.hideDialogs = function (milliseconds) {
     e$('#eo-area-container').addClass('hidden');
     e$('.eo-area').addClass('hidden');
@@ -8241,6 +8297,7 @@ var EnglishOnDialogs = function () {
       var elementParent = elementObj.parent()[0];
       elementsArray = [elementObj[0], elementParent]; //looking after a normal syntax... e$([]).add doesn't work
     };
+
     e$(elementsArray).toggleClass('hidden', action == 'hide');
   };
   this.toggleDialogTrigger = function (e) {
@@ -8256,6 +8313,7 @@ var EnglishOnDialogs = function () {
     window.history.pushState({ 'elementToShow': visibleNow.attr('id') }, '');
   }.bind(this);
 };
+
 // ****
 // Menu
 // ****
@@ -8313,7 +8371,7 @@ var EnglishOnMenu = function () {
   document.overlay.insertContent(e$(document.LOGIN_DLG));
   document.overlay.insertContent(e$(document.OPTIONS_DLG));
   document.overlay.insertContent(e$(document.live_actions));
-  e$('#eo-menu, #eo-dlg-login, #eo-dlg-options, #eo-live').addClass(document.englishonConfig.siteLanguage);
+  e$('.eo-area, #eo-live').addClass(document.englishonConfig.siteLanguage);
   /* returns a toggler function that both updates `configEntry`
      and calls the given `toggle()` function, useful when you want
      your saved configuration to always match what's on screen
@@ -8332,6 +8390,7 @@ var EnglishOnMenu = function () {
       e$('body').toggleClass(cls, enabled);
     };
   };
+
   var loginByMail = function () {
     var email = e$('#eo-login-email');
     var password = e$('#eo-login-password');
@@ -8403,6 +8462,7 @@ var EnglishOnMenu = function () {
     e$('body').removeClass('eo-active');
     document.overlay.powerOff();
   };
+
   this.signout = function () {
     var popup = e$('#eo-iframe')[0].contentWindow;
     popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
@@ -8414,9 +8474,11 @@ var EnglishOnMenu = function () {
     document.englishonConfig.token = null;
     auth.login(document.englishonConfig.token).then(function (token) {
       configStorage.set({ token: token });
+
       document.englishonBackend.token = token;
       //Give englishon the new guest token
       popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+
       e$('#eo-account-area').addClass('guest');
       e$('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
@@ -8429,12 +8491,14 @@ var EnglishOnMenu = function () {
       });
     });
   };
+
   if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') {
     e$('body').addClass('heroku-staging');
   }
   if (document.englishonBackend.base == 'http://localhost:8080') {
     e$('body').addClass('localhost');
   }
+
   EnglishOnButton.on();
   this.volume = new function () {
     this.changeVolume = function () {
@@ -8451,6 +8515,7 @@ var EnglishOnMenu = function () {
       vol = JSON.parse(document.englishonConfig.enableSound) ? document.englishonConfig.volume : '0';
       e$('#eo-slider').slider('value', vol);
     };
+
     vol = JSON.parse(document.englishonConfig.enableSound) ? document.englishonConfig.volume : '0';
     e$("#eo-slider").slider({
       range: "min",
@@ -8459,6 +8524,8 @@ var EnglishOnMenu = function () {
     });
   }();
   //container = e$('#progress-container1');
+
+
   this.displayMenuMessages();
   if (document.englishonConfig.media == 'desktop') {
     //top left values to display centered dialogs 
@@ -8517,6 +8584,7 @@ var EnglishOnMenu = function () {
     e$.when(document.dic_promise).done(function () {
       document._editor = new Editor(document.overlay);
     });
+
     e$('#eo-editor-btn').on('click', function (event) {
       document.menu.powerOn();
       document.overlay.hideQuestions();
@@ -8525,6 +8593,7 @@ var EnglishOnMenu = function () {
       document.eo_user.hideLiveActions();
       // after you've loaded the editor, there's no going back.
       // (for now. this should be fixed.)
+
       document.overlay.hideButtons();
       document._editor.fetchQuestions().then(function () {
         console.log('------------------------------questions for editor');
@@ -8557,8 +8626,8 @@ var EnglishOnMenu = function () {
     document.tour.start();
   });
   e$('.eo-site-option').on('click', function (e) {
-    e$('#eo-menu, #eo-dlg-login, #eo-dlg-options, #eo-live').removeClass('hebrew english');
-    e$('#eo-menu, #eo-dlg-login, #eo-dlg-options, #eo-live').addClass(e$(e.target).attr('id'));
+    e$('.eo-area, #eo-live').removeClass('hebrew english');
+    e$('.eo-area, #eo-live').addClass(e$(e.target).attr('id'));
     configStorage.set({ siteLanguage: e$(e.target).attr('id') });
     document.menu.displayMenuMessages();
     document.eoDialogs.toggleDialogTrigger(e);
@@ -8569,6 +8638,7 @@ var EnglishOnMenu = function () {
     var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
     e$('#google-iframe').append(google_login);
   }
+
   e$('#eo-iframe').on('load', function () {
     var popup = this.contentWindow;
     popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
@@ -8594,6 +8664,7 @@ var EnglishOnMenu = function () {
   });
   //such a stupid line!!!!!!
   //window.history.pushState({ 'elementToShow': 'shturem' }, '');
+
   $(window).on('beforeunload', function (e) {
     e.preventDefault();
     if (!document.englishonConfig.email && e$('.eo-answered').length) {
@@ -8706,6 +8777,7 @@ function receiveMessage(event) {
     return;
   }
   // event.source is popup
+
   var django_token = event.data.token;
   var img = event.data.image;
   var email = event.data.email;
