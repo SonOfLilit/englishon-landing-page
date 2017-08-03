@@ -721,25 +721,13 @@ div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option {
 div.eo-question > .eo-correct:hover {
   /*background-color: $correct-hover-color;*/
 }
-div.eo-question .eo-options > .eo-option.eo-correct_option::after {
-  display: inline-block;
-  position: absolute;
-  margin-top: -33px;
-  /* This is the only way I found to do "top: x", since that would stick it always in the first row */
-  right: -12px;
-  width: 39px;
-  height: 32px;
-  padding-left: 12px;
-  padding-right: 12px;
-  visibility: hidden;
-  content: "";
-  background-image: url(http://www.englishon.org/v1/img/correct.svg);
-  background-size: 15px;
-  background-repeat: no-repeat;
-  background-position: center;
-  visibility: hidden;
-  transition: opacity 5s;
-  opacity: 0;
+div.eo-question .eo-options > .eo-option .feedback {
+  position: relative;
+  top: -25px;
+  left: -5px;
+}
+div.eo-question .eo-options > .eo-option.wrong-feedback {
+  background-color: #F34340;
 }
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option::after {
   visibility: visible;
@@ -759,7 +747,7 @@ div.eo-question > .eo-hint {
   border-radius: 3px;
 }
 div.eo-question > .eo-options > .eo-option > span {
-  padding: 6px 39px 6px 10px;
+  padding: 6px 25px 6px 10px;
   text-align: left;
 }
 div.eo-question > .eo-input {
@@ -2623,8 +2611,11 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-dlg-options {
   cursor: pointer;
 }
-#eo-dlg-options #eo-dlg-options-main, #eo-dlg-options #eo-site-languages {
+#eo-dlg-options #eo-dlg-options-main, #eo-dlg-options #eo-site-languages, #eo-dlg-options #eo-dlg-options-logged {
   text-align: center;
+}
+#eo-dlg-options #eo-dlg-options-logged .Grid-cell {
+  border-bottom: 1px solid #d7dee3;
 }
 #eo-dlg-options .option-dlg-guest:hover, #eo-dlg-options .option-dlg-logged:hover, #eo-dlg-options .option:hover, #eo-dlg-options .option:hover {
   background-color: #b8c6cf;
@@ -2703,8 +2694,9 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 #eo-live.vocabulary-open .eo-close {
   background-color: black;
-  top: 185px;
-  left: 255px;
+  position: fixed;
+  top: 240px;
+  left: 290px;
 }
 #eo-live #srProgress,
 #eo-live #progress2 {
@@ -2784,6 +2776,10 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 #eo-live #vocabulary #vocabulary-content .vocabulary-odometer, #eo-live #vocabulary #vocabulary-content .vocabulary-origin {
   padding-right: 30px;
+}
+#eo-live #vocabulary .vocabulary-translation-big {
+  font-size: 24px;
+  line-height: 0.5;
 }
 #eo-live #vocabulary .Grid-cell #vocabulary-title {
   background-color: #2cc6a8;
