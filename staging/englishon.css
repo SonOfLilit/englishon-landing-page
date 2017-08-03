@@ -726,6 +726,9 @@ div.eo-question .eo-options > .eo-option .feedback {
   top: -25px;
   left: -5px;
 }
+div.eo-question .eo-options > .eo-option.wrong-feedback {
+  background-color: #B22222;
+}
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option::after {
   visibility: visible;
   opacity: 1;

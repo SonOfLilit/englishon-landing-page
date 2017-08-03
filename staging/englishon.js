@@ -6505,6 +6505,7 @@ AbstractQuestion.prototype.touch = function (event) {
 };
 AbstractQuestion.prototype.guess = function (answer, target) {
   e$(target).parents('.eo-option').find('.feedback').removeClass('hidden');
+  this.element.addClass('eo-show_solution');
   //this.element.find('.eo-correct_option').find('.feedback').removeClass('hidden');
   var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
   if (isAnswerInTargetLanguage) {
@@ -6520,7 +6521,7 @@ AbstractQuestion.prototype.guess = function (answer, target) {
       updateProgressBars();
     }.bind(this), 1000);
   } else {
-    this.element.addClass('eo-show_solution');
+    e$(target).parents('.eo-option').addClass('wrong-feedback');
     //this is not the right place for this code. pass it to multipleChoiseQuestion
     if (e$(target).data('translate')) e$(target).toggleHtml(e$(target).data('translate'), e$(target).data('word'));
   }
