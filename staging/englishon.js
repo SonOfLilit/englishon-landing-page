@@ -6505,7 +6505,7 @@ AbstractQuestion.prototype.touch = function (event) {
 };
 AbstractQuestion.prototype.guess = function (answer, target) {
   e$(target).parents('.eo-option').find('.feedback').removeClass('hidden');
-  this.element.find('.eo-correct_option').find('.feedback').removeClass('hidden');
+  //this.element.find('.eo-correct_option').find('.feedback').removeClass('hidden');
   var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
   if (isAnswerInTargetLanguage) {
     Speaker.speak(document.englishonConfig.targetLanguage, answer.replace('_', ' '));
