@@ -5070,7 +5070,7 @@ var MESSAGES = {
     AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
     AGREE: "I agree.",
     NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>",
-    COMPLETE_QUIZ: 'Well Done!</br>Sign up for Free</br> to Save your Work!',
+    COMPLETE_QUIZ: 'Well Done!</br>Sign up for Free</br> to save your Work!',
     ALPHABET_VOCABULARY: 'By Alphabetical Order',
     SR_VOCABULARY: 'Prioritized for Review'
   },
@@ -6053,7 +6053,7 @@ UserInfo = function () {
           element.addClass('show').removeClass('vocabulary-translation-big');
         } else {
           element.removeClass('show');
-          e$('.vocabulary-translation').addClass('vocabulary-translation-big');
+          e$('.vocabulary-translation:not(.show)').addClass('vocabulary-translation-big');
         }
       };
       if (e.target.is('.vocabulary-word')) {
@@ -6180,13 +6180,13 @@ Injector = function (paragraphs) {
         }
       }
     }.bind(this));
-    if (msg === "CompletedQuestion" && e$('.eo-question:not(.eo-answered)').length === 0) {
+    if (msg === "CompletedQuestion" && e$('.eo-question:not(.eo-answered)').length === 1) {
       report("CompletedQuiz");
       if (!document.englishonConfig.email) {
         setTimeout(function () {
           e$('#eo-dlg-login').find('#subtitle').html(document.MESSAGES[document.englishonConfig.siteLanguage].COMPLETE_QUIZ);
           document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
-        }, 2000);
+        }, 4000);
       }
     }
   };
@@ -6521,7 +6521,7 @@ AbstractQuestion.prototype.guess = function (answer, target) {
       updateProgressBars();
     }.bind(this), 1000);
   } else {
-    e$(target).parents('.eo-option').addClass('wrong-feedback');
+    e$(target).parents('.eo-option, .eo-question').addClass('wrong-feedback');
     //this is not the right place for this code. pass it to multipleChoiseQuestion
     if (e$(target).data('translate')) e$(target).toggleHtml(e$(target).data('translate'), e$(target).data('word'));
   }
@@ -6974,6 +6974,7 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
   <div class='eo-close close-progress-bar'></div>\
+  <div class='eo-close close-vocabulary'></div>\
   <div class='Grid Grid--full' id='eo-live-main'>\
     <div class='Grid-cell'>\
       <div class='Grid live-part' id='milotrage'>\
@@ -7112,12 +7113,16 @@ var overlay_settings = {
       },
       'placeLiveActions': function () {
         var startPoint = 206;
-        e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
+        var val = e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left;
+        e$('#eo-live').css('left', val - 320);
+        e$('#eo-live .close-vocabulary').css('left', val - 58);
         var val = Math.max(startPoint - $(window).scrollTop(), 60);
         e$('#eo-live').css('top', val);
+        e$('#eo-live .close-vocabulary').css('top', val + 180);
         $(window).scroll(function () {
           var val = Math.max(startPoint - $(window).scrollTop(), 60);
           e$('#eo-live').css('top', val);
+          e$('#eo-live .close-vocabulary').css('top', val + 180);
         });
       },
       'pin-tutotial-article': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children',
@@ -7457,12 +7462,9 @@ actualicCategoryOverlay = function (parts, category_url) {
     }
   };
 };
-
 //----------------------------------------------------------------
 //-----------------------------------------------------------------
 //--------------------------------------------------------------
-
-
 actualicOverlay = function (url, subtitle, bodytext) {
   this.url = url.toLowerCase();
   this.subtitle = subtitle;
@@ -8043,7 +8045,7 @@ function englishon() {
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES ON PRODUCTION
   if (!e$('#developement-only-version').length) {
-    if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/") {
+    if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/" || media != 'desktop') {
       return;
     }
   }
