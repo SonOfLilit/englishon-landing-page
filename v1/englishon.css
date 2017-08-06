@@ -715,6 +715,9 @@ div.eo-question > .eo-correct {
   border: 1px solid #2cc6a8;
   /*color: #78909c;*/
 }
+div.eo-question.wrong-feedback > .eo-correct {
+  border: 1px solid #F34340;
+}
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option {
   background-color: #2cc6a8;
 }
@@ -2669,8 +2672,14 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   overflow: hidden;
   cursor: pointer;
 }
+#eo-live * {
+  box-sizing: content-box;
+}
 #eo-live .eo-close {
   display: block;
+}
+#eo-live .close-vocabulary {
+  display: none;
 }
 #eo-live.hebrew .Grid#vocabulary-title {
   direction: rtl;
@@ -2693,10 +2702,13 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   overflow: auto;
 }
 #eo-live.vocabulary-open .eo-close {
-  background-color: black;
+  display: none;
+}
+#eo-live.vocabulary-open .close-vocabulary {
+  /*it can't be positioned absolute because vocabulary has scroll.
+it's top left values will re-computed everytime progress bar is moving*/
   position: fixed;
-  top: 240px;
-  left: 290px;
+  display: block;
 }
 #eo-live #srProgress,
 #eo-live #progress2 {

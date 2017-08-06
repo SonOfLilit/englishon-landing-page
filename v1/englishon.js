@@ -5070,7 +5070,7 @@ var MESSAGES = {
     AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
     AGREE: "I agree.",
     NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>",
-    COMPLETE_QUIZ: 'Well Done!</br>Sign up for Free</br> to Save your Work!',
+    COMPLETE_QUIZ: 'Well Done!</br>Sign up for Free</br> to save your Work!',
     ALPHABET_VOCABULARY: 'By Alphabetical Order',
     SR_VOCABULARY: 'Prioritized for Review'
   },
@@ -5962,7 +5962,7 @@ UserInfo = function () {
     e$.each(words_list, function (i, word_info) {
       content.append(e$('<div>').addClass('vocabulary-word')
       //the text value is a hack to display the milotrage digits without the decimal point
-      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-origin').text(word_info.word).on('click', function (e) {})).append(e$('<span>').addClass('vocabulary-translation').text('?').data('translation', word_info.translation)));
+      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-origin').data('full', word_info.word).text(word_info.word).on('click', function (e) {})).append(e$('<span>').addClass('vocabulary-translation').text('?').data('translation', word_info.translation)));
     });
     e$('#vocabulary-content').html(content);
     var el = document.getElementsByClassName('vocabulary-odometer');
@@ -5986,6 +5986,7 @@ UserInfo = function () {
     clearInterval(document.vocabulary_interval);
     e$('#vocabulary').addClass('hidden');
     e$('#eo-live-main').removeClass('hidden');
+    e$('#eo-live').animate({ scrollTop: 0 });
     e$(document).off('click', this.minimize);
   };
   this.initial = function () {
@@ -6047,21 +6048,29 @@ UserInfo = function () {
         }
         return;
       }
-      var displayTranslation = function (element) {
+      var wordRepetition = function (element, origin_word) {
+        Speaker.speak(document.englishonConfig.targetLanguage, origin_word.data('full'));
         element.toggleText('?', element.data('translation'));
+        if (element.offset().left + element.width() > e$('#eo-live').offset().left + 293) {
+          console.log('line down!!!!line down!!!!');
+          //TODO:check why this worked just with e$(element.context). 
+          //element.next('.vocabulary-origin').text(element.next('.vocabulary-origin').data('full').slice(0,4));
+          origin_word.text(origin_word.data('full').slice(0, 4));
+        }
         if (element.text() != '?') {
           element.addClass('show').removeClass('vocabulary-translation-big');
         } else {
           element.removeClass('show');
-          e$('.vocabulary-translation').addClass('vocabulary-translation-big');
+          e$('.vocabulary-translation:not(.show)').addClass('vocabulary-translation-big');
+          origin_word.text(origin_word.data('full'));
         }
       };
       if (e.target.is('.vocabulary-word')) {
-        displayTranslation(e.target.find('.vocabulary-translation'));
+        wordRepetition(e.target.find('.vocabulary-translation'), e.target.find('.vocabulary-origin'));
         return;
       }
       if (e.target.parents('.vocabulary-word').length) {
-        displayTranslation(e.target.parents('.vocabulary-word').find('.vocabulary-translation'));
+        wordRepetition(e.target.parents('.vocabulary-word').find('.vocabulary-translation'), e.target.parents('.vocabulary-word').find('.vocabulary-origin'));
         return;
       }
       if (e.target.is('.eo-close')) {
@@ -6180,13 +6189,13 @@ Injector = function (paragraphs) {
         }
       }
     }.bind(this));
-    if (msg === "CompletedQuestion" && e$('.eo-question:not(.eo-answered)').length === 0) {
+    if (msg === "CompletedQuestion" && e$('.eo-question:not(.eo-answered)').length === 1) {
       report("CompletedQuiz");
       if (!document.englishonConfig.email) {
         setTimeout(function () {
           e$('#eo-dlg-login').find('#subtitle').html(document.MESSAGES[document.englishonConfig.siteLanguage].COMPLETE_QUIZ);
           document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
-        }, 2000);
+        }, 4000);
       }
     }
   };
@@ -6521,7 +6530,7 @@ AbstractQuestion.prototype.guess = function (answer, target) {
       updateProgressBars();
     }.bind(this), 1000);
   } else {
-    e$(target).parents('.eo-option').addClass('wrong-feedback');
+    e$(target).parents('.eo-option, .eo-question').addClass('wrong-feedback');
     //this is not the right place for this code. pass it to multipleChoiseQuestion
     if (e$(target).data('translate')) e$(target).toggleHtml(e$(target).data('translate'), e$(target).data('word'));
   }
@@ -6974,6 +6983,7 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
   <div class='eo-close close-progress-bar'></div>\
+  <div class='eo-close close-vocabulary'></div>\
   <div class='Grid Grid--full' id='eo-live-main'>\
     <div class='Grid-cell'>\
       <div class='Grid live-part' id='milotrage'>\
@@ -7112,12 +7122,16 @@ var overlay_settings = {
       },
       'placeLiveActions': function () {
         var startPoint = 206;
-        e$('#eo-live').css('left', e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320);
+        var val = e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left;
+        e$('#eo-live').css('left', val - 320);
+        e$('#eo-live .close-vocabulary').css('left', val - 58);
         var val = Math.max(startPoint - $(window).scrollTop(), 60);
         e$('#eo-live').css('top', val);
+        e$('#eo-live .close-vocabulary').css('top', val + 180);
         $(window).scroll(function () {
           var val = Math.max(startPoint - $(window).scrollTop(), 60);
           e$('#eo-live').css('top', val);
+          e$('#eo-live .close-vocabulary').css('top', val + 180);
         });
       },
       'pin-tutotial-article': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children',
@@ -7457,12 +7471,9 @@ actualicCategoryOverlay = function (parts, category_url) {
     }
   };
 };
-
 //----------------------------------------------------------------
 //-----------------------------------------------------------------
 //--------------------------------------------------------------
-
-
 actualicOverlay = function (url, subtitle, bodytext) {
   this.url = url.toLowerCase();
   this.subtitle = subtitle;
