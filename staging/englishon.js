@@ -5962,7 +5962,7 @@ UserInfo = function () {
     e$.each(words_list, function (i, word_info) {
       content.append(e$('<div>').addClass('vocabulary-word')
       //the text value is a hack to display the milotrage digits without the decimal point
-      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-origin').text(word_info.word).on('click', function (e) {})).append(e$('<span>').addClass('vocabulary-translation').text('?').data('translation', word_info.translation)));
+      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-origin').data('full', word_info.word).text(word_info.word).on('click', function (e) {})).append(e$('<span>').addClass('vocabulary-translation').text('?').data('translation', word_info.translation)));
     });
     e$('#vocabulary-content').html(content);
     var el = document.getElementsByClassName('vocabulary-odometer');
@@ -5986,6 +5986,7 @@ UserInfo = function () {
     clearInterval(document.vocabulary_interval);
     e$('#vocabulary').addClass('hidden');
     e$('#eo-live-main').removeClass('hidden');
+    e$('#eo-live').animate({ scrollTop: 0 });
     e$(document).off('click', this.minimize);
   };
   this.initial = function () {
@@ -6047,21 +6048,29 @@ UserInfo = function () {
         }
         return;
       }
-      var displayTranslation = function (element) {
+      var wordRepetition = function (element, origin_word) {
+        Speaker.speak(document.englishonConfig.targetLanguage, origin_word.data('full'));
         element.toggleText('?', element.data('translation'));
+        if (element.offset().left + element.width() > e$('#eo-live').offset().left + 293) {
+          console.log('line down!!!!line down!!!!');
+          //TODO:check why this worked just with e$(element.context). 
+          //element.next('.vocabulary-origin').text(element.next('.vocabulary-origin').data('full').slice(0,4));
+          origin_word.text(origin_word.data('full').slice(0, 4));
+        }
         if (element.text() != '?') {
           element.addClass('show').removeClass('vocabulary-translation-big');
         } else {
           element.removeClass('show');
           e$('.vocabulary-translation:not(.show)').addClass('vocabulary-translation-big');
+          origin_word.text(origin_word.data('full'));
         }
       };
       if (e.target.is('.vocabulary-word')) {
-        displayTranslation(e.target.find('.vocabulary-translation'));
+        wordRepetition(e.target.find('.vocabulary-translation'), e.target.find('.vocabulary-origin'));
         return;
       }
       if (e.target.parents('.vocabulary-word').length) {
-        displayTranslation(e.target.parents('.vocabulary-word').find('.vocabulary-translation'));
+        wordRepetition(e.target.parents('.vocabulary-word').find('.vocabulary-translation'), e.target.parents('.vocabulary-word').find('.vocabulary-origin'));
         return;
       }
       if (e.target.is('.eo-close')) {

@@ -2672,6 +2672,9 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   overflow: hidden;
   cursor: pointer;
 }
+#eo-live * {
+  box-sizing: content-box;
+}
 #eo-live .eo-close {
   display: block;
 }
@@ -2703,7 +2706,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 #eo-live.vocabulary-open .close-vocabulary {
   /*it can't be positioned absolute because vocabulary has scroll.
-  it's top left values will re-computed everytime progress bar is moving*/
+it's top left values will re-computed everytime progress bar is moving*/
   position: fixed;
   display: block;
 }
