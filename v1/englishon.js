@@ -8043,7 +8043,7 @@ function englishon() {
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES ON PRODUCTION
   if (!e$('#developement-only-version').length) {
-    if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/") {
+    if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/" || media != 'desktop') {
       return;
     }
   }
