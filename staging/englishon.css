@@ -2825,19 +2825,13 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 
 .no-questions-dlg-icon {
-  width: 23px;
-  height: 23px;
-  position: absolute;
-  top: 34px;
-  right: 180px;
+  width: 29px;
+  height: 29px;
+  padding: 5px;
 }
 
-.no-question-div-1 {
+.no_questions_dlg {
   text-align: center;
-}
-
-.no-question-div-2 {
-  padding-right: 65px;
 }
 
 #eo-dlg-terms {

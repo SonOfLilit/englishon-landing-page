@@ -5023,6 +5023,7 @@ window.cleanEnglishonCookies = function () {
   window.localStorage.removeItem('isActive');
   window.localStorage.removeItem('got_no_questions_dialog');
   window.localStorage.removeItem('show_quiz_tutorial');
+  window.localStorage.removeItem('siteLanguage');
 };
 //
 var MESSAGES = {
@@ -5069,7 +5070,8 @@ var MESSAGES = {
     SITE_LANGUAGE: 'Site Language',
     AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
     AGREE: "I agree.",
-    NO_QUESTIONS: "<div class = 'no-question-div-1'>Please look for articles marked</div><div class = 'no-question-div-2'>with this icon</div>",
+    NO_QUESTIONS: "Please look for articles </br>marked with this icon",
+    NO_QUESTIONS_ARTICLE: "Please look at category section </br>for articles marked</br>with this icon",
     COMPLETE_QUIZ: 'Well Done!</br>Sign up for Free</br> to save your Work!',
     ALPHABET_VOCABULARY: 'By Alphabetical Order',
     SR_VOCABULARY: 'Prioritized for Review'
@@ -5116,7 +5118,8 @@ var MESSAGES = {
     SITE_LANGUAGE: 'שפת התפריט',
     AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'> ול<a>תנאי הפרטיות</a> ",
     AGREE: "אני מסכים.",
-    NO_QUESTIONS: "<div class='no-question-div-1'>חפש כתבות לצידם יש </div> <div class='no-question-div-2'>את הסימון</div>",
+    NO_QUESTIONS: "חפש כתבות לצידם </br>ישאת הסימון",
+    NO_QUESTIONS_ARTICLE: "חפש בדפי המדורים </br>כתבות לצידם </br>יש את הסימון",
     COMPLETE_QUIZ: '!כל הכבוד</br>הירשם בחינם</br>לשמירת התקדמותך',
     ALPHABET_VOCABULARY: 'לפי סדר אלפבית',
     SR_VOCABULARY: 'לפי סדר עדיפות לתרגול'
@@ -6889,7 +6892,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
       <div class='Grid-cell eo-row10 eo-menu-inner'>\
         <div class='Grid'>\
           <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='https://englishon.freshdesk.com'>Need Help?</a></div>\
-          <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='https://englishon.freshdesk.com'>Contact Us</a></div>\
+          <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='#'>Contact Us</a></div>\
         </div>\
       </div>\
       <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
@@ -7214,12 +7217,12 @@ ShturemOverlay = function () {
     e$('#terms-container').removeClass('hidden');
     e$('#eo-dlg-terms').removeClass('hidden');
   };
-  this.openNoQuestionsDialog = function () {
+  this.openNoQuestionsDialog = function (message) {
     if (window.localStorage.getItem('got_no_questions_dialog')) {
       return;
     }
-    no_questions_dlg = e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>');
-    no_questions_dlg.dialog({ auto_open: true, modal: true });
+    no_questions_dlg = e$('<div>').addClass('no_questions_dlg').html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
+    e$('.no_questions_dlg').css({ 'direction': document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION'] });
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
 };
@@ -7433,7 +7436,7 @@ actualicCategoryOverlay = function (parts, category_url) {
       e$('.eo-button').on('click', document.firstTimeUser);
     }
     if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
-      this.openNoQuestionsDialog();
+      this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
     }
     e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
   };
@@ -7534,7 +7537,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
     return backend.getArticle(this.url, this.limit).then(function (questions) {
       if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial')) {
         //e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
-        this.openNoQuestionsDialog();
+        this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS_ARTICLE);
       }
       this.questions = questions;
       console.log("Num questions: " + questions.length);
@@ -8057,11 +8060,13 @@ function englishon() {
     }
   //THIS LINE IS TEMP
   //TEMPORARY THE CODE IS RUN JUST IN SPECIFIC ARTICLES ON PRODUCTION
-  if (!e$('#developement-only-version').length) {
-    if (window.location.host == 'actualic.co.il' && decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/" || media != 'desktop') {
-      return;
-    }
-  }
+  /*  if (!(e$('#developement-only-version').length)) {
+      if (window.location.host == 'actualic.co.il' &&
+        (decodeURIComponent(window.location.toString()) != "http://actualic.co.il/רפואת-ילדים-עולם-ומלואו/") ||
+         media!='desktop'){
+        return;
+      }
+    }*/
   sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il'];
   if (sites.indexOf(window.location.host) == -1) {
     return;
@@ -8524,6 +8529,10 @@ var EnglishOnMenu = function () {
   // ***********************
   // Register Event Handlers
   // ***********************
+  e$('#eo-contact').on('click', function () {
+    e$('#lc_chat_title').click();
+  });
+
   e$('.languages_picker .available').on('click', function (e) {
     e$(e.target).parents().find('.available').addClass('checked-language');
     if (!document.englishonConfig.isUser) {
@@ -8676,7 +8685,7 @@ e$.when(document.questions_promise).done(function () {
       //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
       Tour.quizTutorial();
       document.tour.start();
-    }, 1000);
+    }, 2000);
   }
 });
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
@@ -8693,6 +8702,11 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
       var startPoint = 206;
       var val = e$('#s').offset().left - 1;
       e$('#eo-banner').css('left', val);
+      //it needed. i don't know why. probably the e$('#s') location changed after full loading
+      setTimeout(function () {
+        var val = e$('#s').offset().left - 1;
+        e$('#eo-banner').css('left', val);
+      }, 3000);
       val = Math.max(startPoint - $(window).scrollTop(), 60);
       e$('#eo-banner').css('top', val);
       $(window).scroll(function () {
