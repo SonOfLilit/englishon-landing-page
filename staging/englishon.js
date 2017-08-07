@@ -7420,16 +7420,12 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.settings = overlay_settings['actualic'][document.englishonConfig.media];
   this.placeLiveActions = function () {};
   this.showButtons = function () {
-    if (location.pathname == '/') {
-      this.settings.pin_button_front().append(EnglishOnButton.element().addClass('front-page'));
-      e$('.site-header').find('.has-submenu').on('mouseenter', function () {
-        e$('.front-page').hide();
-      });
-      e$('.site-header').find('.has-submenu').on('mouseleave', function () {
-        e$('.front-page').show();
-      });
-      this.tutorial_selector = '.front-page';
-    }
+    /*    if (location.pathname == '/') {
+          this.settings.pin_button_front().append(EnglishOnButton.element().addClass('front-page'))
+          e$('.site-header').find('.has-submenu').on('mouseenter', function() { e$('.front-page').hide(); })
+          e$('.site-header').find('.has-submenu').on('mouseleave', function() { e$('.front-page').show(); })
+          this.tutorial_selector = '.front-page';
+        }*/
     this.settings.pin_button_category().append(EnglishOnButton.element());
     if (document.englishonConfig.isUser) {
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
@@ -8684,26 +8680,28 @@ e$.when(document.questions_promise).done(function () {
   }
 });
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
-  englishon_banner = new function () {
-    var video = $('<video/>', {
-      id: 'eo-banner',
-      src: staticUrl('banner.mp4'),
-      type: 'video/mp4',
-      autoplay: true,
-      loop: true
-    });
-    e$('body').append(video);
-    var startPoint = 206;
-    var val = e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left;
-    e$('#eo-banner').css('left', val - 320);
-    var val = Math.max(startPoint - $(window).scrollTop(), 60);
-    e$('#eo-banner').css('top', val);
-    $(window).scroll(function () {
-      var val = Math.max(startPoint - $(window).scrollTop(), 60);
+  if (location.pathname != '/') {
+    englishon_banner = new function () {
+      var video = $('<video/>', {
+        id: 'eo-banner',
+        src: staticUrl('banner.mp4'),
+        type: 'video/mp4',
+        autoplay: true,
+        loop: true
+      });
+      e$('body').append(video);
+      var startPoint = 206;
+      var val = e$('#s').offset().left - 1;
+      e$('#eo-banner').css('left', val);
+      val = Math.max(startPoint - $(window).scrollTop(), 60);
       e$('#eo-banner').css('top', val);
-    });
-    e$('#eo-banner').on('click', document.firstTimeUser);
-  }();
+      $(window).scroll(function () {
+        var val = Math.max(startPoint - $(window).scrollTop(), 60);
+        e$('#eo-banner').css('top', val);
+      });
+      e$('#eo-banner').on('click', document.firstTimeUser);
+    }();
+  }
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
   //register the handler for backspace/forward

@@ -2660,15 +2660,18 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 
 /*LIVE ACTIONS AREA*/
-#eo-live,
 #eo-banner {
   position: fixed;
   height: 60px;
-  width: 300px;
+  width: 270px;
   cursor: pointer;
 }
 
 #eo-live {
+  position: fixed;
+  height: 60px;
+  width: 300px;
+  cursor: pointer;
   background-clip: padding-box;
   border: solid transparent;
   border-width: 1px 1px 1px 6px;
