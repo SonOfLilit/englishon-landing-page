@@ -2048,7 +2048,7 @@ eo-signout-layout .signout {
   height: 14%;
 }
 #eo-menu .ui-slider-handle {
-  top: -100%;
+  top: -125%;
   border-radius: 50%;
 }
 
@@ -2660,20 +2660,24 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 
 /*LIVE ACTIONS AREA*/
+#eo-banner {
+  position: fixed;
+  height: 60px;
+  width: 270px;
+  cursor: pointer;
+}
+
 #eo-live {
+  position: fixed;
+  height: 60px;
+  width: 300px;
+  cursor: pointer;
   background-clip: padding-box;
   border: solid transparent;
   border-width: 1px 1px 1px 6px;
   min-height: 28px;
   /*resize: both;*/
-  position: fixed;
-  height: 60px;
-  width: 300px;
   overflow: hidden;
-  cursor: pointer;
-}
-#eo-live * {
-  box-sizing: content-box;
 }
 #eo-live .eo-close {
   display: block;
@@ -2821,19 +2825,13 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 
 .no-questions-dlg-icon {
-  width: 23px;
-  height: 23px;
-  position: absolute;
-  top: 34px;
-  right: 180px;
+  width: 29px;
+  height: 29px;
+  padding: 5px;
 }
 
-.no-question-div-1 {
+.no_questions_dlg {
   text-align: center;
-}
-
-.no-question-div-2 {
-  padding-right: 65px;
 }
 
 #eo-dlg-terms {
