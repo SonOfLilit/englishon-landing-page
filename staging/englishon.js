@@ -6082,6 +6082,7 @@ UserInfo = function () {
           clearInterval(document.vocabulary_interval);
           return;
         }
+        e$('#eo-banner').show();
         e$('#eo-live').addClass('hidden');
         e$('#vocabulary').addClass('hidden');
         e$('#eo-live-main').removeClass('hidden');
