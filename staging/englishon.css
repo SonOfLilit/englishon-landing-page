@@ -2672,6 +2672,9 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   width: 270px;
   cursor: pointer;
 }
+#eo-banner #close-banner {
+  display: none;
+}
 
 /*LIVE ACTIONS AREA*/
 #eo-live {
