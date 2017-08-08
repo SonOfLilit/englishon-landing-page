@@ -1420,6 +1420,9 @@ body.www-englishon-org .eo-correct {
   background-color: rgba(80, 80, 80, 0.75);
 }
 
+body.actualic-co-il #sidebar {
+  padding-top: 20px;
+}
 body.actualic-co-il #eo-live {
   background-color: #eee;
 }
