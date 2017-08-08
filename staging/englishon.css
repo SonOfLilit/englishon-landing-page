@@ -2948,10 +2948,6 @@ it's top left values will re-computed everytime progress bar is moving*/
   background-image: url(http://www.englishon.org/v1/img/close.png);
   z-index: 20;
 }
-.eo-close:hover {
-  background-image: url(http://www.englishon.org/v1/img/close2.png);
-  background-color: gray;
-}
 
 .eo-close.close-dialog {
   top: -15px;
