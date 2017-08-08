@@ -7790,6 +7790,9 @@ Tour = new function () {
     this.initTutorial(steps);
   };
   this.welcomeTutorial = function () {
+    if (location.pathname == '/') {
+      return;
+    }
     steps = [];
     e$(document.overlay.tutorial_selector).find('.eo-logo').addClass('eo-button-tour');
     steps.push(new step('.eo-button-tour right', 'ברוכים הבאים לאינגלישון', 'למד אנגלית ללא עלות - הדרכה למשתמש', 'welcome_' + 0, 0, '.eo-logo click'));
@@ -7894,7 +7897,6 @@ Tour = new function () {
               window.localStorage.setItem('leave_quesion_open', true);
               e$('.eo-question').eq(0).find('.eo-hint').click();
             }
-
             if (document.tour.getCurrentStep().id === 'login') {
               document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
               window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
@@ -7983,7 +7985,6 @@ Tour = new function () {
                 //e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
               });
             }
-
             if (window.location.host == 'actualic.co.il') {
               var val = Math.max(230 - $(window).scrollTop(), 60);
               e$('#eo-live').css('top', val);
@@ -7994,7 +7995,6 @@ Tour = new function () {
     }
   };
 }();
-
 var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = null) {
   this.id = id;
   this.attachTo = attachTo;
