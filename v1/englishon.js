@@ -8017,7 +8017,7 @@ document.dic_promise = e$.Deferred();
 function englishon() {
   if (e$('#developement-only-version').length) {
     window.staticUrl = function (resource) {
-      return 'http://localhost:8080/static/ex/' + resource;
+      return 'http://www.englishon.org/staging/' + resource;
     };
   } else {
     window.staticUrl = function (resource) {
@@ -8220,6 +8220,7 @@ var EnglishOnButton = new function () {
   };
   this.currentState = 'eo-button-on';
   this.element = function () {
+    //return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo')).append(e$('<div>').addClass('registered_symbol').html('&#174;'));
     return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo')).append(e$('<div>').addClass('registered_symbol').html('&#174;'));
   };
   this.changeState = function (state) {
@@ -8667,33 +8668,36 @@ e$.when(document.questions_promise).done(function () {
   }
 });
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
-  if (location.pathname != '/') {}
-  /*    englishon_banner = new function() {
-        var video = e$('<div id="eo-banner">').append(e$('<video/>', {
-          src: staticUrl('banner.mp4'),
-          type: 'video/mp4',
-          autoplay: true,
-          loop: true
-        })).append(e$('<div id="close-banner">').addClass('eo-close'));
-        e$('body').append(video);
-        e$('#close-banner').on('click', function() { e$('#eo-banner').hide(); })
-        var startPoint = 206;
+  if (location.pathname != '/') {
+    //last version??? update666666???
+    englishon_banner = new function () {
+      var video = e$('<div id="eo-banner">').append(e$('<video/>', {
+        src: staticUrl('banner.mp4'),
+        type: 'video/mp4',
+        autoplay: true,
+        loop: true
+      })).append(e$('<div id="close-banner">').addClass('eo-close'));
+      e$('body').append(video);
+      e$('#close-banner').on('click', function () {
+        e$('#eo-banner').hide();
+      });
+      var startPoint = 206;
+      var val = e$('#s').offset().left - 1;
+      e$('#eo-banner').css('left', val);
+      //it needed. i don't know why. probably the e$('#s') location changed after full loading
+      setTimeout(function () {
         var val = e$('#s').offset().left - 1;
         e$('#eo-banner').css('left', val);
-        //it needed. i don't know why. probably the e$('#s') location changed after full loading
-        setTimeout(function() {
-          var val = e$('#s').offset().left - 1;
-          e$('#eo-banner').css('left', val);
-        }, 3000)
-        val = Math.max(startPoint - $(window).scrollTop(), 60);
+      }, 3000);
+      val = Math.max(startPoint - $(window).scrollTop(), 60);
+      e$('#eo-banner').css('top', val);
+      $(window).scroll(function () {
+        var val = Math.max(startPoint - $(window).scrollTop(), 60);
         e$('#eo-banner').css('top', val);
-        $(window).scroll(function() {
-          var val = Math.max(startPoint - $(window).scrollTop(), 60);
-          e$('#eo-banner').css('top', val);
-        });
-        e$('#eo-banner').on('click', document.firstTimeUser);
-      }();*/
-
+      });
+      e$('#eo-banner').on('click', document.firstTimeUser);
+    }();
+  }
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
   //register the handler for backspace/forward

@@ -1420,6 +1420,9 @@ body.www-englishon-org .eo-correct {
   background-color: rgba(80, 80, 80, 0.75);
 }
 
+body.actualic-co-il #sidebar {
+  padding-top: 21px;
+}
 body.actualic-co-il #eo-live {
   background-color: #eee;
 }
@@ -2672,9 +2675,6 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   width: 270px;
   cursor: pointer;
 }
-#eo-banner #close-banner {
-  display: none;
-}
 
 /*LIVE ACTIONS AREA*/
 #eo-live {
@@ -2947,10 +2947,6 @@ it's top left values will re-computed everytime progress bar is moving*/
   background-size: 15px;
   background-image: url(http://www.englishon.org/v1/img/close.png);
   z-index: 20;
-}
-.eo-close:hover {
-  background-image: url(http://www.englishon.org/v1/img/close2.png);
-  background-color: gray;
 }
 
 .eo-close.close-dialog {
