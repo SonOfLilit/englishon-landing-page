@@ -8017,7 +8017,7 @@ document.dic_promise = e$.Deferred();
 function englishon() {
   if (e$('#developement-only-version').length) {
     window.staticUrl = function (resource) {
-      return 'http://localhost:8080/static/ex/' + resource;
+      return 'http://www.englishon.org/staging/' + resource;
     };
   } else {
     window.staticUrl = function (resource) {
@@ -8672,7 +8672,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     //last version??? update666666???
     englishon_banner = new function () {
       var video = e$('<div id="eo-banner">').append(e$('<video/>', {
-        src: staticUrl('banner.mp4'),
+        src: document.englishonConfig.backendUrl + staticUrl('banner.mp4'),
         type: 'video/mp4',
         autoplay: true,
         loop: true
