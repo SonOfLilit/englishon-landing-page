@@ -8668,7 +8668,7 @@ e$.when(document.questions_promise).done(function () {
 });
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
   if (location.pathname != '/') {
-    //last version??? update222222???
+    //last version??? update33333333???
     englishon_banner = new function () {
       var video = e$('<div id="eo-banner">').append(e$('<video/>', {
         src: staticUrl('banner.mp4'),
