@@ -8672,7 +8672,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     //last version??? update666666???
     englishon_banner = new function () {
       var video = e$('<div id="eo-banner">').append(e$('<video/>', {
-        src: document.englishonConfig.backendUrl + staticUrl('banner.mp4'),
+        src: staticUrl('banner.mp4'),
         type: 'video/mp4',
         autoplay: true,
         loop: true
