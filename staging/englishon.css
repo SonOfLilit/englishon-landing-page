@@ -2660,13 +2660,11 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 
 /*BANNER*/
 #eo-banner {
-  position: fixed;
   height: 60px;
   width: 270px;
   cursor: pointer;
 }
 #eo-banner video {
-  position: fixed;
   height: 60px;
   width: 270px;
   cursor: pointer;

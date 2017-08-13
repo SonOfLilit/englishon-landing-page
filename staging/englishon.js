@@ -8374,9 +8374,23 @@ var EnglishOnMenu = function () {
           return;
         }
         document.englishonBackend.token = res.token;
+        configStorage.set({ email: res.email, token: res.token, 'eo-user-name': e$('#eo-login-email').val() });
         e$('#eo-account-area').removeClass('guest');
         e$('#eo-dlg-login').addClass('valid');
-        configStorage.set({ email: res.email, token: res.token, 'eo-user-name': e$('#eo-login-email').val() });
+        e$('#eo-account-name').text(email.val());
+        e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
+        e$('body').addClass('logged').removeClass('guest');
+        if (res.status == 'logged_in') {
+          document.eoDialogs.hideDialogs(1000);
+        } else if (res.status == 'terms_not_accepted') {
+          document.eoDialogs.hideDialogs(0);
+          e$('#eo-account-img').addClass('no-iamge');
+        }
+        if (res.status == 'terms_not_accepted') {
+          document.overlay.showTermsDialog();
+          return;
+        }
+        //currently it can't happen in login, becuase click on button is turning on englishon if it's none user
         if (!document.englishonConfig.isUser) {
           document.firstTimeUser();
         }
@@ -8391,15 +8405,6 @@ var EnglishOnMenu = function () {
             document.overlay.showTermsDialog(TODOAfterFetch);
           }
         });
-        e$('#eo-account-name').text(email.val());
-        e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
-        e$('body').addClass('logged').removeClass('guest');
-        if (res.status == 'logged_in') {
-          document.eoDialogs.hideDialogs(1000);
-        } else if (res.status == 'registered') {
-          document.eoDialogs.hideDialogs(0);
-          e$('#eo-account-img').addClass('no-iamge');
-        }
       });
     }
   };
@@ -8676,25 +8681,8 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
         type: 'video/mp4',
         autoplay: true,
         loop: true
-      })).append(e$('<div id="close-banner">').addClass('eo-close'));
-      e$('body').append(video);
-      e$('#close-banner').on('click', function () {
-        e$('#eo-banner').hide();
-      });
-      var startPoint = 206;
-      var val = e$('#s').offset().left - 1;
-      e$('#eo-banner').css('left', val);
-      //it needed. i don't know why. probably the e$('#s') location changed after full loading
-      setTimeout(function () {
-        var val = e$('#s').offset().left - 1;
-        e$('#eo-banner').css('left', val);
-      }, 3000);
-      val = Math.max(startPoint - $(window).scrollTop(), 60);
-      e$('#eo-banner').css('top', val);
-      $(window).scroll(function () {
-        var val = Math.max(startPoint - $(window).scrollTop(), 60);
-        e$('#eo-banner').css('top', val);
-      });
+      }));
+      e$('#sidebar').prepend(video);
       e$('#eo-banner').on('click', document.firstTimeUser);
     }();
   }
