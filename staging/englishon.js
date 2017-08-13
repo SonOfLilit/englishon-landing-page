@@ -7209,7 +7209,7 @@ ShturemOverlay = function () {
           e$('#terms-container').addClass('hidden');
           e$('#eo-dlg-terms').addClass('hidden');
           e$('#eo-accept-checkbox').click();
-          this.fetchQuestions().then(callback);
+          this.fetchQuestions().then(callback());
         }.bind(this));
       }
     }.bind(this));
@@ -8373,37 +8373,38 @@ var EnglishOnMenu = function () {
           document.eoDialogs.displayMessage(res.message, e$('#login-password-msg'));
           return;
         }
-        document.englishonBackend.token = res.token;
-        configStorage.set({ email: res.email, token: res.token, 'eo-user-name': e$('#eo-login-email').val() });
-        e$('#eo-account-area').removeClass('guest');
-        e$('#eo-dlg-login').addClass('valid');
-        e$('#eo-account-name').text(email.val());
-        e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
-        e$('body').addClass('logged').removeClass('guest');
-        if (res.status == 'logged_in') {
-          document.eoDialogs.hideDialogs(1000);
-        } else if (res.status == 'terms_not_accepted') {
-          document.eoDialogs.hideDialogs(0);
-          e$('#eo-account-img').addClass('no-iamge');
-        }
-        if (res.status == 'terms_not_accepted') {
-          document.overlay.showTermsDialog();
-          return;
-        }
-        //currently it can't happen in login, becuase click on button is turning on englishon if it's none user
-        if (!document.englishonConfig.isUser) {
-          document.firstTimeUser();
-        }
-        var TODOAfterFetch = function () {
-          document.eo_user.initial();
-          document.menu.powerOn();
-        };
-        document.overlay.fetchQuestions().then(function () {
-          TODOAfterFetch();
-        }, function (error) {
-          if (error == 'terms_not_accepted') {
-            document.overlay.showTermsDialog(TODOAfterFetch);
+        configStorage.set({ email: res.email, token: res.token, 'eo-user-name': e$('#eo-login-email').val() }).then(function () {
+          document.englishonBackend.token = res.token;
+          e$('#eo-account-area').removeClass('guest');
+          e$('#eo-dlg-login').addClass('valid');
+          e$('#eo-account-name').text(email.val());
+          e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
+          e$('body').addClass('logged').removeClass('guest');
+          if (res.status == 'logged_in') {
+            document.eoDialogs.hideDialogs(1000);
+          } else if (res.status == 'terms_not_accepted') {
+            document.eoDialogs.hideDialogs(0);
+            e$('#eo-account-img').addClass('no-iamge');
+            document.overlay.showTermsDialog(document.menu.powerOn);
+            //todo: use document.powerOff with an 'enable' parameter
+            e$('.category-icon').remove();
+            return;
           }
+          //currently it can't happen in login, becuase click on button is turning on englishon if it's none user
+          if (!document.englishonConfig.isUser) {
+            document.firstTimeUser();
+          }
+          var TODOAfterFetch = function () {
+            document.eo_user.initial();
+            document.menu.powerOn();
+          };
+          document.overlay.fetchQuestions().then(function () {
+            TODOAfterFetch();
+          }, function (error) {
+            if (error == 'terms_not_accepted') {
+              document.overlay.showTermsDialog(TODOAfterFetch);
+            }
+          });
         });
       });
     }
@@ -8444,10 +8445,11 @@ var EnglishOnMenu = function () {
   this.signout = function () {
     var popup = e$('#eo-iframe')[0].contentWindow;
     popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
-    document.menu.powerOff();
     localStorage.removeItem('email');
     localStorage.removeItem('eo-user-name');
     localStorage.removeItem('editor');
+    document.englishonConfig.email = null;
+    document.menu.powerOff();
     var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
     document.englishonConfig.token = null;
     auth.login(document.englishonConfig.token).then(function (token) {
@@ -8674,7 +8676,6 @@ e$.when(document.questions_promise).done(function () {
 });
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
   if (location.pathname != '/') {
-    //last version??? update666666???
     englishon_banner = new function () {
       var video = e$('<div id="eo-banner">').append(e$('<video/>', {
         src: staticUrl('banner.mp4'),
@@ -8769,23 +8770,32 @@ function receiveMessage(event) {
   e$('#eo-account-area').removeClass('guest');
   if (!localStorage.getItem('email')) {
     //this is a real login, as google made many fictive logins
-    configStorage.set({ token: django_token, 'eo-user-name': user_name });
-    document.englishonBackend.token = django_token;
-    e$('body').addClass('logged').removeClass('guest');
-    var TODOAfterFetch = function () {
-      document.eo_user.initial();
-      document.menu.powerOn();
-    };
-    document.overlay.fetchQuestions().then(function () {
-      TODOAfterFetch();
-    }, function (error) {
-      if (error == 'terms_not_accepted') {
-        document.overlay.showTermsDialog(TODOAfterFetch);
+    configStorage.set({ email: email, token: django_token, 'eo-user-name': user_name }).then(function () {
+      e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
+      if (event.data.status == 'terms_not_accepted') {
+        document.eoDialogs.hideDialogs(0);
+        e$('#eo-account-img').addClass('no-iamge');
+        document.overlay.showTermsDialog(document.menu.powerOn);
+        //todo: use document.powerOff with an 'enable' parameter
+        e$('.category-icon').remove();
+        return;
       }
+      document.englishonBackend.token = django_token;
+      e$('body').addClass('logged').removeClass('guest');
+      var TODOAfterFetch = function () {
+        document.eo_user.initial();
+        document.menu.powerOn();
+      };
+      document.overlay.fetchQuestions().then(function () {
+        TODOAfterFetch();
+      }, function (error) {
+        if (error == 'terms_not_accepted') {
+          document.overlay.showTermsDialog(TODOAfterFetch);
+        }
+      });
+      localStorage.setItem('email', email);
+      document.eoDialogs.hideDialogs(0);
     });
-    localStorage.setItem('email', email);
-    e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
-    document.eoDialogs.hideDialogs(0);
   }
 }
 //
