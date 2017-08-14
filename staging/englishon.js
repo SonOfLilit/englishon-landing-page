@@ -8117,7 +8117,7 @@ function englishon() {
     document.englishonBackend = backend;
     document.resources_promise.resolve();
   }).then(function () {
-    if (document.englishonConfig.editor) {
+    if (JSON.parse(document.englishonConfig.editor)) {
       return document.englishonBackend.fetchDictionary().then(function (eo_dictionary) {
         document.eo_dictionary = eo_dictionary.dictionary;
         document.dic_promise.resolve();
