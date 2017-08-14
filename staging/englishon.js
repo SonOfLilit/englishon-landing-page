@@ -5966,7 +5966,7 @@ UserInfo = function () {
     e$.each(words_list, function (i, word_info) {
       content.append(e$('<div>').addClass('vocabulary-word')
       //the text value is a hack to display the milotrage digits without the decimal point
-      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-origin').data('full', word_info.word).text(word_info.word).on('click', function (e) {})).append(e$('<span>').addClass('vocabulary-translation').text('?').data('translation', word_info.translation)));
+      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-origin').data('full', word_info.word).html(word_info.word.replace('_', '&nbsp;'))).append(e$('<span>').addClass('vocabulary-translation').text('?').data('translation', word_info.translation)));
     });
     e$('#vocabulary-content').html(content);
     var el = document.getElementsByClassName('vocabulary-odometer');
@@ -6053,20 +6053,17 @@ UserInfo = function () {
         return;
       }
       var wordRepetition = function (element, origin_word) {
-        Speaker.speak(document.englishonConfig.targetLanguage, origin_word.data('full'));
+        Speaker.speak(document.englishonConfig.targetLanguage, origin_word.data('full').replace('_', ' '));
         element.toggleText('?', element.data('translation'));
-        if (element.offset().left + element.width() > e$('#eo-live').offset().left + 293) {
-          console.log('line down!!!!line down!!!!');
-          //TODO:check why this worked just with e$(element.context). 
-          //element.next('.vocabulary-origin').text(element.next('.vocabulary-origin').data('full').slice(0,4));
-          origin_word.text(origin_word.data('full').slice(0, 4));
+        if (element.offset().left + element.width() > e$('#eo-live').offset().left + 293 || origin_word.offset().left < 130) {
+          origin_word.html(origin_word.data('full').slice(0, 1) + '...');
         }
         if (element.text() != '?') {
           element.addClass('show').removeClass('vocabulary-translation-big');
         } else {
           element.removeClass('show');
           e$('.vocabulary-translation:not(.show)').addClass('vocabulary-translation-big');
-          origin_word.text(origin_word.data('full'));
+          origin_word.html(origin_word.data('full').replace('_', '&nbsp;'));
         }
       };
       if (e.target.is('.vocabulary-word')) {
@@ -6246,10 +6243,12 @@ Injector = function (paragraphs) {
       var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width - 6;
       var curent_text = q.replacement.hasClass('eo-expired') ? q.qobj.practicedWord : q.qobj.data.replaced;
       var future_text = q.replacement.hasClass('eo-expired') ? q.qobj.data.replaced : q.qobj.practicedWord;
+      curent_text = curent_text.replace('_', '&nbsp;');
+      future_text = future_text.replace('_', '&nbsp;');
       var visible_element = q.replacement.hasClass('eo-expired') ? '.eo-correct' : '.eo-hint';
-      q.replacement.find(visible_element).text(future_text);
+      q.replacement.find(visible_element).html(future_text);
       var future_width = q.replacement.outerWidth(); //2 pixels for the border
-      q.replacement.find(visible_element).text(curent_text);
+      q.replacement.find(visible_element).html(curent_text);
       if (future_width > spaceInCurrentLine || ////a question which expected to go down after action
       width > future_width && spaceInCurrentLine > lineWidth) {
         //a question which expected to go up after action
@@ -6464,7 +6463,7 @@ AbstractQuestion.prototype.QuestionAudio = function (e) {
   var target = e$(e.target);
   var prepositionClass = this.data.preposition ? 'preposition' : '';
   target.toggleHtml(this.data.preposition + this.data.hint, this.practicedWord).toggleClass(prepositionClass);
-  if (target.html() == this.practicedWord) {
+  if (target.html().replace('&nbsp;', '_') == this.practicedWord) {
     Speaker.speak(document.englishonConfig.targetLanguage, target.text());
   }
 };
