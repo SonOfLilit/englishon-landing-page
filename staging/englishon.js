@@ -5536,7 +5536,8 @@ Editor.prototype.createAutoQuestion = function (event) {
       wrong_words.push(candidate);
     }
   }
-
+  wrong.push({ word: 'special_nice_day', translation: 'דגרדכגד' });
+  wrong.push({ word: 'dance_today', translation: 'דגרדכגד' });
   preposition = span.data('preposition');
   var question = {
     'context': ctx,
@@ -5966,7 +5967,7 @@ UserInfo = function () {
     e$.each(words_list, function (i, word_info) {
       content.append(e$('<div>').addClass('vocabulary-word')
       //the text value is a hack to display the milotrage digits without the decimal point
-      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-origin').data('full', word_info.word).html(word_info.word.replace('_', '&nbsp;'))).append(e$('<span>').addClass('vocabulary-translation').text('?').data('translation', word_info.translation)));
+      .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-origin').data('full', word_info.word).html(word_info.word.replaceAll('_', '&nbsp;'))).append(e$('<span>').addClass('vocabulary-translation').text('?').data('translation', word_info.translation)));
     });
     e$('#vocabulary-content').html(content);
     var el = document.getElementsByClassName('vocabulary-odometer');
@@ -6053,7 +6054,7 @@ UserInfo = function () {
         return;
       }
       var wordRepetition = function (element, origin_word) {
-        Speaker.speak(document.englishonConfig.targetLanguage, origin_word.data('full').replace('_', ' '));
+        Speaker.speak(document.englishonConfig.targetLanguage, origin_word.data('full').replaceAll('_', ' '));
         element.toggleText('?', element.data('translation'));
         if (element.offset().left + element.width() > e$('#eo-live').offset().left + 293 || origin_word.offset().left < 130) {
           origin_word.html(origin_word.data('full').slice(0, 1) + '...');
@@ -6063,7 +6064,7 @@ UserInfo = function () {
         } else {
           element.removeClass('show');
           e$('.vocabulary-translation:not(.show)').addClass('vocabulary-translation-big');
-          origin_word.html(origin_word.data('full').replace('_', '&nbsp;'));
+          origin_word.html(origin_word.data('full').replaceAll('_', '&nbsp;'));
         }
       };
       if (e.target.is('.vocabulary-word')) {
@@ -6243,8 +6244,8 @@ Injector = function (paragraphs) {
       var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width - 6;
       var curent_text = q.replacement.hasClass('eo-expired') ? q.qobj.practicedWord : q.qobj.data.replaced;
       var future_text = q.replacement.hasClass('eo-expired') ? q.qobj.data.replaced : q.qobj.practicedWord;
-      curent_text = curent_text.replace('_', '&nbsp;');
-      future_text = future_text.replace('_', '&nbsp;');
+      curent_text = curent_text.replaceAll('_', '&nbsp;');
+      future_text = future_text.replaceAll('_', '&nbsp;');
       var visible_element = q.replacement.hasClass('eo-expired') ? '.eo-correct' : '.eo-hint';
       q.replacement.find(visible_element).html(future_text);
       var future_width = q.replacement.outerWidth(); //2 pixels for the border
@@ -6463,7 +6464,7 @@ AbstractQuestion.prototype.QuestionAudio = function (e) {
   var target = e$(e.target);
   var prepositionClass = this.data.preposition ? 'preposition' : '';
   target.toggleHtml(this.data.preposition + this.data.hint, this.practicedWord).toggleClass(prepositionClass);
-  if (target.html().replace('&nbsp;', '_') == this.practicedWord) {
+  if (target.html().replaceAll('&nbsp;', '_') == this.practicedWord) {
     Speaker.speak(document.englishonConfig.targetLanguage, target.text());
   }
 };
@@ -6524,12 +6525,12 @@ AbstractQuestion.prototype.guess = function (answer, target) {
   //this.element.find('.eo-correct_option').find('.feedback').removeClass('hidden');
   var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
   if (isAnswerInTargetLanguage) {
-    Speaker.speak(document.englishonConfig.targetLanguage, answer.replace('_', ' '));
+    Speaker.speak(document.englishonConfig.targetLanguage, answer.replaceAll('_', ' '));
   }
   var isCorrect = this.isCorrect(answer);
   if (isCorrect) {
     if (!isAnswerInTargetLanguage) {
-      Speaker.speak(document.englishonConfig.targetLanguage, this.practicedWord.replace('_', ' '));
+      Speaker.speak(document.englishonConfig.targetLanguage, this.practicedWord.replaceAll('_', ' '));
     }
     setTimeout(function () {
       this.closeAnswered();
@@ -6699,10 +6700,10 @@ MultipleChoice.prototype.createElement = function () {
   option_elements = answers.map(function (answer) {
     var li = e$('<li>').addClass('eo-option')
     //replacing '_' with none breakable HTML ENTITY, so the word will not displayed in two lines
-    .append(e$('<span>').html(answer.answer.replace('_', '&nbsp;')).data('translate', answer.translation).data('word', answer.answer)).append(e$('<i aria-hidden="true">').addClass('fa fa-thumbs-o-down feedback hidden'));
+    .append(e$('<span>').html(answer.answer.replaceAll('_', '&nbsp;')).data('translate', answer.translation).data('word', answer.answer)).append(e$('<i aria-hidden="true">').addClass('fa fa-thumbs-o-down feedback hidden'));
     return li;
   }.bind(this));
-  option_elements.push(e$('<li>').addClass('eo-option eo-correct_option').append(e$('<span>').html(this.correct[0].replace('_', '&nbsp;')).data('word', this.correct[0])).append(e$('<i aria-hidden="true">').addClass('fa fa-thumbs-o-up feedback hidden')));
+  option_elements.push(e$('<li>').addClass('eo-option eo-correct_option').append(e$('<span>').html(this.correct[0].replaceAll('_', '&nbsp;')).data('word', this.correct[0])).append(e$('<i aria-hidden="true">').addClass('fa fa-thumbs-o-up feedback hidden')));
   shuffle(option_elements);
   this.options = e$('<ul>').addClass('eo-options').append(option_elements);
   element.find('.eo-hint').after(this.options);
@@ -6731,7 +6732,7 @@ MultipleChoice.prototype.bindInput = function () {
       e.preventDefault();
       var target = e$(e.target);
       target.toggleHtml(this.data.hint, this.practicedWord);
-      if (target.html() == this.practicedWord) {
+      if (target.html() == this.practicedWord.replaceAll('_', '&nbsp;')) {
         Speaker.speak(document.englishonConfig.targetLanguage, target.text());
       }
     }.bind(this));
@@ -8192,6 +8193,10 @@ e$(englishon);
 // ******
 // Button
 // ******
+String.prototype.replaceAll = function (search, replacement) {
+  var target = this;
+  return target.replace(new RegExp(search, 'g'), replacement);
+};
 document.firstTimeUser = function () {
   configStorage.set({ 'isUser': true, 'isActive': true });
   window.localStorage.setItem('show_quiz_tutorial', true);
@@ -8306,8 +8311,8 @@ var EnglishOnMenu = function () {
     },
     //for toggle text which containing html entities
     toggleHtml: function (a, b) {
-      a = a.replace('_', '&nbsp;');
-      if (b) b = b.replace('_', '&nbsp;');
+      a = a.replaceAll('_', '&nbsp;');
+      if (b) b = b.replaceAll('_', '&nbsp;');
       if (this.html() != a && this.html() != b) {
         this.html(a);
       } else if (this.html() == a) {
