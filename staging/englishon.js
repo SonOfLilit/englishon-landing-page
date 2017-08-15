@@ -6695,7 +6695,8 @@ MultipleChoice.prototype.replacement = function () {
 MultipleChoice.prototype.createElement = function () {
   var element = AbstractQuestion.prototype.createElement.call(this);
   element.addClass('eo-multiple_choice');
-  var answers = this.data.wrong_answers;
+  //var answers = this.data.wrong_answers;
+  var answers = this.data.personal_distractions;
   shuffle(answers);
   option_elements = answers.map(function (answer) {
     var li = e$('<li>').addClass('eo-option')
