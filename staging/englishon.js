@@ -5536,8 +5536,6 @@ Editor.prototype.createAutoQuestion = function (event) {
       wrong_words.push(candidate);
     }
   }
-  wrong.push({ word: 'special_nice_day', translation: 'דגרדכגד' });
-  wrong.push({ word: 'dance_today', translation: 'דגרדכגד' });
   preposition = span.data('preposition');
   var question = {
     'context': ctx,
@@ -8394,8 +8392,8 @@ var EnglishOnMenu = function () {
           } else if (res.status == 'terms_not_accepted') {
             document.eoDialogs.hideDialogs(0);
             e$('#eo-account-img').addClass('no-iamge');
+            //////////////////////////
             document.overlay.showTermsDialog(document.menu.powerOn);
-            //todo: use document.powerOff with an 'enable' parameter
             e$('.category-icon').remove();
             return;
           }
@@ -8411,6 +8409,7 @@ var EnglishOnMenu = function () {
             TODOAfterFetch();
           }, function (error) {
             if (error == 'terms_not_accepted') {
+              //////////////////////////////////
               document.overlay.showTermsDialog(TODOAfterFetch);
             }
           });
@@ -8753,6 +8752,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
       TODOAfterFetch();
     }, function (error) {
       if (error == 'terms_not_accepted') {
+        //???????????????????
         document.overlay.showTermsDialog(TODOAfterFetch);
       }
     });
@@ -8779,7 +8779,7 @@ function receiveMessage(event) {
   e$('#eo-account-name').text(user_name);
   e$('#eo-account-area').removeClass('guest');
   if (!localStorage.getItem('email')) {
-    //this is a real login, as google made many fictive logins
+    //this is a real login, as google made many 'fake logins'
     configStorage.set({ email: email, token: django_token, 'eo-user-name': user_name }).then(function () {
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
       if (event.data.status == 'terms_not_accepted') {
@@ -8801,7 +8801,7 @@ function receiveMessage(event) {
           document.overlay.showTermsDialog(TODOAfterFetch);
         }
       });
-      localStorage.setItem('email', email);
+      //localStorage.setItem('email', email);
       document.eoDialogs.hideDialogs(0);
     });
   }
