@@ -6730,6 +6730,8 @@ MultipleChoice.prototype.bindInput = function () {
     this.element.on('click', function (e) {
       e.preventDefault();
       var target = e$(e.target);
+
+      //eo-answered
       target.toggleHtml(this.data.hint, this.practicedWord);
       if (target.html() == this.practicedWord.replaceAll('_', '&nbsp;')) {
         Speaker.speak(document.englishonConfig.targetLanguage, target.text());
@@ -6743,11 +6745,11 @@ MultipleChoice.prototype.optionOnClick = function (e) {
 };
 MultipleChoice.prototype.open = function () {
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
-    e$(option).find('span').toggleHtml(e$(option).find('span').data('word'), e$(option).find('span').data('translate'));
+    e$(option).find('span').toggleHtml(e$(option).find('span').data('word').replaceAll('_', '&nbsp;'), e$(option).find('span').data('translate'));
   });
   options_width_when_show_translations = this.options.outerWidth();
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
-    e$(option).find('span').toggleHtml(e$(option).find('span').data('word'), e$(option).find('span').data('translate'));
+    e$(option).find('span').toggleHtml(e$(option).find('span').data('word').replaceAll('_', '&nbsp;'), e$(option).find('span').data('translate'));
   });
   var width = Math.max(this.element.outerWidth(), this.options.outerWidth(), options_width_when_show_translations);
   //var width = Math.max(this.element.outerWidth(), this.options.outerWidth());
@@ -8392,7 +8394,6 @@ var EnglishOnMenu = function () {
           } else if (res.status == 'terms_not_accepted') {
             document.eoDialogs.hideDialogs(0);
             e$('#eo-account-img').addClass('no-iamge');
-            //////////////////////////
             document.overlay.showTermsDialog(document.menu.powerOn);
             e$('.category-icon').remove();
             return;
@@ -8409,7 +8410,6 @@ var EnglishOnMenu = function () {
             TODOAfterFetch();
           }, function (error) {
             if (error == 'terms_not_accepted') {
-              //////////////////////////////////
               document.overlay.showTermsDialog(TODOAfterFetch);
             }
           });
