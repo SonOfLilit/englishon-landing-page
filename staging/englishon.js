@@ -6261,8 +6261,14 @@ Injector = function (paragraphs) {
     this.elements = [];
     //enable setQuestion after login
     this.isBatch = true;
+    //show first expired questions
     for (var i = 0; i < questions.length; i++) {
-      //check spacing just for new questions. SRs add anyway for now
+      if (questions[i].tried.length) {
+        this.addQuestion(questions[i], toggleSound);
+      }
+    }
+    for (var i = 0; i < questions.length; i++) {
+      //check spacing just for new questions. 
       if (this.checkSpacing(questions[i]) && this.checkDuplicates(questions[i])) {
         this.addQuestion(questions[i], toggleSound);
       }
