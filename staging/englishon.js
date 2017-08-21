@@ -6934,7 +6934,8 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
       <div class='Grid-cell eo-row13 v-align h-align'>\
         <div class='subtitle' id='subtitle'></div>\
       </div>\
-      <div class='Grid-cell eo-row4'>\
+      \
+<!--       <div class='Grid-cell eo-row4'>\
         <div id='google-iframe'></div>\
       </div>\
       <div class='Grid-cell hidden'>\
@@ -6946,7 +6947,9 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
           <div class='Grid-cell v-align h-align'> <span class='subtitle' id='or'>OR</span> </div>\
           <div class='Grid-cell line eo-delimiter'></div>\
         </div>\
-      </div>\
+      </div> -->\
+\
+\
       <div class='Grid-cell eo-row6'>\
         <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' /> </div>\
       <div class='Grid-cell hidden eo-row8'>\
@@ -8457,8 +8460,10 @@ var EnglishOnMenu = function () {
     document.overlay.powerOff();
   };
   this.signout = function () {
-    var popup = e$('#eo-iframe')[0].contentWindow;
-    popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
+    if (e$('#eo-iframe').length) {
+      var popup = e$('#eo-iframe')[0].contentWindow;
+      popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
+    }
     localStorage.removeItem('email');
     localStorage.removeItem('eo-user-name');
     localStorage.removeItem('editor');
@@ -8469,8 +8474,10 @@ var EnglishOnMenu = function () {
     auth.login(document.englishonConfig.token).then(function (token) {
       configStorage.set({ token: token });
       document.englishonBackend.token = token;
-      //Give englishon the new guest token
-      popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+      if (e$('#eo-iframe').length) {
+        //Give englishon the new guest token
+        popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+      }
       e$('#eo-account-area').addClass('guest');
       e$('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
