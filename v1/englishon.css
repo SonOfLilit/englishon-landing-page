@@ -3000,16 +3000,17 @@ it's top left values will re-computed everytime progress bar is moving*/
     left: 0px;
   }
 
-  .eo-logo {
+  .eo-button .eo-logo {
+    display: none;
     position: absolute;
-    top: 18px;
-    left: 30px;
+    top: 16px;
+    left: 22px;
     background-size: 65px;
   }
 
   .eo-icon {
     position: absolute;
-    left: 0px;
+    left: 25px;
     top: 0px;
   }
 
