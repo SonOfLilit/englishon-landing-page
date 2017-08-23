@@ -6114,6 +6114,8 @@ UserInfo = function () {
       }
       e$('#eo-live').toggleClass('eo-live-maximize');
       if (!e$('#eo-live').hasClass('eo-live-maximize')) {
+        e$('.contento_Container').hide(); //hide the other banner area in actoalic
+        //TODO:check if it is good for desktop too!!!
         e$('#eo-live-main').removeClass('hidden');
         e$('#vocabulary').addClass('hidden');
         e$('#eo-live').removeClass('vocabulary-open');
@@ -6957,12 +6959,12 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
       </div> -->\
 \
 \
-      <div class='Grid-cell eo-row6'>\
+      <div class='Grid-cell eo-row6 h-align'>\
         <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' /> </div>\
       <div class='Grid-cell hidden eo-row8'>\
         <div id='login-email-msg' class='error eo-message'></div>\
       </div>\
-      <div class='Grid-cell eo-row6'>\
+      <div class='Grid-cell eo-row6 h-align'>\
         <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' /> </div>\
       <div class='Grid-cell hidden eo-row8'>\
         <div id='login-password-msg' class='error eo-message'></div>\
@@ -7112,13 +7114,16 @@ var overlay_settings = {
         return e$('.site-header');
       },
       'pin_button_category': function () {
-        return e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul');
+        return e$('.page-header');
       },
       'button_left_value': function () {
         return 9;
       },
       'button_top_value': function () {
         return e$('.entry-header').find('.row').find('.small-12.medium-6.columns').eq(0).offset().top + 5;
+      },
+      'category_button_left_value': function () {
+        return 3;
       },
       'placeLiveActions': function () {},
       'pin-tutotial-article': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children',
@@ -7140,6 +7145,9 @@ var overlay_settings = {
       },
       'button_top_value': function () {
         return 2;
+      },
+      'category_button_left_value': function () {
+        return e$('#s').offset().left + e$('#s').width() * 0.87;
       },
       'placeLiveActions': function () {
         var startPoint = 206;
@@ -7239,7 +7247,10 @@ ShturemOverlay = function () {
       return;
     }
     no_questions_dlg = e$('<div>').addClass('no_questions_dlg').html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
-    e$('.no_questions_dlg').css({ 'direction': document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION'] });
+    e$('.no_questions_dlg').css({ 'direction': document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION']
+    });
+    e$('.no_questions_dlg').parents('.ui-dialog').css({ 'maxWidth': 240 });
+
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
 };
@@ -7438,6 +7449,7 @@ actualicCategoryOverlay = function (parts, category_url) {
   ShturemOverlay.call(this);
   this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu';
   this.settings = overlay_settings['actualic'][document.englishonConfig.media];
+  e$('body').addClass('category-page');
   this.placeLiveActions = function () {};
   this.showButtons = function () {
     /*    if (location.pathname == '/') {
@@ -7455,7 +7467,7 @@ actualicCategoryOverlay = function (parts, category_url) {
     if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
       this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
     }
-    e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
+    e$('.eo-button').css('left', this.settings.category_button_left_value());
   };
   this.fetchQuestions = function () {
     //just to enable compile
@@ -7514,8 +7526,10 @@ actualicOverlay = function (url, subtitle, bodytext) {
     } else {
       e$('.eo-button').on('click', document.firstTimeUser);
     }
-    e$('.eo-button').css('left', this.settings.button_left_value());
-    e$('.eo-button').css('top', this.settings.button_top_value());
+    //in an article page it was easiest to locate to button with js
+    //in category page or in mobile it was easiest to locate it with css
+    e$('.eo-button').css({ 'left': this.settings.button_left_value(), 'top': this.settings.button_top_value() });
+    //e$('.eo-button').css('top', this.settings.button_top_value())
   };
   this.showQuestions = function () {
     ShturemOverlay.prototype.showQuestions.call(this);

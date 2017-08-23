@@ -2990,9 +2990,20 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 /* responsive.scss */
 @media (max-width: 981px) {
+  body.actualic-co-il .contento_Container {
+    bottom: 40px;
+    height: 120px;
+  }
+
+  #eo-dlg-options {
+    width: 100%;
+    height: 250px;
+    top: 55px;
+    left: 0px;
+  }
+
   #eo-menu,
   #eo-dlg-login,
-  #eo-dlg-options,
   #eo-dlg-terms {
     width: 100%;
     height: 100%;
@@ -3021,18 +3032,23 @@ it's top left values will re-computed everytime progress bar is moving*/
     display: none;
   }
 
-  /*the actualic line html structure is a combination of float and inline-block.
+  /*the actualic line html structure in mobile is a combination of float and inline-block.
 different ways didn't work*/
+  body.actualic-co-il.category-page .eo-button {
+    position: absolute;
+    top: 125px;
+    left: 3px;
+  }
 }
 @media (max-width: 981px) and (max-width: 240px) {
-  body.actualic-co-il .eo-button {
+  body.actualic-co-il:not(.category-page) .eo-button {
     position: absolute;
     top: 645px;
     left: 10px;
   }
 }
 @media (max-width: 981px) and (max-width: 270px) {
-  body.actualic-co-il .eo-button {
+  body.actualic-co-il:not(.category-page) .eo-button {
     position: absolute;
     top: 534px;
     left: 10px;
@@ -3046,25 +3062,41 @@ different ways didn't work*/
   #eo-live .close-progress-bar {
     height: 20px;
     width: 20px;
-    background-size: 26px;
-    background-image: url(http://www.englishon.org/v1/img/close2.png);
+    background-size: 23px;
+    background-image: url(http://www.englishon.org/v1/img/close.png);
+    background-color: black;
+  }
+  #eo-live.eo-live-maximize .day-bar {
+    margin: 3px;
   }
 
-  #eo-live:not(.maximize) {
+  #eo-live.eo-live-maximize {
+    width: 100%;
+    height: 180px !important;
+    padding: 15px;
+  }
+  #eo-live.eo-live-maximize .close-progress-bar {
+    background-color: #eee;
+  }
+  #eo-live.eo-live-maximize #milotrage .Grid-cell {
+    font-size: 25px;
+  }
+
+  #eo-live:not(.eo-live-maximize) {
     width: 100%;
     height: 40px;
   }
-  #eo-live:not(.maximize) #milotrage {
+  #eo-live:not(.eo-live-maximize) #milotrage {
     height: 40px;
     margin: 0px;
   }
-  #eo-live:not(.maximize) .live-part {
+  #eo-live:not(.eo-live-maximize) .live-part {
     margin: 0px;
   }
-  #eo-live:not(.maximize) .actions-logo-cell {
+  #eo-live:not(.eo-live-maximize) .actions-logo-cell {
     width: 30% !important;
   }
-  #eo-live:not(.maximize) #milotrage .Grid-cell {
+  #eo-live:not(.eo-live-maximize) #milotrage .Grid-cell {
     font-size: 25px;
   }
 }
