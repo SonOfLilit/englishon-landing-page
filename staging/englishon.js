@@ -6061,15 +6061,17 @@ UserInfo = function () {
       var wordRepetition = function (element, origin_word) {
         Speaker.speak(document.englishonConfig.targetLanguage, origin_word.data('full').replaceAll('_', ' '));
         element.toggleText('?', element.data('translation'));
-        if (element.offset().left + element.width() > e$('#eo-live').offset().left + 293 || origin_word.offset().left < 130) {
-          origin_word.html(origin_word.data('full').slice(0, 1) + '...');
-        }
         if (element.text() != '?') {
           element.addClass('show').removeClass('vocabulary-translation-big');
         } else {
           element.removeClass('show');
           e$('.vocabulary-translation:not(.show)').addClass('vocabulary-translation-big');
           origin_word.html(origin_word.data('full').replaceAll('_', '&nbsp;'));
+        }
+        //if there is no enough place - show first letter only, + '...'
+        var gap = origin_word.offset().left - e$('#eo-live').offset().left;
+        if (element.text() != '?' && (element.offset().left + element.width() + 5 > e$('#eo-live').offset().left + e$('#eo-live').width() || gap < 80)) {
+          origin_word.html(origin_word.data('full').slice(0, 1) + '...');
         }
       };
       if (e.target.is('.vocabulary-word')) {
@@ -6114,13 +6116,13 @@ UserInfo = function () {
       }
       e$('#eo-live').toggleClass('eo-live-maximize');
       if (!e$('#eo-live').hasClass('eo-live-maximize')) {
-        e$('.contento_Container').hide(); //hide the other banner area in actoalic
-        //TODO:check if it is good for desktop too!!!
         e$('#eo-live-main').removeClass('hidden');
         e$('#vocabulary').addClass('hidden');
         e$('#eo-live').removeClass('vocabulary-open');
         clearInterval(document.vocabulary_interval);
         return;
+      } else if (document.englishonConfig.media == 'mobile') {
+        e$('.contento_Container').hide(); //hide the other banner area in actualic
       }
       e$(document).on('click', this.minimize);
     }.bind(this));
@@ -8227,12 +8229,12 @@ String.prototype.replaceAll = function (search, replacement) {
 };
 window.setIntervalX = function (callback, delay, repetitions) {
   var x = 0;
-  var intervalID = window.setInterval(function () {
+  window.hide_chat = window.setInterval(function () {
 
     callback();
 
     if (++x === repetitions) {
-      window.clearInterval(intervalID);
+      window.clearInterval(window.hide_chat);
     }
   }, delay);
 };
@@ -8569,6 +8571,7 @@ var EnglishOnMenu = function () {
   // Register Event Handlers
   // ***********************
   e$('#eo-contact').on('click', function () {
+    clearInterval(hide_chat);
     e$('#lc_chat_layout').show();
     e$('#lc_chat_title').click();
   });

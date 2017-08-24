@@ -2672,12 +2672,14 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   position: fixed;
   height: 60px;
   width: 300px;
+  z-index: 11;
   cursor: pointer;
   background-clip: padding-box;
+  min-height: 28px;
+  /*resize: both;
   border: solid transparent;
   border-width: 1px 1px 1px 6px;
-  min-height: 28px;
-  /*resize: both;*/
+  */
   overflow: hidden;
 }
 #eo-live .eo-close {
@@ -2990,6 +2992,10 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 /* responsive.scss */
 @media (max-width: 981px) {
+  #lc_chat_layout.lc-expanded {
+    right: 0px !important;
+  }
+
   body.actualic-co-il .contento_Container {
     bottom: 40px;
     height: 120px;
@@ -3066,9 +3072,6 @@ different ways didn't work*/
     background-image: url(http://www.englishon.org/v1/img/close.png);
     background-color: black;
   }
-  #eo-live.eo-live-maximize .day-bar {
-    margin: 3px;
-  }
 
   #eo-live.eo-live-maximize {
     width: 100%;
@@ -3079,25 +3082,49 @@ different ways didn't work*/
     background-color: #eee;
   }
   #eo-live.eo-live-maximize #milotrage .Grid-cell {
-    font-size: 25px;
+    font-size: 28px;
+  }
+  #eo-live.eo-live-maximize .day-bar {
+    margin: 3px;
+  }
+  #eo-live.eo-live-maximize .actions-logo-cell {
+    width: 32% !important;
   }
 
   #eo-live:not(.eo-live-maximize) {
     width: 100%;
-    height: 40px;
+    height: 55px;
+  }
+  #eo-live:not(.eo-live-maximize) .eo-close.close-progress-bar {
+    top: 6px;
+    left: 6px;
   }
   #eo-live:not(.eo-live-maximize) #milotrage {
-    height: 40px;
+    height: 55px;
     margin: 0px;
   }
   #eo-live:not(.eo-live-maximize) .live-part {
     margin: 0px;
   }
   #eo-live:not(.eo-live-maximize) .actions-logo-cell {
-    width: 30% !important;
+    width: 35% !important;
   }
   #eo-live:not(.eo-live-maximize) #milotrage .Grid-cell {
-    font-size: 25px;
+    font-size: 32px;
+  }
+
+  #eo-live.vocabulary-open .close-vocabulary {
+    bottom: 9px;
+    right: 9px;
+  }
+}
+@media (max-width: 981px) and (max-width: 240px) {
+  #eo-live:not(.eo-live-maximize) .actions-logo-cell {
+    width: 25% !important;
+  }
+
+  #eo-live.eo-live-maximize #milotrage .Grid-cell {
+    font-size: 24px;
   }
 }
 /*end of media selctor*/
