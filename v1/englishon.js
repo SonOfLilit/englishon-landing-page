@@ -7868,6 +7868,9 @@ Tour = new function () {
     });
   };
   this.signinTutorial = function () {
+    if (document.englishonConfig.media === 'mobile') {
+      return;
+    }
     steps = [];
     document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
     window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
@@ -8732,7 +8735,9 @@ var EnglishOnMenu = function () {
         if (document.show_signin_tutorial) {
           console.log('setTimeout!!!!!!!!!!!!');
           Tour.signinTutorial();
-          document.tour.start();
+          if (document.englishonConfig.media != 'mobile') {
+            document.tour.start();
+          }
           clearInterval(document.tutorialInterval);
         }
       }, 500);
