@@ -6069,6 +6069,7 @@ UserInfo = function () {
           origin_word.html(origin_word.data('full').replaceAll('_', '&nbsp;'));
         }
         //if there is no enough place - show first letter only, + '...'
+        //the fap test is needed when the translation is long
         var gap = origin_word.offset().left - e$('#eo-live').offset().left;
         if (element.text() != '?' && (element.offset().left + element.width() + 5 > e$('#eo-live').offset().left + e$('#eo-live').width() || gap < 60)) {
           origin_word.html(origin_word.data('full').slice(0, 1) + '...');
@@ -6165,6 +6166,18 @@ UserInfo = function () {
       //'1000000' is a hack to display trailing zero... till not supported with format
       e$('#eo-odometer').text(1000000 + data['#words'] * 10);
     });
+  };
+  this.testVocabulary = function () {
+    document.eo_user.showLiveActions();
+    e$('#eo-live').addClass('eo-live-maximize vocabulary-open');
+    e$('#vocabulary').removeClass('hidden');
+    e$('#eo-live-main').addClass('hidden');
+
+    word = { 'mastery': 0.2, 'word': 'very_very_long_word', 'translation': 'מילה ארוכה' };
+    word2 = { 'mastery': 0.2, 'word': 'average', 'translation': 'תרגוםארוךבמיוחד' };
+    word3 = { 'mastery': 0.2, 'word': 'smile', 'translation': 'חיוך' };
+    words_list = [word, word2, word3, word2, word, word3, word, word2, word, word, word, word, word];
+    document.eo_user.renderVocabulary(words_list);
   };
 };
 //
@@ -8120,9 +8133,11 @@ function englishon() {
      !e$('#developement-only-version').length) {
      return;
    } */
-  if (window.location.host == 'actualic.co.il' && media != 'desktop' && decodeURIComponent(window.location.pathname) != '/רפואת-ילדים-עולם-ומלואו/') {
-    return;
-  }
+  /*   if (window.location.host == 'actualic.co.il' &&
+      media != 'desktop' &&
+      decodeURIComponent(window.location.pathname)!= '/רפואת-ילדים-עולם-ומלואו/') {
+      return;
+    }*/
   sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il'];
   if (sites.indexOf(window.location.host) == -1) {
     return;
