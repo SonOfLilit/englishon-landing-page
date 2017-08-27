@@ -7851,9 +7851,15 @@ Tour = new function () {
     clearTimeout(document.eo_user.setTimeOut);
     e$(document).off('click', document.eo_user.minimize);
     steps = [];
-    steps.push(new step('#milotrage right', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
-    steps.push(new step('#days-pannel right', 'progress2------', 'הימים שתרגלתי ברציפות השבוע', 'progress_' + 1));
-    steps.push(new step('#sr right', 'progress3------', 'לחץ בעיגול לרשימת המילים לתירגול', 'progress_' + 2));
+    if (document.englishonConfig.media === 'mobile') {
+      steps.push(new step('#milotrage top', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
+      steps.push(new step('#days-pannel top', 'progress2------', 'הימים שתרגלתי ברציפות השבוע', 'progress_' + 1));
+      steps.push(new step('#sr top', 'progress3------', 'לחץ בעיגול לרשימת המילים לתירגול', 'progress_' + 2));
+    } else {
+      steps.push(new step('#milotrage right', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
+      steps.push(new step('#days-pannel right', 'progress2------', 'הימים שתרגלתי ברציפות השבוע', 'progress_' + 1));
+      steps.push(new step('#sr right', 'progress3------', 'לחץ בעיגול לרשימת המילים לתירגול', 'progress_' + 2));
+    }
     this.initTutorial(steps);
   };
   this.welcomeTutorial = function () {
@@ -7891,9 +7897,7 @@ Tour = new function () {
     this.initTutorial(steps);
   };
   this.quizTutorial = function () {
-    if (document.englishonConfig.media === 'mobile') {
-      return;
-    }
+    //if (document.englishonConfig.media === 'mobile') { return; }
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
     e$('.eo-question').eq(0).addClass('highlighted');
@@ -7983,7 +7987,13 @@ Tour = new function () {
       }
       var tetherOptionsDic = {};
       if (steps[i].id.slice(0, 9) === 'question_') {
-        tetherOptionsDic.offset = '-20px 0px';
+        if (document.englishonConfig.media === 'mobile') {
+          tetherOptionsDic.offset = '-20px 0px';
+        } else {
+          tetherOptionsDic.offset = '0px 0px';
+        }
+        //the offset is good, but it is not adjusting with scrolling.
+        //in mobile css is differ. the offset is a must.
       }
       if (steps[i].id === 'welcome_1') {
         tetherOptionsDic.offset = '0px 20px';
@@ -8057,6 +8067,9 @@ Tour = new function () {
                 //e$('.eo-question .eo-hint').off('click', questionOpened);
                 //e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
               });
+              if (document.englishonConfig.media === 'mobile') {
+                e$('.shepherd-content').find('before').css('left', e$('.question_0').offset().left / e$('#eo-live').width() + '%');
+              }
             }
             if (window.location.host == 'actualic.co.il') {
               //??? unneeded line?
@@ -8750,9 +8763,9 @@ var EnglishOnMenu = function () {
         if (document.show_signin_tutorial) {
           console.log('setTimeout!!!!!!!!!!!!');
           Tour.signinTutorial();
-          if (document.englishonConfig.media != 'mobile') {
-            document.tour.start();
-          }
+          //if (document.englishonConfig.media != 'mobile') {
+          document.tour.start();
+          //}
           clearInterval(document.tutorialInterval);
         }
       }, 500);
@@ -8774,9 +8787,9 @@ e$.when(document.questions_promise).done(function () {
     setTimeout(function () {
       //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
       Tour.quizTutorial();
-      if (document.englishonConfig.media != 'mobile') {
-        document.tour.start();
-      }
+      // if (document.englishonConfig.media != 'mobile') {
+      document.tour.start();
+      //}
     }, 2000);
   }
 });

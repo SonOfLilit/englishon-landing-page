@@ -3127,4 +3127,16 @@ different ways didn't work*/
     font-size: 24px;
   }
 }
+@media (max-width: 981px) {
+  /*TUTORIAL*/
+  .shepherd-element.shepherd-theme-arrows {
+    min-width: 100%;
+    transform: translateX(0px);
+  }
+  .shepherd-element.shepherd-theme-arrows .shepherd-content::before {
+    border-bottom-color: #eee;
+    bottom: 100%;
+    left: 80%;
+  }
+}
 /*end of media selctor*/
