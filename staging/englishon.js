@@ -6070,7 +6070,7 @@ UserInfo = function () {
         }
         //if there is no enough place - show first letter only, + '...'
         var gap = origin_word.offset().left - e$('#eo-live').offset().left;
-        if (element.text() != '?' && (element.offset().left + element.width() + 5 > e$('#eo-live').offset().left + e$('#eo-live').width() || gap < 80)) {
+        if (element.text() != '?' && (element.offset().left + element.width() + 5 > e$('#eo-live').offset().left + e$('#eo-live').width() || gap < 60)) {
           origin_word.html(origin_word.data('full').slice(0, 1) + '...');
         }
       };
