@@ -7106,6 +7106,17 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
   </div>\
 </div>";
 //
+window.setButtonInterval = function (callback, delay, repetitions) {
+  var xx = 0;
+  window.ButtonInterval = setInterval(function () {
+
+    callback();
+
+    if (++xx === repetitions) {
+      clearInterval(window.ButtonInterval);
+    }
+  }, delay);
+};
 var overlay_settings = {
   'actualic': {
     'mobile': {
@@ -7249,9 +7260,10 @@ ShturemOverlay = function () {
       return;
     }
     no_questions_dlg = e$('<div>').addClass('no_questions_dlg').html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
-    e$('.no_questions_dlg').css({ 'direction': document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION']
+    e$('.no_questions_dlg').css({
+      'direction': document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION']
     });
-    e$('.no_questions_dlg').parents('.ui-dialog').css({ 'maxWidth': 240 });
+    //e$('.no_questions_dlg').parents('.ui-dialog').css({ 'maxWidth': 240 });
 
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
@@ -7528,10 +7540,15 @@ actualicOverlay = function (url, subtitle, bodytext) {
     } else {
       e$('.eo-button').on('click', document.firstTimeUser);
     }
-    //in an article page it was easiest to locate to button with js
-    //in category page or in mobile it was easiest to locate it with css
+    /*    in an article page it was easiest to find top left values for button with js
+        in a category page it was easiest to define top with css
+    */
     e$('.eo-button').css({ 'left': this.settings.button_left_value(), 'top': this.settings.button_top_value() });
-    //e$('.eo-button').css('top', this.settings.button_top_value())
+    //sometime the button_top_value is not computed correctly the first time in mobile. don't know the reason.
+    setButtonInterval(function () {
+      console.log('-------------setTimeOut button_top_value');
+      e$('.eo-button').css({ 'top': document.overlay.settings.button_top_value() });
+    }, 500, 20);
   };
   this.showQuestions = function () {
     ShturemOverlay.prototype.showQuestions.call(this);
@@ -7810,6 +7827,9 @@ window.englishon_chat = function () {
 //
 Tour = new function () {
   this.progressTutorial = function () {
+    if (document.englishonConfig.media === 'mobile') {
+      return;
+    }
     e$('#eo-banner').hide();
     e$('#eo-live').removeClass('vocabulary-open');
     e$('#eo-live').addClass('eo-live-maximize');
@@ -7855,6 +7875,9 @@ Tour = new function () {
     this.initTutorial(steps);
   };
   this.quizTutorial = function () {
+    if (document.englishonConfig.media === 'mobile') {
+      return;
+    }
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
     e$('.eo-question').eq(0).addClass('highlighted');
@@ -8020,8 +8043,8 @@ Tour = new function () {
               });
             }
             if (window.location.host == 'actualic.co.il') {
-              var val = Math.max(230 - $(window).scrollTop(), 60);
-              e$('#eo-live').css('top', val);
+              //??? unneeded line?
+              document.overlay.settings.placeLiveActions();
             }
           }
         }
@@ -8089,7 +8112,12 @@ function englishon() {
       return;
     }
   //THIS LINE IS TEMP
-  if (window.location.host == 'actualic.co.il' && media != 'desktop' && !e$('#developement-only-version').length) {
+  /* if (window.location.host == 'actualic.co.il' &&
+     media != 'desktop' &&
+     !e$('#developement-only-version').length) {
+     return;
+   } */
+  if (window.location.host == 'actualic.co.il' && media != 'desktop' && decodeURIComponent(window.location.pathname) != '/רפואת-ילדים-עולם-ומלואו/') {
     return;
   }
   sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il'];
@@ -8229,12 +8257,12 @@ String.prototype.replaceAll = function (search, replacement) {
 };
 window.setIntervalX = function (callback, delay, repetitions) {
   var x = 0;
-  window.hide_chat = window.setInterval(function () {
+  window.hide_chat = setInterval(function () {
 
     callback();
 
     if (++x === repetitions) {
-      window.clearInterval(window.hide_chat);
+      clearInterval(window.hide_chat);
     }
   }, delay);
 };
@@ -8726,7 +8754,9 @@ e$.when(document.questions_promise).done(function () {
     setTimeout(function () {
       //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
       Tour.quizTutorial();
-      document.tour.start();
+      if (document.englishonConfig.media != 'mobile') {
+        document.tour.start();
+      }
     }, 2000);
   }
 });

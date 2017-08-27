@@ -6061,15 +6061,17 @@ UserInfo = function () {
       var wordRepetition = function (element, origin_word) {
         Speaker.speak(document.englishonConfig.targetLanguage, origin_word.data('full').replaceAll('_', ' '));
         element.toggleText('?', element.data('translation'));
-        if (element.offset().left + element.width() > e$('#eo-live').offset().left + 293 || origin_word.offset().left < 130) {
-          origin_word.html(origin_word.data('full').slice(0, 1) + '...');
-        }
         if (element.text() != '?') {
           element.addClass('show').removeClass('vocabulary-translation-big');
         } else {
           element.removeClass('show');
           e$('.vocabulary-translation:not(.show)').addClass('vocabulary-translation-big');
           origin_word.html(origin_word.data('full').replaceAll('_', '&nbsp;'));
+        }
+        //if there is no enough place - show first letter only, + '...'
+        var gap = origin_word.offset().left - e$('#eo-live').offset().left;
+        if (element.text() != '?' && (element.offset().left + element.width() + 5 > e$('#eo-live').offset().left + e$('#eo-live').width() || gap < 80)) {
+          origin_word.html(origin_word.data('full').slice(0, 1) + '...');
         }
       };
       if (e.target.is('.vocabulary-word')) {
@@ -6119,6 +6121,8 @@ UserInfo = function () {
         e$('#eo-live').removeClass('vocabulary-open');
         clearInterval(document.vocabulary_interval);
         return;
+      } else if (document.englishonConfig.media == 'mobile') {
+        e$('.contento_Container').hide(); //hide the other banner area in actualic
       }
       e$(document).on('click', this.minimize);
     }.bind(this));
@@ -6957,12 +6961,12 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
       </div> -->\
 \
 \
-      <div class='Grid-cell eo-row6'>\
+      <div class='Grid-cell eo-row6 h-align'>\
         <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' /> </div>\
       <div class='Grid-cell hidden eo-row8'>\
         <div id='login-email-msg' class='error eo-message'></div>\
       </div>\
-      <div class='Grid-cell eo-row6'>\
+      <div class='Grid-cell eo-row6 h-align'>\
         <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' /> </div>\
       <div class='Grid-cell hidden eo-row8'>\
         <div id='login-password-msg' class='error eo-message'></div>\
@@ -7102,6 +7106,17 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
   </div>\
 </div>";
 //
+window.setButtonInterval = function (callback, delay, repetitions) {
+  var xx = 0;
+  window.ButtonInterval = setInterval(function () {
+
+    callback();
+
+    if (++xx === repetitions) {
+      clearInterval(window.ButtonInterval);
+    }
+  }, delay);
+};
 var overlay_settings = {
   'actualic': {
     'mobile': {
@@ -7112,13 +7127,16 @@ var overlay_settings = {
         return e$('.site-header');
       },
       'pin_button_category': function () {
-        return e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul');
+        return e$('.page-header');
       },
       'button_left_value': function () {
         return 9;
       },
       'button_top_value': function () {
         return e$('.entry-header').find('.row').find('.small-12.medium-6.columns').eq(0).offset().top + 5;
+      },
+      'category_button_left_value': function () {
+        return 3;
       },
       'placeLiveActions': function () {},
       'pin-tutotial-article': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children',
@@ -7140,6 +7158,9 @@ var overlay_settings = {
       },
       'button_top_value': function () {
         return 2;
+      },
+      'category_button_left_value': function () {
+        return e$('#s').offset().left + e$('#s').width() * 0.87;
       },
       'placeLiveActions': function () {
         var startPoint = 206;
@@ -7239,7 +7260,11 @@ ShturemOverlay = function () {
       return;
     }
     no_questions_dlg = e$('<div>').addClass('no_questions_dlg').html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
-    e$('.no_questions_dlg').css({ 'direction': document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION'] });
+    e$('.no_questions_dlg').css({
+      'direction': document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION']
+    });
+    //e$('.no_questions_dlg').parents('.ui-dialog').css({ 'maxWidth': 240 });
+
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
 };
@@ -7438,6 +7463,7 @@ actualicCategoryOverlay = function (parts, category_url) {
   ShturemOverlay.call(this);
   this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu';
   this.settings = overlay_settings['actualic'][document.englishonConfig.media];
+  e$('body').addClass('category-page');
   this.placeLiveActions = function () {};
   this.showButtons = function () {
     /*    if (location.pathname == '/') {
@@ -7455,7 +7481,7 @@ actualicCategoryOverlay = function (parts, category_url) {
     if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
       this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
     }
-    e$('.eo-button').css('left', e$('#s').offset().left + e$('#s').width() * 0.87);
+    e$('.eo-button').css('left', this.settings.category_button_left_value());
   };
   this.fetchQuestions = function () {
     //just to enable compile
@@ -7514,8 +7540,15 @@ actualicOverlay = function (url, subtitle, bodytext) {
     } else {
       e$('.eo-button').on('click', document.firstTimeUser);
     }
-    e$('.eo-button').css('left', this.settings.button_left_value());
-    e$('.eo-button').css('top', this.settings.button_top_value());
+    /*    in an article page it was easiest to find top left values for button with js
+        in a category page it was easiest to define top with css
+    */
+    e$('.eo-button').css({ 'left': this.settings.button_left_value(), 'top': this.settings.button_top_value() });
+    //sometime the button_top_value is not computed correctly the first time in mobile. don't know the reason.
+    setButtonInterval(function () {
+      console.log('-------------setTimeOut button_top_value');
+      e$('.eo-button').css({ 'top': document.overlay.settings.button_top_value() });
+    }, 500, 20);
   };
   this.showQuestions = function () {
     ShturemOverlay.prototype.showQuestions.call(this);
@@ -7791,10 +7824,12 @@ var Speaker = new function () {
 window.englishon_chat = function () {
   var fc_CSS = document.createElement('link');fc_CSS.setAttribute('rel', 'stylesheet');var fc_isSecured = window.location && window.location.protocol == 'https:';var fc_lang = document.getElementsByTagName('html')[0].getAttribute('lang');var fc_rtlLanguages = ['ar', 'he'];var fc_rtlSuffix = fc_rtlLanguages.indexOf(fc_lang) >= 0 ? '-rtl' : '';fc_CSS.setAttribute('type', 'text/css');fc_CSS.setAttribute('href', (fc_isSecured ? 'https://d36mpcpuzc4ztk.cloudfront.net' : 'http://assets1.chat.freshdesk.com') + '/css/visitor' + fc_rtlSuffix + '.css');document.getElementsByTagName('head')[0].appendChild(fc_CSS);var fc_JS = document.createElement('script');fc_JS.type = 'text/javascript';fc_JS.defer = true;fc_JS.src = (fc_isSecured ? 'https://d36mpcpuzc4ztk.cloudfront.net' : 'http://assets.chat.freshdesk.com') + '/js/visitor.js';(document.body ? document.body : document.getElementsByTagName('head')[0]).appendChild(fc_JS);window.livechat_setting = 'eyJ3aWRnZXRfc2l0ZV91cmwiOiJlbmdsaXNob24uZnJlc2hkZXNrLmNvbSIsInByb2R1Y3RfaWQiOm51bGwsIm5hbWUiOiJlbmdsaXNob24iLCJ3aWRnZXRfZXh0ZXJuYWxfaWQiOm51bGwsIndpZGdldF9pZCI6ImVjNGQ3MzZkLTIxMTctNGRiNi1iMjAwLTkyMmIyODlhMjk0YiIsInNob3dfb25fcG9ydGFsIjpmYWxzZSwicG9ydGFsX2xvZ2luX3JlcXVpcmVkIjpmYWxzZSwibGFuZ3VhZ2UiOiJlbiIsInRpbWV6b25lIjoiRWFzdGVybiBUaW1lIChVUyAmIENhbmFkYSkiLCJpZCI6MzMwMDAwMjUyNzksIm1haW5fd2lkZ2V0IjoxLCJmY19pZCI6IjZiODQyYjkxOTE4Zjg0MGNmZWEzOGEyYjc4NjY3MjhiIiwic2hvdyI6MSwicmVxdWlyZWQiOjIsImhlbHBkZXNrbmFtZSI6ImVuZ2xpc2hvbiIsIm5hbWVfbGFiZWwiOiJOYW1lIiwibWVzc2FnZV9sYWJlbCI6Ik1lc3NhZ2UiLCJwaG9uZV9sYWJlbCI6IlBob25lIiwidGV4dGZpZWxkX2xhYmVsIjoiVGV4dGZpZWxkIiwiZHJvcGRvd25fbGFiZWwiOiJEcm9wZG93biIsIndlYnVybCI6ImVuZ2xpc2hvbi5mcmVzaGRlc2suY29tIiwibm9kZXVybCI6ImNoYXQuZnJlc2hkZXNrLmNvbSIsImRlYnVnIjoxLCJtZSI6Ik1lIiwiZXhwaXJ5IjoxNTA0Njk3NTQxMDAwLCJlbnZpcm9ubWVudCI6InByb2R1Y3Rpb24iLCJlbmRfY2hhdF90aGFua19tc2ciOiJUaGFuayB5b3UhISEiLCJlbmRfY2hhdF9lbmRfdGl0bGUiOiJFbmQiLCJlbmRfY2hhdF9jYW5jZWxfdGl0bGUiOiJDYW5jZWwiLCJzaXRlX2lkIjoiNmI4NDJiOTE5MThmODQwY2ZlYTM4YTJiNzg2NjcyOGIiLCJhY3RpdmUiOjEsInJvdXRpbmciOm51bGwsInByZWNoYXRfZm9ybSI6MSwiYnVzaW5lc3NfY2FsZW5kYXIiOm51bGwsInByb2FjdGl2ZV9jaGF0IjowLCJwcm9hY3RpdmVfdGltZSI6bnVsbCwic2l0ZV91cmwiOiJlbmdsaXNob24uZnJlc2hkZXNrLmNvbSIsImV4dGVybmFsX2lkIjpudWxsLCJkZWxldGVkIjowLCJtb2JpbGUiOjEsImFjY291bnRfaWQiOm51bGwsImNyZWF0ZWRfYXQiOiIyMDE3LTA4LTA2VDExOjM0OjE3LjAwMFoiLCJ1cGRhdGVkX2F0IjoiMjAxNy0wOC0wNlQxMzoyMTo1Mi4wMDBaIiwiY2JEZWZhdWx0TWVzc2FnZXMiOnsiY29icm93c2luZ19zdGFydF9tc2ciOiJZb3VyIHNjcmVlbnNoYXJlIHNlc3Npb24gaGFzIHN0YXJ0ZWQiLCJjb2Jyb3dzaW5nX3N0b3BfbXNnIjoiWW91ciBzY3JlZW5zaGFyaW5nIHNlc3Npb24gaGFzIGVuZGVkIiwiY29icm93c2luZ19kZW55X21zZyI6IllvdXIgcmVxdWVzdCB3YXMgZGVjbGluZWQiLCJjb2Jyb3dzaW5nX2FnZW50X2J1c3kiOiJBZ2VudCBpcyBpbiBzY3JlZW4gc2hhcmUgc2Vzc2lvbiB3aXRoIGN1c3RvbWVyIiwiY29icm93c2luZ192aWV3aW5nX3NjcmVlbiI6IllvdSBhcmUgdmlld2luZyB0aGUgdmlzaXRvcuKAmXMgc2NyZWVuIiwiY29icm93c2luZ19jb250cm9sbGluZ19zY3JlZW4iOiJZb3UgaGF2ZSBhY2Nlc3MgdG8gdmlzaXRvcuKAmXMgc2NyZWVuLiIsImNvYnJvd3NpbmdfcmVxdWVzdF9jb250cm9sIjoiUmVxdWVzdCB2aXNpdG9yIGZvciBzY3JlZW4gYWNjZXNzICIsImNvYnJvd3NpbmdfZ2l2ZV92aXNpdG9yX2NvbnRyb2wiOiJHaXZlIGFjY2VzcyBiYWNrIHRvIHZpc2l0b3IgIiwiY29icm93c2luZ19zdG9wX3JlcXVlc3QiOiJFbmQgeW91ciBzY3JlZW5zaGFyaW5nIHNlc3Npb24gIiwiY29icm93c2luZ19yZXF1ZXN0X2NvbnRyb2xfcmVqZWN0ZWQiOiJZb3VyIHJlcXVlc3Qgd2FzIGRlY2xpbmVkICIsImNvYnJvd3NpbmdfY2FuY2VsX3Zpc2l0b3JfbXNnIjoiU2NyZWVuc2hhcmluZyBpcyBjdXJyZW50bHkgdW5hdmFpbGFibGUgIiwiY29icm93c2luZ19hZ2VudF9yZXF1ZXN0X2NvbnRyb2wiOiJBZ2VudCBpcyByZXF1ZXN0aW5nIGFjY2VzcyB0byB5b3VyIHNjcmVlbiAiLCJjYl92aWV3aW5nX3NjcmVlbl92aSI6IkFnZW50IGNhbiB2aWV3IHlvdXIgc2NyZWVuICIsImNiX2NvbnRyb2xsaW5nX3NjcmVlbl92aSI6IkFnZW50IGhhcyBhY2Nlc3MgdG8geW91ciBzY3JlZW4gIiwiY2Jfdmlld19tb2RlX3N1YnRleHQiOiJZb3VyIGFjY2VzcyB0byB0aGUgc2NyZWVuIGhhcyBiZWVuIHdpdGhkcmF3biAiLCJjYl9naXZlX2NvbnRyb2xfdmkiOiJBbGxvdyBhZ2VudCB0byBhY2Nlc3MgeW91ciBzY3JlZW4gIiwiY2JfdmlzaXRvcl9zZXNzaW9uX3JlcXVlc3QiOiJBZ2VudCBzZWVrcyBhY2Nlc3MgdG8geW91ciBzY3JlZW4gIn19';
 };
-
 //
 Tour = new function () {
   this.progressTutorial = function () {
+    if (document.englishonConfig.media === 'mobile') {
+      return;
+    }
     e$('#eo-banner').hide();
     e$('#eo-live').removeClass('vocabulary-open');
     e$('#eo-live').addClass('eo-live-maximize');
@@ -7840,6 +7875,9 @@ Tour = new function () {
     this.initTutorial(steps);
   };
   this.quizTutorial = function () {
+    if (document.englishonConfig.media === 'mobile') {
+      return;
+    }
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
     e$('.eo-question').eq(0).addClass('highlighted');
@@ -8005,8 +8043,8 @@ Tour = new function () {
               });
             }
             if (window.location.host == 'actualic.co.il') {
-              var val = Math.max(230 - $(window).scrollTop(), 60);
-              e$('#eo-live').css('top', val);
+              //??? unneeded line?
+              document.overlay.settings.placeLiveActions();
             }
           }
         }
@@ -8074,7 +8112,12 @@ function englishon() {
       return;
     }
   //THIS LINE IS TEMP
-  if (window.location.host == 'actualic.co.il' && media != 'desktop' && !e$('#developement-only-version').length) {
+  /* if (window.location.host == 'actualic.co.il' &&
+     media != 'desktop' &&
+     !e$('#developement-only-version').length) {
+     return;
+   } */
+  if (window.location.host == 'actualic.co.il' && media != 'desktop' && decodeURIComponent(window.location.pathname) != '/רפואת-ילדים-עולם-ומלואו/') {
     return;
   }
   sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il'];
@@ -8214,12 +8257,12 @@ String.prototype.replaceAll = function (search, replacement) {
 };
 window.setIntervalX = function (callback, delay, repetitions) {
   var x = 0;
-  var intervalID = window.setInterval(function () {
+  window.hide_chat = setInterval(function () {
 
     callback();
 
     if (++x === repetitions) {
-      window.clearInterval(intervalID);
+      clearInterval(window.hide_chat);
     }
   }, delay);
 };
@@ -8556,6 +8599,7 @@ var EnglishOnMenu = function () {
   // Register Event Handlers
   // ***********************
   e$('#eo-contact').on('click', function () {
+    clearInterval(hide_chat);
     e$('#lc_chat_layout').show();
     e$('#lc_chat_title').click();
   });
@@ -8710,7 +8754,9 @@ e$.when(document.questions_promise).done(function () {
     setTimeout(function () {
       //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
       Tour.quizTutorial();
-      document.tour.start();
+      if (document.englishonConfig.media != 'mobile') {
+        document.tour.start();
+      }
     }, 2000);
   }
 });
