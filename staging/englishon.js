@@ -7177,8 +7177,21 @@ var overlay_settings = {
       },
       'placeLiveActions': function () {
         var startPoint = 206;
-        var val = e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left;
-        e$('#eo-live').css('left', val - 320);
+        //notice! this left value is adjusting to an article page only!
+        var val_dic = {
+          'article': function () {
+            return e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320;
+          },
+          'category-page': function () {
+            return e$('#sidebar').offset().left;
+          },
+          'front-page': function () {
+            return e$('.small-6.large-2.columns').eq(1).offset().left;
+          }
+        };
+        //        var val = e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320;
+        var val = val_dic[document.overlay.innerName]();
+        e$('#eo-live').css('left', val);
         e$('#eo-live .close-vocabulary').css('left', val - 58);
         var val = Math.max(startPoint - $(window).scrollTop(), 60);
         e$('#eo-live').css('top', val);
@@ -7476,6 +7489,11 @@ actualicCategoryOverlay = function (parts, category_url) {
   ShturemOverlay.call(this);
   this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu';
   this.settings = overlay_settings['actualic'][document.englishonConfig.media];
+  if (location.pathname == '/') {
+    this.innerName = 'front-page';
+  } else {
+    this.innerName = 'category-page';
+  }
   e$('body').addClass('category-page');
   this.placeLiveActions = function () {};
   this.showButtons = function () {
@@ -7543,6 +7561,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
   ShturemOverlay.call(this);
   this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children';
   this.settings = overlay_settings['actualic'][document.englishonConfig.media];
+  this.innerName = 'article';
   this.getLineDetails = function () {
     return [e$('.entry-content').offset().left, e$('.entry-content').width()];
   };
@@ -7631,10 +7650,10 @@ actualicOverlay = function (url, subtitle, bodytext) {
 //
 ScraperFactory = function (location) {
   this.isHebrew = function (str) {
-    var isHebrewVar = true;
+    var isHebrewVar = false;
     var array = str.split('');
     e$(array).each(function (i, c) {
-      isHebrewVar = isHebrewVar && (c.charCodeAt(0) < 65 || c.charCodeAt(0) >= 1488 && c.charCodeAt(0) <= 1514);
+      isHebrewVar = isHebrewVar || c.charCodeAt(0) >= 1488 && c.charCodeAt(0) <= 1514;
     });
     return isHebrewVar;
   };
