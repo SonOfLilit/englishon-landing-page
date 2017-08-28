@@ -7849,6 +7849,12 @@ Tour = new function () {
     e$(document).off('click', document.eo_user.minimize);
     steps = [];
     if (document.englishonConfig.media === 'mobile') {
+      if (decodeURIComponent(window.location.pathname) != '/רפואת-ילדים-עולם-ומלואו/') {
+        steps = [];
+        this.initTutorial(steps);
+        return;
+      }
+      e$('.contento_Container').hide(); //hide the other banner area in actualic
       steps.push(new step('#milotrage top', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
       steps.push(new step('#days-pannel top', 'progress2------', 'הימים שתרגלתי ברציפות השבוע', 'progress_' + 1));
       steps.push(new step('#sr top', 'progress3------', 'לחץ בעיגול לרשימת המילים לתירגול', 'progress_' + 2));
@@ -7885,6 +7891,8 @@ Tour = new function () {
   };
   this.signinTutorial = function () {
     if (document.englishonConfig.media === 'mobile') {
+      steps = [];
+      this.initTutorial(steps);
       return;
     }
     steps = [];
@@ -7894,7 +7902,14 @@ Tour = new function () {
     this.initTutorial(steps);
   };
   this.quizTutorial = function () {
-    //if (document.englishonConfig.media === 'mobile') { return; }
+    if (document.englishonConfig.media === 'mobile') {
+      if (decodeURIComponent(window.location.pathname) != '/רפואת-ילדים-עולם-ומלואו/') {
+        steps = [];
+        this.initTutorial(steps);
+        return;
+      }
+      e$('.contento_Container').hide(); //hide the other banner area in actualic
+    }
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
     e$('.eo-question').eq(0).addClass('highlighted');
@@ -8770,9 +8785,7 @@ var EnglishOnMenu = function () {
         if (document.show_signin_tutorial) {
           console.log('setTimeout!!!!!!!!!!!!');
           Tour.signinTutorial();
-          if (document.englishonConfig.media != 'mobile') {
-            document.tour.start();
-          }
+          document.tour.start();
           clearInterval(document.tutorialInterval);
         }
       }, 500);
@@ -8794,9 +8807,7 @@ e$.when(document.questions_promise).done(function () {
     setTimeout(function () {
       //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
       Tour.quizTutorial();
-      // if (document.englishonConfig.media != 'mobile') {
       document.tour.start();
-      //}
     }, 2000);
   }
 });

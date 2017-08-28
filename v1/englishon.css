@@ -3127,4 +3127,24 @@ different ways didn't work*/
     font-size: 24px;
   }
 }
+@media (max-width: 981px) {
+  /*TUTORIAL*/
+  .shepherd-element.shepherd-theme-arrows {
+    min-width: 100%;
+    transform: translateX(0px);
+  }
+
+  .tutorial-point {
+    position: absolute;
+    top: -32px;
+    width: 0;
+    height: 0;
+    display: block;
+    border-color: transparent;
+    border-width: 16px;
+    border-style: solid;
+    pointer-events: none;
+    border-bottom-color: #eee;
+  }
+}
 /*end of media selctor*/

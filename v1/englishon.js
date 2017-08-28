@@ -7840,9 +7840,6 @@ window.englishon_chat = function () {
 //
 Tour = new function () {
   this.progressTutorial = function () {
-    if (document.englishonConfig.media === 'mobile') {
-      return;
-    }
     e$('#eo-banner').hide();
     e$('#eo-live').removeClass('vocabulary-open');
     e$('#eo-live').addClass('eo-live-maximize');
@@ -7851,9 +7848,21 @@ Tour = new function () {
     clearTimeout(document.eo_user.setTimeOut);
     e$(document).off('click', document.eo_user.minimize);
     steps = [];
-    steps.push(new step('#milotrage right', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
-    steps.push(new step('#days-pannel right', 'progress2------', 'הימים שתרגלתי ברציפות השבוע', 'progress_' + 1));
-    steps.push(new step('#sr right', 'progress3------', 'לחץ בעיגול לרשימת המילים לתירגול', 'progress_' + 2));
+    if (document.englishonConfig.media === 'mobile') {
+      if (decodeURIComponent(window.location.pathname) != '/רפואת-ילדים-עולם-ומלואו/') {
+        steps = [];
+        this.initTutorial(steps);
+        return;
+      }
+      e$('.contento_Container').hide(); //hide the other banner area in actualic
+      steps.push(new step('#milotrage top', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
+      steps.push(new step('#days-pannel top', 'progress2------', 'הימים שתרגלתי ברציפות השבוע', 'progress_' + 1));
+      steps.push(new step('#sr top', 'progress3------', 'לחץ בעיגול לרשימת המילים לתירגול', 'progress_' + 2));
+    } else {
+      steps.push(new step('#milotrage right', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
+      steps.push(new step('#days-pannel right', 'progress2------', 'הימים שתרגלתי ברציפות השבוע', 'progress_' + 1));
+      steps.push(new step('#sr right', 'progress3------', 'לחץ בעיגול לרשימת המילים לתירגול', 'progress_' + 2));
+    }
     this.initTutorial(steps);
   };
   this.welcomeTutorial = function () {
@@ -7882,6 +7891,8 @@ Tour = new function () {
   };
   this.signinTutorial = function () {
     if (document.englishonConfig.media === 'mobile') {
+      steps = [];
+      this.initTutorial(steps);
       return;
     }
     steps = [];
@@ -7892,7 +7903,12 @@ Tour = new function () {
   };
   this.quizTutorial = function () {
     if (document.englishonConfig.media === 'mobile') {
-      return;
+      if (decodeURIComponent(window.location.pathname) != '/רפואת-ילדים-עולם-ומלואו/') {
+        steps = [];
+        this.initTutorial(steps);
+        return;
+      }
+      e$('.contento_Container').hide(); //hide the other banner area in actualic
     }
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
@@ -7983,7 +7999,13 @@ Tour = new function () {
       }
       var tetherOptionsDic = {};
       if (steps[i].id.slice(0, 9) === 'question_') {
-        tetherOptionsDic.offset = '-20px 0px';
+        if (document.englishonConfig.media === 'mobile') {
+          tetherOptionsDic.offset = '-20px 0px';
+        } else {
+          tetherOptionsDic.offset = '0px 0px';
+        }
+        //the offset is good, but it is not adjusting with scrolling.
+        //in mobile css is differ. the offset is a must.
       }
       if (steps[i].id === 'welcome_1') {
         tetherOptionsDic.offset = '0px 20px';
@@ -8057,6 +8079,19 @@ Tour = new function () {
                 //e$('.eo-question .eo-hint').off('click', questionOpened);
                 //e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
               });
+              if (document.englishonConfig.media === 'mobile') {
+                var element = e$('<div>').addClass('tutorial-point').css('left', (e$('.eo-question').eq(0).offset().left + e$('.eo-question').eq(0).width() / 2 - 15) * 100 / e$('#eo-live').width() + '%');
+                e$('.shepherd-content').prepend(element);
+                /*if (document.tour.getCurrentStep().id == 'progress_0'){
+                  e$('#sr ,#persistence').addClass('hidden');
+                }
+                if (document.tour.getCurrentStep().id == 'progress_1'){
+                  e$('#sr ,#milotrage').addClass('hidden');
+                }
+                if (document.tour.getCurrentStep().id == 'progress_2'){
+                  e$('#milotrage ,#persistence').addClass('hidden');
+                }*/
+              }
             }
             if (window.location.host == 'actualic.co.il') {
               //??? unneeded line?
@@ -8750,9 +8785,7 @@ var EnglishOnMenu = function () {
         if (document.show_signin_tutorial) {
           console.log('setTimeout!!!!!!!!!!!!');
           Tour.signinTutorial();
-          if (document.englishonConfig.media != 'mobile') {
-            document.tour.start();
-          }
+          document.tour.start();
           clearInterval(document.tutorialInterval);
         }
       }, 500);
@@ -8774,9 +8807,7 @@ e$.when(document.questions_promise).done(function () {
     setTimeout(function () {
       //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
       Tour.quizTutorial();
-      if (document.englishonConfig.media != 'mobile') {
-        document.tour.start();
-      }
+      document.tour.start();
     }, 2000);
   }
 });
