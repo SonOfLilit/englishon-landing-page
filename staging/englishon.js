@@ -8068,7 +8068,8 @@ Tour = new function () {
                 //e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
               });
               if (document.englishonConfig.media === 'mobile') {
-                e$('.shepherd-content').find('before').css('left', e$('.question_0').offset().left / e$('#eo-live').width() + '%');
+                var element = e$('<div>').addClass('tutorial-point').css('left', (e$('.eo-question').eq(0).offset().left + e$('.eo-question').eq(0).width() / 2 - 15) * 100 / e$('#eo-live').width() + '%');
+                e$('.shepherd-content').prepend(element);
               }
             }
             if (window.location.host == 'actualic.co.il') {

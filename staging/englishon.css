@@ -3133,10 +3133,18 @@ different ways didn't work*/
     min-width: 100%;
     transform: translateX(0px);
   }
-  .shepherd-element.shepherd-theme-arrows .shepherd-content::before {
+
+  .tutorial-point {
+    position: absolute;
+    top: -32px;
+    width: 0;
+    height: 0;
+    display: block;
+    border-color: transparent;
+    border-width: 16px;
+    border-style: solid;
+    pointer-events: none;
     border-bottom-color: #eee;
-    bottom: 100%;
-    left: 80%;
   }
 }
 /*end of media selctor*/
