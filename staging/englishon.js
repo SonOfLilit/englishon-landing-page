@@ -7840,9 +7840,6 @@ window.englishon_chat = function () {
 //
 Tour = new function () {
   this.progressTutorial = function () {
-    if (document.englishonConfig.media === 'mobile') {
-      return;
-    }
     e$('#eo-banner').hide();
     e$('#eo-live').removeClass('vocabulary-open');
     e$('#eo-live').addClass('eo-live-maximize');
@@ -8070,6 +8067,15 @@ Tour = new function () {
               if (document.englishonConfig.media === 'mobile') {
                 var element = e$('<div>').addClass('tutorial-point').css('left', (e$('.eo-question').eq(0).offset().left + e$('.eo-question').eq(0).width() / 2 - 15) * 100 / e$('#eo-live').width() + '%');
                 e$('.shepherd-content').prepend(element);
+                /*if (document.tour.getCurrentStep().id == 'progress_0'){
+                  e$('#sr ,#persistence').addClass('hidden');
+                }
+                if (document.tour.getCurrentStep().id == 'progress_1'){
+                  e$('#sr ,#milotrage').addClass('hidden');
+                }
+                if (document.tour.getCurrentStep().id == 'progress_2'){
+                  e$('#milotrage ,#persistence').addClass('hidden');
+                }*/
               }
             }
             if (window.location.host == 'actualic.co.il') {
@@ -8764,9 +8770,9 @@ var EnglishOnMenu = function () {
         if (document.show_signin_tutorial) {
           console.log('setTimeout!!!!!!!!!!!!');
           Tour.signinTutorial();
-          //if (document.englishonConfig.media != 'mobile') {
-          document.tour.start();
-          //}
+          if (document.englishonConfig.media != 'mobile') {
+            document.tour.start();
+          }
           clearInterval(document.tutorialInterval);
         }
       }, 500);
