@@ -7931,6 +7931,10 @@ Tour = new function () {
     }
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
+    if (document.overlay.innerName != 'article') {
+      window.localStorage.setItem('show_quiz_tutorial', true);
+      e$('.category-icon').eq(0).click();
+    }
     e$('.eo-question').eq(0).addClass('highlighted');
     setTimeout(function () {
       e$('.eo-question').eq(0).removeClass('highlighted');
