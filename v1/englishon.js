@@ -5304,8 +5304,8 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
       //xhr.setRequestHeader('Authorization', token);
     }
   };
-  return e$.ajax(requestData).then(null, function (xhr, type) {
-    console.log("Ajax error", xhr, type);
+  return e$.ajax(requestData).then(null, function (xhr, type, errorThrown) {
+    console.log("Ajax error", xhr, type, errorThrown);
     if (xhr.status === 401) {
       // stale token, should only happen to us
       // remove the token, so on refresh we get a fresh guest account
@@ -5317,6 +5317,9 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
       return null;
     } else {
       // retry once
+      if (xhr.responseText.indexOf('database is locked') != -1) {
+        console.log('status: ' + xhr.status + ' backend url: ' + document.englishonBackend.base + ' ,database is locked error.');
+      }
       return e$.ajax(requestData);
     }
   });
@@ -7177,8 +7180,19 @@ var overlay_settings = {
       },
       'placeLiveActions': function () {
         var startPoint = 206;
-        var val = e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left;
-        e$('#eo-live').css('left', val - 320);
+        var val_dic = {
+          'article': function () {
+            return e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320;
+          },
+          'category-page': function () {
+            return e$('#sidebar').offset().left;
+          },
+          'front-page': function () {
+            return e$('.small-6.large-2.columns').eq(1).offset().left;
+          }
+        };
+        var val = val_dic[document.overlay.pageType]();
+        e$('#eo-live').css('left', val);
         e$('#eo-live .close-vocabulary').css('left', val - 58);
         var val = Math.max(startPoint - $(window).scrollTop(), 60);
         e$('#eo-live').css('top', val);
@@ -7476,6 +7490,11 @@ actualicCategoryOverlay = function (parts, category_url) {
   ShturemOverlay.call(this);
   this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu';
   this.settings = overlay_settings['actualic'][document.englishonConfig.media];
+  if (location.pathname == '/') {
+    this.pageType = 'front-page';
+  } else {
+    this.pageType = 'category-page';
+  }
   e$('body').addClass('category-page');
   this.placeLiveActions = function () {};
   this.showButtons = function () {
@@ -7543,6 +7562,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
   ShturemOverlay.call(this);
   this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children';
   this.settings = overlay_settings['actualic'][document.englishonConfig.media];
+  this.pageType = 'article';
   this.getLineDetails = function () {
     return [e$('.entry-content').offset().left, e$('.entry-content').width()];
   };
@@ -7631,10 +7651,10 @@ actualicOverlay = function (url, subtitle, bodytext) {
 //
 ScraperFactory = function (location) {
   this.isHebrew = function (str) {
-    var isHebrewVar = true;
+    var isHebrewVar = false;
     var array = str.split('');
     e$(array).each(function (i, c) {
-      isHebrewVar = isHebrewVar && (c.charCodeAt(0) < 65 || c.charCodeAt(0) >= 1488 && c.charCodeAt(0) <= 1514);
+      isHebrewVar = isHebrewVar || c.charCodeAt(0) >= 1488 && c.charCodeAt(0) <= 1514;
     });
     return isHebrewVar;
   };
@@ -7849,11 +7869,6 @@ Tour = new function () {
     e$(document).off('click', document.eo_user.minimize);
     steps = [];
     if (document.englishonConfig.media === 'mobile') {
-      if (decodeURIComponent(window.location.pathname) != '/רפואת-ילדים-עולם-ומלואו/') {
-        steps = [];
-        this.initTutorial(steps);
-        return;
-      }
       e$('.contento_Container').hide(); //hide the other banner area in actualic
       steps.push(new step('#milotrage top', 'progress1------', 'מספר המילים שצברתי', 'progress_' + 0));
       steps.push(new step('#days-pannel top', 'progress2------', 'הימים שתרגלתי ברציפות השבוע', 'progress_' + 1));
@@ -7903,15 +7918,14 @@ Tour = new function () {
   };
   this.quizTutorial = function () {
     if (document.englishonConfig.media === 'mobile') {
-      if (decodeURIComponent(window.location.pathname) != '/רפואת-ילדים-עולם-ומלואו/') {
-        steps = [];
-        this.initTutorial(steps);
-        return;
-      }
       e$('.contento_Container').hide(); //hide the other banner area in actualic
     }
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
+    if (document.overlay.pageType != 'article') {
+      window.localStorage.setItem('show_quiz_tutorial', true);
+      e$('.category-icon').eq(0).click();
+    }
     e$('.eo-question').eq(0).addClass('highlighted');
     setTimeout(function () {
       e$('.eo-question').eq(0).removeClass('highlighted');
@@ -8064,6 +8078,17 @@ Tour = new function () {
               //window.scrollTo(0, 0);
             }
             if (document.tour.getCurrentStep().id == 'question_0') {
+              //the scrollBy intended to remove an unneeded offset which added by shepherd
+              window.scrollBy(0, 1);
+              setTimeout(function () {
+                window.scrollBy(0, 1);
+              }, 300);
+              setTimeout(function () {
+                window.scrollBy(0, 1);
+              }, 600);
+              setTimeout(function () {
+                window.scrollBy(0, 1);
+              }, 1000);
               var questionAnswered = function (e) {
                 e.preventDefault();
                 e$('.eo-question .eo-correct_option span').off('click', questionAnswered);
@@ -8082,15 +8107,6 @@ Tour = new function () {
               if (document.englishonConfig.media === 'mobile') {
                 var element = e$('<div>').addClass('tutorial-point').css('left', (e$('.eo-question').eq(0).offset().left + e$('.eo-question').eq(0).width() / 2 - 15) * 100 / e$('#eo-live').width() + '%');
                 e$('.shepherd-content').prepend(element);
-                /*if (document.tour.getCurrentStep().id == 'progress_0'){
-                  e$('#sr ,#persistence').addClass('hidden');
-                }
-                if (document.tour.getCurrentStep().id == 'progress_1'){
-                  e$('#sr ,#milotrage').addClass('hidden');
-                }
-                if (document.tour.getCurrentStep().id == 'progress_2'){
-                  e$('#milotrage ,#persistence').addClass('hidden');
-                }*/
               }
             }
             if (window.location.host == 'actualic.co.il') {
