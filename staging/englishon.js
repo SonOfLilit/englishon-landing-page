@@ -6402,6 +6402,10 @@ Injector = function (paragraphs) {
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
         q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
       }
+      if (q.qobj.data.tried.length && q.qobj.data.tried[0] != q.qobj.practicedWord) {
+        console.log('first answer was wrong...');
+        q.replacement.addClass('wrong-feedback');
+      }
     });
     console.log('########after injector on: ' + e$('.eo-question').length);
   };
@@ -6412,6 +6416,7 @@ Injector = function (paragraphs) {
     //show first expired questions
     for (var i = 0; i < questions.length; i++) {
       if (questions[i].tried.length) {
+
         this.addQuestion(questions[i], toggleSound);
       }
     }
