@@ -5957,6 +5957,21 @@ UserInfo = function () {
         alert('type one word only');
         return;
       }
+      if (word.match(/[^א-תa-zA-Z]+/g)) {
+        alert('type letters only, in hebrew or in english');
+        return;
+      }
+      arr = e$.map(element.val().split(''), function (str) {
+        return this.detectLanguage(str);
+      }.bind(this));
+      var unique = arr.filter(function (item, i, ar) {
+        return ar.indexOf(item) === i;
+      });
+      if (unique.length > 1) {
+        alert('you typed in two language');
+        return;
+      }
+
       if (e$('#personal-word-btn').find('option').length > 1) {
         return;
       }
