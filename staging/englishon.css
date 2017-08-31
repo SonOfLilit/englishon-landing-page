@@ -2788,7 +2788,7 @@ it's top left values will re-computed everytime progress bar is moving*/
   text-align: left;
 }
 #eo-live #vocabulary .Grid-cell.cell1 {
-  height: 40px;
+  height: 30px;
 }
 #eo-live #vocabulary .Grid-cell.cell2 {
   height: 130px;
@@ -2808,6 +2808,35 @@ it's top left values will re-computed everytime progress bar is moving*/
 #eo-live #vocabulary .Grid-cell .vocabulary-cog-cell {
   text-align: center;
   color: white;
+}
+#eo-live #vocabulary #personal-word, #eo-live #vocabulary #personal-word-btn {
+  width: 200px;
+  height: 60px;
+  padding: 0px;
+  margin: 0px;
+  height: 25px;
+  border: none;
+  cursor: pointer;
+}
+#eo-live #vocabulary #personal-word.eng, #eo-live #vocabulary #personal-word-btn.eng {
+  direction: ltr;
+  text-align: left;
+}
+#eo-live #vocabulary #personal-word.heb, #eo-live #vocabulary #personal-word-btn.heb {
+  direction: rtl;
+}
+#eo-live #vocabulary .ui-autocomplete {
+  direction: ltr !important;
+  text-align: left !important;
+}
+#eo-live #vocabulary #personal-word-btn {
+  list-style: none;
+  background-color: #2cc6a8;
+  background-image: none;
+  -webkit-appearance: menulist;
+}
+#eo-live #vocabulary #personal-word-btn option {
+  background-color: white;
 }
 
 .Grid#days-pannel {
@@ -2835,6 +2864,12 @@ it's top left values will re-computed everytime progress bar is moving*/
 
 .no_questions_dlg {
   text-align: center;
+}
+.no_questions_dlg.rtl {
+  direction: rtl !important;
+}
+.no_questions_dlg.ltr {
+  direction: ltr !important;
 }
 
 #eo-dlg-terms {

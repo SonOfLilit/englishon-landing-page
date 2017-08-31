@@ -5304,8 +5304,8 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
       //xhr.setRequestHeader('Authorization', token);
     }
   };
-  return e$.ajax(requestData).then(null, function (xhr, type, errorThrown) {
-    console.log("Ajax error", xhr, type, errorThrown);
+  return e$.ajax(requestData).then(null, function (xhr, type) {
+    console.log("Ajax error", xhr, type);
     if (xhr.status === 401) {
       // stale token, should only happen to us
       // remove the token, so on refresh we get a fresh guest account
@@ -5329,6 +5329,13 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
 // *after* starting a quiz.
 HerokuBackend.prototype.mergeTokens = function (oldToken, newToken) {
   return this.report('MergeTokens', { guest: oldToken, registered: newToken });
+};
+
+HerokuBackend.prototype.getMeanings = function (word, lang) {
+  return this.ajax("POST", "/quiz/getMeanings/", { 'word': word, 'lang': lang });
+};
+HerokuBackend.prototype.addPersonalWord = function (word) {
+  return this.ajax("POST", "/quiz/addPersonalWord/", { 'word': word });
 };
 
 HerokuBackend.prototype.milotrage = function () {
@@ -5438,11 +5445,10 @@ HerokuBackend.prototype.dictionary = function (new_word) {
 
   post = this.ajax('POST', '/quiz/editor/dictionary/add/', new_word);
   post.done(function (res) {
-    if (res.message == 'done') {
-      console.log("Dictionary changed! (A word or new meanings added or removed)");
-    } else {
+    console.log("Dictionary changed! (A word or new meanings added or removed)");
+    if (!res.message.startsWith('Done')) {
       alert(res.message);
-    };
+    }
   });
 };
 HerokuBackend.prototype.create_all_questions = function (address, question) {
@@ -5930,6 +5936,63 @@ UserInfo = function () {
       this.sr_progress.animate(val);
     }.bind(this));
   };
+  this.detectLanguage = function (str) {
+    var lang = str.charCodeAt(0) >= 65 && str.charCodeAt(0) <= 122 ? 'eng' : 'heb';
+    return lang;
+  };
+
+  this.listenToInput = function (e) {
+    var key = e.keyCode;
+    var element = e$('#personal-word');
+    element.removeClass('heb eng');
+    if (element.val()[0]) element.addClass(this.detectLanguage(element.val()[0]));
+
+    if (key === 13 || key === 10) {
+      var word = e$(e.target).val().trim();
+      if (word == '') {
+        alert('Type your word:)');
+        return;
+      }
+      if (word.indexOf(' ') != -1) {
+        alert('type one word only');
+        return;
+      }
+      if (e$('#personal-word-btn').find('option').length > 1) {
+        return;
+      }
+
+      this.createMeaningsList(word);
+    } else {
+      $('#personal-word-btn').find('option').slice(1).remove();
+    }
+  };
+  this.createMeaningsList = function (word) {
+    var select = $('#personal-word-btn');
+    var lang = this.detectLanguage(word);
+    document.englishonBackend.getMeanings(word, lang).then(function (data) {
+      meanings = data.meanings;
+      $('#vocabulary-content-list').html('');
+      $(meanings).each(function (i, meaning) {
+        select.append($('<option>').text(meaning));
+      });
+    }.bind(this));
+  };
+
+  this.addPersonalWord = function () {
+    var input = $('#personal-word').val();
+    var select = $('#personal-word-btn').val();
+    var origin = this.detectLanguage(select) == 'eng' ? select : input;
+    var translation = this.detectLanguage(input) == 'heb' ? input : select;
+    var word = { 'origin': origin, 'translation': translation };
+    if (word.origin == '') {
+      return;
+    }
+    document.englishonBackend.addPersonalWord(word).then(function (res) {
+      alert(res.message);
+    }, function (error) {
+      alert('sorry, not today');
+    });
+  };
   this.showLiveActions = function () {
     this.checkWeeklyPresence();
     this.checkSRProgress();
@@ -5977,7 +6040,7 @@ UserInfo = function () {
       //the text value is a hack to display the milotrage digits without the decimal point
       .append(e$('<span>').addClass('vocabulary-odometer').text(100 + 10 * word_info.mastery)).append(e$('<span>').addClass('vocabulary-origin').data('full', word_info.word).html(word_info.word.replaceAll('_', '&nbsp;'))).append(e$('<span>').addClass('vocabulary-translation').text('?').data('translation', word_info.translation)));
     });
-    e$('#vocabulary-content').html(content);
+    e$('#vocabulary-content-list').html(content);
     var el = document.getElementsByClassName('vocabulary-odometer');
     for (var i = 0; i < el.length; i++) {
       new Odometer({
@@ -6003,6 +6066,32 @@ UserInfo = function () {
     e$(document).off('click', this.minimize);
   };
   this.initial = function () {
+    personal_wordcash = {};
+    e$("#personal-word").autocomplete({
+      source: function (request, response) {
+        var term = request.term;
+        if (term in personal_wordcash) {
+          response(personal_wordcash[term]);
+          return;
+        }
+        var lang = document.eo_user.detectLanguage(e$('#personal-word').val()[0]);
+        e$.ajax({
+          dataType: "json",
+          type: 'POST',
+          url: document.englishonConfig.backendUrl + '/quiz/provideAutoCompleteList/',
+          data: { term: request.term, lang: lang },
+          success: function (data) {
+            var dir = lang == 'eng' ? 'ltr' : 'rtl';
+            e$('.ui-autocomplete').css({ 'direction': dir });
+            personal_wordcash[term] = data;
+            response(data);
+          },
+          error: function (data) {
+            console.log('error getting words list. ' + data);
+          }
+        });
+      }
+    });
     this.unAnswered = { 'sr_questions': [] };
     this.answered = { 'sr_questions': [] };
     if (!this.sr_progress) {
@@ -6043,6 +6132,14 @@ UserInfo = function () {
       format: 'd'
     });
     e$('#eo-live').off('click');
+
+    //keypress is not a good choice, because it is not recognizing backspace
+    e$('#personal-word').on('keyup', this.listenToInput.bind(this));
+
+    e$('#personal-word-btn').on('change', this.addPersonalWord.bind(this));
+    e$('#personal-word').val('');
+    e$('#personal-word-btn').find('option').slice(1).remove();
+
     e$('#eo-live').on('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -6086,6 +6183,13 @@ UserInfo = function () {
         wordRepetition(e.target.parents('.vocabulary-word').find('.vocabulary-translation'), e.target.parents('.vocabulary-word').find('.vocabulary-origin'));
         return;
       }
+      if (e.target.is('#personal-word')) {
+        return;
+      }
+      if (e.target.is('#personal-word-btn')) {
+        return;
+      }
+
       if (e.target.is('.eo-close')) {
         if (e$('#eo-live').hasClass('eo-live-maximize')) {
           e$('#vocabulary').addClass('hidden');
@@ -6107,7 +6211,7 @@ UserInfo = function () {
         e$('#vocabulary').toggleClass('hidden');
         if (!e$('#vocabulary').hasClass('hidden')) {
           e$('#eo-live').addClass('vocabulary-open');
-          e$('#vocabulary-content').html('');
+          e$('#vocabulary-content-list').html('');
           this.fetchVocabulary();
           document.vocabulary_interval = setInterval(function () {
             e$('.vocabulary-translation:not(.show)').toggleClass('vocabulary-translation-big');
@@ -6206,7 +6310,9 @@ Injector = function (paragraphs) {
           document.eo_user.fetchVocabulary();
         }
       }
-      if (msg === "StartedQuestion" && !document.overlay.interacted) {
+      //when merge glicko and personal vocabulary , this was the glicko version:
+      //if (msg === "StartedQuestion" && !document.overlay.interacted) {
+      if (msg === "StartedQuestion" && !document.overlay.interacted && !$('.eo-answered').length && !$('.eo-expired').length) {
         document.overlay.interacted = true;
         report("StartedQuiz");
         console.log('msg === TriedAnswer && !userAnswered. checkWeeklyPresence fired!');
@@ -7086,7 +7192,17 @@ document.live_actions = "<div class='hidden' id='eo-live'>\
       </div>\
     </div>\
     <div class='Grid-cell cell2'>\
-      <div id='vocabulary-content'> </div>\
+      <div id='vocabulary-content'>\
+        <div class='Grid-cell cell1'>\
+          <input type='text' id='personal-word' placeholder='type your word here' autocomplete='off' />\
+        </div>\
+        <div class='Grid-cell cell1'>\
+          <select id='personal-word-btn'>\
+            <option selected='selected' style='display:none;'>add to my vocabulary</option>\
+          </select>\
+        </div>\
+        <div id='vocabulary-content-list'></div>\
+      </div>\
     </div>\
   </div>\
 </div>";
@@ -7283,13 +7399,13 @@ ShturemOverlay = function () {
     e$('#eo-dlg-terms').removeClass('hidden');
   };
   this.openNoQuestionsDialog = function (message) {
+    var dir = document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION'];
     if (window.localStorage.getItem('got_no_questions_dialog')) {
       return;
     }
     no_questions_dlg = e$('<div>').addClass('no_questions_dlg').html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
-    e$('.no_questions_dlg').css({
-      'direction': document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION']
-    });
+    e$('.no_questions_dlg').addClass(dir);
+
     //e$('.no_questions_dlg').parents('.ui-dialog').css({ 'maxWidth': 240 });
 
     window.localStorage.setItem('got_no_questions_dialog', true);
@@ -7919,6 +8035,16 @@ Tour = new function () {
   this.quizTutorial = function () {
     if (document.englishonConfig.media === 'mobile') {
       e$('.contento_Container').hide(); //hide the other banner area in actualic
+    }
+    if (!e$('.eo-question').length) {
+      window.localStorage.setItem('show_quiz_tutorial', true);
+      var dir = document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION'];
+      var message = document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS;
+      no_questions_dlg = e$('<div>').addClass('no_questions_dlg ' + dir).html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
+      e$('.no_questions_dlg').addClass(dir);
+      steps = [];
+      initTutorial(steps);
+      return;
     }
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
