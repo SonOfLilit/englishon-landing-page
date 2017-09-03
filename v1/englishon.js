@@ -8788,8 +8788,8 @@ var EnglishOnMenu = function () {
     //Shturem is misiing <meta name="viewport" content="width=device-width, initial-scale=1.0">
     //This is causing chrome to compute the body width as 980px anycase, in inspector too
   });
-  //such a stupid line!!!!!!
-  //window.history.pushState({ 'elementToShow': 'shturem' }, '');
+  //i don't know why this line is needed.  
+  window.history.pushState({ 'elementToShow': 'page' }, '');
   $(window).on('beforeunload', function (e) {
     e.preventDefault();
     if (!document.englishonConfig.email && e$('.eo-answered').length) {
