@@ -1021,7 +1021,8 @@ div.eo-question.highlighted {
 body.www-shturem-net .category-icon,
 body.shturem-net .category-icon {
   position: relative;
-  top: -300px;
+  top: -20px;
+  left: -300px;
 }
 
 .eo-logo {
@@ -1376,17 +1377,18 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 body.www-shturem-net #top_menu_block,
 body.shturem-net #top_menu_block,
 body.www-englishon-org #top_menu_block {
-  margin-top: 102px !important;
+  /*margin-top: 102px !important;*/
+  margin: 113px 205px 0px 0px;
 }
 body.www-shturem-net #top_menu_block > img,
 body.shturem-net #top_menu_block > img,
 body.www-englishon-org #top_menu_block > img {
-  padding-bottom: 3px;
+  /*padding-bottom: 3px;*/
 }
 body.www-shturem-net #date_block,
 body.shturem-net #date_block,
 body.www-englishon-org #date_block {
-  padding-top: 19px;
+  /*padding-top: 19px;*/
 }
 body.www-shturem-net.heroku-staging .newsHead,
 body.shturem-net.heroku-staging .newsHead,
@@ -1408,15 +1410,26 @@ body.www-englishon-org .eo-button {
 body.www-shturem-net.front .eo-button,
 body.shturem-net.front .eo-button,
 body.www-englishon-org.front .eo-button {
-  left: 210px;
-  top: 102px;
+  left: 10px;
+  top: 104px;
 }
-body.www-shturem-net.front .eo-button .eo-logo, body.www-shturem-net.front .eo-button .registered_symbol,
+body.www-shturem-net.front .eo-button .eo-icon,
+body.shturem-net.front .eo-button .eo-icon,
+body.www-englishon-org.front .eo-button .eo-icon {
+  width: 24px;
+  height: 24px;
+  background-size: 24px;
+}
+body.www-shturem-net.front .eo-button .eo-logo,
 body.shturem-net.front .eo-button .eo-logo,
+body.www-englishon-org.front .eo-button .eo-logo {
+  left: 23px;
+  background-size: 75px;
+}
+body.www-shturem-net.front .eo-button .registered_symbol,
 body.shturem-net.front .eo-button .registered_symbol,
-body.www-englishon-org.front .eo-button .eo-logo,
 body.www-englishon-org.front .eo-button .registered_symbol {
-  display: none;
+  left: 105px;
 }
 body.www-shturem-net .eo-correct,
 body.shturem-net .eo-correct,

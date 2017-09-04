@@ -7269,7 +7269,7 @@ var overlay_settings = {
       },
       'placeLiveActions': function () {},
       'category_button_left_value': function () {
-        return 15;
+        return 10;
       },
       'pin-tutotial-article': '.eo-button'
 
