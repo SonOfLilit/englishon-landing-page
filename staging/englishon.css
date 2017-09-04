@@ -1018,6 +1018,12 @@ div.eo-question.highlighted {
   background-repeat: no-repeat;
 }
 
+body.www-shturem-net .category-icon,
+body.shturem-net .category-icon {
+  position: relative;
+  top: -300px;
+}
+
 .eo-logo {
   width: 110px;
   height: 23px;
@@ -1396,9 +1402,21 @@ body.www-shturem-net .eo-button,
 body.shturem-net .eo-button,
 body.www-englishon-org .eo-button {
   position: absolute;
-  padding-right: 30px;
-  left: 50px;
-  bottom: 24px;
+  left: 210px;
+  top: 348px;
+}
+body.www-shturem-net.front .eo-button,
+body.shturem-net.front .eo-button,
+body.www-englishon-org.front .eo-button {
+  left: 210px;
+  top: 102px;
+}
+body.www-shturem-net.front .eo-button .eo-logo, body.www-shturem-net.front .eo-button .registered_symbol,
+body.shturem-net.front .eo-button .eo-logo,
+body.shturem-net.front .eo-button .registered_symbol,
+body.www-englishon-org.front .eo-button .eo-logo,
+body.www-englishon-org.front .eo-button .registered_symbol {
+  display: none;
 }
 body.www-shturem-net .eo-correct,
 body.shturem-net .eo-correct,
@@ -1415,9 +1433,16 @@ body.www-englishon-org .eo-correct {
   top: 10px;
   right: 10px;
 }
+.www-shturem-net #eo-live.eo-live-maximize,
+.shturem-net #eo-live.eo-live-maximize {
+  height: 160px;
+}
 
 body.actualic-co-il #eo-live {
   background-color: #eee;
+}
+body.actualic-co-il #eo-live.eo-live-maximize {
+  height: 208px;
 }
 body.actualic-co-il #eo-live.vocabulary-open {
   background-color: black;
@@ -1427,9 +1452,6 @@ body.actualic-co-il.heroku-staging {
 }
 body.actualic-co-il.localhost {
   background-color: #F0FFFF;
-}
-body.actualic-co-il .eo-live-maximize {
-  height: 208px !important;
 }
 body.actualic-co-il .eo-button {
   top: 2px;
@@ -2282,7 +2304,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 
 .eo-row4 {
-  height: 55px;
+  height: 205px;
 }
 
 .eo-row5 {
@@ -2580,12 +2602,12 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #google-iframe {
   margin-left: 20px;
   padding-top: 0px;
-  height: 45px;
+  height: 205px;
 }
 
 #eo-iframe {
   width: 160px;
-  height: 60px;
+  height: 205px;
   border: none;
 }
 
@@ -2863,6 +2885,7 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 
 .no_questions_dlg {
+  font-size: 16px;
   text-align: center;
 }
 .no_questions_dlg.rtl {

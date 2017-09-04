@@ -7258,18 +7258,23 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
   </div>\
 </div>";
 //
-window.setButtonInterval = function (callback, delay, repetitions) {
-  var xx = 0;
-  window.ButtonInterval = setInterval(function () {
-
-    callback();
-
-    if (++xx === repetitions) {
-      clearInterval(window.ButtonInterval);
-    }
-  }, delay);
-};
 var overlay_settings = {
+  'shturem': {
+    'desktop': {
+      'pin_button_article': function () {
+        return e$('.catLogo');
+      },
+      'pin_button_front': function () {
+        return e$('div#top_menu_block');
+      },
+      'placeLiveActions': function () {},
+      'category_button_left_value': function () {
+        return 15;
+      },
+      'pin-tutotial-article': '.eo-button'
+
+    }
+  },
   'actualic': {
     'mobile': {
       'pin_button_article': function () {
@@ -7370,13 +7375,7 @@ ShturemOverlay = function () {
   this.hideButtons = function () {
     e$('.eo-button').addClass('hidden');
   };
-  this.showButtons = function () {
-    e$('div#top_menu_block').append(EnglishOnButton.element);
-    e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
-    //EnglishOnButton.registerHandlers(this);
-    // needs to be done here because registering event handlers
-    // only works correctly after inserting the element into DOM.
-  };
+
   this.rejectTerms = function () {
     //Give the user astatus of guest
     window.localStorage.removeItem('email');
@@ -7455,6 +7454,7 @@ ShturemFrontpageOverlay = function (parts) {
       injector: null
     };
   }.bind(this));
+  this.settings = overlay_settings['shturem'][document.englishonConfig.media];
   this.getLineDetails = function () {
     return {
       parentoffset: e$('.artText').offset().left - 30,
@@ -7521,9 +7521,52 @@ ShturemFrontpageOverlay = function (parts) {
       if (part.injector) part.injector.off();
     });
   };
+  this.showButtons = function () {
+    this.settings.pin_button_front().append(EnglishOnButton.element());
+    e$('body').addClass('front');
+    if (document.englishonConfig.isUser) {
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    } else {
+      e$('.eo-button').on('click', document.firstTimeUser);
+    }
+    if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
+      this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
+    }
+    e$('.eo-button').css('left', this.settings.category_button_left_value());
+  };
+  this.powerOn = function () {
+    ShturemOverlay.prototype.powerOn.call(this);
+    if (!document.englishonConfig.isUser) {
+      console.log('ShturemFrontpageOverlay............Marks for edited articles did not display. This user never turn on enlishon');
+      return;
+    }
+    var promises = e$.map(this.parts, function (part, url) {
+      url = url.toLowerCase();
+      return document.englishonBackend.getArticle(url, 1).then(function (questions) {
+        //if (questions.length) {
+        if (true) {
+          if (!e$(part).find('.category-icon').length) {
+            e$(part.paragraphs[0]).parents('.mainpn').find('.mainpn_bottom').append(e$('<div>').addClass('category-icon'));
+          }
+        }
+      });
+    });
+    document.questions_promise.resolve();
+  };
+  this.powerOff = function () {
+    if (!document.englishonConfig.email) {
+      e$('.category-icon').remove();
+    }
+  };
 };
 // this one will probably have some code that can be factored up
 // to a common superclass for single-article overlays
+
+
+/*-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -*/
+
 ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.url = url;
   this.subtitle = subtitle;
@@ -7532,6 +7575,23 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
+  this.settings = overlay_settings['shturem'][document.englishonConfig.media];
+  this.tutorial_selector = this.settings['pin-tutotial-article'];
+
+  this.showButtons = function () {
+    // needs to be done here because registering event handlers
+    // only works correctly after inserting the element into DOM.
+    this.settings.pin_button_article().append(EnglishOnButton.element());
+    if (document.englishonConfig.isUser) {
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    } else {
+      e$('.eo-button').on('click', document.firstTimeUser);
+    }
+    if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
+      this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
+    }
+  };
+
   this.getLineDetails = function () {
     return {
       parentoffset: e$('.artText').offset().left,
@@ -7550,7 +7610,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     e$('.eo-injection-target').contents().unwrap();
     this.interacted = false;
     this.userAnswered = false;
-    return backend.getArticle(this.url, 4).then(function (questions) {
+    return backend.getArticle(this.url).then(function (questions) {
       for (var i = 0; i < questions.length; i++) {
         questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context));
       }
@@ -7572,6 +7632,24 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     ShturemOverlay.prototype.hideQuestions.call(this);
     if (this.injector) this.injector.off();
   }.bind(this);
+
+  this.powerOff = function () {
+    this.hideQuestions();
+    if (document.eo_user) {
+      document.eo_user.hideLiveActions();
+    }
+  };
+  this.powerOn = function () {
+    if (!document.englishonConfig.isUser) {
+      return;
+    }
+    this.showQuestions();
+    ShturemOverlay.prototype.powerOn.call(this);
+    document.questions_promise.resolve();
+    if (document.eo_user && e$('.eo-expired').length) {
+      document.eo_user.showLiveActions();
+    }
+  };
 };
 CH10Overlay = function (url, subtitle, bodytext) {
   this.url = url;
@@ -7624,15 +7702,14 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
-  this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu';
   this.settings = overlay_settings['actualic'][document.englishonConfig.media];
+  this.tutorial_selector = this.settings['pin-tutotial-category'];
   if (location.pathname == '/') {
     this.pageType = 'front-page';
   } else {
     this.pageType = 'category-page';
   }
   e$('body').addClass('category-page');
-  this.placeLiveActions = function () {};
   this.showButtons = function () {
     /*    if (location.pathname == '/') {
           this.settings.pin_button_front().append(EnglishOnButton.element().addClass('front-page'))
@@ -7696,8 +7773,8 @@ actualicOverlay = function (url, subtitle, bodytext) {
   this.interacted = false;
   this.userAnswered = false;
   ShturemOverlay.call(this);
-  this.tutorial_selector = '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children';
   this.settings = overlay_settings['actualic'][document.englishonConfig.media];
+  this.tutorial_selector = this.settings['pin-tutotial-article'];
   this.pageType = 'article';
   this.getLineDetails = function () {
     return [e$('.entry-content').offset().left, e$('.entry-content').width()];
@@ -8339,17 +8416,17 @@ function englishon() {
   if (sites.indexOf(window.location.host) == -1) {
     return;
   }
-  if (window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') {
+  //THIS LINE IS TEMP
+  if ((window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') && media != 'desktop') {
+    return;
+  }
+  if ((window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') && !e$('#developement-only-version').length) {
     article_id = Number(window.location.search.substr(window.location.search.indexOf('id=') + 3));
     if (article_id < 91251 || article_id > 91551) {
       return;
     }
   }
-  // else if (window.location.host == 'actualic.co.il' &&
-  //   !(e$('#breadcrumbs').find('a').eq(0).next().eq(0).text().startsWith('משפחה')) &&
-  //   !(e$('#breadcrumbs').find('a').eq(0).next().eq(0).text().startsWith('אקטואלשיק'))) {
-  //   return;
-  // }
+
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
   if (document.__englishon__) {
@@ -8915,12 +8992,6 @@ var EnglishOnMenu = function () {
     var popup = this.contentWindow;
     popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
   });
-  e$('#eo-login-password').on('keydown', function (e) {
-    if (e.keyCode == 13) {
-      e$('#eo-mail-login-btn').click();
-    }
-  });
-  e$('#eo-mail-login-btn').on('click', loginByMail);
   var _originalSize = e$(window).width() + e$(window).height();
   e$(window).resize(function () {
     if (e$(window).width() + e$(window).height() != _originalSize) {
@@ -8931,13 +9002,13 @@ var EnglishOnMenu = function () {
   e$('#eo-login-email').on('click', function (e) {
     //causing the keyboard to open 
     e.target.focus();
-    //Shturem is misiing <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    //Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
     //This is causing chrome to compute the body width as 980px anycase, in inspector too
   });
   //i don't know why this line is needed.  
   window.history.pushState({ 'elementToShow': 'page' }, '');
 
-  $(window).on('beforeunload', function (e) {
+  e$(window).on('beforeunload', function (e) {
     e.preventDefault();
     if (!document.englishonConfig.email && e$('.eo-answered').length) {
       //if (true) {
@@ -9097,6 +9168,18 @@ function receiveMessage(event) {
     });
   }
 }
+
+window.setButtonInterval = function (callback, delay, repetitions) {
+  var xx = 0;
+  window.ButtonInterval = setInterval(function () {
+
+    callback();
+
+    if (++xx === repetitions) {
+      clearInterval(window.ButtonInterval);
+    }
+  }, delay);
+};
 //
 // *********
 // Name List
