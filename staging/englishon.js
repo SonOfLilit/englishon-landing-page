@@ -6389,7 +6389,7 @@ Injector = function (paragraphs) {
       //if the question after answering is too long - add spaces
       var width = q.replacement.outerWidth(); //2 pixels for the border and 4 is spere...
       var [parentoffset, lineWidth] = document.overlay.getLineDetails();
-      var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width - 6;
+      var spaceInCurrentLine = q.replacement.offset().left - parentoffset + width;
       var curent_text = q.replacement.hasClass('eo-expired') ? q.qobj.practicedWord : q.qobj.data.replaced;
       var future_text = q.replacement.hasClass('eo-expired') ? q.qobj.data.replaced : q.qobj.practicedWord;
       curent_text = curent_text.replaceAll('_', '&nbsp;');
@@ -6398,10 +6398,17 @@ Injector = function (paragraphs) {
       q.replacement.find(visible_element).html(future_text);
       var future_width = q.replacement.outerWidth(); //2 pixels for the border
       q.replacement.find(visible_element).html(curent_text);
-      if (future_width > spaceInCurrentLine || ////a question which expected to go down after action
-      width > future_width && spaceInCurrentLine >= lineWidth) {
-        //a question which expected to go up after action
-        console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
+      /*      if (future_width > spaceInCurrentLine || ////a question which expected to go down after action
+              (width > future_width && spaceInCurrentLine >= lineWidth)) { //a question which expected to go up after action
+              console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
+              q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+            }*/
+      if (future_width > spaceInCurrentLine) {
+        console.log('IN THIS CASE question is expected to go DOWN after action, ' + future_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
+        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+      }
+      if (width > future_width && spaceInCurrentLine >= lineWidth) {
+        console.log('IN THIS CASE question is expected to go UP after action, ' + future_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
         q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
       }
       if (q.qobj.data.tried.length && q.qobj.data.tried[0] != q.qobj.practicedWord) {
@@ -7270,8 +7277,9 @@ var overlay_settings = {
         return e$('div#top_menu_block');
       },
       'placeLiveActions': function () {},
+      //'category_button_left_value': function() { return 10 },
       'category_button_left_value': function () {
-        return 10;
+        e$('.catLogo').offset().left + 27;
       },
       'pin-tutotial-article': '.eo-button',
       'pin-tutotial-category': '.eo-button'
@@ -7780,7 +7788,6 @@ actualicOverlay = function (url, subtitle, bodytext) {
   this.url = url.toLowerCase();
   this.subtitle = subtitle;
   this.bodytext = bodytext;
-  //this.paragraphs = [subtitle, bodytext];
   this.paragraphs = e$(bodytext).find('p').toArray().concat(subtitle);
   this.interacted = false;
   this.userAnswered = false;
@@ -8999,7 +9006,6 @@ var EnglishOnMenu = function () {
     }
   });
   e$('#eo-mail-login-btn').on('click', loginByMail);
-
   var _originalSize = e$(window).width() + e$(window).height();
   e$(window).resize(function () {
     if (e$(window).width() + e$(window).height() != _originalSize) {
