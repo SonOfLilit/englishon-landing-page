@@ -5079,6 +5079,7 @@ var MESSAGES = {
     AGREE: "I agree.",
     NO_QUESTIONS: "Please look for articles </br>marked with this icon",
     NO_QUESTIONS_ARTICLE: "Please look at category section </br>for articles marked</br>with this icon",
+    NO_QUESTIONS_SHTUREM_ARTICLE: "Please look at home page </br>for articles marked</br>with this icon",
     COMPLETE_QUIZ: 'Well Done!</br>Sign up for Free</br> to save your Work!',
     ALPHABET_VOCABULARY: 'By Alphabetical Order',
     SR_VOCABULARY: 'Prioritized for Review'
@@ -5127,6 +5128,7 @@ var MESSAGES = {
     AGREE: "אני מסכים.",
     NO_QUESTIONS: "חפש כתבות לצידם </br>יש את הסימון",
     NO_QUESTIONS_ARTICLE: "חפש בדפי המדורים </br>כתבות לצידם </br>יש את הסימון",
+    NO_QUESTIONS_SHTUREM_ARTICLE: "חפש בדף הבית </br>כתבות לצידם </br>יש את הסימון",
     COMPLETE_QUIZ: '!כל הכבוד</br>הירשם בחינם</br>לשמירת התקדמותך',
     ALPHABET_VOCABULARY: 'לפי סדר אלפבית',
     SR_VOCABULARY: 'לפי סדר עדיפות לתרגול'
@@ -5377,7 +5379,7 @@ HerokuBackend.prototype.rejectedTerms = function (address) {
   return this.ajax("POST", "/quiz/rejectedTerms/", { 'token': this.token });
 };
 
-HerokuBackend.prototype.getArticle = function (address, limit = 0) {
+HerokuBackend.prototype.getArticle = function (address, limit = 5) {
   this.url = encodeURIComponent(address) + '/'.toLowerCase();
   console.log('backend console *****token: ' + this.token);
   return this.ajax("GET", "/quiz/page/" + limit + "/" + this.url).then(function (data) {
@@ -6341,7 +6343,7 @@ Injector = function (paragraphs) {
     }.bind(this));
     if (msg === "CompletedQuestion" && e$('.eo-question:not(.eo-answered)').length === 1) {
       report("CompletedQuiz");
-      if (!document.englishonConfig.email) {
+      if (!document.englishonConfig.email && !(e$('body').hasClass('www-shturem-net') && e$('body').hasClass('front-page'))) {
         setTimeout(function () {
           e$('#eo-dlg-login').find('#subtitle').html(document.MESSAGES[document.englishonConfig.siteLanguage].COMPLETE_QUIZ);
           document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
@@ -7399,6 +7401,18 @@ PageOverlay = function () {
       e$('#eo-dlg-terms').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
     }
   };
+  this.getQuestionQuota = function () {
+    var total = 0;
+    e$(this.paragraphs).each(function (i, p) {
+      var text = e$(p).text();
+      var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
+      var match = [];
+      while ((match = re.exec(text)) !== null) {
+        total += 1;
+      }
+    });
+    return Math.max(1, Math.round(total / 100));
+  };
   this.showTermsDialog = function (callback) {
     e$('#eo-accept-checkbox').off('change');
     e$('#eo-accept-checkbox').change(function (e) {
@@ -7457,6 +7471,8 @@ ShturemFrontpageOverlay = function (parts) {
   }.bind(this));
   this.settings = overlay_settings['shturem'][document.englishonConfig.media];
   this.tutorial_selector = this.settings['pin-tutotial-category'];
+  this.pageType = 'front-page';
+  e$('body').addClass('front-page');
   this.getLineDetails = function () {
     return [e$('.mainpn').offset().left, e$('.mainpn').width()];
   };
@@ -7490,13 +7506,7 @@ ShturemFrontpageOverlay = function (parts) {
     //check if better do that native
     e$('.eo-injection-target').contents().unwrap();
     var promises = e$.map(this.parts, function (part, url) {
-      return backend.getArticle(url, 15).then(function (questions) {
-        /*        for (var i = 0; i < questions.length; i++) {
-                  questions[i].location = part.paragraphs.context.textContent.indexOf(questions[i].context);
-                }
-                questions.sort(function(q1, q2) {
-                  return q1.location - q2.location;
-                });*/
+      return backend.getArticle(url, 1).then(function (questions) {
         part.questions = questions;
         if (questions.length) {
           console.log("url: " + url + "Num questions: " + questions.length);
@@ -7542,8 +7552,8 @@ ShturemFrontpageOverlay = function (parts) {
     var promises = e$.map(this.parts, function (part, url) {
       url = url.toLowerCase();
       return document.englishonBackend.getArticle(url, 1).then(function (questions) {
-        //if (questions.length) {
-        if (true) {
+        if (questions.length) {
+          //if (true) {
           if (!e$(part.paragraphs[0]).parents('.mainpn').find('.mainpn_bottom').find('.category-icon').length) {
             e$(part.paragraphs[0]).parents('.mainpn').find('.mainpn_bottom').append(e$('<div>').addClass('category-icon'));
           }
@@ -7578,7 +7588,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   PageOverlay.call(this);
   this.settings = overlay_settings['shturem'][document.englishonConfig.media];
   this.tutorial_selector = this.settings['pin-tutotial-article'];
-
+  this.limit = this.getQuestionQuota();
   this.showButtons = function () {
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
@@ -7588,9 +7598,9 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     } else {
       e$('.eo-button').on('click', document.firstTimeUser);
     }
-    if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
-      this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
-    }
+    /*    if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
+          this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
+        }*/
   };
 
   this.getLineDetails = function () {
@@ -7608,13 +7618,17 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     e$('.eo-injection-target').contents().unwrap();
     this.interacted = false;
     this.userAnswered = false;
-    return backend.getArticle(this.url).then(function (questions) {
+    return backend.getArticle(this.url, this.limit).then(function (questions) {
       /*      for (var i = 0; i < questions.length; i++) {
               questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context))
             }
             questions.sort(function(q1, q2) {
               return q1.location - q2.location;
             });*/
+      if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial')) {
+        //e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
+        this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS_SHTUREM_ARTICLE);
+      }
       this.questions = questions;
       console.log("Num questions: " + questions.length);
       this.injector = new Injector(this.paragraphs);
@@ -7804,18 +7818,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
     PageOverlay.prototype.hideQuestions.call(this);
     if (this.injector) this.injector.off();
   }.bind(this);
-  this.getQuestionQuota = function () {
-    var total = 0;
-    e$(this.paragraphs).each(function (i, p) {
-      var text = e$(p).text();
-      var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
-      var match = [];
-      while ((match = re.exec(text)) !== null) {
-        total += 1;
-      }
-    });
-    return Math.max(1, Math.round(total / 100));
-  };
+
   this.fetchQuestions = function () {
     e$('.eo-injection-target').contents().unwrap();
     var backend = document.englishonBackend;

@@ -1374,9 +1374,9 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
-body.www-shturem-net #top_menu_block,
-body.shturem-net #top_menu_block,
-body.www-englishon-org #top_menu_block {
+body.www-shturem-net.front-page #top_menu_block,
+body.shturem-net.front-page #top_menu_block,
+body.www-englishon-org.front-page #top_menu_block {
   /*margin-top: 102px !important;*/
   margin: 113px 205px 0px 0px;
 }
