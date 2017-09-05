@@ -6399,10 +6399,10 @@ Injector = function (paragraphs) {
       var future_width = q.replacement.outerWidth(); //2 pixels for the border
       q.replacement.find(visible_element).html(curent_text);
       if (future_width > spaceInCurrentLine || ////a question which expected to go down after action
-      width > future_width && spaceInCurrentLine > lineWidth) {
+      width > future_width && spaceInCurrentLine >= lineWidth) {
         //a question which expected to go up after action
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
-        //q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
       }
       if (q.qobj.data.tried.length && q.qobj.data.tried[0] != q.qobj.practicedWord) {
         console.log('first answer was wrong...');
