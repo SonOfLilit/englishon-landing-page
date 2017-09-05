@@ -7277,9 +7277,11 @@ var overlay_settings = {
         return e$('div#top_menu_block');
       },
       'placeLiveActions': function () {},
-      //'category_button_left_value': function() { return 10 },
       'category_button_left_value': function () {
-        e$('.catLogo').offset().left + 27;
+        return 10;
+      },
+      'button_left_value': function () {
+        return e$('.catLogo').offset().left + 27;
       },
       'pin-tutotial-article': '.eo-button',
       'pin-tutotial-category': '.eo-button'
@@ -7606,9 +7608,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     } else {
       e$('.eo-button').on('click', document.firstTimeUser);
     }
-    /*    if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
-          this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
-        }*/
+    e$('.eo-button').css({ 'left': this.settings.button_left_value() });
   };
 
   this.getLineDetails = function () {
@@ -8081,6 +8081,9 @@ window.englishon_chat = function () {
 //
 Tour = new function () {
   this.progressTutorial = function () {
+    if (e$('body').hasClass('www-shturem-net')) {
+      e$('#eo-live').css({ 'top': '50px' });
+    }
     e$('#eo-banner').hide();
     e$('#eo-live').removeClass('vocabulary-open');
     e$('#eo-live').addClass('eo-live-maximize');
@@ -8148,7 +8151,7 @@ Tour = new function () {
       no_questions_dlg = e$('<div>').addClass('no_questions_dlg ' + dir).html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
       e$('.no_questions_dlg').addClass(dir);
       steps = [];
-      initTutorial(steps);
+      this.initTutorial(steps);
       return;
     }
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
@@ -8265,6 +8268,11 @@ Tour = new function () {
         tetherOptions: tetherOptionsDic,
         when: {
           show: function () {
+            e$('.shepherd-cancel-link').on('click', function () {
+              if (e$('body').hasClass('www-shturem-net')) {
+                e$('#eo-live').css({ 'top': '10px' });
+              }
+            });
             if (document.tour.getCurrentStep().id.indexOf('progress') != -1) {
               e$('.shepherd-cancel-link').on('click', function () {
                 e$(document).on('click', document.eo_user.minimize);

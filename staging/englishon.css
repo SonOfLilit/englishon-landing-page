@@ -1444,11 +1444,12 @@ body.www-englishon-org .eo-correct {
 .shturem-net #eo-live {
   background-color: rgba(0, 0, 0, 0.2);
   top: 10px;
-  right: 10px;
+  left: 10px;
 }
 .www-shturem-net #eo-live.eo-live-maximize,
 .shturem-net #eo-live.eo-live-maximize {
   height: 160px;
+  width: 260px;
 }
 
 body.actualic-co-il #eo-live {
