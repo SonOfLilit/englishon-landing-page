@@ -6327,7 +6327,7 @@ Injector = function (paragraphs) {
       }
       //when merge glicko and personal vocabulary , this was the glicko version:
       //if (msg === "StartedQuestion" && !document.overlay.interacted) {
-      if (msg === "StartedQuestion" && !document.overlay.interacted && !$('.eo-answered').length && !$('.eo-expired').length) {
+      if (msg === "StartedQuestion" && !document.overlay.interacted && !e$('.eo-answered').length && !e$('.eo-expired').length) {
         document.overlay.interacted = true;
         report("StartedQuiz");
         console.log('msg === TriedAnswer && !userAnswered. checkWeeklyPresence fired!');
@@ -6400,7 +6400,7 @@ Injector = function (paragraphs) {
       width > future_width && spaceInCurrentLine > lineWidth) {
         //a question which expected to go up after action
         console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
-        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+        //q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
       }
       if (q.qobj.data.tried.length && q.qobj.data.tried[0] != q.qobj.practicedWord) {
         console.log('first answer was wrong...');
@@ -6566,7 +6566,7 @@ AbstractQuestion.prototype.open_question_handler = function (e) {
     if (this.element.hasClass('eo-active')) {
       this.closeUnanswered();
     };
-    $(document).off('click', this.open_question_handler);
+    e$(document).off('click', this.open_question_handler);
   };
 };
 AbstractQuestion.prototype.questionOnClick = function (e) {
@@ -6576,15 +6576,15 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
     return;
   }
   this.touch();
-  if ($(e.target).parents('.eo-question.eo-active').length) {
+  if (e$(e.target).parents('.eo-question.eo-active').length) {
     this.closeUnanswered();
     return;
   }
-  if ($('.eo-question.eo-active').length) {
+  if (e$('.eo-question.eo-active').length) {
     document.overlay.closeUnAnswered();
   }
   this.open();
-  $(document).on('click', this.open_question_handler.bind(this));
+  e$(document).on('click', this.open_question_handler.bind(this));
 };
 AbstractQuestion.prototype.open = function () {
   // placeholder, you probably want to call not super() but animateStateChange() directly
@@ -7351,7 +7351,7 @@ var overlay_settings = {
   },
   'CH10': {}
 };
-ShturemOverlay = function () {
+PageOverlay = function () {
   if (window.localStorage.getItem('show_quiz_tutorial')) {
     e$('body').addClass('first-loading');
     console.log('adding class first-loading');
@@ -7430,22 +7430,22 @@ ShturemOverlay = function () {
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
 };
-ShturemOverlay.prototype.powerOn = function () {
+PageOverlay.prototype.powerOn = function () {
   e$('body').removeClass('first-loading');
   console.log('remove class first-loading');
 };
-ShturemOverlay.prototype.showQuestions = function () {
+PageOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines
   e$('body').addClass('question-injected');
 };
-ShturemOverlay.prototype.hideQuestions = function () {
+PageOverlay.prototype.hideQuestions = function () {
   e$('body').removeClass('question-injected');
 };
 ShturemFrontpageOverlay = function (parts) {
   this.parts = {};
   this.interacted = false;
   this.userAnswered = false;
-  ShturemOverlay.call(this);
+  PageOverlay.call(this);
   e$.each(parts, function (url, para) {
     this.parts[url] = {
       url: url,
@@ -7456,10 +7456,7 @@ ShturemFrontpageOverlay = function (parts) {
   }.bind(this));
   this.settings = overlay_settings['shturem'][document.englishonConfig.media];
   this.getLineDetails = function () {
-    return {
-      parentoffset: e$('.artText').offset().left - 30,
-      lineWidth: 385
-    };
+    return [e$('.mainpn').offset().left, e$('.mainpn').width()];
   };
   this.closeUnAnswered = function () {
     $.each(this.parts, function (url, part) {
@@ -7492,12 +7489,12 @@ ShturemFrontpageOverlay = function (parts) {
     e$('.eo-injection-target').contents().unwrap();
     var promises = e$.map(this.parts, function (part, url) {
       return backend.getArticle(url, 15).then(function (questions) {
-        for (var i = 0; i < questions.length; i++) {
-          questions[i].location = part.paragraphs.context.textContent.indexOf(questions[i].context);
-        }
-        questions.sort(function (q1, q2) {
-          return q1.location - q2.location;
-        });
+        /*        for (var i = 0; i < questions.length; i++) {
+                  questions[i].location = part.paragraphs.context.textContent.indexOf(questions[i].context);
+                }
+                questions.sort(function(q1, q2) {
+                  return q1.location - q2.location;
+                });*/
         part.questions = questions;
         if (questions.length) {
           console.log("url: " + url + "Num questions: " + questions.length);
@@ -7510,13 +7507,13 @@ ShturemFrontpageOverlay = function (parts) {
     return Promise.all(promises);
   };
   this.showQuestions = function () {
-    ShturemOverlay.prototype.showQuestions.call(this);
+    PageOverlay.prototype.showQuestions.call(this);
     e$.each(this.parts, function (url, part) {
       if (part.injector) part.injector.on();
     });
   };
   this.hideQuestions = function () {
-    ShturemOverlay.prototype.hideQuestions.call(this);
+    PageOverlay.prototype.hideQuestions.call(this);
     e$.each(this.parts, function (url, part) {
       if (part.injector) part.injector.off();
     });
@@ -7535,7 +7532,7 @@ ShturemFrontpageOverlay = function (parts) {
     e$('.eo-button').css('left', this.settings.category_button_left_value());
   };
   this.powerOn = function () {
-    ShturemOverlay.prototype.powerOn.call(this);
+    PageOverlay.prototype.powerOn.call(this);
     if (!document.englishonConfig.isUser) {
       console.log('ShturemFrontpageOverlay............Marks for edited articles did not display. This user never turn on enlishon');
       return;
@@ -7545,18 +7542,20 @@ ShturemFrontpageOverlay = function (parts) {
       return document.englishonBackend.getArticle(url, 1).then(function (questions) {
         //if (questions.length) {
         if (true) {
-          if (!e$(part).find('.category-icon').length) {
+          if (!e$(part.paragraphs[0]).parents('.mainpn').find('.mainpn_bottom').find('.category-icon').length) {
             e$(part.paragraphs[0]).parents('.mainpn').find('.mainpn_bottom').append(e$('<div>').addClass('category-icon'));
           }
         }
       });
     });
+    this.showQuestions();
     document.questions_promise.resolve();
   };
   this.powerOff = function () {
     if (!document.englishonConfig.email) {
       e$('.category-icon').remove();
     }
+    this.hideQuestions();
   };
 };
 // this one will probably have some code that can be factored up
@@ -7574,7 +7573,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.paragraphs = [subtitle, bodytext];
   this.interacted = false;
   this.userAnswered = false;
-  ShturemOverlay.call(this);
+  PageOverlay.call(this);
   this.settings = overlay_settings['shturem'][document.englishonConfig.media];
   this.tutorial_selector = this.settings['pin-tutotial-article'];
 
@@ -7593,10 +7592,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   };
 
   this.getLineDetails = function () {
-    return {
-      parentoffset: e$('.artText').offset().left,
-      lineWidth: 385
-    };
+    return [e$('.artText').offset().left, e$('.artText').width()];
   };
   this.fetchQuestions = function () {
     var backend = document.englishonBackend;
@@ -7611,12 +7607,12 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     this.interacted = false;
     this.userAnswered = false;
     return backend.getArticle(this.url).then(function (questions) {
-      for (var i = 0; i < questions.length; i++) {
-        questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context));
-      }
-      questions.sort(function (q1, q2) {
-        return q1.location - q2.location;
-      });
+      /*      for (var i = 0; i < questions.length; i++) {
+              questions[i].location = Math.max(this.subtitle.textContent.indexOf(questions[i].context), this.bodytext.textContent.indexOf(questions[i].context))
+            }
+            questions.sort(function(q1, q2) {
+              return q1.location - q2.location;
+            });*/
       this.questions = questions;
       console.log("Num questions: " + questions.length);
       this.injector = new Injector(this.paragraphs);
@@ -7625,11 +7621,11 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     }.bind(this));
   };
   this.showQuestions = function () {
-    ShturemOverlay.prototype.showQuestions.call(this);
+    PageOverlay.prototype.showQuestions.call(this);
     if (this.injector) this.injector.on();
   }.bind(this);
   this.hideQuestions = function () {
-    ShturemOverlay.prototype.hideQuestions.call(this);
+    PageOverlay.prototype.hideQuestions.call(this);
     if (this.injector) this.injector.off();
   }.bind(this);
 
@@ -7644,7 +7640,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
       return;
     }
     this.showQuestions();
-    ShturemOverlay.prototype.powerOn.call(this);
+    PageOverlay.prototype.powerOn.call(this);
     document.questions_promise.resolve();
     if (document.eo_user && e$('.eo-expired').length) {
       document.eo_user.showLiveActions();
@@ -7658,7 +7654,7 @@ CH10Overlay = function (url, subtitle, bodytext) {
   this.paragraphs = [subtitle, bodytext];
   this.interacted = false;
   this.userAnswered = false;
-  ShturemOverlay.call(this);
+  PageOverlay.call(this);
   this.showButtons = function () {
     //e$('div#top_menu_block').append(EnglishOnButton.element);
     e$('ul.menu').append(EnglishOnButton.element);
@@ -7701,7 +7697,7 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.parts = parts;
   this.interacted = false;
   this.userAnswered = false;
-  ShturemOverlay.call(this);
+  PageOverlay.call(this);
   this.settings = overlay_settings['actualic'][document.englishonConfig.media];
   this.tutorial_selector = this.settings['pin-tutotial-category'];
   if (location.pathname == '/') {
@@ -7737,7 +7733,7 @@ actualicCategoryOverlay = function (parts, category_url) {
   this.hideQuestions = function () {};
   this.showQuestions = function () {};
   this.powerOn = function () {
-    ShturemOverlay.prototype.powerOn.call(this);
+    PageOverlay.prototype.powerOn.call(this);
     if (!document.englishonConfig.isUser) {
       console.log('Marks for edited articles did not display. This user never turn on enlishon');
       return;
@@ -7772,7 +7768,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
   this.paragraphs = e$(bodytext).find('p').toArray().concat(subtitle);
   this.interacted = false;
   this.userAnswered = false;
-  ShturemOverlay.call(this);
+  PageOverlay.call(this);
   this.settings = overlay_settings['actualic'][document.englishonConfig.media];
   this.tutorial_selector = this.settings['pin-tutotial-article'];
   this.pageType = 'article';
@@ -7797,13 +7793,13 @@ actualicOverlay = function (url, subtitle, bodytext) {
     }, 500, 20);
   };
   this.showQuestions = function () {
-    ShturemOverlay.prototype.showQuestions.call(this);
+    PageOverlay.prototype.showQuestions.call(this);
     if (this.injector) {
       this.injector.on();
     }
   }.bind(this);
   this.hideQuestions = function () {
-    ShturemOverlay.prototype.hideQuestions.call(this);
+    PageOverlay.prototype.hideQuestions.call(this);
     if (this.injector) this.injector.off();
   }.bind(this);
   this.getQuestionQuota = function () {
@@ -7848,7 +7844,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
       return;
     }
     this.showQuestions();
-    ShturemOverlay.prototype.powerOn.call(this);
+    PageOverlay.prototype.powerOn.call(this);
     document.questions_promise.resolve();
     if (document.eo_user && e$('.eo-expired').length) {
       document.eo_user.showLiveActions();
@@ -8992,6 +8988,13 @@ var EnglishOnMenu = function () {
     var popup = this.contentWindow;
     popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
   });
+  e$('#eo-login-password').on('keydown', function (e) {
+    if (e.keyCode == 13) {
+      e$('#eo-mail-login-btn').click();
+    }
+  });
+  e$('#eo-mail-login-btn').on('click', loginByMail);
+
   var _originalSize = e$(window).width() + e$(window).height();
   e$(window).resize(function () {
     if (e$(window).width() + e$(window).height() != _originalSize) {
