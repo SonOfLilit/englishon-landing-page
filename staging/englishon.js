@@ -7271,7 +7271,8 @@ var overlay_settings = {
       'category_button_left_value': function () {
         return 10;
       },
-      'pin-tutotial-article': '.eo-button'
+      'pin-tutotial-article': '.eo-button',
+      'pin-tutotial-category': '.eo-button'
 
     }
   },
@@ -7455,6 +7456,7 @@ ShturemFrontpageOverlay = function (parts) {
     };
   }.bind(this));
   this.settings = overlay_settings['shturem'][document.englishonConfig.media];
+  this.tutorial_selector = this.settings['pin-tutotial-category'];
   this.getLineDetails = function () {
     return [e$('.mainpn').offset().left, e$('.mainpn').width()];
   };
