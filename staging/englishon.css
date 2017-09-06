@@ -1440,6 +1440,8 @@ body.www-shturem-net.front .eo-button .registered_symbol,
 body.shturem-net.front .eo-button .registered_symbol,
 body.www-englishon-org.front .eo-button .registered_symbol {
   left: 105px;
+  top: 13px;
+  font-size: 10px;
 }
 body.www-shturem-net .eo-correct,
 body.shturem-net .eo-correct,
