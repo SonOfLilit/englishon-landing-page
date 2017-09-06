@@ -7805,7 +7805,7 @@ var Speaker = new function () {
   this.cache = {};
 
   this.toggle = function (enable) {
-    gainNode.gain.value = enable ? 1 : 0;
+    gainNode.gain.value = enable ? 100 : 0;
   };
 
   this.changeVolume = function (value) {
