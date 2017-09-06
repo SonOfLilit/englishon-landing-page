@@ -1374,6 +1374,16 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+body.www-shturem-net #eo-menu.hebrew #eo-help,
+body.shturem-net #eo-menu.hebrew #eo-help,
+body.www-englishon-org #eo-menu.hebrew #eo-help {
+  flex: 0 1 50%;
+}
+body.www-shturem-net #eo-menu.hebrew #eo-contact,
+body.shturem-net #eo-menu.hebrew #eo-contact,
+body.www-englishon-org #eo-menu.hebrew #eo-contact {
+  flex: 0 1 40%;
+}
 body.www-shturem-net.front-page #top_menu_block,
 body.shturem-net.front-page #top_menu_block,
 body.www-englishon-org.front-page #top_menu_block {
@@ -2489,6 +2499,10 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 
 #eo-menu .eo-menu-footer:hover {
   color: #2cc6a8;
+}
+#eo-menu .eo-menu-footer a {
+  font-family: Roboto-Light, sans-serif;
+  font-size: 11px;
 }
 
 .subtitle {

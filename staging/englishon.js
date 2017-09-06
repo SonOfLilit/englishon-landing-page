@@ -7484,7 +7484,7 @@ ShturemFrontpageOverlay = function (parts) {
   this.pageType = 'front-page';
   e$('body').addClass('front-page');
   this.getLineDetails = function () {
-    return [e$('.mainpn').offset().left, e$('.mainpn').width()];
+    return [e$('.mainpn_text').offset().left, e$('.mainpn_text').width() - e$('.mainpn_text').css('padding-left').slice(0, 2)];
   };
   this.closeUnAnswered = function () {
     $.each(this.parts, function (url, part) {
@@ -7599,6 +7599,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.settings = overlay_settings['shturem'][document.englishonConfig.media];
   this.tutorial_selector = this.settings['pin-tutotial-article'];
   this.limit = this.getQuestionQuota();
+  this.pageType = 'article';
   this.showButtons = function () {
     // needs to be done here because registering event handlers
     // only works correctly after inserting the element into DOM.
@@ -8156,7 +8157,7 @@ Tour = new function () {
     }
     //this is useful to check if user in the middle of quiz tutorial even when he open question and tutorial hide 
     window.localStorage.setItem('quiz_tutorial_not_finished', true);
-    if (document.overlay.pageType != 'article') {
+    if (document.overlay.pageType != 'article' && !e$('body').hasClass('www-shturem-net')) {
       window.localStorage.setItem('show_quiz_tutorial', true);
       e$('.category-icon').eq(0).click();
     }
@@ -8167,8 +8168,14 @@ Tour = new function () {
     steps = [];
     e$('.eo-question').slice(0, 1).each(function (i, q) {
       var step_title = i == 0 ? 'לומדים אנגלית תוך כדי גלישה' : 'מעולה! סיים לענות על כל השאלות במאמר';
-      e$(q).find('.eo-hint').addClass('hint_' + i);
-      steps.push(new step('.hint_' + i + ' bottom', step_title, 'לחץ ובחר את המילה המתאימה', 'question_' + i));
+      if (e$(q).hasClass('eo-answered') || e$(q).hasClass('eo-expired')) {
+        e$(q).addClass('hint_' + i);
+        var text = 'לחץ כדי לראות את התרגום';
+      } else {
+        e$(q).find('.eo-hint').addClass('hint_' + i);
+        var text = 'לחץ ובחר את המילה המתאימה';
+      }
+      steps.push(new step('.hint_' + i + ' bottom', step_title, text, 'question_' + i));
       //steps.push(new step('.question_' + i + ' .eo-option' + ' left', step_title, 'לחץ ובחר את המילה המתאימה', 'open_question_' + i));
     });
     this.initTutorial(steps);
