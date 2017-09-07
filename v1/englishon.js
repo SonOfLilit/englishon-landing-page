@@ -5745,7 +5745,7 @@ Editor.prototype.createAutoQuestion = function (event) {
   console.log('createAutoQuestion***** span is: ' + span);
   var replaced = span.data('preposition') + span.data('word');
   var hint = span.data('word');
-  span.find('.correct_answer').text(correct);
+  span.find('.correct_answer').text(correct).css('width', 'initial');
   if (correct == "Edit meanings") {
     this.editMeanings(span);
     return;
@@ -5789,6 +5789,7 @@ Editor.prototype.createAutoQuestion = function (event) {
   this.span = span;
   document.englishonBackend.createQuestion(question).then(function (res) {
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click', 'onClick');
+    document._editor.counter--;
     // .on('click', this.question_onClick.bind(this));
     span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
       e.stopPropagation();
@@ -5797,6 +5798,7 @@ Editor.prototype.createAutoQuestion = function (event) {
     alert('Error creating question');
     console.log('Error creating question. reason is: ' + reason);
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click', 'onClick');
+    document._editor.counter--;
   }.bind(this));
 };
 Editor.prototype.question_onClick = function (event) {
