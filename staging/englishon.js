@@ -4987,6 +4987,219 @@ window.heap = window.heap || [], heap.load = function (e, t) {
 };
 heap.load("3281332641");
 //
+/**
+ * http://www.openjs.com/scripts/events/keyboard_shortcuts/
+ * Version : 2.01.B
+ * By Binny V A
+ * License : BSD
+ */
+shortcut = {
+	'all_shortcuts': {}, //All the shortcuts are stored in this array
+	'add': function (shortcut_combination, callback, opt) {
+		//Provide a set of default options
+		var default_options = {
+			'type': 'keydown',
+			'propagate': false,
+			'disable_in_input': false,
+			'target': document,
+			'keycode': false
+		};
+		if (!opt) opt = default_options;else {
+			for (var dfo in default_options) {
+				if (typeof opt[dfo] == 'undefined') opt[dfo] = default_options[dfo];
+			}
+		}
+
+		var ele = opt.target;
+		if (typeof opt.target == 'string') ele = document.getElementById(opt.target);
+		var ths = this;
+		shortcut_combination = shortcut_combination.toLowerCase();
+
+		//The function to be called at keypress
+		var func = function (e) {
+			e = e || window.event;
+
+			if (opt['disable_in_input']) {
+				//Don't enable shortcut keys in Input, Textarea fields
+				var element;
+				if (e.target) element = e.target;else if (e.srcElement) element = e.srcElement;
+				if (element.nodeType == 3) element = element.parentNode;
+
+				if (element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') return;
+			}
+
+			//Find Which key is pressed
+			if (e.keyCode) code = e.keyCode;else if (e.which) code = e.which;
+			var character = String.fromCharCode(code).toLowerCase();
+
+			if (code == 188) character = ","; //If the user presses , when the type is onkeydown
+			if (code == 190) character = "."; //If the user presses , when the type is onkeydown
+
+			var keys = shortcut_combination.split("+");
+			//Key Pressed - counts the number of valid keypresses - if it is same as the number of keys, the shortcut function is invoked
+			var kp = 0;
+
+			//Work around for stupid Shift key bug created by using lowercase - as a result the shift+num combination was broken
+			var shift_nums = {
+				"`": "~",
+				"1": "!",
+				"2": "@",
+				"3": "#",
+				"4": "$",
+				"5": "%",
+				"6": "^",
+				"7": "&",
+				"8": "*",
+				"9": "(",
+				"0": ")",
+				"-": "_",
+				"=": "+",
+				";": ":",
+				"'": "\"",
+				",": "<",
+				".": ">",
+				"/": "?",
+				"\\": "|"
+			};
+			//Special Keys - and their codes
+			var special_keys = {
+				'esc': 27,
+				'escape': 27,
+				'tab': 9,
+				'space': 32,
+				'return': 13,
+				'enter': 13,
+				'backspace': 8,
+
+				'scrolllock': 145,
+				'scroll_lock': 145,
+				'scroll': 145,
+				'capslock': 20,
+				'caps_lock': 20,
+				'caps': 20,
+				'numlock': 144,
+				'num_lock': 144,
+				'num': 144,
+
+				'pause': 19,
+				'break': 19,
+
+				'insert': 45,
+				'home': 36,
+				'delete': 46,
+				'end': 35,
+
+				'pageup': 33,
+				'page_up': 33,
+				'pu': 33,
+
+				'pagedown': 34,
+				'page_down': 34,
+				'pd': 34,
+
+				'left': 37,
+				'up': 38,
+				'right': 39,
+				'down': 40,
+
+				'f1': 112,
+				'f2': 113,
+				'f3': 114,
+				'f4': 115,
+				'f5': 116,
+				'f6': 117,
+				'f7': 118,
+				'f8': 119,
+				'f9': 120,
+				'f10': 121,
+				'f11': 122,
+				'f12': 123
+			};
+
+			var modifiers = {
+				shift: { wanted: false, pressed: false },
+				ctrl: { wanted: false, pressed: false },
+				alt: { wanted: false, pressed: false },
+				meta: { wanted: false, pressed: false } //Meta is Mac specific
+			};
+
+			if (e.ctrlKey) modifiers.ctrl.pressed = true;
+			if (e.shiftKey) modifiers.shift.pressed = true;
+			if (e.altKey) modifiers.alt.pressed = true;
+			if (e.metaKey) modifiers.meta.pressed = true;
+
+			for (var i = 0; k = keys[i], i < keys.length; i++) {
+				//Modifiers
+				if (k == 'ctrl' || k == 'control') {
+					kp++;
+					modifiers.ctrl.wanted = true;
+				} else if (k == 'shift') {
+					kp++;
+					modifiers.shift.wanted = true;
+				} else if (k == 'alt') {
+					kp++;
+					modifiers.alt.wanted = true;
+				} else if (k == 'meta') {
+					kp++;
+					modifiers.meta.wanted = true;
+				} else if (k.length > 1) {
+					//If it is a special key
+					if (special_keys[k] == code) kp++;
+				} else if (opt['keycode']) {
+					if (opt['keycode'] == code) kp++;
+				} else {
+					//The special keys did not match
+					if (character == k) kp++;else {
+						if (shift_nums[character] && e.shiftKey) {
+							//Stupid Shift key bug created by using lowercase
+							character = shift_nums[character];
+							if (character == k) kp++;
+						}
+					}
+				}
+			}
+
+			if (kp == keys.length && modifiers.ctrl.pressed == modifiers.ctrl.wanted && modifiers.shift.pressed == modifiers.shift.wanted && modifiers.alt.pressed == modifiers.alt.wanted && modifiers.meta.pressed == modifiers.meta.wanted) {
+				callback(e);
+
+				if (!opt['propagate']) {
+					//Stop the event
+					//e.cancelBubble is supported by IE - this will kill the bubbling process.
+					e.cancelBubble = true;
+					e.returnValue = false;
+
+					//e.stopPropagation works in Firefox.
+					if (e.stopPropagation) {
+						e.stopPropagation();
+						e.preventDefault();
+					}
+					return false;
+				}
+			}
+		};
+		this.all_shortcuts[shortcut_combination] = {
+			'callback': func,
+			'target': ele,
+			'event': opt['type']
+		};
+		//Attach the function with the event
+		if (ele.addEventListener) ele.addEventListener(opt['type'], func, false);else if (ele.attachEvent) ele.attachEvent('on' + opt['type'], func);else ele['on' + opt['type']] = func;
+	},
+
+	//Remove the shortcut - just specify the shortcut and I will remove the binding
+	'remove': function (shortcut_combination) {
+		shortcut_combination = shortcut_combination.toLowerCase();
+		var binding = this.all_shortcuts[shortcut_combination];
+		delete this.all_shortcuts[shortcut_combination];
+		if (!binding) return;
+		var type = binding['event'];
+		var ele = binding['target'];
+		var callback = binding['callback'];
+
+		if (ele.detachEvent) ele.detachEvent('on' + type, callback);else if (ele.removeEventListener) ele.removeEventListener(type, callback, false);else ele['on' + type] = false;
+	}
+};
+//
 //var configStorage;
 // in the real world we will store config on the server
 // and do some CORS voodoo to fetch it.
@@ -5516,20 +5729,28 @@ Editor.prototype.editMeanings = function (span) {
   }))));
   edit_meanings_dlg.dialog({ modal: true });
 };
-
 Editor.prototype.createAutoQuestion = function (event) {
-  event.preventDefault();
-  var span = e$(event.target).parent();
+  if (e$(event).is('.highlight')) {
+    //triggered by the keybourd shortcut
+    var span = e$(event).parents('.eo-editor-candidate');
+    var correct = e$(event).text();
+  } else {
+    //triggered by click event
+    event.preventDefault();
+    event.stopPropagation();
+    var span = e$(event.target).parents('.eo-editor-candidate');
+    var correct = e$(event.target).text();
+  }
+  span.find('.editor_ul').addClass('hide');
   console.log('createAutoQuestion***** span is: ' + span);
   var replaced = span.data('preposition') + span.data('word');
   var hint = span.data('word');
-  var correct = span.find(".correct_answer").val();
+  span.find('.correct_answer').text(correct);
   if (correct == "Edit meanings") {
     this.editMeanings(span);
     return;
   }
   var ctx = this.autoContext(span);
-
   if (!ctx) {
     alert("No suitable context found");
     span.removeClass('auto-editor-candidate').addClass('eo-editor-irrelevant').off('click');
@@ -5539,7 +5760,6 @@ Editor.prototype.createAutoQuestion = function (event) {
   //Creating a list of 4 Distractions randomaly, using the word buffer of the internal id
   var wrong = [];
   var wrong_words = [];
-
   internal_id_keys = Object.keys(this.eo_dictionary);
   if (internal_id_keys.length < 4) {
     alert('dictionary is containing les than 4 words. cannot create questions. ');
@@ -5579,7 +5799,6 @@ Editor.prototype.createAutoQuestion = function (event) {
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click', 'onClick');
   }.bind(this));
 };
-
 Editor.prototype.question_onClick = function (event) {
   var test = this;
   event.preventDefault();
@@ -5604,7 +5823,6 @@ Editor.prototype.question_onClick = function (event) {
       console.log('Error delete question. Reason is: ' + reason);
     });
   }.bind(this)));
-
   q_dialog.dialog();
 };
 Editor.prototype.onClick = function (event) {
@@ -5612,7 +5830,6 @@ Editor.prototype.onClick = function (event) {
   var span = e$(event.target);
   var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
   var word = span.data('word');
-
   if (!ctx) {
     alert("No suitable context found");
     span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click');
@@ -5633,10 +5850,8 @@ Editor.prototype.onClick = function (event) {
     dia.dialog('destroy');
     span.addClass('eo-editor-candidate');
   }));
-
   acc.append(e$('<h3>').text("Remove from dictionary"));
   acc.append(e$('<div class="editor-div">').append(e$('<span>').text("Remove choosen word")).append(e$('<input type="text" id="word_to_delete">')));
-
   acc.append(e$('<button>').text("Remove").click(function (event) {
     event.preventDefault();
     var data = { 'word': dia.find('#word_to_delete').val() + ' ', 'action': 'delete' };
@@ -5644,28 +5859,23 @@ Editor.prototype.onClick = function (event) {
     dia.dialog('close');
     dia.dialog('destroy');
   }));
-
   acc.append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Close').click(function (event) {
     event.preventDefault();
     dia.dialog('close');
     dia.dialog('destroy');
   })));
-
   dia.append(acc);
   dia.dialog({ autoOpen: true, height: 'auto', width: 'auto', modal: 'true' });
   e$(".wrd").text(word);
 };
-
 Editor.prototype.generateUI = function () {
   return e$('<div>').append(e$('<div>').addClass('language_specific')).append(e$('<div>').append(e$('<label>').text("Word:")).append(e$('<span>', { class: 'wrd' })))
   //.append(e$('<input>', {type: 'text', id: 'wrd'})))
   .append(e$('<div>').append(e$('<label>').text("Additional correct answers:")).append(e$('<input>', { type: 'text', name: 'additional' }))).append(e$('<div>').append(e$('<label>').text("Wrong answers:")).append(e$('<input>', { type: 'text', name: 'wrong' })));
 };
-
 Editor.prototype.h2eui = function (span) {
   var div = this.generateUI();
   var languageSpecific = div.find('.language_specific');
-
   div.data('extractor', function () {
     //guy
     // var replaced = div.find(':radio:checked').data('heb');
@@ -5695,10 +5905,8 @@ Editor.prototype.h2eui = function (span) {
       'hint_language': 'he',
       'answer_language': 'en'
     };
-
     return question;
   });
-
   return div;
 };
 
@@ -5709,12 +5917,10 @@ function parseCommaSeparated(commaSeparated) {
     return word !== '';
   });
 }
-
 Editor.prototype.e2hui = function (span) {
   var dict = this.lookup(span.data('word'));
   var h1 = Object.keys(dict).length === 1;
   var h1e1 = h1 && dict[Object.keys(dict)[0]].length === 1;
-
   var div = this.generateUI();
   var languageSpecific = div.find('.language_specific');
   e$.each(dict, function (orig, engs) {
@@ -5725,7 +5931,6 @@ Editor.prototype.e2hui = function (span) {
       });
     });
   });
-
   div.data('extractor', function () {
     var replaced = div.find(':radio:checked').data('orig');
     var hint = div.find(':radio:checked').data('eng');
@@ -5742,9 +5947,7 @@ Editor.prototype.e2hui = function (span) {
       alert("Choose correct breakdown");
       return;
     }
-
     if (correct.indexOf(replaced) === -1) correct.push(replaced);
-
     var question = {
       'replaced': replaced,
       'hint': hint,
@@ -5756,7 +5959,6 @@ Editor.prototype.e2hui = function (span) {
   });
   return div;
 };
-
 Editor.prototype.autoContext = function (span) {
   var text = span.data('text');
   var word = span.data('word');
@@ -5789,7 +5991,6 @@ Editor.prototype.autoContext = function (span) {
     }
   }
 };
-
 Editor.prototype.fetchQuestions = function () {
   console.log("url: " + this.overlay.url);
   return document.englishonBackend.getArticleForEditor(this.overlay.url).then(function (questions) {
@@ -5798,8 +5999,28 @@ Editor.prototype.fetchQuestions = function () {
     console.log("fetchQuestions*** I brought questions for editor");
   }.bind(this));
 };
-
 Editor.prototype.highlight = function () {
+  document._editor.counter = 0;
+  shortcut.add("Tab", function () {
+    e$('.eo-editor-candidate').find('.editor_ul').addClass('hide');
+    e$('.eo-editor-candidate').eq(document._editor.counter).click();
+    e$('.eo-editor-candidate').eq(document._editor.counter).find('.editor_ul').find('li').eq(0).addClass('highlight');
+    document._editor.counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
+  });
+  shortcut.add("Up", function () {
+    var index = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight').index();
+    e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
+    e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('li').eq(index - 1).addClass('highlight');
+  });
+  shortcut.add("DOWN", function () {
+    var index = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight').index();
+    e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
+    e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('li').eq(index + 1).addClass('highlight');
+  });
+  shortcut.add("ENTER", function () {
+    elem = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight');
+    document._editor.createAutoQuestion(elem);
+  });
   var questions = this.questions;
   var prefix = ["ל", "ב", "ה", "ש", "מ", "כ", "ו"];
   var question_dict = {};
@@ -5876,16 +6097,16 @@ Editor.prototype.highlight = function () {
           //console.log("I found a candidate: " + match[0] + ' currentWord: ' + currentWord);
           //console.log('slice: ' + text.slice(lastIndex, match.index));
           p.get(0).appendChild(document.createTextNode(text.slice(lastIndex, matchIndex)));
-
-          var select = e$('<select>').addClass('correct_answer');
+          var select = e$('<div>').addClass('correct_answer');
           //.on('click',this.createQuestion.bind(this))
           //.on('change',this.createQuestion.bind(span))
-          var span = e$('<span>').addClass('eo-editor-candidate').text(currentWord).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).data('preposition', preposition).append(select);
-          span.find('select').append(e$('<option>').text('').addClass('hide')).append(e$('<option>').text('Edit meanings').addClass('editor-btn')).on('change', this.createAutoQuestion.bind(this));
+          var span = e$('<div>').addClass('eo-editor-candidate').text(currentWord).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).data('preposition', preposition).append(select).on('click', function () {
+            e$(this).find('ul').toggleClass('hide');
+          });
+          span.append(e$('<ul>').addClass('editor_ul hide').append(e$('<li>').text('Edit meanings').on('click', this.createAutoQuestion.bind(this))));
           for (var i = 0; i < this.eo_dictionary[currentWord].length; i++) {
-            select.append(e$('<option>').text(this.eo_dictionary[currentWord][i]));
+            span.find('ul').append(e$('<li>').text(this.eo_dictionary[currentWord][i]).on('click', this.createAutoQuestion.bind(this)));
           }
-
           p.append(span);
         } else //the current word is unrecognized word
           {
@@ -7222,14 +7443,17 @@ document.live_actions = "<div class='hidden' id='eo-live'>\
     </div>\
     <div class='Grid-cell cell2'>\
       <div id='vocabulary-content'>\
-        <div class='Grid-cell cell1'>\
+      \
+<!--         <div class='Grid-cell cell1'>\
           <input type='text' id='personal-word' placeholder='type your word here' autocomplete='off' />\
         </div>\
         <div class='Grid-cell cell1'>\
           <select id='personal-word-btn'>\
             <option selected='selected' style='display:none;'>add to my vocabulary</option>\
           </select>\
-        </div>\
+        </div> -->\
+\
+\
         <div id='vocabulary-content-list'></div>\
       </div>\
     </div>\
@@ -7282,6 +7506,9 @@ var overlay_settings = {
       },
       'button_left_value': function () {
         return e$('.catLogo').offset().left + 27;
+      },
+      'button_top_value': function () {
+        return e$('.catLogo').offset().top + 11;
       },
       'pin-tutotial-article': '.eo-button',
       'pin-tutotial-category': '.eo-button'
@@ -7609,7 +7836,11 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     } else {
       e$('.eo-button').on('click', document.firstTimeUser);
     }
-    e$('.eo-button').css({ 'left': this.settings.button_left_value() });
+    e$('.eo-button').css({ 'left': this.settings.button_left_value(), 'top': this.settings.button_top_value() });
+    setButtonInterval(function () {
+      console.log('-------------setTimeOut button_top_value');
+      e$('.eo-button').css({ 'top': document.overlay.settings.button_top_value() });
+    }, 500, 20);
   };
 
   this.getLineDetails = function () {
@@ -7998,8 +8229,8 @@ var EnglishonArticleScraper = function () {
 
 To speak a phrase, you need to:
 
-- query Bing Translate for a URL (only the server can do this because
-  we wont't tell the client our Azure Data Marketplace secret)
+- query Amazon Translate for a URL (only the server can do this because
+  we wont't tell the client our amazon Data Marketplace secret)
 - fetch that URL
 - decode the `arraybuffer` into an `AudioBuffer`
 - connect it to an `AudioContext` and `.start()`
@@ -8027,7 +8258,7 @@ var Speaker = new function () {
   this.cache = {};
 
   this.toggle = function (enable) {
-    gainNode.gain.value = enable ? 1 : 0;
+    gainNode.gain.value = enable ? 100 : 0;
   };
 
   this.changeVolume = function (value) {
@@ -8573,9 +8804,7 @@ String.prototype.replaceAll = function (search, replacement) {
 window.setIntervalX = function (callback, delay, repetitions) {
   var x = 0;
   window.hide_chat = setInterval(function () {
-
     callback();
-
     if (++x === repetitions) {
       clearInterval(window.hide_chat);
     }
@@ -8728,7 +8957,6 @@ var EnglishOnMenu = function () {
     e$('#get-started').text(messages.GET_STARTED);
     e$('#signout_btn').text(messages.SIGN_OUT);
   };
-
   setIntervalX(function () {
     e$('#lc_chat_layout').hide();
   }, 500, 20);
@@ -9036,7 +9264,6 @@ var EnglishOnMenu = function () {
   });
   //i don't know why this line is needed.  
   window.history.pushState({ 'elementToShow': 'page' }, '');
-
   e$(window).on('beforeunload', function (e) {
     e.preventDefault();
     if (!document.englishonConfig.email && e$('.eo-answered').length) {
@@ -9197,13 +9424,10 @@ function receiveMessage(event) {
     });
   }
 }
-
 window.setButtonInterval = function (callback, delay, repetitions) {
   var xx = 0;
   window.ButtonInterval = setInterval(function () {
-
     callback();
-
     if (++xx === repetitions) {
       clearInterval(window.ButtonInterval);
     }

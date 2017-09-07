@@ -1018,6 +1018,13 @@ div.eo-question.highlighted {
   background-repeat: no-repeat;
 }
 
+body.www-shturem-net .category-icon,
+body.shturem-net .category-icon {
+  position: relative;
+  top: -20px;
+  left: -300px;
+}
+
 .eo-logo {
   width: 110px;
   height: 23px;
@@ -1302,13 +1309,39 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Editor */
+.eo-editor-candidate .correct_answer,
+.eo-editor-question .correct_answer {
+  display: inline-block;
+  width: 100px;
+  background-color: grey;
+  border: 1px solid;
+  margin: 0px 4px 0px 0px !important;
+  background-color: #eceff1;
+}
+
 .eo-editor-candidate {
+  position: relative;
   background-color: yellow;
   border: none;
+  display: inline-block;
+  margin: 0px !important;
 }
 .eo-editor-candidate select {
   width: initial;
   border: 1px solid black;
+}
+.eo-editor-candidate .editor_ul {
+  position: absolute;
+  top: 20px;
+  right: 0px;
+  width: 220px;
+  background-color: #eceff1;
+  z-index: 100;
+  margin: 0px;
+}
+.eo-editor-candidate .editor_ul li:hover, .eo-editor-candidate .editor_ul li.highlight {
+  background: #00CED1;
+  cursor: pointer;
 }
 
 .eo-editor-dictionary-candidate {
@@ -1336,13 +1369,15 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 .eo-editor-question {
-  /*   background-color: darkgreen;*/
   background-color: #ADFF2F;
+  display: inline-block;
+  margin: 0px !important;
 }
 
 .eo-editor-irrelevant {
   /*color: gray;*/
   background-color: #DCDCDC;
+  display: inline-block;
 }
 .eo-editor-irrelevant .correct_answer {
   padding: 0px;
@@ -1367,20 +1402,31 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
-body.www-shturem-net #top_menu_block,
-body.shturem-net #top_menu_block,
-body.www-englishon-org #top_menu_block {
-  margin-top: 102px !important;
+body.www-shturem-net #eo-menu.hebrew #eo-help,
+body.shturem-net #eo-menu.hebrew #eo-help,
+body.www-englishon-org #eo-menu.hebrew #eo-help {
+  flex: 0 1 50%;
+}
+body.www-shturem-net #eo-menu.hebrew #eo-contact,
+body.shturem-net #eo-menu.hebrew #eo-contact,
+body.www-englishon-org #eo-menu.hebrew #eo-contact {
+  flex: 0 1 40%;
+}
+body.www-shturem-net.front-page #top_menu_block,
+body.shturem-net.front-page #top_menu_block,
+body.www-englishon-org.front-page #top_menu_block {
+  /*margin-top: 102px !important;*/
+  margin: 113px 205px 0px 0px;
 }
 body.www-shturem-net #top_menu_block > img,
 body.shturem-net #top_menu_block > img,
 body.www-englishon-org #top_menu_block > img {
-  padding-bottom: 3px;
+  /*padding-bottom: 3px;*/
 }
 body.www-shturem-net #date_block,
 body.shturem-net #date_block,
 body.www-englishon-org #date_block {
-  padding-top: 19px;
+  /*padding-top: 19px;*/
 }
 body.www-shturem-net.heroku-staging .newsHead,
 body.shturem-net.heroku-staging .newsHead,
@@ -1396,9 +1442,34 @@ body.www-shturem-net .eo-button,
 body.shturem-net .eo-button,
 body.www-englishon-org .eo-button {
   position: absolute;
-  padding-right: 30px;
-  left: 50px;
-  bottom: 24px;
+  left: 210px;
+  top: 348px;
+}
+body.www-shturem-net.front .eo-button,
+body.shturem-net.front .eo-button,
+body.www-englishon-org.front .eo-button {
+  left: 10px;
+  top: 104px;
+}
+body.www-shturem-net.front .eo-button .eo-icon,
+body.shturem-net.front .eo-button .eo-icon,
+body.www-englishon-org.front .eo-button .eo-icon {
+  width: 24px;
+  height: 24px;
+  background-size: 24px;
+}
+body.www-shturem-net.front .eo-button .eo-logo,
+body.shturem-net.front .eo-button .eo-logo,
+body.www-englishon-org.front .eo-button .eo-logo {
+  left: 23px;
+  background-size: 75px;
+}
+body.www-shturem-net.front .eo-button .registered_symbol,
+body.shturem-net.front .eo-button .registered_symbol,
+body.www-englishon-org.front .eo-button .registered_symbol {
+  left: 105px;
+  top: 13px;
+  font-size: 10px;
 }
 body.www-shturem-net .eo-correct,
 body.shturem-net .eo-correct,
@@ -1413,11 +1484,19 @@ body.www-englishon-org .eo-correct {
 .shturem-net #eo-live {
   background-color: rgba(0, 0, 0, 0.2);
   top: 10px;
-  right: 10px;
+  left: 10px;
+}
+.www-shturem-net #eo-live.eo-live-maximize,
+.shturem-net #eo-live.eo-live-maximize {
+  height: 160px;
+  width: 260px;
 }
 
 body.actualic-co-il #eo-live {
   background-color: #eee;
+}
+body.actualic-co-il #eo-live.eo-live-maximize {
+  height: 208px;
 }
 body.actualic-co-il #eo-live.vocabulary-open {
   background-color: black;
@@ -1427,9 +1506,6 @@ body.actualic-co-il.heroku-staging {
 }
 body.actualic-co-il.localhost {
   background-color: #F0FFFF;
-}
-body.actualic-co-il .eo-live-maximize {
-  height: 208px !important;
 }
 body.actualic-co-il .eo-button {
   top: 2px;
@@ -2282,7 +2358,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 
 .eo-row4 {
-  height: 55px;
+  height: 205px;
 }
 
 .eo-row5 {
@@ -2454,6 +2530,10 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-menu .eo-menu-footer:hover {
   color: #2cc6a8;
 }
+#eo-menu .eo-menu-footer a {
+  font-family: Roboto-Light, sans-serif;
+  font-size: 11px;
+}
 
 .subtitle {
   font-family: Roboto-Light, sans-serif;
@@ -2580,12 +2660,12 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #google-iframe {
   margin-left: 20px;
   padding-top: 0px;
-  height: 45px;
+  height: 205px;
 }
 
 #eo-iframe {
   width: 160px;
-  height: 60px;
+  height: 205px;
   border: none;
 }
 
@@ -2788,7 +2868,7 @@ it's top left values will re-computed everytime progress bar is moving*/
   text-align: left;
 }
 #eo-live #vocabulary .Grid-cell.cell1 {
-  height: 40px;
+  height: 30px;
 }
 #eo-live #vocabulary .Grid-cell.cell2 {
   height: 130px;
@@ -2808,6 +2888,35 @@ it's top left values will re-computed everytime progress bar is moving*/
 #eo-live #vocabulary .Grid-cell .vocabulary-cog-cell {
   text-align: center;
   color: white;
+}
+#eo-live #vocabulary #personal-word, #eo-live #vocabulary #personal-word-btn {
+  width: 200px;
+  height: 60px;
+  padding: 0px;
+  margin: 0px;
+  height: 25px;
+  border: none;
+  cursor: pointer;
+}
+#eo-live #vocabulary #personal-word.eng, #eo-live #vocabulary #personal-word-btn.eng {
+  direction: ltr;
+  text-align: left;
+}
+#eo-live #vocabulary #personal-word.heb, #eo-live #vocabulary #personal-word-btn.heb {
+  direction: rtl;
+}
+#eo-live #vocabulary .ui-autocomplete {
+  direction: ltr !important;
+  text-align: left !important;
+}
+#eo-live #vocabulary #personal-word-btn {
+  list-style: none;
+  background-color: #2cc6a8;
+  background-image: none;
+  -webkit-appearance: menulist;
+}
+#eo-live #vocabulary #personal-word-btn option {
+  background-color: white;
 }
 
 .Grid#days-pannel {
@@ -2831,10 +2940,19 @@ it's top left values will re-computed everytime progress bar is moving*/
   width: 29px;
   height: 29px;
   padding: 5px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .no_questions_dlg {
+  font-size: 16px;
   text-align: center;
+}
+.no_questions_dlg.rtl {
+  direction: rtl !important;
+}
+.no_questions_dlg.ltr {
+  direction: ltr !important;
 }
 
 #eo-dlg-terms {

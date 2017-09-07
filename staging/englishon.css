@@ -1309,13 +1309,39 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Editor */
+.eo-editor-candidate .correct_answer,
+.eo-editor-question .correct_answer {
+  display: inline-block;
+  width: 100px;
+  background-color: grey;
+  border: 1px solid;
+  margin: 0px 4px 0px 0px !important;
+  background-color: #eceff1;
+}
+
 .eo-editor-candidate {
+  position: relative;
   background-color: yellow;
   border: none;
+  display: inline-block;
+  margin: 0px !important;
 }
 .eo-editor-candidate select {
   width: initial;
   border: 1px solid black;
+}
+.eo-editor-candidate .editor_ul {
+  position: absolute;
+  top: 20px;
+  right: 0px;
+  width: 220px;
+  background-color: #eceff1;
+  z-index: 100;
+  margin: 0px;
+}
+.eo-editor-candidate .editor_ul li:hover, .eo-editor-candidate .editor_ul li.highlight {
+  background: #00CED1;
+  cursor: pointer;
 }
 
 .eo-editor-dictionary-candidate {
@@ -1343,13 +1369,15 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 .eo-editor-question {
-  /*   background-color: darkgreen;*/
   background-color: #ADFF2F;
+  display: inline-block;
+  margin: 0px !important;
 }
 
 .eo-editor-irrelevant {
   /*color: gray;*/
   background-color: #DCDCDC;
+  display: inline-block;
 }
 .eo-editor-irrelevant .correct_answer {
   padding: 0px;
