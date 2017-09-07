@@ -5745,7 +5745,7 @@ Editor.prototype.createAutoQuestion = function (event) {
   console.log('createAutoQuestion***** span is: ' + span);
   var replaced = span.data('preposition') + span.data('word');
   var hint = span.data('word');
-  span.find('.correct_answer').text(correct);
+  span.find('.correct_answer').text(correct).css('width', 'initial');
   if (correct == "Edit meanings") {
     this.editMeanings(span);
     return;
@@ -5789,6 +5789,7 @@ Editor.prototype.createAutoQuestion = function (event) {
   this.span = span;
   document.englishonBackend.createQuestion(question).then(function (res) {
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click', 'onClick');
+    document._editor.counter--;
     // .on('click', this.question_onClick.bind(this));
     span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
       e.stopPropagation();
@@ -5797,6 +5798,7 @@ Editor.prototype.createAutoQuestion = function (event) {
     alert('Error creating question');
     console.log('Error creating question. reason is: ' + reason);
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click', 'onClick');
+    document._editor.counter--;
   }.bind(this));
 };
 Editor.prototype.question_onClick = function (event) {
@@ -6003,7 +6005,7 @@ Editor.prototype.highlight = function () {
   document._editor.counter = 0;
   shortcut.add("Tab", function () {
     e$('.eo-editor-candidate').find('.editor_ul').addClass('hide');
-    e$('.eo-editor-candidate').eq(document._editor.counter).click();
+    e$('.eo-editor-candidate').eq(document._editor.counter).click().addClass('current');
     e$('.eo-editor-candidate').eq(document._editor.counter).find('.editor_ul').find('li').eq(0).addClass('highlight');
     document._editor.counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
   });
@@ -6102,6 +6104,7 @@ Editor.prototype.highlight = function () {
           //.on('change',this.createQuestion.bind(span))
           var span = e$('<div>').addClass('eo-editor-candidate').text(currentWord).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).data('preposition', preposition).append(select).on('click', function () {
             e$(this).find('ul').toggleClass('hide');
+            e$(this).addClass('current');
           });
           span.append(e$('<ul>').addClass('editor_ul hide').append(e$('<li>').text('Edit meanings').on('click', this.createAutoQuestion.bind(this))));
           for (var i = 0; i < this.eo_dictionary[currentWord].length; i++) {

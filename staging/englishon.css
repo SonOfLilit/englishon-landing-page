@@ -1321,10 +1321,13 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 
 .eo-editor-candidate {
   position: relative;
-  background-color: yellow;
+  background-color: #ffff80;
   border: none;
   display: inline-block;
   margin: 0px !important;
+}
+.eo-editor-candidate.current {
+  background-color: #00CED1;
 }
 .eo-editor-candidate select {
   width: initial;
