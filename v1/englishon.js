@@ -5721,29 +5721,65 @@ Editor.prototype.editMeanings = function (span) {
     document.englishonBackend.dictionary(data);
     e$('#dictionary_edit_dlg').dialog('close');
     e$('#dictionary_edit_dlg').dialog('destroy');
-    document._editor.Next();
-    shortcut.add("Left", document._editor.Next);
+    var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
+    document._editor.Next(counter);
+    shortcut.add("Tab", function () {
+      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
+      document._editor.Next(counter);
+    });
+    shortcut.add("Left", function () {
+      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
+      document._editor.Next(counter);
+    });
     shortcut.add("Right", document._editor.Prev);
-    //TODO: check why the destroy is not doing the job
+    shortcut.add("ENTER", function () {
+      elem = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight');
+      document._editor.createAutoQuestion(elem);
+    }); //TODO: check why the destroy is not doing the job
   })).append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Delete this word from dictionary').on('click', function () {
     console.log('DELETE WORD NOW.');
     var deleted_word = { 'word': hint + ' ', 'action': 'delete' };
     document.englishonBackend.dictionary(deleted_word);
     e$('#dictionary_edit_dlg').dialog('close');
     e$('#dictionary_edit_dlg').dialog('destroy');
-    document._editor.Next();
-    shortcut.add("Left", document._editor.Next);
+    var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
+    document._editor.Next(counter);
+    shortcut.add("Tab", function () {
+      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
+      document._editor.Next(counter);
+    });
+    shortcut.add("Left", function () {
+      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
+      document._editor.Next(counter);
+    });
     shortcut.add("Right", document._editor.Prev);
+    shortcut.add("ENTER", function () {
+      elem = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight');
+      document._editor.createAutoQuestion(elem);
+    });
     //TODO: check why the destroy is not doing the job
   }))));
   edit_meanings_dlg.dialog({ modal: true });
   shortcut.remove('Left');
   shortcut.remove('Right');
+  shortcut.remove('Tab');
+  shortcut.remove('Enter');
   e$('.ui-dialog .ui-dialog-titlebar-close').on('click', function () {
     e$('#dictionary_edit_dlg').dialog('destroy');
     document._editor.Next();
-    shortcut.add("Left", document._editor.Next);
+    shortcut.add("Tab", function () {
+      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
+      document._editor.Next(counter);
+    });
+    shortcut.add("Left", function () {
+      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
+      document._editor.Next(counter);
+    });
     shortcut.add("Right", document._editor.Prev);
+    shortcut.add("ENTER", function () {
+      elem = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight');
+      document._editor.createAutoQuestion(elem);
+    });
   });
 };
 Editor.prototype.createAutoQuestion = function (event) {
@@ -5807,6 +5843,8 @@ Editor.prototype.createAutoQuestion = function (event) {
   document.englishonBackend.createQuestion(question).then(function (res) {
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click', 'onClick');
     document._editor.counter--;
+    var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
+    document._editor.Next(counter);
     // .on('click', this.question_onClick.bind(this));
     span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
       e.stopPropagation();
@@ -6152,7 +6190,11 @@ Editor.prototype.highlight = function () {
           });
           span.append(e$('<ul>').addClass('editor_ul hide').append(e$('<li>').text('Edit meanings').on('click', this.createAutoQuestion.bind(this))));
           for (var i = 0; i < this.eo_dictionary[currentWord].length; i++) {
-            span.find('ul').append(e$('<li>').text(this.eo_dictionary[currentWord][i]).on('click', this.createAutoQuestion.bind(this)));
+            span.find('ul').append(e$('<li>').text(this.eo_dictionary[currentWord][i]).on('click', function (e) {
+              e$(e.target).siblings().removeClass('highlight');
+              e$(e.target).addClass('highlight');
+              document._editor.createAutoQuestion(e);
+            }));
           }
           p.append(span);
         } else //the current word is unrecognized word
