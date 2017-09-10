@@ -1340,7 +1340,8 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   width: 220px;
   background-color: #eceff1;
   z-index: 100;
-  margin: 0px;
+  margin: 10px;
+  list-style-position: inside;
 }
 .eo-editor-candidate .editor_ul li:hover, .eo-editor-candidate .editor_ul li.highlight {
   background: #00CED1;
