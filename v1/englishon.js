@@ -5723,19 +5723,8 @@ Editor.prototype.editMeanings = function (span) {
     e$('#dictionary_edit_dlg').dialog('destroy');
     var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
     document._editor.Next(counter);
-    shortcut.add("Tab", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Left", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Right", document._editor.Prev);
-    shortcut.add("ENTER", function () {
-      elem = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight');
-      document._editor.createAutoQuestion(elem);
-    }); //TODO: check why the destroy is not doing the job
+    document._editor.shortcut();
+    //TODO: check why the destroy is not doing the job
   })).append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Delete this word from dictionary').on('click', function () {
     console.log('DELETE WORD NOW.');
     var deleted_word = { 'word': hint + ' ', 'action': 'delete' };
@@ -5744,42 +5733,15 @@ Editor.prototype.editMeanings = function (span) {
     e$('#dictionary_edit_dlg').dialog('destroy');
     var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
     document._editor.Next(counter);
-    shortcut.add("Tab", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Left", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Right", document._editor.Prev);
-    shortcut.add("ENTER", function () {
-      elem = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight');
-      document._editor.createAutoQuestion(elem);
-    });
+    document._editor.shortcut();
     //TODO: check why the destroy is not doing the job
   }))));
   edit_meanings_dlg.dialog({ modal: true });
-  shortcut.remove('Left');
-  shortcut.remove('Right');
-  shortcut.remove('Tab');
-  shortcut.remove('Enter');
+  document._editor.removeShortcut();
   e$('.ui-dialog .ui-dialog-titlebar-close').on('click', function () {
     e$('#dictionary_edit_dlg').dialog('destroy');
     document._editor.Next();
-    shortcut.add("Tab", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Left", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Right", document._editor.Prev);
-    shortcut.add("ENTER", function () {
-      elem = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight');
-      document._editor.createAutoQuestion(elem);
-    });
+    document._editor.shortcut();
   });
 };
 Editor.prototype.createAutoQuestion = function (event) {
@@ -6076,8 +6038,15 @@ Editor.prototype.Prev = function () {
   e$('.eo-editor-candidate').eq(document._editor.counter).find('.editor_ul').find('li').eq(0).addClass('highlight');
   document._editor.counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
 };
+Editor.prototype.removeShortcut = function () {
+  shortcut.remove('Left');
+  shortcut.remove('Right');
+  shortcut.remove('Tab');
+  shortcut.remove('Enter');
+  shortcut.remove('Up');
+  shortcut.remove('Down');
+};
 Editor.prototype.shortcut = function () {
-  document._editor.counter = 0;
   shortcut.add("Tab", function () {
     var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
     document._editor.Next(counter);
@@ -6103,6 +6072,7 @@ Editor.prototype.shortcut = function () {
   });
 };
 Editor.prototype.highlight = function () {
+  document._editor.counter = 0;
   this.shortcut();
   var questions = this.questions;
   var prefix = ["ל", "ב", "ה", "ש", "מ", "כ", "ו"];
