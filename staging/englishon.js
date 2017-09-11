@@ -5719,67 +5719,27 @@ Editor.prototype.editMeanings = function (span) {
       'action': 'edit'
     };
     document.englishonBackend.dictionary(data);
-    e$('#dictionary_edit_dlg').dialog('close');
     e$('#dictionary_edit_dlg').dialog('destroy');
     var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
     document._editor.Next(counter);
-    shortcut.add("Tab", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Left", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Right", document._editor.Prev);
-    shortcut.add("ENTER", function () {
-      elem = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight');
-      document._editor.createAutoQuestion(elem);
-    }); //TODO: check why the destroy is not doing the job
+    document._editor.shortcut();
+    //TODO: check why the destroy is not doing the job
   })).append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Delete this word from dictionary').on('click', function () {
     console.log('DELETE WORD NOW.');
     var deleted_word = { 'word': hint + ' ', 'action': 'delete' };
     document.englishonBackend.dictionary(deleted_word);
-    e$('#dictionary_edit_dlg').dialog('close');
     e$('#dictionary_edit_dlg').dialog('destroy');
     var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
     document._editor.Next(counter);
-    shortcut.add("Tab", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Left", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Right", document._editor.Prev);
-    shortcut.add("ENTER", function () {
-      elem = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight');
-      document._editor.createAutoQuestion(elem);
-    });
+    document._editor.shortcut();
     //TODO: check why the destroy is not doing the job
   }))));
   edit_meanings_dlg.dialog({ modal: true });
-  shortcut.remove('Left');
-  shortcut.remove('Right');
-  shortcut.remove('Tab');
-  shortcut.remove('Enter');
+  document._editor.removeShortcut();
   e$('.ui-dialog .ui-dialog-titlebar-close').on('click', function () {
     e$('#dictionary_edit_dlg').dialog('destroy');
     document._editor.Next();
-    shortcut.add("Tab", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Left", function () {
-      var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-      document._editor.Next(counter);
-    });
-    shortcut.add("Right", document._editor.Prev);
-    shortcut.add("ENTER", function () {
-      elem = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight');
-      document._editor.createAutoQuestion(elem);
-    });
+    document._editor.shortcut();
   });
 };
 Editor.prototype.createAutoQuestion = function (event) {
@@ -5893,7 +5853,7 @@ Editor.prototype.onClick = function (event) {
     return;
   }
   span.data('context', ctx);
-  var dia = e$('<div>').addClass('editor-dlg');
+  var dia = e$('<div id="unrecognized-word-dlg">').addClass('editor-dlg');
   var acc = e$('<div>');
   acc.append(e$('<h3>').text("Hebrew -> English"));
   acc.append(e$('<h3>').text("Add to dictionary: " + word));
@@ -5906,8 +5866,8 @@ Editor.prototype.onClick = function (event) {
       'action': 'add'
     };
     document.englishonBackend.dictionary(data);
-    dia.dialog('close');
-    dia.dialog('destroy');
+    e$('#unrecognized-word-dlg').dialog('destroy');
+    document._editor.shortcut();
     span.addClass('eo-editor-candidate');
   }));
   acc.append(e$('<h3>').text("Remove from dictionary"));
@@ -5919,16 +5879,17 @@ Editor.prototype.onClick = function (event) {
       'action': 'delete'
     };
     document.englishonBackend.dictionary(data);
-    dia.dialog('close');
-    dia.dialog('destroy');
+    e$('#unrecognized-word-dlg').dialog('destroy');
+    document._editor.shortcut();
   }));
   acc.append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Close').click(function (event) {
     event.preventDefault();
-    dia.dialog('close');
-    dia.dialog('destroy');
+    e$('#unrecognized-word-dlg').dialog('destroy');
+    document._editor.shortcut();
   })));
   dia.append(acc);
   dia.dialog({ autoOpen: true, height: 'auto', width: 'auto', modal: 'true' });
+  document._editor.removeShortcut();
   e$(".wrd").text(word);
 };
 Editor.prototype.generateUI = function () {
@@ -6076,8 +6037,15 @@ Editor.prototype.Prev = function () {
   e$('.eo-editor-candidate').eq(document._editor.counter).find('.editor_ul').find('li').eq(0).addClass('highlight');
   document._editor.counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
 };
+Editor.prototype.removeShortcut = function () {
+  shortcut.remove('Left');
+  shortcut.remove('Right');
+  shortcut.remove('Tab');
+  shortcut.remove('Enter');
+  shortcut.remove('Up');
+  shortcut.remove('Down');
+};
 Editor.prototype.shortcut = function () {
-  document._editor.counter = 0;
   shortcut.add("Tab", function () {
     var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
     document._editor.Next(counter);
@@ -6103,6 +6071,7 @@ Editor.prototype.shortcut = function () {
   });
 };
 Editor.prototype.highlight = function () {
+  document._editor.counter = 0;
   this.shortcut();
   var questions = this.questions;
   var prefix = ["ל", "ב", "ה", "ש", "מ", "כ", "ו"];
@@ -7599,7 +7568,6 @@ var overlay_settings = {
       },
       'pin-tutotial-article': '.eo-button',
       'pin-tutotial-category': '.eo-button'
-
     }
   },
   'actualic': {
@@ -7702,7 +7670,6 @@ PageOverlay = function () {
   this.hideButtons = function () {
     e$('.eo-button').addClass('hidden');
   };
-
   this.rejectTerms = function () {
     //Give the user astatus of guest
     window.localStorage.removeItem('email');
@@ -7763,9 +7730,7 @@ PageOverlay = function () {
     }
     no_questions_dlg = e$('<div>').addClass('no_questions_dlg').html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
     e$('.no_questions_dlg').addClass(dir);
-
     //e$('.no_questions_dlg').parents('.ui-dialog').css({ 'maxWidth': 240 });
-
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
 };
@@ -7865,7 +7830,11 @@ ShturemFrontpageOverlay = function (parts) {
     if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
       this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
     }
-    e$('.eo-button').css('left', this.settings.category_button_left_value());
+    e$('.eo-button').css('left', document.overlay.settings.category_button_left_value());
+    setButtonInterval(function () {
+      console.log('-------------setTimeOut button_top_value');
+      e$('.eo-button').css('left', document.overlay.settings.category_button_left_value());
+    }, 500, 20);
   };
   this.powerOn = function () {
     PageOverlay.prototype.powerOn.call(this);
@@ -7896,12 +7865,9 @@ ShturemFrontpageOverlay = function (parts) {
 };
 // this one will probably have some code that can be factored up
 // to a common superclass for single-article overlays
-
-
 /*-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -*/
-
 ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.url = url;
   this.subtitle = subtitle;
@@ -7923,9 +7889,12 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     } else {
       e$('.eo-button').on('click', document.firstTimeUser);
     }
-    e$('.eo-button').css({ 'left': this.settings.button_left_value(), 'top': this.settings.button_top_value() });
+    e$('.eo-button').css({ 'left': document.overlay.settings.button_left_value(), 'top': document.overlay.settings.button_top_value() });
+    setButtonInterval(function () {
+      console.log('-------------setTimeOut button_top_value');
+      e$('.eo-button').css({ 'left': document.overlay.settings.button_left_value(), 'top': document.overlay.settings.button_top_value() });
+    }, 500, 20);
   };
-
   this.getLineDetails = function () {
     return [e$('.artText').offset().left, e$('.artText').width()];
   };
@@ -7967,7 +7936,6 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
     PageOverlay.prototype.hideQuestions.call(this);
     if (this.injector) this.injector.off();
   }.bind(this);
-
   this.powerOff = function () {
     this.hideQuestions();
     if (document.eo_user) {
@@ -8140,7 +8108,6 @@ actualicOverlay = function (url, subtitle, bodytext) {
     PageOverlay.prototype.hideQuestions.call(this);
     if (this.injector) this.injector.off();
   }.bind(this);
-
   this.fetchQuestions = function () {
     e$('.eo-injection-target').contents().unwrap();
     var backend = document.englishonBackend;
