@@ -5662,7 +5662,7 @@ HerokuBackend.prototype.dictionary = function (new_word) {
   post.done(function (res) {
     console.log("Dictionary changed! (A word or new meanings added or removed)");
     if (!res.message.startsWith('Done')) {
-      alert(res.message);
+      //alert(res.message);
     }
   });
 };
@@ -7796,7 +7796,7 @@ ShturemFrontpageOverlay = function (parts) {
     e$('.eo-injection-target').contents().unwrap();
     var promises = e$.map(this.parts, function (part, url) {
       return backend.getArticle(url, 1).then(function (questions) {
-        mixpanel.track('fetch questions. ' + url);
+        mixpanel.track('fetch questions. ' + 'shturem front page');
         part.questions = questions;
         if (questions.length) {
           console.log("url: " + url + "Num questions: " + questions.length);
@@ -7925,6 +7925,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
             questions.sort(function(q1, q2) {
               return q1.location - q2.location;
             });*/
+      mixpanel.track('fetch questions. ' + document.overlay.url);
       if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial')) {
         //e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
         this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS_SHTUREM_ARTICLE);
@@ -7993,6 +7994,7 @@ CH10Overlay = function (url, subtitle, bodytext) {
       // questions.sort(function(q1, q2) {
       //   return q1.location - q2.location;
       // });
+      mixpanel.track('fetch questions. ' + document.overlay.url);
       this.questions = questions;
       console.log("Num questions: " + questions.length);
       this.injector = new Injector(this.paragraphs);
@@ -8130,6 +8132,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
     this.userAnswered = false;
     this.limit = this.getQuestionQuota();
     return backend.getArticle(this.url, this.limit).then(function (questions) {
+      mixpanel.track('fetch questions. ' + document.overlay.url);
       if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial')) {
         //e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
         this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS_ARTICLE);
