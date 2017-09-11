@@ -7796,6 +7796,7 @@ ShturemFrontpageOverlay = function (parts) {
     e$('.eo-injection-target').contents().unwrap();
     var promises = e$.map(this.parts, function (part, url) {
       return backend.getArticle(url, 1).then(function (questions) {
+        mixpanel.track('fetch questions. ' + url);
         part.questions = questions;
         if (questions.length) {
           console.log("url: " + url + "Num questions: " + questions.length);
@@ -7872,7 +7873,14 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.url = url;
   this.subtitle = subtitle;
   this.bodytext = bodytext;
-  this.paragraphs = [subtitle, bodytext];
+  //wrap each <br> with a div, to evable injector to check space 
+  var content = e$('.artText').eq(1).html().replaceAll('<br>', '<br></div><div class = "eo-paragraph">');
+  e$('.artText').eq(1).html(content);
+  e$('.artText').eq(1).find('p, div').addClass('eo-paragraph');
+  this.paragraphs = e$('.artText').eq(1).find('.eo-paragraph').toArray().concat(subtitle);
+  //second paragraph is unneeded
+  this.paragraphs.splice(2, 1);
+  //this.paragraphs = [subtitle, bodytext];
   this.interacted = false;
   this.userAnswered = false;
   PageOverlay.call(this);
