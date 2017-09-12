@@ -707,7 +707,8 @@ div.eo-question > .eo-options > .eo-option {
   background-color: #4b5666;
   color: white;
 }
-div.eo-question > .eo-options > .eo-option:hover {
+div.eo-question > .eo-options > .eo-option:hover,
+div.eo-question > .eo-options > .eo-option.highlight {
   background-color: #78909c;
 }
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option,
@@ -901,7 +902,7 @@ div.eo-question.eo-active > .eo-options > .eo-option {
   font-weight: 400;
   transition: background 0.75s;
 }
-div.eo-question.eo-active > .eo-options > .eo-option:hover {
+div.eo-question.eo-active > .eo-options > .eo-option:hover, div.eo-question.eo-active > .eo-options > .eo-option.highlight {
   transition: background 0.15s;
 }
 div.eo-question > .eo-options > .eo-option > span {

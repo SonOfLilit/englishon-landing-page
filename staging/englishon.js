@@ -7197,7 +7197,9 @@ MultipleChoice.prototype.optionOnClick = function (e) {
   e.preventDefault();
   this.guess(e$(e.target).data('word'), e.target);
 };
+
 MultipleChoice.prototype.open = function () {
+  document.overlay.questionShortcut();
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
     e$(option).find('span').toggleHtml(e$(option).find('span').data('word').replaceAll('_', '&nbsp;'), e$(option).find('span').data('translate'));
   });
@@ -7214,6 +7216,8 @@ MultipleChoice.prototype.open = function () {
 };
 MultipleChoice.prototype.closeUnanswered = function () {
   AbstractQuestion.prototype.closeUnanswered.call(this);
+  document.overlay.removeQuestionShortcut();
+  //document.overlay.pointer --;
   if (!this.element.hasClass('eo-answered')) {
     if (this.element.hasClass('eo-show_solution')) {
       this.element.addClass('lost_focus');
@@ -7223,6 +7227,13 @@ MultipleChoice.prototype.closeUnanswered = function () {
 };
 MultipleChoice.prototype.closeAnswered = function () {
   // see super for more documentation
+  document.overlay.removeQuestionShortcut();
+  var current = e$('.eo-question:not(.eo-answered, .eo-expired)').index(this.element);
+  var prevUnAnwered = e$('.eo-question:not(.eo-answered, .eo-expired)').index(this.element) - 1;
+  var answered_num = e$('.eo-answered, .eo-expired').filter(function () {
+    return e$('.eo-question').index(this) < current && e$('.eo-question').index(this) > prevUnAnwered;
+  }).length;
+  document.overlay.pointer = Math.max(document.overlay.pointer - answered_num - 1, -1);
   var correctOption = this.element.find('.eo-option.eo-correct_option span');
   var initialTop = correctOption.offset().top - this.element.offset().top;
   var correct = this.element.find('.eo-correct');
@@ -7660,13 +7671,22 @@ PageOverlay = function () {
     e$('body').addClass('first-loading');
     console.log('adding class first-loading');
   };
+  this.shortcut = function () {
+    shortcut.add("Tab", function () {
+      var pointer = document.overlay.pointer == e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 ? 0 : document.overlay.pointer + 1;
+      document.overlay.Next(pointer);
+    });
+    shortcut.add("Left", function () {
+      var pointer = document.overlay.pointer == e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 ? 0 : document.overlay.pointer + 1;
+      document.overlay.Next(pointer);
+    });
+    shortcut.add("Right", document.overlay.Prev);
+  };
   this.Next = function (pointer) {
     //this function is getting pointer as an argument to enable call it when user click on a quiestion
     document.overlay.pointer = pointer;
     document.overlay.closeUnAnswered();
-    e$('.eo-question').removeClass('current');
-    //e$('.eo-question .eo-hint').eq(document.overlay.pointer).click();
-    e = e$('.eo-question').eq(document.overlay.pointer);
+    e = e$('.eo-question:not(.eo-answered, .eo-expired)').eq(document.overlay.pointer);
     var context = e.data('context');
     //need to be finded with context because the injector element are ordered by level, not by the page order
     var current = document.overlay.injector.elements.filter(function (q) {
@@ -7675,11 +7695,9 @@ PageOverlay = function () {
     current.qobj.questionOnClick(e);
   };
   this.Prev = function () {
-    document.overlay.pointer = document.overlay.pointer < 1 ? e$('.eo-question').length - 1 : document.overlay.pointer - 1;
+    document.overlay.pointer = document.overlay.pointer < 1 ? e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 : document.overlay.pointer - 1;
     document.overlay.closeUnAnswered();
-    e$('.eo-question').removeClass('current');
-    //e$('.eo-question .eo-hint').eq(document.overlay.pointer).click();
-    e = e$('.eo-question').eq(document.overlay.pointer);
+    e = e$('.eo-question:not(.eo-answered, .eo-expired)').eq(document.overlay.pointer);
     var context = e.data('context');
     //need to be finded with context because the injector element are ordered by level, not by the page order
     var current = document.overlay.injector.elements.filter(function (q) {
@@ -7769,16 +7787,38 @@ PageOverlay = function () {
     //e$('.no_questions_dlg').parents('.ui-dialog').css({ 'maxWidth': 240 });
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
-  this.shortcut = function () {
-    shortcut.add("Tab", function () {
-      var pointer = document.overlay.pointer == e$('.eo-question').length - 1 ? 0 : document.overlay.pointer + 1;
-      document.overlay.Next(pointer);
+  this.questionShortcut = function () {
+    document.overlay.optionPointer = 0;
+    shortcut.add('Down', function () {
+      if (document.overlay.optionPointer >= 4) {
+        return;
+      }
+      e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
+      e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
+      document.overlay.optionPointer++;
     });
-    shortcut.add("Left", function () {
-      var pointer = document.overlay.pointer == e$('.eo-question').length - 1 ? 0 : document.overlay.pointer + 1;
-      document.overlay.Next(pointer);
+    shortcut.add('Up', function () {
+      if (document.overlay.optionPointer <= 0) {
+        return;
+      }
+      document.overlay.optionPointer--;
+      e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
+      e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
     });
-    shortcut.add("Right", document.overlay.Prev);
+    shortcut.add('Enter', function () {
+      var element = e$('.eo-question.eo-active');
+      var span = element.find('.highlight').find('span');
+      var current = document.overlay.injector.elements.filter(function (q) {
+        return q.qobj.data.context == element.data('context');
+      })[0];
+      //current.qobj.questionOnClick(e);
+      current.qobj.guess(span.data('word'), span);
+    });
+  };
+  this.removeQuestionShortcut = function () {
+    shortcut.remove('Up');
+    shortcut.remove('Down');
+    shortcut.add('Enter');
   };
 };
 PageOverlay.prototype.powerOn = function () {
