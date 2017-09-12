@@ -1406,6 +1406,11 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+body.www-shturem-net div.eo-paragraph,
+body.shturem-net div.eo-paragraph,
+body.www-englishon-org div.eo-paragraph {
+  margin: 0px;
+}
 body.www-shturem-net #eo-menu.hebrew #eo-help,
 body.shturem-net #eo-menu.hebrew #eo-help,
 body.www-englishon-org #eo-menu.hebrew #eo-help {
