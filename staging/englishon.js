@@ -7228,20 +7228,6 @@ MultipleChoice.prototype.closeUnanswered = function () {
 MultipleChoice.prototype.closeAnswered = function () {
   // see super for more documentation
   document.overlay.removeQuestionShortcut();
-  var current = e$('.eo-question').index(this.element);
-  var q = e$('.eo-question').slice(0, current).filter(function () {
-    return !e$(this).is('.eo-answered, .eo-expired');
-  }).last();
-  var prevUnAnwered = e$('.eo-question').index(q);
-  if (prevUnAnwered == -1) {
-    answered_num = 0;
-  } else {
-    var answered_num = e$('.eo-answered, .eo-expired').filter(function () {
-      return e$('.eo-question').index(this) < current && e$('.eo-question').index(this) > prevUnAnwered;
-    }).length;
-  }
-  var prevPointer = document.overlay.pointer;
-  //document.overlay.pointer = document.overlay.pointer - answered_num - 1;
   document.overlay.pointer--;
   if (document.overlay.pointer == -1) {
     document.overlay.pointer = e$('.eo-question:not(.eo-answered, .eo-expired)').length - 2;
