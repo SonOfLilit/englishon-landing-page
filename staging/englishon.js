@@ -7802,20 +7802,22 @@ PageOverlay = function () {
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
   this.questionShortcut = function () {
-    document.overlay.optionPointer = 0;
+    document.overlay.optionPointer = -1;
     shortcut.add('Down', function () {
+      document.overlay.optionPointer++;
       if (document.overlay.optionPointer >= 4) {
+        document.overlay.optionPointer = 3;
         return;
       }
       e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
       e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
-      document.overlay.optionPointer++;
     });
     shortcut.add('Up', function () {
-      if (document.overlay.optionPointer <= 0) {
+      document.overlay.optionPointer--;
+      if (document.overlay.optionPointer <= -1) {
+        document.overlay.optionPointer = 0;
         return;
       }
-      document.overlay.optionPointer--;
       e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
       e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
     });
