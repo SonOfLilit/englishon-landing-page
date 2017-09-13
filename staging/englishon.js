@@ -6866,7 +6866,8 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
     var current = e$('.eo-question').filter(function () {
       return e$(this).data('context') == context;
     })[0];
-    document.overlay.pointer = e$('.eo-question').index(current);
+    document.overlay.pointer = e$('.eo-question:not(.eo-expired, .eo-answered)').index(current);
+    //alert('questionOnClick '+ document.overlay.pointer);
   }
   if (this.element.hasClass('eo-answered')) {
     return;
@@ -7197,7 +7198,6 @@ MultipleChoice.prototype.optionOnClick = function (e) {
   e.preventDefault();
   this.guess(e$(e.target).data('word'), e.target);
 };
-
 MultipleChoice.prototype.open = function () {
   document.overlay.questionShortcut();
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
@@ -7228,12 +7228,25 @@ MultipleChoice.prototype.closeUnanswered = function () {
 MultipleChoice.prototype.closeAnswered = function () {
   // see super for more documentation
   document.overlay.removeQuestionShortcut();
-  var current = e$('.eo-question:not(.eo-answered, .eo-expired)').index(this.element);
-  var prevUnAnwered = e$('.eo-question:not(.eo-answered, .eo-expired)').index(this.element) - 1;
-  var answered_num = e$('.eo-answered, .eo-expired').filter(function () {
-    return e$('.eo-question').index(this) < current && e$('.eo-question').index(this) > prevUnAnwered;
-  }).length;
-  document.overlay.pointer = Math.max(document.overlay.pointer - answered_num - 1, -1);
+  var current = e$('.eo-question').index(this.element);
+  var q = e$('.eo-question').slice(0, current).filter(function () {
+    return !e$(this).is('.eo-answered, .eo-expired');
+  }).last();
+  var prevUnAnwered = e$('.eo-question').index(q);
+  if (prevUnAnwered == -1) {
+    answered_num = 0;
+  } else {
+    var answered_num = e$('.eo-answered, .eo-expired').filter(function () {
+      return e$('.eo-question').index(this) < current && e$('.eo-question').index(this) > prevUnAnwered;
+    }).length;
+  }
+  var prevPointer = document.overlay.pointer;
+  //document.overlay.pointer = document.overlay.pointer - answered_num - 1;
+  document.overlay.pointer--;
+  if (document.overlay.pointer == -1) {
+    document.overlay.pointer = e$('.eo-question:not(.eo-answered, .eo-expired)').length - 2;
+  }
+  //alert('closeAnswered '+document.overlay.pointer + ' current question index: '+current);
   var correctOption = this.element.find('.eo-option.eo-correct_option span');
   var initialTop = correctOption.offset().top - this.element.offset().top;
   var correct = this.element.find('.eo-correct');
@@ -7685,6 +7698,7 @@ PageOverlay = function () {
   this.Next = function (pointer) {
     //this function is getting pointer as an argument to enable call it when user click on a quiestion
     document.overlay.pointer = pointer;
+    //alert('Next '+document.overlay.pointer);
     document.overlay.closeUnAnswered();
     e = e$('.eo-question:not(.eo-answered, .eo-expired)').eq(document.overlay.pointer);
     var context = e.data('context');
@@ -7818,13 +7832,13 @@ PageOverlay = function () {
   this.removeQuestionShortcut = function () {
     shortcut.remove('Up');
     shortcut.remove('Down');
-    shortcut.add('Enter');
+    shortcut.remove('Enter');
   };
 };
 PageOverlay.prototype.powerOn = function () {
   e$('body').removeClass('first-loading');
   console.log('remove class first-loading');
-  this.pointer = -1;
+  this.pointer = e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1;
   this.shortcut();
 };
 PageOverlay.prototype.showQuestions = function () {
