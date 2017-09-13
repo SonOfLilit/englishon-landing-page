@@ -686,7 +686,7 @@ div.eo-question.eo-answered, div.eo-question.eo-expired {
   border: none;
 }
 auto div.eo-question,
-div.eo-question > .eo-options > .eo-option, div.eo-question.eo-active > .eo-options > .eo-option:hover {
+div.eo-question > .eo-options > .eo-option, div.eo-question.eo-active > .eo-options > .eo-option:hover, div.eo-question.eo-active > .eo-options > .eo-option.highlight {
   font-weight: 700;
 }
 div.eo-question > .eo-options > .eo-option {
@@ -707,7 +707,7 @@ div.eo-question > .eo-options > .eo-option {
   background-color: #4b5666;
   color: white;
 }
-div.eo-question > .eo-options > .eo-option:hover {
+div.eo-question > .eo-options > .eo-option.highlight {
   background-color: #78909c;
 }
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option,
@@ -720,6 +720,9 @@ div.eo-question.wrong-feedback > .eo-correct {
 }
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option {
   background-color: #2cc6a8;
+}
+div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option.highlight {
+  /*background-color: #78909c;*/
 }
 div.eo-question > .eo-correct:hover {
   /*background-color: $correct-hover-color;*/
@@ -901,7 +904,7 @@ div.eo-question.eo-active > .eo-options > .eo-option {
   font-weight: 400;
   transition: background 0.75s;
 }
-div.eo-question.eo-active > .eo-options > .eo-option:hover {
+div.eo-question.eo-active > .eo-options > .eo-option.highlight {
   transition: background 0.15s;
 }
 div.eo-question > .eo-options > .eo-option > span {
@@ -1406,6 +1409,11 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+body.www-shturem-net div.eo-paragraph,
+body.shturem-net div.eo-paragraph,
+body.www-englishon-org div.eo-paragraph {
+  margin: 0px;
+}
 body.www-shturem-net #eo-menu.hebrew #eo-help,
 body.shturem-net #eo-menu.hebrew #eo-help,
 body.www-englishon-org #eo-menu.hebrew #eo-help {

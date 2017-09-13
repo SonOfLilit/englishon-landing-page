@@ -5720,8 +5720,8 @@ Editor.prototype.editMeanings = function (span) {
     };
     document.englishonBackend.dictionary(data);
     e$('#dictionary_edit_dlg').dialog('destroy');
-    var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-    document._editor.Next(counter);
+    var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
+    document._editor.Next(pointer);
     document._editor.shortcut();
     //TODO: check why the destroy is not doing the job
   })).append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Delete this word from dictionary').on('click', function () {
@@ -5729,8 +5729,8 @@ Editor.prototype.editMeanings = function (span) {
     var deleted_word = { 'word': hint + ' ', 'action': 'delete' };
     document.englishonBackend.dictionary(deleted_word);
     e$('#dictionary_edit_dlg').dialog('destroy');
-    var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-    document._editor.Next(counter);
+    var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
+    document._editor.Next(pointer);
     document._editor.shortcut();
     //TODO: check why the destroy is not doing the job
   }))));
@@ -5802,9 +5802,9 @@ Editor.prototype.createAutoQuestion = function (event) {
   this.span = span;
   document.englishonBackend.createQuestion(question).then(function (res) {
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click', 'onClick');
-    document._editor.counter--;
-    var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-    document._editor.Next(counter);
+    document._editor.pointer--;
+    var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
+    document._editor.Next(pointer);
     // .on('click', this.question_onClick.bind(this));
     span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
       e.stopPropagation();
@@ -5813,7 +5813,7 @@ Editor.prototype.createAutoQuestion = function (event) {
     alert('Error creating question');
     console.log('Error creating question. reason is: ' + reason);
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-irrelevant').off('click', 'onClick');
-    document._editor.counter--;
+    document._editor.pointer--;
   }.bind(this));
 };
 Editor.prototype.question_onClick = function (event) {
@@ -6023,19 +6023,21 @@ Editor.prototype.fetchQuestions = function () {
     console.log("fetchQuestions*** I brought questions for editor");
   }.bind(this));
 };
-Editor.prototype.Next = function (counter) {
+Editor.prototype.Next = function (pointer) {
+  //this function is getting pointer as an argument to enable call it when editor click on a word
+
   e$('.eo-editor-candidate').removeClass('current').find('.editor_ul').addClass('hide');
-  e$('.eo-editor-candidate').eq(document._editor.counter).addClass('current').find('.editor_ul').removeClass('hide');
-  e$('.eo-editor-candidate').eq(document._editor.counter).find('.editor_ul').find('li').eq(0).addClass('highlight');
-  //document._editor.counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-  document._editor.counter = counter;
+  e$('.eo-editor-candidate').eq(document._editor.pointer).addClass('current').find('.editor_ul').removeClass('hide');
+  e$('.eo-editor-candidate').eq(document._editor.pointer).find('.editor_ul').find('li').eq(0).addClass('highlight');
+  //document._editor.pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
+  document._editor.pointer = pointer;
 };
 Editor.prototype.Prev = function () {
-  document._editor.counter = document._editor.counter < 2 ? e$('.eo-editor-candidate').length - (2 - document._editor.counter) : document._editor.counter - 2;
+  document._editor.pointer = document._editor.pointer < 2 ? e$('.eo-editor-candidate').length - (2 - document._editor.pointer) : document._editor.pointer - 2;
   e$('.eo-editor-candidate').removeClass('current').find('.editor_ul').addClass('hide');
-  e$('.eo-editor-candidate').eq(document._editor.counter).addClass('current').find('.editor_ul').removeClass('hide');;
-  e$('.eo-editor-candidate').eq(document._editor.counter).find('.editor_ul').find('li').eq(0).addClass('highlight');
-  document._editor.counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
+  e$('.eo-editor-candidate').eq(document._editor.pointer).addClass('current').find('.editor_ul').removeClass('hide');;
+  e$('.eo-editor-candidate').eq(document._editor.pointer).find('.editor_ul').find('li').eq(0).addClass('highlight');
+  document._editor.pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
 };
 Editor.prototype.removeShortcut = function () {
   shortcut.remove('Left');
@@ -6047,31 +6049,31 @@ Editor.prototype.removeShortcut = function () {
 };
 Editor.prototype.shortcut = function () {
   shortcut.add("Tab", function () {
-    var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-    document._editor.Next(counter);
+    var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
+    document._editor.Next(pointer);
   });
   shortcut.add("Left", function () {
-    var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-    document._editor.Next(counter);
+    var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
+    document._editor.Next(pointer);
   });
   shortcut.add("Right", document._editor.Prev);
   shortcut.add("Up", function () {
-    var index = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight').index();
-    e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
-    e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('li').eq(index - 1).addClass('highlight');
+    var index = e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('.highlight').index();
+    e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
+    e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index - 1).addClass('highlight');
   });
   shortcut.add("Down", function () {
-    var index = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight').index();
-    e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
-    e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('li').eq(index + 1).addClass('highlight');
+    var index = e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('.highlight').index();
+    e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
+    e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index + 1).addClass('highlight');
   });
   shortcut.add("ENTER", function () {
-    elem = e$('.eo-editor-candidate').eq(document._editor.counter - 1).find('.editor_ul').find('.highlight');
+    elem = e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('.highlight');
     document._editor.createAutoQuestion(elem);
   });
 };
 Editor.prototype.highlight = function () {
-  document._editor.counter = 0;
+  document._editor.pointer = 0;
   this.shortcut();
   var questions = this.questions;
   var prefix = ["ל", "ב", "ה", "ש", "מ", "כ", "ו"];
@@ -6153,9 +6155,9 @@ Editor.prototype.highlight = function () {
           //.on('click',this.createQuestion.bind(this))
           //.on('change',this.createQuestion.bind(span))
           var span = e$('<div>').addClass('eo-editor-candidate').text(currentWord).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).data('preposition', preposition).append(select).on('click', function (e) {
-            document._editor.counter = e$(this).index('.eo-editor-candidate');
-            var counter = document._editor.counter == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.counter + 1;
-            document._editor.Next(counter);
+            document._editor.pointer = e$(this).index('.eo-editor-candidate');
+            var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
+            document._editor.Next(pointer);
           });
           span.append(e$('<ul>').addClass('editor_ul hide').append(e$('<li>').text('Edit meanings').on('click', this.createAutoQuestion.bind(this))));
           for (var i = 0; i < this.eo_dictionary[currentWord].length; i++) {
@@ -6836,7 +6838,7 @@ AbstractQuestion.prototype.replacement = function () {
 AbstractQuestion.prototype.createElement = function () {
   var textWithPreposition = this.data.preposition + this.data.hint;
   var prepositionClass = this.data.preposition ? 'preposition' : '';
-  return e$('<div>').addClass('eo-question').addClass(this.languageOrderClass())
+  return e$('<div>').addClass('eo-question').addClass(this.languageOrderClass()).data('context', this.data.context)
   //.append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0]))
   .append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append(e$('<span>').addClass('eo-hint').addClass(prepositionClass).text(textWithPreposition)).append(e$('<span>').addClass('eo-progress').append(e$('<span>').addClass('eo-progress-inner')));
 };
@@ -6857,8 +6859,16 @@ AbstractQuestion.prototype.open_question_handler = function (e) {
   };
 };
 AbstractQuestion.prototype.questionOnClick = function (e) {
-  e.preventDefault();
-  e.stopPropagation();
+  if (e.type == 'click') {
+    e.preventDefault();
+    e.stopPropagation();
+    var context = this.data.context;
+    var current = e$('.eo-question').filter(function () {
+      return e$(this).data('context') == context;
+    })[0];
+    document.overlay.pointer = e$('.eo-question:not(.eo-expired, .eo-answered)').index(current);
+    //alert('questionOnClick '+ document.overlay.pointer);
+  }
   if (this.element.hasClass('eo-answered')) {
     return;
   }
@@ -7189,6 +7199,7 @@ MultipleChoice.prototype.optionOnClick = function (e) {
   this.guess(e$(e.target).data('word'), e.target);
 };
 MultipleChoice.prototype.open = function () {
+  document.overlay.questionShortcut();
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
     e$(option).find('span').toggleHtml(e$(option).find('span').data('word').replaceAll('_', '&nbsp;'), e$(option).find('span').data('translate'));
   });
@@ -7205,6 +7216,8 @@ MultipleChoice.prototype.open = function () {
 };
 MultipleChoice.prototype.closeUnanswered = function () {
   AbstractQuestion.prototype.closeUnanswered.call(this);
+  document.overlay.removeQuestionShortcut();
+  //document.overlay.pointer --;
   if (!this.element.hasClass('eo-answered')) {
     if (this.element.hasClass('eo-show_solution')) {
       this.element.addClass('lost_focus');
@@ -7214,6 +7227,12 @@ MultipleChoice.prototype.closeUnanswered = function () {
 };
 MultipleChoice.prototype.closeAnswered = function () {
   // see super for more documentation
+  document.overlay.removeQuestionShortcut();
+  document.overlay.pointer--;
+  if (document.overlay.pointer == -1) {
+    document.overlay.pointer = e$('.eo-question:not(.eo-answered, .eo-expired)').length - 2;
+  }
+  //alert('closeAnswered '+document.overlay.pointer + ' current question index: '+current);
   var correctOption = this.element.find('.eo-option.eo-correct_option span');
   var initialTop = correctOption.offset().top - this.element.offset().top;
   var correct = this.element.find('.eo-correct');
@@ -7651,6 +7670,41 @@ PageOverlay = function () {
     e$('body').addClass('first-loading');
     console.log('adding class first-loading');
   };
+  this.shortcut = function () {
+    shortcut.add("Tab", function () {
+      var pointer = document.overlay.pointer == e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 ? 0 : document.overlay.pointer + 1;
+      document.overlay.Next(pointer);
+    });
+    shortcut.add("Left", function () {
+      var pointer = document.overlay.pointer == e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 ? 0 : document.overlay.pointer + 1;
+      document.overlay.Next(pointer);
+    });
+    shortcut.add("Right", document.overlay.Prev);
+  };
+  this.Next = function (pointer) {
+    //this function is getting pointer as an argument to enable call it when user click on a quiestion
+    document.overlay.pointer = pointer;
+    //alert('Next '+document.overlay.pointer);
+    document.overlay.closeUnAnswered();
+    e = e$('.eo-question:not(.eo-answered, .eo-expired)').eq(document.overlay.pointer);
+    var context = e.data('context');
+    //need to be finded with context because the injector element are ordered by level, not by the page order
+    var current = document.overlay.injector.elements.filter(function (q) {
+      return q.qobj.data.context == context;
+    })[0];
+    current.qobj.questionOnClick(e);
+  };
+  this.Prev = function () {
+    document.overlay.pointer = document.overlay.pointer < 1 ? e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 : document.overlay.pointer - 1;
+    document.overlay.closeUnAnswered();
+    e = e$('.eo-question:not(.eo-answered, .eo-expired)').eq(document.overlay.pointer);
+    var context = e.data('context');
+    //need to be finded with context because the injector element are ordered by level, not by the page order
+    var current = document.overlay.injector.elements.filter(function (q) {
+      return q.qobj.data.context == context;
+    })[0];
+    current.qobj.questionOnClick(e);
+  };
   this.closeUnAnswered = function () {
     $(this.injector.elements).each(function (i, q) {
       if (q.qobj.element && q.qobj.element.is('.eo-active')) {
@@ -7733,10 +7787,47 @@ PageOverlay = function () {
     //e$('.no_questions_dlg').parents('.ui-dialog').css({ 'maxWidth': 240 });
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
+  this.questionShortcut = function () {
+    document.overlay.optionPointer = -1;
+    shortcut.add('Down', function () {
+      document.overlay.optionPointer++;
+      if (document.overlay.optionPointer >= 4) {
+        document.overlay.optionPointer = 3;
+        return;
+      }
+      e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
+      e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
+    });
+    shortcut.add('Up', function () {
+      document.overlay.optionPointer--;
+      if (document.overlay.optionPointer <= -1) {
+        document.overlay.optionPointer = 0;
+        return;
+      }
+      e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
+      e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
+    });
+    shortcut.add('Enter', function () {
+      var element = e$('.eo-question.eo-active');
+      var span = element.find('.highlight').find('span');
+      var current = document.overlay.injector.elements.filter(function (q) {
+        return q.qobj.data.context == element.data('context');
+      })[0];
+      //current.qobj.questionOnClick(e);
+      current.qobj.guess(span.data('word'), span);
+    });
+  };
+  this.removeQuestionShortcut = function () {
+    shortcut.remove('Up');
+    shortcut.remove('Down');
+    shortcut.remove('Enter');
+  };
 };
 PageOverlay.prototype.powerOn = function () {
   e$('body').removeClass('first-loading');
   console.log('remove class first-loading');
+  this.pointer = e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1;
+  this.shortcut();
 };
 PageOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines
@@ -7874,7 +7965,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.subtitle = subtitle;
   this.bodytext = bodytext;
   //wrap each <br> with a div, to evable injector to check space 
-  var content = e$('.artText').eq(1).html().replaceAll('<br>', '<br></div><div class = "eo-paragraph">');
+  var content = e$('.artText').eq(1).html().replaceAll('<br>', '<br></div><div class = "eo-paragraph no-margin">');
   e$('.artText').eq(1).html(content);
   e$('.artText').eq(1).find('p, div').addClass('eo-paragraph');
   this.paragraphs = e$('.artText').eq(1).find('.eo-paragraph').toArray().concat(subtitle);

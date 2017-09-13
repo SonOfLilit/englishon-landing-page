@@ -722,7 +722,7 @@ div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option {
   background-color: #2cc6a8;
 }
 div.eo-question.eo-show_solution > .eo-options > .eo-option.eo-correct_option.highlight {
-  background-color: #78909c;
+  /*background-color: #78909c;*/
 }
 div.eo-question > .eo-correct:hover {
   /*background-color: $correct-hover-color;*/
