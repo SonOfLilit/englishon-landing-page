@@ -5721,7 +5721,7 @@ Editor.prototype.editMeanings = function (span) {
     document.englishonBackend.dictionary(data);
     e$('#dictionary_edit_dlg').dialog('destroy');
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-    document._editor.Next(pointer);
+    document._editor.EditNext(pointer);
     document._editor.shortcut();
     //TODO: check why the destroy is not doing the job
   })).append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Delete this word from dictionary').on('click', function () {
@@ -5730,7 +5730,7 @@ Editor.prototype.editMeanings = function (span) {
     document.englishonBackend.dictionary(deleted_word);
     e$('#dictionary_edit_dlg').dialog('destroy');
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-    document._editor.Next(pointer);
+    document._editor.EditNext(pointer);
     document._editor.shortcut();
     //TODO: check why the destroy is not doing the job
   }))));
@@ -5738,7 +5738,7 @@ Editor.prototype.editMeanings = function (span) {
   document._editor.removeShortcut();
   e$('.ui-dialog .ui-dialog-titlebar-close').on('click', function () {
     e$('#dictionary_edit_dlg').dialog('destroy');
-    document._editor.Next();
+    document._editor.EditNext();
     document._editor.shortcut();
   });
 };
@@ -5749,7 +5749,7 @@ Editor.prototype.createAutoQuestion = function (event) {
     var correct = e$(event).text();
   } else {
     //triggered by click event
-    event.preventDefault();
+    event.EditPreventDefault();
     event.stopPropagation();
     var span = e$(event.target).parents('.eo-editor-candidate');
     var correct = e$(event.target).text();
@@ -5804,7 +5804,7 @@ Editor.prototype.createAutoQuestion = function (event) {
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click', 'onClick');
     document._editor.pointer--;
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-    document._editor.Next(pointer);
+    document._editor.EditNext(pointer);
     // .on('click', this.question_onClick.bind(this));
     span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
       e.stopPropagation();
@@ -5818,7 +5818,7 @@ Editor.prototype.createAutoQuestion = function (event) {
 };
 Editor.prototype.question_onClick = function (event) {
   var test = this;
-  event.preventDefault();
+  event.EditPreventDefault();
   var span = e$(event.target);
   //var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
   var word = span.data('word');
@@ -5843,7 +5843,7 @@ Editor.prototype.question_onClick = function (event) {
   q_dialog.dialog();
 };
 Editor.prototype.onClick = function (event) {
-  event.preventDefault();
+  event.EditPreventDefault();
   var span = e$(event.target);
   var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
   var word = span.data('word');
@@ -5860,7 +5860,7 @@ Editor.prototype.onClick = function (event) {
   acc.append(e$('<div class="editor-div">').append(e$('<span>').text("edit choosen word")).append(e$('<input type="text" id="new-word">').val(word)));
   acc.append(e$('<div class="editor-div">').append(e$('<span>').text("optional meanings")).append(e$('<input type="text" id="new-meanings">')));
   acc.append(e$('<button>').text("Add").click(function (event) {
-    event.preventDefault();
+    event.EditPreventDefault();
     var data = {
       'word': dia.find('#new-word').val() + ' ' + dia.find('#new-meanings').val(),
       'action': 'add'
@@ -5873,7 +5873,7 @@ Editor.prototype.onClick = function (event) {
   acc.append(e$('<h3>').text("Remove from dictionary"));
   acc.append(e$('<div class="editor-div">').append(e$('<span>').text("Remove choosen word")).append(e$('<input type="text" id="word_to_delete">')));
   acc.append(e$('<button>').text("Remove").click(function (event) {
-    event.preventDefault();
+    event.EditPreventDefault();
     var data = {
       'word': dia.find('#word_to_delete').val() + ' ',
       'action': 'delete'
@@ -5883,7 +5883,7 @@ Editor.prototype.onClick = function (event) {
     document._editor.shortcut();
   }));
   acc.append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Close').click(function (event) {
-    event.preventDefault();
+    event.EditPreventDefault();
     e$('#unrecognized-word-dlg').dialog('destroy');
     document._editor.shortcut();
   })));
@@ -6023,17 +6023,16 @@ Editor.prototype.fetchQuestions = function () {
     console.log("fetchQuestions*** I brought questions for editor");
   }.bind(this));
 };
-Editor.prototype.Next = function (pointer) {
+Editor.prototype.EditNext = function (pointer) {
   //this function is getting pointer as an argument to enable call it when editor click on a word
-
   e$('.eo-editor-candidate').removeClass('current').find('.editor_ul').addClass('hide');
   e$('.eo-editor-candidate').eq(document._editor.pointer).addClass('current').find('.editor_ul').removeClass('hide');
-  e$('.eo-editor-candidate').eq(document._editor.pointer).scrollintoview;
+  window.scrollTo(0, e$('.eo-editor-candidate').eq(document._editor.pointer).offset().top - 200);
   e$('.eo-editor-candidate').eq(document._editor.pointer).find('.editor_ul').find('li').eq(0).addClass('highlight');
   //document._editor.pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
   document._editor.pointer = pointer;
 };
-Editor.prototype.Prev = function () {
+Editor.prototype.EditPrev = function () {
   document._editor.pointer = document._editor.pointer < 2 ? e$('.eo-editor-candidate').length - (2 - document._editor.pointer) : document._editor.pointer - 2;
   e$('.eo-editor-candidate').removeClass('current').find('.editor_ul').addClass('hide');
   e$('.eo-editor-candidate').eq(document._editor.pointer).addClass('current').find('.editor_ul').removeClass('hide');;
@@ -6049,15 +6048,17 @@ Editor.prototype.removeShortcut = function () {
   shortcut.remove('Down');
 };
 Editor.prototype.shortcut = function () {
+  this.removeShortcut();
+  shortcut.all_shortcuts = {};
   shortcut.add("Tab", function () {
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-    document._editor.Next(pointer);
+    document._editor.EditNext(pointer);
   });
   shortcut.add("Left", function () {
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-    document._editor.Next(pointer);
+    document._editor.EditNext(pointer);
   });
-  shortcut.add("Right", document._editor.Prev);
+  shortcut.add("Right", document._editor.EditPrev);
   shortcut.add("Up", function () {
     var index = e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('.highlight').index();
     e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
@@ -6158,7 +6159,7 @@ Editor.prototype.highlight = function () {
           var span = e$('<div>').addClass('eo-editor-candidate').text(currentWord).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).data('preposition', preposition).append(select).on('click', function (e) {
             document._editor.pointer = e$(this).index('.eo-editor-candidate');
             var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-            document._editor.Next(pointer);
+            document._editor.EditNext(pointer);
           });
           span.append(e$('<ul>').addClass('editor_ul hide').append(e$('<li>').text('Edit meanings').on('click', this.createAutoQuestion.bind(this))));
           for (var i = 0; i < this.eo_dictionary[currentWord].length; i++) {

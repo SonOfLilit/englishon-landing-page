@@ -5721,7 +5721,7 @@ Editor.prototype.editMeanings = function (span) {
     document.englishonBackend.dictionary(data);
     e$('#dictionary_edit_dlg').dialog('destroy');
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-    document._editor.Next(pointer);
+    document._editor.EditNext(pointer);
     document._editor.shortcut();
     //TODO: check why the destroy is not doing the job
   })).append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Delete this word from dictionary').on('click', function () {
@@ -5730,7 +5730,7 @@ Editor.prototype.editMeanings = function (span) {
     document.englishonBackend.dictionary(deleted_word);
     e$('#dictionary_edit_dlg').dialog('destroy');
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-    document._editor.Next(pointer);
+    document._editor.EditNext(pointer);
     document._editor.shortcut();
     //TODO: check why the destroy is not doing the job
   }))));
@@ -5738,7 +5738,7 @@ Editor.prototype.editMeanings = function (span) {
   document._editor.removeShortcut();
   e$('.ui-dialog .ui-dialog-titlebar-close').on('click', function () {
     e$('#dictionary_edit_dlg').dialog('destroy');
-    document._editor.Next();
+    document._editor.EditNext();
     document._editor.shortcut();
   });
 };
@@ -5749,7 +5749,7 @@ Editor.prototype.createAutoQuestion = function (event) {
     var correct = e$(event).text();
   } else {
     //triggered by click event
-    event.preventDefault();
+    event.EditPreventDefault();
     event.stopPropagation();
     var span = e$(event.target).parents('.eo-editor-candidate');
     var correct = e$(event.target).text();
@@ -5804,7 +5804,7 @@ Editor.prototype.createAutoQuestion = function (event) {
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click', 'onClick');
     document._editor.pointer--;
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-    document._editor.Next(pointer);
+    document._editor.EditNext(pointer);
     // .on('click', this.question_onClick.bind(this));
     span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
       e.stopPropagation();
@@ -5818,7 +5818,7 @@ Editor.prototype.createAutoQuestion = function (event) {
 };
 Editor.prototype.question_onClick = function (event) {
   var test = this;
-  event.preventDefault();
+  event.EditPreventDefault();
   var span = e$(event.target);
   //var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
   var word = span.data('word');
@@ -5843,7 +5843,7 @@ Editor.prototype.question_onClick = function (event) {
   q_dialog.dialog();
 };
 Editor.prototype.onClick = function (event) {
-  event.preventDefault();
+  event.EditPreventDefault();
   var span = e$(event.target);
   var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
   var word = span.data('word');
@@ -5860,7 +5860,7 @@ Editor.prototype.onClick = function (event) {
   acc.append(e$('<div class="editor-div">').append(e$('<span>').text("edit choosen word")).append(e$('<input type="text" id="new-word">').val(word)));
   acc.append(e$('<div class="editor-div">').append(e$('<span>').text("optional meanings")).append(e$('<input type="text" id="new-meanings">')));
   acc.append(e$('<button>').text("Add").click(function (event) {
-    event.preventDefault();
+    event.EditPreventDefault();
     var data = {
       'word': dia.find('#new-word').val() + ' ' + dia.find('#new-meanings').val(),
       'action': 'add'
@@ -5873,7 +5873,7 @@ Editor.prototype.onClick = function (event) {
   acc.append(e$('<h3>').text("Remove from dictionary"));
   acc.append(e$('<div class="editor-div">').append(e$('<span>').text("Remove choosen word")).append(e$('<input type="text" id="word_to_delete">')));
   acc.append(e$('<button>').text("Remove").click(function (event) {
-    event.preventDefault();
+    event.EditPreventDefault();
     var data = {
       'word': dia.find('#word_to_delete').val() + ' ',
       'action': 'delete'
@@ -5883,7 +5883,7 @@ Editor.prototype.onClick = function (event) {
     document._editor.shortcut();
   }));
   acc.append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Close').click(function (event) {
-    event.preventDefault();
+    event.EditPreventDefault();
     e$('#unrecognized-word-dlg').dialog('destroy');
     document._editor.shortcut();
   })));
@@ -6023,16 +6023,16 @@ Editor.prototype.fetchQuestions = function () {
     console.log("fetchQuestions*** I brought questions for editor");
   }.bind(this));
 };
-Editor.prototype.Next = function (pointer) {
+Editor.prototype.EditNext = function (pointer) {
   //this function is getting pointer as an argument to enable call it when editor click on a word
-
   e$('.eo-editor-candidate').removeClass('current').find('.editor_ul').addClass('hide');
   e$('.eo-editor-candidate').eq(document._editor.pointer).addClass('current').find('.editor_ul').removeClass('hide');
+  window.scrollTo(0, e$('.eo-editor-candidate').eq(document._editor.pointer).offset().top - 200);
   e$('.eo-editor-candidate').eq(document._editor.pointer).find('.editor_ul').find('li').eq(0).addClass('highlight');
   //document._editor.pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
   document._editor.pointer = pointer;
 };
-Editor.prototype.Prev = function () {
+Editor.prototype.EditPrev = function () {
   document._editor.pointer = document._editor.pointer < 2 ? e$('.eo-editor-candidate').length - (2 - document._editor.pointer) : document._editor.pointer - 2;
   e$('.eo-editor-candidate').removeClass('current').find('.editor_ul').addClass('hide');
   e$('.eo-editor-candidate').eq(document._editor.pointer).addClass('current').find('.editor_ul').removeClass('hide');;
@@ -6048,15 +6048,17 @@ Editor.prototype.removeShortcut = function () {
   shortcut.remove('Down');
 };
 Editor.prototype.shortcut = function () {
+  this.removeShortcut();
+  shortcut.all_shortcuts = {};
   shortcut.add("Tab", function () {
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-    document._editor.Next(pointer);
+    document._editor.EditNext(pointer);
   });
   shortcut.add("Left", function () {
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-    document._editor.Next(pointer);
+    document._editor.EditNext(pointer);
   });
-  shortcut.add("Right", document._editor.Prev);
+  shortcut.add("Right", document._editor.EditPrev);
   shortcut.add("Up", function () {
     var index = e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('.highlight').index();
     e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
@@ -6157,7 +6159,7 @@ Editor.prototype.highlight = function () {
           var span = e$('<div>').addClass('eo-editor-candidate').text(currentWord).data('text', text).data('start', match.index).data('end', re.lastIndex).data('word', currentWord).data('preposition', preposition).append(select).on('click', function (e) {
             document._editor.pointer = e$(this).index('.eo-editor-candidate');
             var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
-            document._editor.Next(pointer);
+            document._editor.EditNext(pointer);
           });
           span.append(e$('<ul>').addClass('editor_ul hide').append(e$('<li>').text('Edit meanings').on('click', this.createAutoQuestion.bind(this))));
           for (var i = 0; i < this.eo_dictionary[currentWord].length; i++) {
@@ -6867,7 +6869,6 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
       return e$(this).data('context') == context;
     })[0];
     document.overlay.pointer = e$('.eo-question:not(.eo-expired, .eo-answered)').index(current);
-    //alert('questionOnClick '+ document.overlay.pointer);
   }
   if (this.element.hasClass('eo-answered')) {
     return;
@@ -7199,6 +7200,7 @@ MultipleChoice.prototype.optionOnClick = function (e) {
   this.guess(e$(e.target).data('word'), e.target);
 };
 MultipleChoice.prototype.open = function () {
+  e$('.eo-question').removeClass('next');
   document.overlay.questionShortcut();
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
     e$(option).find('span').toggleHtml(e$(option).find('span').data('word').replaceAll('_', '&nbsp;'), e$(option).find('span').data('translate'));
@@ -7232,7 +7234,6 @@ MultipleChoice.prototype.closeAnswered = function () {
   if (document.overlay.pointer == -1) {
     document.overlay.pointer = e$('.eo-question:not(.eo-answered, .eo-expired)').length - 2;
   }
-  //alert('closeAnswered '+document.overlay.pointer + ' current question index: '+current);
   var correctOption = this.element.find('.eo-option.eo-correct_option span');
   var initialTop = correctOption.offset().top - this.element.offset().top;
   var correct = this.element.find('.eo-correct');
@@ -7242,6 +7243,8 @@ MultipleChoice.prototype.closeAnswered = function () {
   this.element.click(this.QuestionAudio.bind(this));
   AbstractQuestion.prototype.closeAnswered.call(this);
   correct.css('top', 0);
+  var index = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length;
+  e$('.eo-question:not(.eo-answered, .eo-expired)').eq(index).addClass('next');
 };
 // completely non-interactive
 var AbstractExpiredQuestion = function (question) {
@@ -7572,6 +7575,9 @@ var overlay_settings = {
       'pin_button_article': function () {
         return e$('.catLogo');
       },
+      'pin_button_category': function () {
+        return e$('.catLogo');
+      },
       'pin_button_front': function () {
         return e$('div#top_menu_block');
       },
@@ -7672,10 +7678,12 @@ PageOverlay = function () {
   };
   this.shortcut = function () {
     shortcut.add("Tab", function () {
+      //var pointer = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1;
       var pointer = document.overlay.pointer == e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 ? 0 : document.overlay.pointer + 1;
       document.overlay.Next(pointer);
     });
     shortcut.add("Left", function () {
+      //var pointer = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1;
       var pointer = document.overlay.pointer == e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 ? 0 : document.overlay.pointer + 1;
       document.overlay.Next(pointer);
     });
@@ -7696,6 +7704,7 @@ PageOverlay = function () {
   };
   this.Prev = function () {
     document.overlay.pointer = document.overlay.pointer < 1 ? e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 : document.overlay.pointer - 1;
+    //document.overlay.pointer =  document.overlay.pointer - 1 + ();
     document.overlay.closeUnAnswered();
     e = e$('.eo-question:not(.eo-answered, .eo-expired)').eq(document.overlay.pointer);
     var context = e.data('context');
@@ -7823,11 +7832,14 @@ PageOverlay = function () {
     shortcut.remove('Enter');
   };
 };
+PageOverlay.prototype.showButtons = function () {};
 PageOverlay.prototype.powerOn = function () {
   e$('body').removeClass('first-loading');
   console.log('remove class first-loading');
   this.pointer = e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1;
   this.shortcut();
+  var index = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length;
+  e$('.eo-question:not(.eo-answered, .eo-expired)').eq(index).addClass('next');
 };
 PageOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines
@@ -7836,7 +7848,7 @@ PageOverlay.prototype.showQuestions = function () {
 PageOverlay.prototype.hideQuestions = function () {
   e$('body').removeClass('question-injected');
 };
-ShturemFrontpageOverlay = function (parts) {
+ShturemFrontpageOverlay = function (parts, pageType) {
   this.parts = {};
   this.interacted = false;
   this.userAnswered = false;
@@ -7851,7 +7863,7 @@ ShturemFrontpageOverlay = function (parts) {
   }.bind(this));
   this.settings = overlay_settings['shturem'][document.englishonConfig.media];
   this.tutorial_selector = this.settings['pin-tutotial-category'];
-  this.pageType = 'front-page';
+  this.pageType = pageType;
   e$('body').addClass('front-page');
   this.getLineDetails = function () {
     return [e$('.mainpn_text').offset().left, e$('.mainpn_text').width() - e$('.mainpn_text').css('padding-left').slice(0, 2)];
@@ -7912,8 +7924,20 @@ ShturemFrontpageOverlay = function (parts) {
     });
   };
   this.showButtons = function () {
-    this.settings.pin_button_front().append(EnglishOnButton.element());
-    e$('body').addClass('front');
+    if (pageType == 'front-page') {
+      this.settings.pin_button_front().append(EnglishOnButton.element());
+      e$('body').addClass('front');
+      setButtonInterval(function () {
+        console.log('-------------setTimeOut button_top_value');
+        e$('.eo-button').css('left', document.overlay.settings.category_button_left_value());
+      }, 500, 20);
+    } else {
+      this.settings.pin_button_category().append(EnglishOnButton.element());
+      setButtonInterval(function () {
+        console.log('-------------setTimeOut button_top_value');
+        e$('.eo-button').css({ 'left': document.overlay.settings.button_left_value(), 'top': document.overlay.settings.button_top_value() });
+      }, 500, 20);
+    }
     if (document.englishonConfig.isUser) {
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     } else {
@@ -7923,10 +7947,6 @@ ShturemFrontpageOverlay = function (parts) {
       this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
     }
     e$('.eo-button').css('left', document.overlay.settings.category_button_left_value());
-    setButtonInterval(function () {
-      console.log('-------------setTimeOut button_top_value');
-      e$('.eo-button').css('left', document.overlay.settings.category_button_left_value());
-    }, 500, 20);
   };
   this.powerOn = function () {
     PageOverlay.prototype.powerOn.call(this);
@@ -7964,7 +7984,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.url = url;
   this.subtitle = subtitle;
   this.bodytext = bodytext;
-  //wrap each <br> with a div, to evable injector to check space 
+  //wrap each <br> with a div, to enable injector to check space 
   var content = e$('.artText').eq(1).html().replaceAll('<br>', '<br></div><div class = "eo-paragraph no-margin">');
   e$('.artText').eq(1).html(content);
   e$('.artText').eq(1).find('p, div').addClass('eo-paragraph');
@@ -8263,9 +8283,11 @@ ScraperFactory = function (location) {
     });
     return isHebrewVar;
   };
+  var re = /\?section=.*&id=.*/;
   if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
-    if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
-    if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
+    if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper('front-page');
+    if (location.search.split('&')[0].startsWith('?section=') && location.search.indexOf('&id=') == -1) return new ShturemFrontPageScraper('category');
+    if (location.pathname === '/index.php' && location.search.match(re)) return new ShturemArticleScraper();
   }
   if (location.host === 'www.englishon.org') {
     if (location.pathname === '/hidden/shturem.html') return new EnglishonArticleScraper();
@@ -8281,12 +8303,10 @@ ScraperFactory = function (location) {
     }
   }
 };
-
 var actualicScraper = function () {
   this.getHost = function () {
     return 'actualic.co.il';
   };
-
   this.scrape = function () {
     url = ('http://actualic.co.il' + location.pathname + location.search).replace(/#.*$/, '');
     var subtitle = e$('.entry-content').find('h2');
@@ -8298,7 +8318,6 @@ var actualicCategoryScraper = function () {
   this.getHost = function () {
     return 'actualic.co.il';
   };
-
   this.scrape = function () {
     var parts = {};
     e$('.kipke_post_block').each(function (i, para) {
@@ -8313,12 +8332,10 @@ var actualicCategoryScraper = function () {
     return new actualicCategoryOverlay(parts, category_url);
   };
 };
-
 var CH10Scraper = function () {
   this.getHost = function () {
     return 'www.ch10.co.il';
   };
-
   this.scrape = function () {
     url = ('http://www.ch10.co.il' + location.pathname + location.search).replace(/#.*$/, '');
     var subtitle = e$('.header_txt').find('.excerpt');
@@ -8328,12 +8345,10 @@ var CH10Scraper = function () {
     return new CH10Overlay(url, subtitle, bodytext);
   };
 };
-
 var ShturemArticleScraper = function () {
   this.getHost = function () {
     return 'www.shturem.net';
   };
-
   this.scrape = function () {
     url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
     var subtitle = e$('span.artSubtitle')[0];
@@ -8343,12 +8358,10 @@ var ShturemArticleScraper = function () {
     return new ShturemArticleOverlay(url, subtitle, bodytext);
   };
 };
-
-var ShturemFrontPageScraper = function () {
+var ShturemFrontPageScraper = function (pageType) {
   this.getHost = function () {
     return 'www.shturem.net';
   };
-
   this.scrape = function () {
     var parts = {};
     e$('td.mainpn_text').each(function (i, para) {
@@ -8358,15 +8371,13 @@ var ShturemFrontPageScraper = function () {
       // hack to make answers visible
       e$(para).attr('style', 'overflow: visible;');
     });
-    return new ShturemFrontpageOverlay(parts);
+    return new ShturemFrontpageOverlay(parts, pageType);
   };
 };
-
 var EnglishonArticleScraper = function () {
   this.getHost = function () {
     return 'www.englishon.org';
   };
-
   this.scrape = function () {
     url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
     var subtitle = e$('span.artSubtitle')[0];
