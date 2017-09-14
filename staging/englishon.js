@@ -6028,6 +6028,7 @@ Editor.prototype.Next = function (pointer) {
 
   e$('.eo-editor-candidate').removeClass('current').find('.editor_ul').addClass('hide');
   e$('.eo-editor-candidate').eq(document._editor.pointer).addClass('current').find('.editor_ul').removeClass('hide');
+  e$('.eo-editor-candidate').eq(document._editor.pointer).scrollintoview;
   e$('.eo-editor-candidate').eq(document._editor.pointer).find('.editor_ul').find('li').eq(0).addClass('highlight');
   //document._editor.pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
   document._editor.pointer = pointer;
@@ -7676,10 +7677,12 @@ PageOverlay = function () {
   };
   this.shortcut = function () {
     shortcut.add("Tab", function () {
+      //var pointer = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1;
       var pointer = document.overlay.pointer == e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 ? 0 : document.overlay.pointer + 1;
       document.overlay.Next(pointer);
     });
     shortcut.add("Left", function () {
+      //var pointer = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1;
       var pointer = document.overlay.pointer == e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 ? 0 : document.overlay.pointer + 1;
       document.overlay.Next(pointer);
     });
@@ -7700,6 +7703,7 @@ PageOverlay = function () {
   };
   this.Prev = function () {
     document.overlay.pointer = document.overlay.pointer < 1 ? e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 : document.overlay.pointer - 1;
+    //document.overlay.pointer =  document.overlay.pointer - 1 + ();
     document.overlay.closeUnAnswered();
     e = e$('.eo-question:not(.eo-answered, .eo-expired)').eq(document.overlay.pointer);
     var context = e.data('context');
@@ -7827,11 +7831,14 @@ PageOverlay = function () {
     shortcut.remove('Enter');
   };
 };
+PageOverlay.prototype.showButtons = function () {};
 PageOverlay.prototype.powerOn = function () {
   e$('body').removeClass('first-loading');
   console.log('remove class first-loading');
   this.pointer = e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1;
   this.shortcut();
+  var index = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length;
+  e$('.eo-question:not(.eo-answered, .eo-expired)').eq(index).addClass('next');
 };
 PageOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines
@@ -7855,7 +7862,7 @@ ShturemFrontpageOverlay = function (parts, pageType) {
   }.bind(this));
   this.settings = overlay_settings['shturem'][document.englishonConfig.media];
   this.tutorial_selector = this.settings['pin-tutotial-category'];
-  this.pageType = 'front-page';
+  this.pageType = pageType;
   e$('body').addClass('front-page');
   this.getLineDetails = function () {
     return [e$('.mainpn_text').offset().left, e$('.mainpn_text').width() - e$('.mainpn_text').css('padding-left').slice(0, 2)];
@@ -7916,11 +7923,19 @@ ShturemFrontpageOverlay = function (parts, pageType) {
     });
   };
   this.showButtons = function () {
-    if (pageType == 'front') {
+    if (pageType == 'front-page') {
       this.settings.pin_button_front().append(EnglishOnButton.element());
       e$('body').addClass('front');
+      setButtonInterval(function () {
+        console.log('-------------setTimeOut button_top_value');
+        e$('.eo-button').css('left', document.overlay.settings.category_button_left_value());
+      }, 500, 20);
     } else {
       this.settings.pin_button_category().append(EnglishOnButton.element());
+      setButtonInterval(function () {
+        console.log('-------------setTimeOut button_top_value');
+        e$('.eo-button').css({ 'left': document.overlay.settings.button_left_value(), 'top': document.overlay.settings.button_top_value() });
+      }, 500, 20);
     }
     if (document.englishonConfig.isUser) {
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
@@ -7931,10 +7946,6 @@ ShturemFrontpageOverlay = function (parts, pageType) {
       this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
     }
     e$('.eo-button').css('left', document.overlay.settings.category_button_left_value());
-    setButtonInterval(function () {
-      console.log('-------------setTimeOut button_top_value');
-      e$('.eo-button').css('left', document.overlay.settings.category_button_left_value());
-    }, 500, 20);
   };
   this.powerOn = function () {
     PageOverlay.prototype.powerOn.call(this);
@@ -7972,7 +7983,7 @@ ShturemArticleOverlay = function (url, subtitle, bodytext) {
   this.url = url;
   this.subtitle = subtitle;
   this.bodytext = bodytext;
-  //wrap each <br> with a div, to evable injector to check space 
+  //wrap each <br> with a div, to enable injector to check space 
   var content = e$('.artText').eq(1).html().replaceAll('<br>', '<br></div><div class = "eo-paragraph no-margin">');
   e$('.artText').eq(1).html(content);
   e$('.artText').eq(1).find('p, div').addClass('eo-paragraph');
@@ -8271,10 +8282,11 @@ ScraperFactory = function (location) {
     });
     return isHebrewVar;
   };
+  var re = /\?section=.*&id=.*/;
   if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
-    if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper('front');
+    if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper('front-page');
     if (location.search.split('&')[0].startsWith('?section=') && location.search.indexOf('&id=') == -1) return new ShturemFrontPageScraper('category');
-    if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
+    if (location.pathname === '/index.php' && location.search.match(re)) return new ShturemArticleScraper();
   }
   if (location.host === 'www.englishon.org') {
     if (location.pathname === '/hidden/shturem.html') return new EnglishonArticleScraper();
