@@ -6867,7 +6867,6 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
       return e$(this).data('context') == context;
     })[0];
     document.overlay.pointer = e$('.eo-question:not(.eo-expired, .eo-answered)').index(current);
-    //alert('questionOnClick '+ document.overlay.pointer);
   }
   if (this.element.hasClass('eo-answered')) {
     return;
@@ -7199,6 +7198,7 @@ MultipleChoice.prototype.optionOnClick = function (e) {
   this.guess(e$(e.target).data('word'), e.target);
 };
 MultipleChoice.prototype.open = function () {
+  e$('.eo-question').removeClass('next');
   document.overlay.questionShortcut();
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
     e$(option).find('span').toggleHtml(e$(option).find('span').data('word').replaceAll('_', '&nbsp;'), e$(option).find('span').data('translate'));
@@ -7232,7 +7232,6 @@ MultipleChoice.prototype.closeAnswered = function () {
   if (document.overlay.pointer == -1) {
     document.overlay.pointer = e$('.eo-question:not(.eo-answered, .eo-expired)').length - 2;
   }
-  //alert('closeAnswered '+document.overlay.pointer + ' current question index: '+current);
   var correctOption = this.element.find('.eo-option.eo-correct_option span');
   var initialTop = correctOption.offset().top - this.element.offset().top;
   var correct = this.element.find('.eo-correct');
@@ -7242,6 +7241,8 @@ MultipleChoice.prototype.closeAnswered = function () {
   this.element.click(this.QuestionAudio.bind(this));
   AbstractQuestion.prototype.closeAnswered.call(this);
   correct.css('top', 0);
+  var index = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length;
+  e$('.eo-question:not(.eo-answered, .eo-expired)').eq(index).addClass('next');
 };
 // completely non-interactive
 var AbstractExpiredQuestion = function (question) {
@@ -7572,6 +7573,9 @@ var overlay_settings = {
       'pin_button_article': function () {
         return e$('.catLogo');
       },
+      'pin_button_category': function () {
+        return e$('.catLogo');
+      },
       'pin_button_front': function () {
         return e$('div#top_menu_block');
       },
@@ -7836,7 +7840,7 @@ PageOverlay.prototype.showQuestions = function () {
 PageOverlay.prototype.hideQuestions = function () {
   e$('body').removeClass('question-injected');
 };
-ShturemFrontpageOverlay = function (parts) {
+ShturemFrontpageOverlay = function (parts, pageType) {
   this.parts = {};
   this.interacted = false;
   this.userAnswered = false;
@@ -7912,8 +7916,12 @@ ShturemFrontpageOverlay = function (parts) {
     });
   };
   this.showButtons = function () {
-    this.settings.pin_button_front().append(EnglishOnButton.element());
-    e$('body').addClass('front');
+    if (pageType == 'front') {
+      this.settings.pin_button_front().append(EnglishOnButton.element());
+      e$('body').addClass('front');
+    } else {
+      this.settings.pin_button_category().append(EnglishOnButton.element());
+    }
     if (document.englishonConfig.isUser) {
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     } else {
@@ -8264,7 +8272,8 @@ ScraperFactory = function (location) {
     return isHebrewVar;
   };
   if (location.host === 'shturem.net' || location.host === 'www.shturem.net') {
-    if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper();
+    if (location.pathname === '/' || location.pathname === '/index.php' && location.search === '') return new ShturemFrontPageScraper('front');
+    if (location.search.split('&')[0].startsWith('?section=') && location.search.indexOf('&id=') == -1) return new ShturemFrontPageScraper('category');
     if (location.pathname === '/index.php' && location.search.startsWith('?section=news&id=')) return new ShturemArticleScraper();
   }
   if (location.host === 'www.englishon.org') {
@@ -8281,12 +8290,10 @@ ScraperFactory = function (location) {
     }
   }
 };
-
 var actualicScraper = function () {
   this.getHost = function () {
     return 'actualic.co.il';
   };
-
   this.scrape = function () {
     url = ('http://actualic.co.il' + location.pathname + location.search).replace(/#.*$/, '');
     var subtitle = e$('.entry-content').find('h2');
@@ -8298,7 +8305,6 @@ var actualicCategoryScraper = function () {
   this.getHost = function () {
     return 'actualic.co.il';
   };
-
   this.scrape = function () {
     var parts = {};
     e$('.kipke_post_block').each(function (i, para) {
@@ -8313,12 +8319,10 @@ var actualicCategoryScraper = function () {
     return new actualicCategoryOverlay(parts, category_url);
   };
 };
-
 var CH10Scraper = function () {
   this.getHost = function () {
     return 'www.ch10.co.il';
   };
-
   this.scrape = function () {
     url = ('http://www.ch10.co.il' + location.pathname + location.search).replace(/#.*$/, '');
     var subtitle = e$('.header_txt').find('.excerpt');
@@ -8328,12 +8332,10 @@ var CH10Scraper = function () {
     return new CH10Overlay(url, subtitle, bodytext);
   };
 };
-
 var ShturemArticleScraper = function () {
   this.getHost = function () {
     return 'www.shturem.net';
   };
-
   this.scrape = function () {
     url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
     var subtitle = e$('span.artSubtitle')[0];
@@ -8343,12 +8345,10 @@ var ShturemArticleScraper = function () {
     return new ShturemArticleOverlay(url, subtitle, bodytext);
   };
 };
-
-var ShturemFrontPageScraper = function () {
+var ShturemFrontPageScraper = function (pageType) {
   this.getHost = function () {
     return 'www.shturem.net';
   };
-
   this.scrape = function () {
     var parts = {};
     e$('td.mainpn_text').each(function (i, para) {
@@ -8358,15 +8358,13 @@ var ShturemFrontPageScraper = function () {
       // hack to make answers visible
       e$(para).attr('style', 'overflow: visible;');
     });
-    return new ShturemFrontpageOverlay(parts);
+    return new ShturemFrontpageOverlay(parts, pageType);
   };
 };
-
 var EnglishonArticleScraper = function () {
   this.getHost = function () {
     return 'www.englishon.org';
   };
-
   this.scrape = function () {
     url = ('http://www.shturem.net' + location.pathname + location.search).replace(/#.*$/, '');
     var subtitle = e$('span.artSubtitle')[0];
