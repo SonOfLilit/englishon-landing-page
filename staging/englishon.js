@@ -8862,12 +8862,8 @@ function englishon() {
     return;
   }
   if ((window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') && !e$('#developement-only-version').length) {
-    article_id = Number(window.location.search.substr(window.location.search.indexOf('id=') + 3));
-    if (article_id < 91251 || article_id > 91551) {
-      return;
-    }
+    return;
   }
-
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
   if (document.__englishon__) {
