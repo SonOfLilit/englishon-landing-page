@@ -6874,10 +6874,7 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
     e.stopPropagation();
     this.movePointer();
   }
-  if (this.element.hasClass('eo-answered')) {
-    //this.QuestionAudio(e.find('.eo-correct'));
-    return;
-  }
+
   this.touch();
   if (e$(e.target).parents('.eo-question.eo-active').length) {
     this.closeUnanswered();
@@ -7686,19 +7683,25 @@ PageOverlay = function () {
   };
   this.shortcut = function () {
     shortcut.add("Tab", function () {
-      //var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length - 1;
-      var pointer = document.overlay.pointer == e$('.eo-question').length - 1 ? 0 : document.overlay.pointer + 1;
+      var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
+      //var pointer = document.overlay.pointer == e$('.eo-question').length - 1 ? 0 : document.overlay.pointer + 1;
       document.overlay.Next(pointer);
     });
     shortcut.add("Left", function () {
-      //var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length - 1;
-      var pointer = document.overlay.pointer == e$('.eo-question').length - 1 ? 0 : document.overlay.pointer + 1;
+      var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
+      //var pointer = document.overlay.pointer == e$('.eo-question').length - 1 ? 0 : document.overlay.pointer + 1;
       document.overlay.Next(pointer);
     });
     shortcut.add("Right", document.overlay.Prev);
   };
   this.Next = function (pointer) {
     //this function is getting pointer as an argument to enable call it when user click on a quiestion
+    if (e$('.eo-question').eq(document.overlay.pointer).hasClass('eo-active')) {
+      document.overlay.closeUnAnswered();
+      var next = (document.overlay.pointer + 1) % e$('.eo-question').length;
+      e$('.eo-question').eq(next).addClass('next');
+      return;
+    }
     e$('.eo-question').removeClass('next');
     document.overlay.pointer = pointer;
     //alert('Next '+document.overlay.pointer);
@@ -7860,8 +7863,7 @@ PageOverlay.prototype.powerOn = function () {
   console.log('remove class first-loading');
   this.pointer = e$('.eo-question').length - 1;
   this.shortcut();
-  //var index = (document.overlay.pointer + 1) % e$('.eo-question').length;
-  e$('.eo-question:not(.eo-answered, .eo-expired)').eq(0).addClass('next');
+  e$('.eo-question').eq(0).addClass('next');
 };
 PageOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines
