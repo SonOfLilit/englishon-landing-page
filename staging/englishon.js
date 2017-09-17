@@ -5749,7 +5749,7 @@ Editor.prototype.createAutoQuestion = function (event) {
     var correct = e$(event).text();
   } else {
     //triggered by click event
-    event.EditPreventDefault();
+    event.PreventDefault();
     event.stopPropagation();
     var span = e$(event.target).parents('.eo-editor-candidate');
     var correct = e$(event.target).text();
@@ -5818,7 +5818,7 @@ Editor.prototype.createAutoQuestion = function (event) {
 };
 Editor.prototype.question_onClick = function (event) {
   var test = this;
-  event.EditPreventDefault();
+  event.PreventDefault();
   var span = e$(event.target);
   //var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
   var word = span.data('word');
@@ -5843,7 +5843,8 @@ Editor.prototype.question_onClick = function (event) {
   q_dialog.dialog();
 };
 Editor.prototype.onClick = function (event) {
-  event.EditPreventDefault();
+  //build!!!! build!!! build!!!!
+  event.PreventDefault();
   var span = e$(event.target);
   var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
   var word = span.data('word');
@@ -5860,7 +5861,7 @@ Editor.prototype.onClick = function (event) {
   acc.append(e$('<div class="editor-div">').append(e$('<span>').text("edit choosen word")).append(e$('<input type="text" id="new-word">').val(word)));
   acc.append(e$('<div class="editor-div">').append(e$('<span>').text("optional meanings")).append(e$('<input type="text" id="new-meanings">')));
   acc.append(e$('<button>').text("Add").click(function (event) {
-    event.EditPreventDefault();
+    event.PreventDefault();
     var data = {
       'word': dia.find('#new-word').val() + ' ' + dia.find('#new-meanings').val(),
       'action': 'add'
@@ -5873,7 +5874,7 @@ Editor.prototype.onClick = function (event) {
   acc.append(e$('<h3>').text("Remove from dictionary"));
   acc.append(e$('<div class="editor-div">').append(e$('<span>').text("Remove choosen word")).append(e$('<input type="text" id="word_to_delete">')));
   acc.append(e$('<button>').text("Remove").click(function (event) {
-    event.EditPreventDefault();
+    event.PreventDefault();
     var data = {
       'word': dia.find('#word_to_delete').val() + ' ',
       'action': 'delete'
@@ -5883,7 +5884,7 @@ Editor.prototype.onClick = function (event) {
     document._editor.shortcut();
   }));
   acc.append(e$('<div>').addClass('editor-div').append(e$('<button>').text('Close').click(function (event) {
-    event.EditPreventDefault();
+    event.PreventDefault();
     e$('#unrecognized-word-dlg').dialog('destroy');
     document._editor.shortcut();
   })));
