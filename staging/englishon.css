@@ -1495,11 +1495,15 @@ body.www-englishon-org .eo-correct {
   letter-spacing: 0.05em;
 }
 
+.www-shturem-net #eo-live #milotrage .Grid-cell,
+.shturem-net #eo-live #milotrage .Grid-cell {
+  font-size: 29px;
+}
 .www-shturem-net #eo-live,
 .shturem-net #eo-live {
   background-color: rgba(0, 0, 0, 0.2);
-  top: 10px;
-  left: 10px;
+  width: 250px;
+  height: 55px;
 }
 .www-shturem-net #eo-live.eo-live-maximize,
 .shturem-net #eo-live.eo-live-maximize {

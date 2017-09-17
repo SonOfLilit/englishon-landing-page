@@ -7587,7 +7587,7 @@ var overlay_settings = {
         return e$('div#top_menu_block');
       },
       'placeLiveActions': function () {
-        e$('#eo-live').css('left', e$('.catLogo').offset().left);
+        e$('#eo-live').css({ left: e$('#top_baner_block').offset().left, top: 10 });
       },
       'category_button_left_value': function () {
         return 10;
