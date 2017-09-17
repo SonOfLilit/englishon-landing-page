@@ -6861,19 +6861,20 @@ AbstractQuestion.prototype.open_question_handler = function (e) {
     e$(document).off('click', this.open_question_handler);
   };
 };
+AbstractQuestion.prototype.movePointer = function (e) {
+  var context = this.data.context;
+  var current = e$('.eo-question').filter(function () {
+    return e$(this).data('context') == context;
+  })[0];
+  document.overlay.pointer = e$('.eo-question').index(current);
+};
 AbstractQuestion.prototype.questionOnClick = function (e) {
   if (e.type == 'click') {
     e.preventDefault();
     e.stopPropagation();
-    var context = this.data.context;
-    var current = e$('.eo-question').filter(function () {
-      return e$(this).data('context') == context;
-    })[0];
-    document.overlay.pointer = e$('.eo-question:not(.eo-expired, .eo-answered)').index(current);
+    this.movePointer();
   }
-  if (this.element.hasClass('eo-answered')) {
-    return;
-  }
+
   this.touch();
   if (e$(e.target).parents('.eo-question.eo-active').length) {
     this.closeUnanswered();
@@ -6916,8 +6917,13 @@ AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesT
   }
 };
 AbstractQuestion.prototype.QuestionAudio = function (e) {
-  e.preventDefault();
-  var target = e$(e.target);
+  if (e.type == 'click') {
+    e.preventDefault();
+    var target = e$(e.target);
+    this.movePointer();
+  } else {
+    var target = e$(e);
+  }
   var prepositionClass = this.data.preposition ? 'preposition' : '';
   target.toggleHtml(this.data.preposition + this.data.hint, this.practicedWord).toggleClass(prepositionClass);
   if (target.html().replaceAll('&nbsp;', '_') == this.practicedWord) {
@@ -7231,10 +7237,8 @@ MultipleChoice.prototype.closeUnanswered = function () {
 MultipleChoice.prototype.closeAnswered = function () {
   // see super for more documentation
   document.overlay.removeQuestionShortcut();
-  document.overlay.pointer--;
-  if (document.overlay.pointer == -1) {
-    document.overlay.pointer = e$('.eo-question:not(.eo-answered, .eo-expired)').length - 2;
-  }
+  //document.overlay.pointer --;
+  //if (document.overlay.pointer == -1) { document.overlay.pointer = e$('.eo-question').length - 2; }
   var correctOption = this.element.find('.eo-option.eo-correct_option span');
   var initialTop = correctOption.offset().top - this.element.offset().top;
   var correct = this.element.find('.eo-correct');
@@ -7244,8 +7248,8 @@ MultipleChoice.prototype.closeAnswered = function () {
   this.element.click(this.QuestionAudio.bind(this));
   AbstractQuestion.prototype.closeAnswered.call(this);
   correct.css('top', 0);
-  var index = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length;
-  e$('.eo-question:not(.eo-answered, .eo-expired)').eq(index).addClass('next');
+  var index = (document.overlay.pointer + 1) % e$('.eo-question').length;
+  e$('.eo-question').eq(index).addClass('next');
 };
 // completely non-interactive
 var AbstractExpiredQuestion = function (question) {
@@ -7582,7 +7586,9 @@ var overlay_settings = {
       'pin_button_front': function () {
         return e$('div#top_menu_block');
       },
-      'placeLiveActions': function () {},
+      'placeLiveActions': function () {
+        e$('#eo-live').css('left', e$('.catLogo').offset().left);
+      },
       'category_button_left_value': function () {
         return 10;
       },
@@ -7679,41 +7685,59 @@ PageOverlay = function () {
   };
   this.shortcut = function () {
     shortcut.add("Tab", function () {
-      //var pointer = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1;
-      var pointer = document.overlay.pointer == e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 ? 0 : document.overlay.pointer + 1;
+      var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
       document.overlay.Next(pointer);
     });
     shortcut.add("Left", function () {
-      //var pointer = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1;
-      var pointer = document.overlay.pointer == e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 ? 0 : document.overlay.pointer + 1;
+      var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
       document.overlay.Next(pointer);
     });
     shortcut.add("Right", document.overlay.Prev);
   };
   this.Next = function (pointer) {
     //this function is getting pointer as an argument to enable call it when user click on a quiestion
+    if (e$('.eo-question').eq(document.overlay.pointer).hasClass('eo-active')) {
+      document.overlay.closeUnAnswered();
+      var next = (document.overlay.pointer + 1) % e$('.eo-question').length;
+      e$('.eo-question').eq(next).addClass('next');
+      return;
+    }
+    e$('.eo-question').removeClass('next');
     document.overlay.pointer = pointer;
     //alert('Next '+document.overlay.pointer);
     document.overlay.closeUnAnswered();
-    e = e$('.eo-question:not(.eo-answered, .eo-expired)').eq(document.overlay.pointer);
+    e = e$('.eo-question').eq(document.overlay.pointer);
     var context = e.data('context');
     //need to be finded with context because the injector element are ordered by level, not by the page order
     var current = document.overlay.injector.elements.filter(function (q) {
       return q.qobj.data.context == context;
     })[0];
-    current.qobj.questionOnClick(e);
+    if (!e.hasClass('eo-answered')) {
+      current.qobj.questionOnClick(e.find('.eo-hint'));
+    } else {
+      e.addClass('next');
+      current.qobj.QuestionAudio(e.find('.eo-correct'));
+    }
+    window.scrollTo(0, e.offset().top - 200);
   };
   this.Prev = function () {
-    document.overlay.pointer = document.overlay.pointer < 1 ? e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1 : document.overlay.pointer - 1;
+    e$('.eo-question').removeClass('next');
+    document.overlay.pointer = document.overlay.pointer < 1 ? e$('.eo-question').length - 1 : document.overlay.pointer - 1;
     //document.overlay.pointer =  document.overlay.pointer - 1 + ();
     document.overlay.closeUnAnswered();
-    e = e$('.eo-question:not(.eo-answered, .eo-expired)').eq(document.overlay.pointer);
+    e = e$('.eo-question').eq(document.overlay.pointer);
     var context = e.data('context');
     //need to be finded with context because the injector element are ordered by level, not by the page order
     var current = document.overlay.injector.elements.filter(function (q) {
       return q.qobj.data.context == context;
     })[0];
-    current.qobj.questionOnClick(e);
+    if (!e.hasClass('eo-answered')) {
+      current.qobj.questionOnClick(e.find('.eo-hint'));
+    } else {
+      e.addClass('next');
+      current.qobj.QuestionAudio(e.find('.eo-correct'));
+    }
+    window.scrollTo(0, e.offset().top - 200);
   };
   this.closeUnAnswered = function () {
     $(this.injector.elements).each(function (i, q) {
@@ -7837,10 +7861,9 @@ PageOverlay.prototype.showButtons = function () {};
 PageOverlay.prototype.powerOn = function () {
   e$('body').removeClass('first-loading');
   console.log('remove class first-loading');
-  this.pointer = e$('.eo-question:not(.eo-answered, .eo-expired)').length - 1;
+  this.pointer = e$('.eo-question').length - 1;
   this.shortcut();
-  var index = (document.overlay.pointer + 1) % e$('.eo-question:not(.eo-answered, .eo-expired)').length;
-  e$('.eo-question:not(.eo-answered, .eo-expired)').eq(index).addClass('next');
+  e$('.eo-question').eq(0).addClass('next');
 };
 PageOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines

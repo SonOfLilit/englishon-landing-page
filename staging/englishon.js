@@ -7586,7 +7586,9 @@ var overlay_settings = {
       'pin_button_front': function () {
         return e$('div#top_menu_block');
       },
-      'placeLiveActions': function () {},
+      'placeLiveActions': function () {
+        e$('#eo-live').css('left', e$('.catLogo').offset().left);
+      },
       'category_button_left_value': function () {
         return 10;
       },
@@ -7684,12 +7686,10 @@ PageOverlay = function () {
   this.shortcut = function () {
     shortcut.add("Tab", function () {
       var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
-      //var pointer = document.overlay.pointer == e$('.eo-question').length - 1 ? 0 : document.overlay.pointer + 1;
       document.overlay.Next(pointer);
     });
     shortcut.add("Left", function () {
       var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
-      //var pointer = document.overlay.pointer == e$('.eo-question').length - 1 ? 0 : document.overlay.pointer + 1;
       document.overlay.Next(pointer);
     });
     shortcut.add("Right", document.overlay.Prev);
