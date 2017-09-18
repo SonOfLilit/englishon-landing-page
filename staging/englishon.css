@@ -1412,6 +1412,11 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+body.www-kolhazman-co-il .eo-button {
+  left: -110px;
+  top: -8px;
+}
+
 body.www-shturem-net div.eo-paragraph,
 body.shturem-net div.eo-paragraph,
 body.www-englishon-org div.eo-paragraph {

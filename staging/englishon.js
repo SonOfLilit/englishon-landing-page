@@ -5352,10 +5352,15 @@ document.MESSAGES = MESSAGES;
 var RTL = 'rtl',
     LTR = 'ltr';
 var WEBSITE_I18N = {
+  'www.kolhazman.co.il': {
+    DIRECTION: RTL,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'hebrew'
+  },
   'www.ch10.co.il': {
     DIRECTION: RTL,
     DEFAULT_TARGET_LANGUAGE: 'en',
-    SITE_LANGUAGE: 'english'
+    SITE_LANGUAGE: 'hebrew'
   },
   'www.bhol.co.il': {
     DIRECTION: RTL,
@@ -7575,6 +7580,56 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
 </div>";
 //
 var overlay_settings = {
+  'kolhazman': {
+    'desktop': {
+      'pin_button_article': function () {
+        return e$('.sf-menu.hidden-xs');
+      },
+      'pin_button_front': function () {
+        return e$('.site-header');
+      },
+      'pin_button_category': function () {
+        return e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul');
+      },
+      'button_left_value': function () {
+        return -110;
+      },
+      'button_top_value': function () {
+        return -8;
+      },
+      'category_button_left_value': function () {
+        return 10;
+      },
+      'placeLiveActions': function () {
+        var startPoint = 206;
+        var val_dic = {
+          'article': function () {
+            return e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320;
+          },
+          'category-page': function () {
+            return e$('#sidebar').offset().left;
+          },
+          'front-page': function () {
+            return e$('.small-6.large-2.columns').eq(1).offset().left;
+          }
+        };
+        var val = val_dic[document.overlay.pageType]();
+        e$('#eo-live').css('left', val);
+        e$('#eo-live .close-vocabulary').css('left', val - 58);
+        var val = Math.max(startPoint - $(window).scrollTop(), 60);
+        e$('#eo-live').css('top', val);
+        e$('#eo-live .close-vocabulary').css('top', val + 180);
+        $(window).scroll(function () {
+          var val = Math.max(startPoint - $(window).scrollTop(), 60);
+          e$('#eo-live').css('top', val);
+          e$('#eo-live .close-vocabulary').css('top', val + 180);
+        });
+      },
+      'pin-tutotial-article': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children',
+      'pin-tutotial-category': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu',
+      'pin-tutotial-front': '.front-page'
+    }
+  },
   'shturem': {
     'desktop': {
       'pin_button_article': function () {
@@ -7678,6 +7733,7 @@ var overlay_settings = {
   },
   'CH10': {}
 };
+//
 PageOverlay = function () {
   if (window.localStorage.getItem('show_quiz_tutorial')) {
     e$('body').addClass('first-loading');
@@ -7871,6 +7927,92 @@ PageOverlay.prototype.showQuestions = function () {
 };
 PageOverlay.prototype.hideQuestions = function () {
   e$('body').removeClass('question-injected');
+};
+kolhazmanFrontpageOverlay = function (parts, pageType) {};
+kolhazmanOverlay = function (url, subtitle, bodytext) {
+  this.url = url.toLowerCase();
+  this.subtitle = subtitle;
+  this.bodytext = bodytext;
+  this.paragraphs = e$(bodytext).find('p').toArray().concat(subtitle);
+  this.interacted = false;
+  this.userAnswered = false;
+  PageOverlay.call(this);
+  this.settings = overlay_settings['kolhazman'][document.englishonConfig.media];
+  //this.tutorial_selector = this.settings['pin-tutotial-article'];
+  this.pageType = 'article';
+  this.getLineDetails = function () {
+    return [e$('.entry-content').offset().left, e$('.entry-content').width()];
+  };
+  this.showButtons = function () {
+    this.settings.pin_button_article().append(EnglishOnButton.element());
+    if (document.englishonConfig.isUser) {
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    } else {
+      e$('.eo-button').on('click', document.firstTimeUser);
+    }
+    /*    in an article page it was easiest to find top left values for button with js
+        in a category page it was easiest to define top with css
+    */
+    e$('.eo-button').css({ 'left': this.settings.button_left_value(), 'top': this.settings.button_top_value() });
+    //sometime the button_top_value is not computed correctly the first time in mobile. don't know the reason.
+    setButtonInterval(function () {
+      console.log('-------------setTimeOut button_top_value');
+      e$('.eo-button').css({ 'top': document.overlay.settings.button_top_value() });
+    }, 500, 20);
+  };
+  this.showQuestions = function () {
+    PageOverlay.prototype.showQuestions.call(this);
+    if (this.injector) {
+      this.injector.on();
+    }
+  }.bind(this);
+  this.hideQuestions = function () {
+    PageOverlay.prototype.hideQuestions.call(this);
+    if (this.injector) this.injector.off();
+  }.bind(this);
+  this.fetchQuestions = function () {
+    e$('.eo-injection-target').contents().unwrap();
+    var backend = document.englishonBackend;
+    this.questions = []; //to enable fetch again after login
+    if (this.injector) {
+      this.injector.off();
+    }
+    //remove only 'eo-injection-target' tags,not content
+    //check if better do that native
+    e$('.eo-injection-target').contents().unwrap();
+    this.interacted = false;
+    this.userAnswered = false;
+    this.limit = this.getQuestionQuota();
+    return backend.getArticle(this.url, this.limit).then(function (questions) {
+      mixpanel.track('fetch questions. ' + document.overlay.url);
+      if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial')) {
+        //e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
+        this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS_ARTICLE);
+      }
+      this.questions = questions;
+      console.log("Num questions: " + questions.length);
+      this.injector = new Injector(this.paragraphs);
+      this.injector.setQuestions(questions);
+      return questions;
+    }.bind(this));
+  };
+  this.powerOn = function () {
+    if (!document.englishonConfig.isUser) {
+      return;
+    }
+    this.showQuestions();
+    PageOverlay.prototype.powerOn.call(this);
+    document.questions_promise.resolve();
+    if (document.eo_user && e$('.eo-expired').length) {
+      document.eo_user.showLiveActions();
+    }
+  };
+  this.powerOff = function () {
+    this.hideQuestions();
+    if (document.eo_user) {
+      document.eo_user.hideLiveActions();
+    }
+  };
 };
 ShturemFrontpageOverlay = function (parts, pageType) {
   this.parts = {};
@@ -8326,6 +8468,43 @@ ScraperFactory = function (location) {
       return new actualicScraper();
     }
   }
+  if (location.host === 'www.kolhazman.co.il') {
+    if (location.pathname.startsWith('/category/') || location.pathname == '/') {
+      return new kolhazmanFrontScraper();
+    } else if (Number(location.pathname.slice(1, location.pathname.length)) != NaN) {
+      return new kolhazmanScraper();
+    }
+  }
+};
+
+var kolhazmanFrontScraper = function () {
+  this.getHost = function () {
+    return 'www.kolhazman.co.il';
+  };
+  this.scrape = function () {
+    var parts = {};
+    e$('.kipke_post_block').each(function (i, para) {
+      if (e$(para).find('a').length) {
+        var url = e$(para).find('a')[0].href;
+      } else {
+        var url = e$(para).parent()[0].href;
+      }
+      parts[url] = para;
+    });
+    var category_url = window.location.pathname;
+    return new kolhazmanFrontOverlay(parts, category_url);
+  };
+};
+var kolhazmanScraper = function () {
+  this.getHost = function () {
+    return 'www.kolhazman.co.il';
+  };
+  this.scrape = function () {
+    url = ('http://www.kolhazman.co.il' + location.pathname + location.search).replace(/#.*$/, '');
+    var subtitle = e$('.page-title').find('p');
+    var bodytext = e$('.entry-content')[0];
+    return new kolhazmanOverlay(url, subtitle, bodytext);
+  };
 };
 var actualicScraper = function () {
   this.getHost = function () {
