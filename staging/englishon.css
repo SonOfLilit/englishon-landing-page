@@ -1416,6 +1416,13 @@ body.www-kolhazman-co-il .eo-button {
   left: -110px;
   top: -8px;
 }
+body.www-kolhazman-co-il #eo-live {
+  background-color: white;
+}
+body.www-kolhazman-co-il #eo-live.eo-live-maximize {
+  height: 208px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
 
 body.www-shturem-net div.eo-paragraph,
 body.shturem-net div.eo-paragraph,

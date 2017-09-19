@@ -7592,7 +7592,7 @@ var overlay_settings = {
         return e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul');
       },
       'button_left_value': function () {
-        return -110;
+        return -120;
       },
       'button_top_value': function () {
         return -8;
@@ -7601,10 +7601,10 @@ var overlay_settings = {
         return 10;
       },
       'placeLiveActions': function () {
-        var startPoint = 206;
+        var startPoint = e$('#sidebar').offset().top - 10;
         var val_dic = {
           'article': function () {
-            return e$(e$('.kipke_social_share.hide-for-print').get(0)).offset().left - 320;
+            return e$('#sidebar').offset().left + (e$('#sidebar').width() - e$('#eo-live').width()) / 2;
           },
           'category-page': function () {
             return e$('#sidebar').offset().left;
@@ -7616,11 +7616,11 @@ var overlay_settings = {
         var val = val_dic[document.overlay.pageType]();
         e$('#eo-live').css('left', val);
         e$('#eo-live .close-vocabulary').css('left', val - 58);
-        var val = Math.max(startPoint - $(window).scrollTop(), 60);
+        var val = Math.max(startPoint - $(window).scrollTop(), 10);
         e$('#eo-live').css('top', val);
         e$('#eo-live .close-vocabulary').css('top', val + 180);
         $(window).scroll(function () {
-          var val = Math.max(startPoint - $(window).scrollTop(), 60);
+          var val = Math.max(startPoint - $(window).scrollTop(), 10);
           e$('#eo-live').css('top', val);
           e$('#eo-live .close-vocabulary').css('top', val + 180);
         });
@@ -7944,6 +7944,7 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
     return [e$('.entry-content').offset().left, e$('.entry-content').width()];
   };
   this.showButtons = function () {
+
     this.settings.pin_button_article().append(EnglishOnButton.element());
     if (document.englishonConfig.isUser) {
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
@@ -7958,6 +7959,7 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
     setButtonInterval(function () {
       console.log('-------------setTimeOut button_top_value');
       e$('.eo-button').css({ 'top': document.overlay.settings.button_top_value() });
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     }, 500, 20);
   };
   this.showQuestions = function () {
