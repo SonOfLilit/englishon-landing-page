@@ -1416,6 +1416,12 @@ body.www-kolhazman-co-il .eo-button {
   left: -110px;
   top: -8px;
 }
+body.www-kolhazman-co-il .eo-button .eo-logo {
+  top: 6px;
+}
+body.www-kolhazman-co-il .eo-button .registered_symbol {
+  top: 8px;
+}
 body.www-kolhazman-co-il #eo-live {
   background-color: white;
 }
