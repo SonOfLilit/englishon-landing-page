@@ -9713,8 +9713,24 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
         autoplay: true,
         loop: true
       }));
+      var movie = e$('<div id="eo-movie">').append(e$('<video/>', {
+        src: staticUrl('demo.mp4'),
+        id: 'demo_video',
+        type: 'video/mp4',
+        autoplay: false,
+        loop: true
+      }));
       e$('#sidebar').prepend(video);
-      e$('#eo-banner').on('click', document.firstTimeUser);
+      e$('body').prepend(movie);
+      e$('#eo-movie').addClass('hidden');
+      //e$('#eo-banner').on('click', document.firstTimeUser);
+      e$('#eo-banner').on('click', function () {
+        valx = (e$('body').width() - e$('#demo_video').width()) / 2;
+        valy = (e$('body').height() - e$('#demo_video').height()) / 2;
+        e$('#eo-movie').removeClass('hidden');
+        e$('#demo_video').css({ left: valx, top: valy });
+        document.getElementById('demo_video').play();
+      });
     }();
   }
   //event to get messageses from englishon backend
