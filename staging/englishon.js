@@ -6081,6 +6081,7 @@ Editor.prototype.shortcut = function () {
   });
 };
 Editor.prototype.highlight = function () {
+  console.log('highlight..................');
   document._editor.pointer = 0;
   this.shortcut();
   var questions = this.questions;
@@ -6097,7 +6098,13 @@ Editor.prototype.highlight = function () {
   //e$('.artSubtitle a').text('HERE IS A LINK!!!!!!')
   //TODO: do the same with the content appearing after the last dote in the subtitle, because in main page it should be a link
   this.ps = [];
-  this.paragraphs.each(function (i, p) {
+  //kolhazman probably repaint the page, so if we use here the elements we select before - it didn't work. we need to select them again.
+  if (window.location.host === 'www.kolhazman.co.il') {
+    var paragraphs = e$([e$('.page-title').find('p'), e$('.entry-content')[0]]);
+  } else {
+    var paragraphs = this.paragraphs;
+  }
+  paragraphs.each(function (i, p) {
     if (!p || !(p.length == undefined) && !p.length) {
       console.log('paragraph number ' + i + ' is not exist in this article');
       return;
@@ -6848,7 +6855,7 @@ AbstractQuestion.prototype.createElement = function () {
   var prepositionClass = this.data.preposition ? 'preposition' : '';
   return e$('<div>').addClass('eo-question').addClass(this.languageOrderClass()).data('context', this.data.context)
   //.append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0]))
-  .append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append(e$('<span>').addClass('eo-hint').addClass(prepositionClass).text(textWithPreposition)).append(e$('<span>').addClass('eo-progress').append(e$('<span>').addClass('eo-progress-inner')));
+  .append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append(e$('<span>').addClass('eo-hint').addClass(prepositionClass).text(textWithPreposition)).append(e$('<span>').addClass('eo-progress').append(e$('<span>').addClass('eo-progress-inner'))).append(e$('<span>').addClass('data_context').text(this.data.context));
 };
 AbstractQuestion.prototype.bindInput = function () {
   this.element.find('.eo-hint').click(this.questionOnClick.bind(this));
@@ -7944,7 +7951,6 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
     return [e$('.entry-content').offset().left, e$('.entry-content').width()];
   };
   this.showButtons = function () {
-
     this.settings.pin_button_article().append(EnglishOnButton.element());
     if (document.englishonConfig.isUser) {
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
@@ -7959,7 +7965,32 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
     setButtonInterval(function () {
       console.log('-------------setTimeOut button_top_value');
       e$('.eo-button').css({ 'top': document.overlay.settings.button_top_value() });
-      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    }, 500, 20);
+    //ON KOLHAZMAN OUR ELEMENTS ARE PROBABLY REWRITE, SO DATA AND BINDED EVENTS ARE LOST
+    setIntervalX('bind_events', function () {
+      if (document.englishonConfig.isUser) {
+        e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+      } else {
+        e$('.eo-button').on('click', document.firstTimeUser);
+      }
+      document.menu.bindEvents();
+      for (i = 0; i < document.overlay.injector.elements.length; i++) {
+        var q = document.overlay.injector.elements[i].qobj;
+        var current = e$('.eo-question').filter(function (elem) {
+          return q.data.context == e$(elem).find('.data_context').text();
+        }).eq(0);
+        q.element = current;
+        //TODO:  DO THE JOB FOR ANSWERED QUESTIONS!
+        if (!q.element.hasClass('eo-answered')) {
+          e$('.eo-question').eq(i).find('.eo-hint').click(q.questionOnClick.bind(q));
+          var answers = q.data.personal_distractions;
+          var options = e$('.eo-question').eq(i).find('.eo-option span');
+          for (var j = 0; j < 4; j++) {
+            //options.eq(j).data('translate', answers[j].translation).data('word', answers[j].answer);
+            options.eq(j).click(q.optionOnClick.bind(q));
+          }
+        }
+      }
     }, 500, 20);
   };
   this.showQuestions = function () {
@@ -7989,7 +8020,8 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
       mixpanel.track('fetch questions. ' + document.overlay.url);
       if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial')) {
         //e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
-        this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS_ARTICLE);
+        //CAREFUTL DONT PUSH!!!!!!!
+        //this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS_ARTICLE);
       }
       this.questions = questions;
       console.log("Num questions: " + questions.length);
@@ -8985,9 +9017,15 @@ document.dic_promise = e$.Deferred();
 //document.show_signin_tutorial = e$.Deferred();
 function englishon() {
   if (e$('#developement-only-version').length) {
-    window.staticUrl = function (resource) {
-      return 'http://www.englishon.org/staging/' + resource;
-    };
+    if (e$("[cls='development-local-only']").length) {
+      window.staticUrl = function (resource) {
+        return 'http://localhost:8080/static/ex/' + resource;
+      };
+    } else {
+      window.staticUrl = function (resource) {
+        return 'http://www.englishon.org/staging/' + resource;
+      };
+    }
   } else {
     window.staticUrl = function (resource) {
       return 'http://www.englishon.org/v1/' + resource;
@@ -9165,12 +9203,12 @@ String.prototype.replaceAll = function (search, replacement) {
   var target = this;
   return target.replace(new RegExp(search, 'g'), replacement);
 };
-window.setIntervalX = function (callback, delay, repetitions) {
+window.setIntervalX = function (name, callback, delay, repetitions) {
   var x = 0;
-  window.hide_chat = setInterval(function () {
+  window[name] = setInterval(function () {
     callback();
     if (++x === repetitions) {
-      clearInterval(window.hide_chat);
+      clearInterval(window[name]);
     }
   }, delay);
 };
@@ -9274,6 +9312,94 @@ var EnglishOnDialogs = function () {
 // Menu
 // ****
 var EnglishOnMenu = function () {
+  this.bindEvents = function () {
+    // ***********************
+    // Register Event Handlers
+    // ***********************
+    e$('#eo-editor-btn').off('click');
+    e$('#eo-editor-btn').on('click', function (event) {
+      document.menu.powerOn();
+      document.overlay.hideQuestions();
+      document.eoDialogs.hideDialogs();
+      event.preventDefault();
+      document.eo_user.hideLiveActions();
+      // after you've loaded the editor, there's no going back.
+      // (for now. this should be fixed.)
+      document.overlay.hideButtons();
+      document._editor.fetchQuestions().then(function () {
+        console.log('------------------------------questions for editor');
+        document._editor.highlight();
+      });
+    });
+    e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
+    e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
+    e$('#option-dlg-signin').data('elementToShowOnClick', 'eo-dlg-login');
+    e$('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
+    if (!localStorage.getItem('email')) {
+      e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
+      uiLoginActions('guest');
+    } else {
+      e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
+      uiLoginActions('logged');
+    }
+    e$('#eo-contact').on('click', function () {
+      clearInterval(hide_chat);
+      e$('#lc_chat_layout').show();
+      e$('#lc_chat_title').click();
+    });
+    e$('.languages_picker .available').on('click', function (e) {
+      e$(e.target).parents().find('.available').addClass('checked-language');
+      if (!document.englishonConfig.isUser) {
+        document.menu.powerOn();
+        document.firstTimeUser();
+      }
+    });
+    e$('#eo-power-switch').on('click', this.togglePower);
+    e$('.languages_picker .available').on('click', this.powerOn);
+    e$('#eo-speaker-res').on('click', function () {
+      toggleSound();
+      document.menu.volume.syncWithSpeaker();
+    });
+    e$('.eo-close.close-dialog').on('click', document.eoDialogs.hideDialogs);
+    e$('#signout_btn').on('click', this.signout);
+    e$('#eo-account-name').on('click', document.eoDialogs.toggleDialogTrigger);
+    e$('#options-button').on('click', function (e) {
+      document.eoDialogs.toggleDialogTrigger(e);
+      e$('#options-button').toggleClass('open');
+    });
+    e$('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger);
+    e$('#option-dlg-signin').on('click', document.eoDialogs.toggleDialogTrigger);
+    e$('#progress-tutorial-btn').on('click', function () {
+      document.eoDialogs.hideDialogs();
+      document.eo_user.showLiveActions();
+      Tour.progressTutorial();
+      document.tour.start();
+    });
+    e$('#tutorial-btn').on('click', function () {
+      document.eoDialogs.hideDialogs();
+      Tour.quizTutorial();
+      document.tour.start();
+    });
+    e$('.eo-site-option').on('click', function (e) {
+      e$('.eo-area, #eo-live').removeClass('hebrew english');
+      e$('.eo-area, #eo-live').addClass(e$(e.target).attr('id'));
+      configStorage.set({ siteLanguage: e$(e.target).attr('id') });
+      document.menu.displayMenuMessages();
+      document.eoDialogs.toggleDialogTrigger(e);
+    });
+    e$('#eo-login-password').on('keydown', function (e) {
+      if (e.keyCode == 13) {
+        e$('#eo-mail-login-btn').click();
+      }
+    });
+    e$('#eo-mail-login-btn').on('click', loginByMail);
+    e$('#eo-login-email').on('click', function (e) {
+      //causing the keyboard to open 
+      e.target.focus();
+      //Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      //This is causing chrome to compute the body width as 980px anycase, in inspector too
+    });
+  };
   e$.fn.extend({
     toggleText: function (a, b) {
       if (this.text() != a && this.text() != b) {
@@ -9321,7 +9447,7 @@ var EnglishOnMenu = function () {
     e$('#get-started').text(messages.GET_STARTED);
     e$('#signout_btn').text(messages.SIGN_OUT);
   };
-  setIntervalX(function () {
+  setIntervalX('hide_chat', function () {
     e$('#lc_chat_layout').hide();
   }, 500, 20);
   document.overlay.insertContent(e$(document.MENU_HTML));
@@ -9502,28 +9628,6 @@ var EnglishOnMenu = function () {
     //e$('#eo-dlg-options').css({ top: menuTop + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' })
   }
   englishon_chat();
-  // ***********************
-  // Register Event Handlers
-  // ***********************
-  e$('#eo-contact').on('click', function () {
-    clearInterval(hide_chat);
-    e$('#lc_chat_layout').show();
-    e$('#lc_chat_title').click();
-  });
-  e$('.languages_picker .available').on('click', function (e) {
-    e$(e.target).parents().find('.available').addClass('checked-language');
-    if (!document.englishonConfig.isUser) {
-      document.menu.powerOn();
-      document.firstTimeUser();
-    }
-  });
-  e$('#eo-power-switch').on('click', this.togglePower);
-  e$('.languages_picker .available').on('click', this.powerOn);
-  e$('#eo-speaker-res').on('click', function () {
-    toggleSound();
-    document.menu.volume.syncWithSpeaker();
-  });
-  e$('.eo-close.close-dialog').on('click', document.eoDialogs.hideDialogs);
   var uiLoginActions = function (state) {
     if (state == 'guest') {
       e$('body').addClass('guest').removeClass('logged');
@@ -9536,68 +9640,15 @@ var EnglishOnMenu = function () {
       e$('#eo-account-img').addClass('no-image');
     }
   };
-  e$('#signout_btn').on('click', this.signout);
-  if (!localStorage.getItem('email')) {
-    e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
-    uiLoginActions('guest');
-  } else {
-    e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
-    uiLoginActions('logged');
-  }
-  e$('#eo-account-name').on('click', document.eoDialogs.toggleDialogTrigger);
   if (JSON.parse(document.englishonConfig.editor)) {
     e$('#eo-menu').addClass('menu-editor');
     e$('#editor-row').removeClass('hidden');
     e$.when(document.dic_promise).done(function () {
       document._editor = new Editor(document.overlay);
     });
-    e$('#eo-editor-btn').on('click', function (event) {
-      document.menu.powerOn();
-      document.overlay.hideQuestions();
-      document.eoDialogs.hideDialogs();
-      event.preventDefault();
-      document.eo_user.hideLiveActions();
-      // after you've loaded the editor, there's no going back.
-      // (for now. this should be fixed.)
-      document.overlay.hideButtons();
-      document._editor.fetchQuestions().then(function () {
-        console.log('------------------------------questions for editor');
-        document._editor.highlight();
-      });
-    });
   } else {
     e$('#eo-menu').removeClass('menu-editor');
   }
-  //OPTIONS MENU HANDLERS
-  e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
-  e$('#options-button').on('click', function (e) {
-    document.eoDialogs.toggleDialogTrigger(e);
-    e$('#options-button').toggleClass('open');
-  });
-  e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
-  e$('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger);
-  e$('#option-dlg-signin').data('elementToShowOnClick', 'eo-dlg-login');
-  e$('#option-dlg-signin').on('click', document.eoDialogs.toggleDialogTrigger);
-  e$('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
-  e$('#progress-tutorial-btn').on('click', function () {
-    document.eoDialogs.hideDialogs();
-    document.eo_user.showLiveActions();
-    Tour.progressTutorial();
-    document.tour.start();
-  });
-  e$('#tutorial-btn').on('click', function () {
-    document.eoDialogs.hideDialogs();
-    Tour.quizTutorial();
-    document.tour.start();
-  });
-  e$('.eo-site-option').on('click', function (e) {
-    e$('.eo-area, #eo-live').removeClass('hebrew english');
-    e$('.eo-area, #eo-live').addClass(e$(e.target).attr('id'));
-    configStorage.set({ siteLanguage: e$(e.target).attr('id') });
-    document.menu.displayMenuMessages();
-    document.eoDialogs.toggleDialogTrigger(e);
-  });
-  //LOGIN DIALOG
   var token = encodeURIComponent(document.englishonBackend.token);
   if (document.englishonConfig.isUser) {
     var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
@@ -9607,24 +9658,12 @@ var EnglishOnMenu = function () {
     var popup = this.contentWindow;
     popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
   });
-  e$('#eo-login-password').on('keydown', function (e) {
-    if (e.keyCode == 13) {
-      e$('#eo-mail-login-btn').click();
-    }
-  });
-  e$('#eo-mail-login-btn').on('click', loginByMail);
   var _originalSize = e$(window).width() + e$(window).height();
   e$(window).resize(function () {
     if (e$(window).width() + e$(window).height() != _originalSize) {
       element = document.getElementById('eo-login-email');
       element.scrollIntoView(true);
     }
-  });
-  e$('#eo-login-email').on('click', function (e) {
-    //causing the keyboard to open 
-    e.target.focus();
-    //Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    //This is causing chrome to compute the body width as 980px anycase, in inspector too
   });
   //i don't know why this line is needed.  
   window.history.pushState({ 'elementToShow': 'page' }, '');
@@ -9646,17 +9685,17 @@ var EnglishOnMenu = function () {
       return false;
     }
   });
+  this.bindEvents();
 };
 e$(function () {
   document.loaded_promise.resolve();
 });
 e$.when(document.questions_promise).done(function () {
   if (window.localStorage.getItem('show_quiz_tutorial')) {
-    if (!document.overlay.questions || !document.overlay.questions.length) {
-      //document.overlay.openNoQuestionsDialog();
+    //if (!document.overlay.questions || !document.overlay.questions.length) {
+    if (!e$('.eo-question').length) {
       return;
     };
-    //if (true) {
     window.localStorage.removeItem('show_quiz_tutorial');
     setTimeout(function () {
       //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
@@ -9669,7 +9708,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
   if (location.pathname != '/') {
     englishon_banner = new function () {
       var video = e$('<div id="eo-banner">').append(e$('<video/>', {
-        src: staticUrl('banner.mp4'),
+        src: staticUrl('banner_with_movie.m4v'),
         type: 'video/mp4',
         autoplay: true,
         loop: true
