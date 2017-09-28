@@ -5352,10 +5352,15 @@ document.MESSAGES = MESSAGES;
 var RTL = 'rtl',
     LTR = 'ltr';
 var WEBSITE_I18N = {
+  'www.kolhazman.co.il': {
+    DIRECTION: RTL,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'hebrew'
+  },
   'www.ch10.co.il': {
     DIRECTION: RTL,
     DEFAULT_TARGET_LANGUAGE: 'en',
-    SITE_LANGUAGE: 'english'
+    SITE_LANGUAGE: 'hebrew'
   },
   'www.bhol.co.il': {
     DIRECTION: RTL,
@@ -6076,6 +6081,7 @@ Editor.prototype.shortcut = function () {
   });
 };
 Editor.prototype.highlight = function () {
+  console.log('highlight..................');
   document._editor.pointer = 0;
   this.shortcut();
   var questions = this.questions;
@@ -6092,7 +6098,13 @@ Editor.prototype.highlight = function () {
   //e$('.artSubtitle a').text('HERE IS A LINK!!!!!!')
   //TODO: do the same with the content appearing after the last dote in the subtitle, because in main page it should be a link
   this.ps = [];
-  this.paragraphs.each(function (i, p) {
+  //kolhazman probably repaint the page, so if we use here the elements we select before - it didn't work. we need to select them again.
+  if (window.location.host === 'www.kolhazman.co.il') {
+    var paragraphs = e$([e$('.page-title').find('p'), e$('.entry-content')[0]]);
+  } else {
+    var paragraphs = this.paragraphs;
+  }
+  paragraphs.each(function (i, p) {
     if (!p || !(p.length == undefined) && !p.length) {
       console.log('paragraph number ' + i + ' is not exist in this article');
       return;
@@ -6843,7 +6855,7 @@ AbstractQuestion.prototype.createElement = function () {
   var prepositionClass = this.data.preposition ? 'preposition' : '';
   return e$('<div>').addClass('eo-question').addClass(this.languageOrderClass()).data('context', this.data.context)
   //.append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0]))
-  .append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append(e$('<span>').addClass('eo-hint').addClass(prepositionClass).text(textWithPreposition)).append(e$('<span>').addClass('eo-progress').append(e$('<span>').addClass('eo-progress-inner')));
+  .append(e$('<span>').addClass('eo-correct').toggleHtml(this.correct[0])).append(e$('<span>').addClass('eo-hint').addClass(prepositionClass).text(textWithPreposition)).append(e$('<span>').addClass('eo-progress').append(e$('<span>').addClass('eo-progress-inner'))).append(e$('<span>').addClass('data_context').text(this.data.context));
 };
 AbstractQuestion.prototype.bindInput = function () {
   this.element.find('.eo-hint').click(this.questionOnClick.bind(this));
@@ -7376,7 +7388,8 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
       </div>\
     </div>\
   </div>\
-</div>";
+</div>\
+";
 //
 document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
   <div class='eo-close close-dialog'></div>\
@@ -7575,6 +7588,56 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
 </div>";
 //
 var overlay_settings = {
+  'kolhazman': {
+    'desktop': {
+      'pin_button_article': function () {
+        return e$('.sf-menu.hidden-xs');
+      },
+      'pin_button_front': function () {
+        return e$('.site-header');
+      },
+      'pin_button_category': function () {
+        return e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul');
+      },
+      'button_left_value': function () {
+        return -120;
+      },
+      'button_top_value': function () {
+        return -8;
+      },
+      'category_button_left_value': function () {
+        return 10;
+      },
+      'placeLiveActions': function () {
+        var startPoint = e$('#sidebar').offset().top - 10;
+        var val_dic = {
+          'article': function () {
+            return e$('#sidebar').offset().left + (e$('#sidebar').width() - e$('#eo-live').width()) / 2;
+          },
+          'category-page': function () {
+            return e$('#sidebar').offset().left;
+          },
+          'front-page': function () {
+            return e$('.small-6.large-2.columns').eq(1).offset().left;
+          }
+        };
+        var val = val_dic[document.overlay.pageType]();
+        e$('#eo-live').css('left', val);
+        e$('#eo-live .close-vocabulary').css('left', val - 58);
+        var val = Math.max(startPoint - $(window).scrollTop(), 10);
+        e$('#eo-live').css('top', val);
+        e$('#eo-live .close-vocabulary').css('top', val + 180);
+        $(window).scroll(function () {
+          var val = Math.max(startPoint - $(window).scrollTop(), 10);
+          e$('#eo-live').css('top', val);
+          e$('#eo-live .close-vocabulary').css('top', val + 180);
+        });
+      },
+      'pin-tutotial-article': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children',
+      'pin-tutotial-category': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu',
+      'pin-tutotial-front': '.front-page'
+    }
+  },
   'shturem': {
     'desktop': {
       'pin_button_article': function () {
@@ -7587,7 +7650,7 @@ var overlay_settings = {
         return e$('div#top_menu_block');
       },
       'placeLiveActions': function () {
-        e$('#eo-live').css('left', e$('.catLogo').offset().left);
+        e$('#eo-live').css({ left: e$('#top_baner_block').offset().left, top: 10 });
       },
       'category_button_left_value': function () {
         return 10;
@@ -7678,6 +7741,7 @@ var overlay_settings = {
   },
   'CH10': {}
 };
+//
 PageOverlay = function () {
   if (window.localStorage.getItem('show_quiz_tutorial')) {
     e$('body').addClass('first-loading');
@@ -7871,6 +7935,119 @@ PageOverlay.prototype.showQuestions = function () {
 };
 PageOverlay.prototype.hideQuestions = function () {
   e$('body').removeClass('question-injected');
+};
+kolhazmanFrontpageOverlay = function (parts, pageType) {};
+kolhazmanOverlay = function (url, subtitle, bodytext) {
+  this.url = url.toLowerCase();
+  this.subtitle = subtitle;
+  this.bodytext = bodytext;
+  this.paragraphs = e$(bodytext).find('p').toArray().concat(subtitle);
+  this.interacted = false;
+  this.userAnswered = false;
+  PageOverlay.call(this);
+  this.settings = overlay_settings['kolhazman'][document.englishonConfig.media];
+  //this.tutorial_selector = this.settings['pin-tutotial-article'];
+  this.pageType = 'article';
+  this.getLineDetails = function () {
+    return [e$('.entry-content').offset().left, e$('.entry-content').width()];
+  };
+  this.showButtons = function () {
+    this.settings.pin_button_article().append(EnglishOnButton.element());
+    if (document.englishonConfig.isUser) {
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    } else {
+      e$('.eo-button').on('click', document.firstTimeUser);
+    }
+    /*    in an article page it was easiest to find top left values for button with js
+        in a category page it was easiest to define top with css
+    */
+    e$('.eo-button').css({ 'left': this.settings.button_left_value(), 'top': this.settings.button_top_value() });
+    //sometime the button_top_value is not computed correctly the first time in mobile. don't know the reason.
+    setButtonInterval(function () {
+      console.log('-------------setTimeOut button_top_value');
+      e$('.eo-button').css({ 'top': document.overlay.settings.button_top_value() });
+    }, 500, 20);
+    //ON KOLHAZMAN OUR ELEMENTS ARE PROBABLY REWRITE, SO DATA AND BINDED EVENTS ARE LOST
+    setIntervalX('bind_events', function () {
+      if (document.englishonConfig.isUser) {
+        e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+      } else {
+        e$('.eo-button').on('click', document.firstTimeUser);
+      }
+      document.menu.bindEvents();
+      for (i = 0; i < document.overlay.injector.elements.length; i++) {
+        var q = document.overlay.injector.elements[i].qobj;
+        var current = e$('.eo-question').filter(function (elem) {
+          return q.data.context == e$(elem).find('.data_context').text();
+        }).eq(0);
+        q.element = current;
+        //TODO:  DO THE JOB FOR ANSWERED QUESTIONS!
+        if (!q.element.hasClass('eo-answered')) {
+          e$('.eo-question').eq(i).find('.eo-hint').click(q.questionOnClick.bind(q));
+          var answers = q.data.personal_distractions;
+          var options = e$('.eo-question').eq(i).find('.eo-option span');
+          for (var j = 0; j < 4; j++) {
+            //options.eq(j).data('translate', answers[j].translation).data('word', answers[j].answer);
+            options.eq(j).click(q.optionOnClick.bind(q));
+          }
+        }
+      }
+    }, 500, 20);
+  };
+  this.showQuestions = function () {
+    PageOverlay.prototype.showQuestions.call(this);
+    if (this.injector) {
+      this.injector.on();
+    }
+  }.bind(this);
+  this.hideQuestions = function () {
+    PageOverlay.prototype.hideQuestions.call(this);
+    if (this.injector) this.injector.off();
+  }.bind(this);
+  this.fetchQuestions = function () {
+    e$('.eo-injection-target').contents().unwrap();
+    var backend = document.englishonBackend;
+    this.questions = []; //to enable fetch again after login
+    if (this.injector) {
+      this.injector.off();
+    }
+    //remove only 'eo-injection-target' tags,not content
+    //check if better do that native
+    e$('.eo-injection-target').contents().unwrap();
+    this.interacted = false;
+    this.userAnswered = false;
+    this.limit = this.getQuestionQuota();
+    return backend.getArticle(this.url, this.limit).then(function (questions) {
+      mixpanel.track('fetch questions. ' + document.overlay.url);
+      if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial')) {
+        //e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
+        //CAREFUTL DONT PUSH!!!!!!!
+        //this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS_ARTICLE);
+      }
+      this.questions = questions;
+      console.log("Num questions: " + questions.length);
+      this.injector = new Injector(this.paragraphs);
+      this.injector.setQuestions(questions);
+      return questions;
+    }.bind(this));
+  };
+  this.powerOn = function () {
+    if (!document.englishonConfig.isUser) {
+      return;
+    }
+    this.showQuestions();
+    PageOverlay.prototype.powerOn.call(this);
+    document.questions_promise.resolve();
+    if (document.eo_user && e$('.eo-expired').length) {
+      document.eo_user.showLiveActions();
+    }
+  };
+  this.powerOff = function () {
+    this.hideQuestions();
+    if (document.eo_user) {
+      document.eo_user.hideLiveActions();
+    }
+  };
 };
 ShturemFrontpageOverlay = function (parts, pageType) {
   this.parts = {};
@@ -8326,6 +8503,43 @@ ScraperFactory = function (location) {
       return new actualicScraper();
     }
   }
+  if (location.host === 'www.kolhazman.co.il') {
+    if (location.pathname.startsWith('/category/') || location.pathname == '/') {
+      return new kolhazmanFrontScraper();
+    } else if (Number(location.pathname.slice(1, location.pathname.length)) != NaN) {
+      return new kolhazmanScraper();
+    }
+  }
+};
+
+var kolhazmanFrontScraper = function () {
+  this.getHost = function () {
+    return 'www.kolhazman.co.il';
+  };
+  this.scrape = function () {
+    var parts = {};
+    e$('.kipke_post_block').each(function (i, para) {
+      if (e$(para).find('a').length) {
+        var url = e$(para).find('a')[0].href;
+      } else {
+        var url = e$(para).parent()[0].href;
+      }
+      parts[url] = para;
+    });
+    var category_url = window.location.pathname;
+    return new kolhazmanFrontOverlay(parts, category_url);
+  };
+};
+var kolhazmanScraper = function () {
+  this.getHost = function () {
+    return 'www.kolhazman.co.il';
+  };
+  this.scrape = function () {
+    url = ('http://www.kolhazman.co.il' + location.pathname + location.search).replace(/#.*$/, '');
+    var subtitle = e$('.page-title').find('p');
+    var bodytext = e$('.entry-content')[0];
+    return new kolhazmanOverlay(url, subtitle, bodytext);
+  };
 };
 var actualicScraper = function () {
   this.getHost = function () {
@@ -8804,9 +9018,15 @@ document.dic_promise = e$.Deferred();
 //document.show_signin_tutorial = e$.Deferred();
 function englishon() {
   if (e$('#developement-only-version').length) {
-    window.staticUrl = function (resource) {
-      return 'http://www.englishon.org/staging/' + resource;
-    };
+    if (e$("[cls='development-local-only']").length) {
+      window.staticUrl = function (resource) {
+        return 'http://localhost:8080/static/ex/' + resource;
+      };
+    } else {
+      window.staticUrl = function (resource) {
+        return 'http://www.englishon.org/staging/' + resource;
+      };
+    }
   } else {
     window.staticUrl = function (resource) {
       return 'http://www.englishon.org/v1/' + resource;
@@ -8984,12 +9204,12 @@ String.prototype.replaceAll = function (search, replacement) {
   var target = this;
   return target.replace(new RegExp(search, 'g'), replacement);
 };
-window.setIntervalX = function (callback, delay, repetitions) {
+window.setIntervalX = function (name, callback, delay, repetitions) {
   var x = 0;
-  window.hide_chat = setInterval(function () {
+  window[name] = setInterval(function () {
     callback();
     if (++x === repetitions) {
-      clearInterval(window.hide_chat);
+      clearInterval(window[name]);
     }
   }, delay);
 };
@@ -9093,6 +9313,94 @@ var EnglishOnDialogs = function () {
 // Menu
 // ****
 var EnglishOnMenu = function () {
+  this.bindEvents = function () {
+    // ***********************
+    // Register Event Handlers
+    // ***********************
+    e$('#eo-editor-btn').off('click');
+    e$('#eo-editor-btn').on('click', function (event) {
+      document.menu.powerOn();
+      document.overlay.hideQuestions();
+      document.eoDialogs.hideDialogs();
+      event.preventDefault();
+      document.eo_user.hideLiveActions();
+      // after you've loaded the editor, there's no going back.
+      // (for now. this should be fixed.)
+      document.overlay.hideButtons();
+      document._editor.fetchQuestions().then(function () {
+        console.log('------------------------------questions for editor');
+        document._editor.highlight();
+      });
+    });
+    e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
+    e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
+    e$('#option-dlg-signin').data('elementToShowOnClick', 'eo-dlg-login');
+    e$('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
+    if (!localStorage.getItem('email')) {
+      e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
+      uiLoginActions('guest');
+    } else {
+      e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
+      uiLoginActions('logged');
+    }
+    e$('#eo-contact').on('click', function () {
+      clearInterval(hide_chat);
+      e$('#lc_chat_layout').show();
+      e$('#lc_chat_title').click();
+    });
+    e$('.languages_picker .available').on('click', function (e) {
+      e$(e.target).parents().find('.available').addClass('checked-language');
+      if (!document.englishonConfig.isUser) {
+        document.menu.powerOn();
+        document.firstTimeUser();
+      }
+    });
+    e$('#eo-power-switch').on('click', this.togglePower);
+    e$('.languages_picker .available').on('click', this.powerOn);
+    e$('#eo-speaker-res').on('click', function () {
+      toggleSound();
+      document.menu.volume.syncWithSpeaker();
+    });
+    e$('.eo-close.close-dialog').on('click', document.eoDialogs.hideDialogs);
+    e$('#signout_btn').on('click', this.signout);
+    e$('#eo-account-name').on('click', document.eoDialogs.toggleDialogTrigger);
+    e$('#options-button').on('click', function (e) {
+      document.eoDialogs.toggleDialogTrigger(e);
+      e$('#options-button').toggleClass('open');
+    });
+    e$('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger);
+    e$('#option-dlg-signin').on('click', document.eoDialogs.toggleDialogTrigger);
+    e$('#progress-tutorial-btn').on('click', function () {
+      document.eoDialogs.hideDialogs();
+      document.eo_user.showLiveActions();
+      Tour.progressTutorial();
+      document.tour.start();
+    });
+    e$('#tutorial-btn').on('click', function () {
+      document.eoDialogs.hideDialogs();
+      Tour.quizTutorial();
+      document.tour.start();
+    });
+    e$('.eo-site-option').on('click', function (e) {
+      e$('.eo-area, #eo-live').removeClass('hebrew english');
+      e$('.eo-area, #eo-live').addClass(e$(e.target).attr('id'));
+      configStorage.set({ siteLanguage: e$(e.target).attr('id') });
+      document.menu.displayMenuMessages();
+      document.eoDialogs.toggleDialogTrigger(e);
+    });
+    e$('#eo-login-password').on('keydown', function (e) {
+      if (e.keyCode == 13) {
+        e$('#eo-mail-login-btn').click();
+      }
+    });
+    e$('#eo-mail-login-btn').on('click', loginByMail);
+    e$('#eo-login-email').on('click', function (e) {
+      //causing the keyboard to open 
+      e.target.focus();
+      //Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      //This is causing chrome to compute the body width as 980px anycase, in inspector too
+    });
+  };
   e$.fn.extend({
     toggleText: function (a, b) {
       if (this.text() != a && this.text() != b) {
@@ -9140,13 +9448,14 @@ var EnglishOnMenu = function () {
     e$('#get-started').text(messages.GET_STARTED);
     e$('#signout_btn').text(messages.SIGN_OUT);
   };
-  setIntervalX(function () {
+  setIntervalX('hide_chat', function () {
     e$('#lc_chat_layout').hide();
   }, 500, 20);
   document.overlay.insertContent(e$(document.MENU_HTML));
   document.overlay.insertContent(e$(document.LOGIN_DLG));
   document.overlay.insertContent(e$(document.OPTIONS_DLG));
   document.overlay.insertContent(e$(document.live_actions));
+  e$('#demo_video').find('source').attr('src', staticUrl('demo.mp4'));
   e$('.eo-area, #eo-live').addClass(document.englishonConfig.siteLanguage);
   /* returns a toggler function that both updates `configEntry`
      and calls the given `toggle()` function, useful when you want
@@ -9321,28 +9630,6 @@ var EnglishOnMenu = function () {
     //e$('#eo-dlg-options').css({ top: menuTop + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' })
   }
   englishon_chat();
-  // ***********************
-  // Register Event Handlers
-  // ***********************
-  e$('#eo-contact').on('click', function () {
-    clearInterval(hide_chat);
-    e$('#lc_chat_layout').show();
-    e$('#lc_chat_title').click();
-  });
-  e$('.languages_picker .available').on('click', function (e) {
-    e$(e.target).parents().find('.available').addClass('checked-language');
-    if (!document.englishonConfig.isUser) {
-      document.menu.powerOn();
-      document.firstTimeUser();
-    }
-  });
-  e$('#eo-power-switch').on('click', this.togglePower);
-  e$('.languages_picker .available').on('click', this.powerOn);
-  e$('#eo-speaker-res').on('click', function () {
-    toggleSound();
-    document.menu.volume.syncWithSpeaker();
-  });
-  e$('.eo-close.close-dialog').on('click', document.eoDialogs.hideDialogs);
   var uiLoginActions = function (state) {
     if (state == 'guest') {
       e$('body').addClass('guest').removeClass('logged');
@@ -9355,68 +9642,15 @@ var EnglishOnMenu = function () {
       e$('#eo-account-img').addClass('no-image');
     }
   };
-  e$('#signout_btn').on('click', this.signout);
-  if (!localStorage.getItem('email')) {
-    e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
-    uiLoginActions('guest');
-  } else {
-    e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
-    uiLoginActions('logged');
-  }
-  e$('#eo-account-name').on('click', document.eoDialogs.toggleDialogTrigger);
   if (JSON.parse(document.englishonConfig.editor)) {
     e$('#eo-menu').addClass('menu-editor');
     e$('#editor-row').removeClass('hidden');
     e$.when(document.dic_promise).done(function () {
       document._editor = new Editor(document.overlay);
     });
-    e$('#eo-editor-btn').on('click', function (event) {
-      document.menu.powerOn();
-      document.overlay.hideQuestions();
-      document.eoDialogs.hideDialogs();
-      event.preventDefault();
-      document.eo_user.hideLiveActions();
-      // after you've loaded the editor, there's no going back.
-      // (for now. this should be fixed.)
-      document.overlay.hideButtons();
-      document._editor.fetchQuestions().then(function () {
-        console.log('------------------------------questions for editor');
-        document._editor.highlight();
-      });
-    });
   } else {
     e$('#eo-menu').removeClass('menu-editor');
   }
-  //OPTIONS MENU HANDLERS
-  e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
-  e$('#options-button').on('click', function (e) {
-    document.eoDialogs.toggleDialogTrigger(e);
-    e$('#options-button').toggleClass('open');
-  });
-  e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
-  e$('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger);
-  e$('#option-dlg-signin').data('elementToShowOnClick', 'eo-dlg-login');
-  e$('#option-dlg-signin').on('click', document.eoDialogs.toggleDialogTrigger);
-  e$('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
-  e$('#progress-tutorial-btn').on('click', function () {
-    document.eoDialogs.hideDialogs();
-    document.eo_user.showLiveActions();
-    Tour.progressTutorial();
-    document.tour.start();
-  });
-  e$('#tutorial-btn').on('click', function () {
-    document.eoDialogs.hideDialogs();
-    Tour.quizTutorial();
-    document.tour.start();
-  });
-  e$('.eo-site-option').on('click', function (e) {
-    e$('.eo-area, #eo-live').removeClass('hebrew english');
-    e$('.eo-area, #eo-live').addClass(e$(e.target).attr('id'));
-    configStorage.set({ siteLanguage: e$(e.target).attr('id') });
-    document.menu.displayMenuMessages();
-    document.eoDialogs.toggleDialogTrigger(e);
-  });
-  //LOGIN DIALOG
   var token = encodeURIComponent(document.englishonBackend.token);
   if (document.englishonConfig.isUser) {
     var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
@@ -9426,24 +9660,12 @@ var EnglishOnMenu = function () {
     var popup = this.contentWindow;
     popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
   });
-  e$('#eo-login-password').on('keydown', function (e) {
-    if (e.keyCode == 13) {
-      e$('#eo-mail-login-btn').click();
-    }
-  });
-  e$('#eo-mail-login-btn').on('click', loginByMail);
   var _originalSize = e$(window).width() + e$(window).height();
   e$(window).resize(function () {
     if (e$(window).width() + e$(window).height() != _originalSize) {
       element = document.getElementById('eo-login-email');
       element.scrollIntoView(true);
     }
-  });
-  e$('#eo-login-email').on('click', function (e) {
-    //causing the keyboard to open 
-    e.target.focus();
-    //Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    //This is causing chrome to compute the body width as 980px anycase, in inspector too
   });
   //i don't know why this line is needed.  
   window.history.pushState({ 'elementToShow': 'page' }, '');
@@ -9465,38 +9687,56 @@ var EnglishOnMenu = function () {
       return false;
     }
   });
+  this.bindEvents();
 };
 e$(function () {
   document.loaded_promise.resolve();
 });
 e$.when(document.questions_promise).done(function () {
   if (window.localStorage.getItem('show_quiz_tutorial')) {
-    if (!document.overlay.questions || !document.overlay.questions.length) {
-      //document.overlay.openNoQuestionsDialog();
-      return;
-    };
-    //if (true) {
     window.localStorage.removeItem('show_quiz_tutorial');
-    setTimeout(function () {
-      //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
-      Tour.quizTutorial();
-      document.tour.start();
-    }, 2000);
+    //e$('#demo_video').css({ width: e$('body').width()*0.65, height: e$('body').height()*0.75 });
+    valx = (e$('body').width() - e$('#demo_video').width()) / 2;
+    valy = (e$('body').height() - e$('#demo_video').height()) / 2;
+    e$('#eo-movie').removeClass('hidden');
+    e$('#demo_video').css({ left: valx, top: valy });
+    e$('.eo-close.close-movie').css({ left: valx + e$('#demo_video').width() - 29, top: valy + 35 });
+    document.getElementById('demo_video').play();
   }
 });
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
   if (location.pathname != '/') {
     englishon_banner = new function () {
       var video = e$('<div id="eo-banner">').append(e$('<video/>', {
-        src: staticUrl('banner.mp4'),
+        src: staticUrl('banner_with_movie.m4v'),
         type: 'video/mp4',
         autoplay: true,
         loop: true
       }));
+      var movie = e$('<div id="eo-movie">').append(e$('<video/>', {
+        src: staticUrl('demo.mp4'),
+        id: 'demo_video',
+        type: 'video/mp4',
+        autoplay: false,
+        loop: true,
+        controls: true,
+        controlsList: 'nodownload'
+      })).append(e$('<div>').addClass('eo-close close-movie').on('click', function () {
+        e$('#eo-movie').addClass('hidden');
+        document.getElementById('demo_video').pause();
+      }));
       e$('#sidebar').prepend(video);
+      e$('body').prepend(movie);
+      e$('#eo-movie').addClass('hidden');
       e$('#eo-banner').on('click', document.firstTimeUser);
     }();
   }
+  /* to hide the player: 
+   var player = videojs('my-player');
+  or:
+  player.on('ended', function() {
+    this.dispose();
+  });*/
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
   //register the handler for backspace/forward
