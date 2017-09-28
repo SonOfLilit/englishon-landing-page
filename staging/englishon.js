@@ -9696,16 +9696,14 @@ e$(function () {
 });
 e$.when(document.questions_promise).done(function () {
   if (window.localStorage.getItem('show_quiz_tutorial')) {
-    //if (!document.overlay.questions || !document.overlay.questions.length) {
-    if (!e$('.eo-question').length) {
-      return;
-    };
     window.localStorage.removeItem('show_quiz_tutorial');
-    setTimeout(function () {
-      //the timeout intended to ensure the browser scroll done allready, and will not break our scroll to first question location
-      Tour.quizTutorial();
-      document.tour.start();
-    }, 2000);
+    //e$('#demo_video').css({ width: e$('body').width()*0.65, height: e$('body').height()*0.75 });
+    valx = (e$('body').width() - e$('#demo_video').width()) / 2;
+    valy = (e$('body').height() - e$('#demo_video').height()) / 2;
+    e$('#eo-movie').removeClass('hidden');
+    e$('#demo_video').css({ left: valx, top: valy });
+    e$('.eo-close.close-movie').css({ left: valx + e$('#demo_video').width() - 27, top: valy + 35 });
+    document.getElementById('demo_video').play();
   }
 });
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
@@ -9726,21 +9724,12 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
         controls: true,
         controlsList: 'nodownload'
       })).append(e$('<div>').addClass('eo-close close-movie').on('click', function () {
-        e$('#eo-movie').hide();
+        e$('#eo-movie').addClass('hidden');
       }));
       e$('#sidebar').prepend(video);
       e$('body').prepend(movie);
       e$('#eo-movie').addClass('hidden');
-      //e$('#eo-banner').on('click', document.firstTimeUser);
-      e$('#eo-banner').on('click', function () {
-        valx = (e$('body').width() - e$('#demo_video').width()) / 2;
-        valy = (e$('body').height() - e$('#demo_video').height()) / 2;
-        e$('#eo-movie').removeClass('hidden');
-        e$('#demo_video').css({ left: valx, top: valy });
-        e$('.eo-close.close-movie').css({ left: valx + e$('#demo_video').width(), top: valy - 4 });
-        document.getElementById('demo_video').play();
-        //videojs('demo_video');
-      });
+      e$('#eo-banner').on('click', document.firstTimeUser);
     }();
   }
   /* to hide the player: 

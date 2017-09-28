@@ -2805,7 +2805,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   color: gray;
   background-size: 16px;
   background-image: url(http://localhost:8080/static/ex/img/close.png);
-  z-index: 10000;
+  z-index: 1000000;
   background-color: white;
   border-radius: 25px;
   background-position: center;
@@ -2813,8 +2813,8 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-movie video {
   position: absolute;
   top: 100px;
-  height: 375px;
-  width: 600px;
+  height: 637.5px;
+  width: 1020px;
   cursor: pointer;
   z-index: 1000000;
 }
