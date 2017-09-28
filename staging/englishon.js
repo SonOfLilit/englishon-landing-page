@@ -7391,12 +7391,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
     </div>\
   </div>\
 </div>\
-<div id='eo-movie' class='hidden'> \
-<video id='demo_video' class='video-js' controls preload='auto' poster='MY_VIDEO_POSTER.jpg' data-setup='{}'>\
-  <source type='video/mp4'>\
-  <p class='vjs-no-js'> To view this video please enable JavaScript, and consider upgrading to a web browser that <a href='http://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a> </p>\
-</video>\
-</div>";
+";
 //
 document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
   <div class='eo-close close-dialog'></div>\
@@ -9732,14 +9727,16 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
           </p>
         </video>
       */
-      /*      var movie = e$('<div id="eo-movie">').append(e$('<video/>', {
-              src: staticUrl('demo.mp4'),
-              id: 'demo_video',
-              type: 'video/mp4',
-              autoplay: false,
-              loop: true
-            }).append(e$('<div>').addClass('eo-close close-movie')));
-      */
+      var movie = e$('<div id="eo-movie">').append(e$('<video/>', {
+        src: staticUrl('demo.mp4'),
+        id: 'demo_video',
+        type: 'video/mp4',
+        autoplay: false,
+        loop: true,
+        controls: true,
+        controlsList: 'nodownload'
+      }).append(e$('<div>').addClass('eo-close close-movie')));
+
       /*     var movie = e$('<div id="eo-movie">').append(e$('<video controls />', {
       class:"video-js", preload:"auto", width:"640", height:"264",id:'demo_video',
         poster:"MY_VIDEO_POSTER.jpg",
@@ -9749,7 +9746,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
       }));
       */
       e$('#sidebar').prepend(video);
-      //e$('body').prepend(movie);
+      e$('body').prepend(movie);
       e$('#eo-movie').addClass('hidden');
       //e$('#eo-banner').on('click', document.firstTimeUser);
       e$('#eo-banner').on('click', function () {
@@ -9758,9 +9755,16 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
         e$('#eo-movie').removeClass('hidden');
         e$('#demo_video').css({ left: valx, top: valy });
         document.getElementById('demo_video').play();
+        //videojs('demo_video');
       });
     }();
   }
+  /* to hide the player: 
+   var player = videojs('my-player');
+  or:
+  player.on('ended', function() {
+    this.dispose();
+  });*/
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
   //register the handler for backspace/forward
