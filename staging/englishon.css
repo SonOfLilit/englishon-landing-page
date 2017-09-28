@@ -2790,6 +2790,8 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 
 #eo-movie {
   position: fixed;
+  top: 0px;
+  left: 0px;
   background-color: black;
   /* Fallback color */
   background-color: rgba(80, 80, 80, 0.75);
