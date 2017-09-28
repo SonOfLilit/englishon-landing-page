@@ -2798,6 +2798,18 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   width: 100%;
   height: 100%;
 }
+#eo-movie .eo-close {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  color: gray;
+  background-size: 16px;
+  background-image: url(http://localhost:8080/static/ex/img/close.png);
+  z-index: 10000;
+  background-color: white;
+  border-radius: 25px;
+  background-position: center;
+}
 #eo-movie video {
   position: absolute;
   top: 100px;

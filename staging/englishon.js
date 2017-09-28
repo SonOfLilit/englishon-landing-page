@@ -9717,16 +9717,6 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
         autoplay: true,
         loop: true
       }));
-      /*<video id="my-video" class="video-js" controls preload="auto" width="640" height="264"
-        poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
-          <source src="MY_VIDEO.mp4" type='video/mp4'>
-          <source src="MY_VIDEO.webm" type='video/webm'>
-          <p class="vjs-no-js">
-            To view this video please enable JavaScript, and consider upgrading to a web browser that
-            <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-          </p>
-        </video>
-      */
       var movie = e$('<div id="eo-movie">').append(e$('<video/>', {
         src: staticUrl('demo.mp4'),
         id: 'demo_video',
@@ -9735,16 +9725,9 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
         loop: true,
         controls: true,
         controlsList: 'nodownload'
-      }).append(e$('<div>').addClass('eo-close close-movie')));
-
-      /*     var movie = e$('<div id="eo-movie">').append(e$('<video controls />', {
-      class:"video-js", preload:"auto", width:"640", height:"264",id:'demo_video',
-        poster:"MY_VIDEO_POSTER.jpg",
-      }).append(e$('<source>'), {
-        src: staticUrl('demo.mp4'),
-        type: 'video/mp4',
+      })).append(e$('<div>').addClass('eo-close close-movie').on('click', function () {
+        e$('#eo-movie').hide();
       }));
-      */
       e$('#sidebar').prepend(video);
       e$('body').prepend(movie);
       e$('#eo-movie').addClass('hidden');
@@ -9754,6 +9737,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
         valy = (e$('body').height() - e$('#demo_video').height()) / 2;
         e$('#eo-movie').removeClass('hidden');
         e$('#demo_video').css({ left: valx, top: valy });
+        e$('.eo-close.close-movie').css({ left: valx + e$('#demo_video').width(), top: valy - 4 });
         document.getElementById('demo_video').play();
         //videojs('demo_video');
       });
