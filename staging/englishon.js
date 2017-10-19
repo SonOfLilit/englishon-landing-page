@@ -7594,19 +7594,19 @@ var overlay_settings = {
         return e$('.sf-menu.hidden-xs');
       },
       'pin_button_front': function () {
-        return e$('.site-header');
+        return e$('.sf-menu.hidden-xs');
       },
       'pin_button_category': function () {
-        return e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul');
+        return e$('.sf-menu.hidden-xs');
       },
       'button_left_value': function () {
-        return -120;
+        return -85;
       },
       'button_top_value': function () {
         return -8;
       },
       'category_button_left_value': function () {
-        return 10;
+        return -85;
       },
       'placeLiveActions': function () {
         var startPoint = e$('#sidebar').offset().top - 10;
@@ -7936,7 +7936,70 @@ PageOverlay.prototype.showQuestions = function () {
 PageOverlay.prototype.hideQuestions = function () {
   e$('body').removeClass('question-injected');
 };
-kolhazmanFrontpageOverlay = function (parts, pageType) {};
+kolhazmanFrontOverlay = function (parts, url) {
+  this.url = url.toLowerCase();
+  this.parts = parts;
+  this.interacted = false;
+  this.userAnswered = false;
+  PageOverlay.call(this);
+  this.settings = overlay_settings['kolhazman'][document.englishonConfig.media];
+  this.tutorial_selector = this.settings['pin-tutotial-category'];
+  if (location.pathname == '/') {
+    this.pageType = 'front-page';
+  } else {
+    this.pageType = 'category-page';
+    e$('body').addClass('category-page');
+  }
+  //e$('body').addClass('category-page');
+  this.showButtons = function () {
+    this.settings.pin_button_category().append(EnglishOnButton.element());
+    if (document.englishonConfig.isUser) {
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    } else {
+      e$('.eo-button').on('click', document.firstTimeUser);
+    }
+    if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
+      this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
+    }
+    e$('.eo-button').css('left', this.settings.category_button_left_value());
+  };
+  this.fetchQuestions = function () {
+    //just to enable compile
+    return e$.Deferred().resolve().then(function () {
+      return [];
+    });
+  };
+  this.hideQuestions = function () {};
+  this.showQuestions = function () {};
+  this.powerOn = function () {
+    PageOverlay.prototype.powerOn.call(this);
+    if (!document.englishonConfig.isUser) {
+      console.log('Marks for edited articles did not display. This user never turn on enlishon');
+      return;
+    }
+    var promises = e$.map(this.parts, function (part, url) {
+      url = url.toLowerCase();
+      return document.englishonBackend.getArticle(url, 1).then(function (questions) {
+        //if (questions.length) {
+        if (true) {
+          if (!e$(part).find('.category-icon').length) {
+            if (document.overlay.pageType == 'category-page') {
+              e$(part).find('.read-more').prepend(e$('<div>').addClass('category-icon'));
+            } else {
+              e$(part).find('.media-heading').append(e$('<div>').addClass('category-icon'));
+            }
+          }
+        }
+      });
+    });
+    document.questions_promise.resolve();
+  };
+  this.powerOff = function () {
+    if (!document.englishonConfig.email) {
+      e$('.category-icon').remove();
+    }
+  };
+};
 kolhazmanOverlay = function (url, subtitle, bodytext) {
   this.url = url.toLowerCase();
   this.subtitle = subtitle;
@@ -7966,32 +8029,6 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
     setButtonInterval(function () {
       console.log('-------------setTimeOut button_top_value');
       e$('.eo-button').css({ 'top': document.overlay.settings.button_top_value() });
-    }, 500, 20);
-    //ON KOLHAZMAN OUR ELEMENTS ARE PROBABLY REWRITE, SO DATA AND BINDED EVENTS ARE LOST
-    setIntervalX('bind_events', function () {
-      if (document.englishonConfig.isUser) {
-        e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
-      } else {
-        e$('.eo-button').on('click', document.firstTimeUser);
-      }
-      document.menu.bindEvents();
-      for (i = 0; i < document.overlay.injector.elements.length; i++) {
-        var q = document.overlay.injector.elements[i].qobj;
-        var current = e$('.eo-question').filter(function (elem) {
-          return q.data.context == e$(elem).find('.data_context').text();
-        }).eq(0);
-        q.element = current;
-        //TODO:  DO THE JOB FOR ANSWERED QUESTIONS!
-        if (!q.element.hasClass('eo-answered')) {
-          e$('.eo-question').eq(i).find('.eo-hint').click(q.questionOnClick.bind(q));
-          var answers = q.data.personal_distractions;
-          var options = e$('.eo-question').eq(i).find('.eo-option span');
-          for (var j = 0; j < 4; j++) {
-            //options.eq(j).data('translate', answers[j].translation).data('word', answers[j].answer);
-            options.eq(j).click(q.optionOnClick.bind(q));
-          }
-        }
-      }
     }, 500, 20);
   };
   this.showQuestions = function () {
@@ -8518,7 +8555,7 @@ var kolhazmanFrontScraper = function () {
   };
   this.scrape = function () {
     var parts = {};
-    e$('.kipke_post_block').each(function (i, para) {
+    e$('.post').each(function (i, para) {
       if (e$(para).find('a').length) {
         var url = e$(para).find('a')[0].href;
       } else {
@@ -9215,8 +9252,8 @@ window.setIntervalX = function (name, callback, delay, repetitions) {
 };
 document.playMovie = function () {
   //e$('#demo_video').css({ width: e$('body').width()*0.65, height: e$('body').height()*0.75 });
-  valx = (e$('body').width() - e$('#demo_video').width()) / 2;
-  valy = (e$('body').height() - e$('#demo_video').height()) / 2;
+  valx = (e$(window).width() - e$('#demo_video').width()) / 2;
+  valy = (e$(window).height() - e$('#demo_video').height()) / 2;
   e$('#eo-movie').removeClass('hidden');
   e$('#demo_video').css({ left: valx, top: valy });
   e$('.eo-close.close-movie').css({ left: valx + e$('#demo_video').width() - 29, top: valy + 35 });
