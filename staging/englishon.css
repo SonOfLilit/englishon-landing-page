@@ -1428,17 +1428,21 @@ body.www-kolhazman-co-il .ui-dialog {
   z-index: 10000;
 }
 body.www-kolhazman-co-il .eo-button {
-  left: -110px;
-  top: -8px;
+  top: 3px;
+  left: 46px;
+  height: 36px;
+  width: 160px;
   z-index: 1000;
 }
 body.www-kolhazman-co-il .eo-button .eo-icon {
   background-size: 27px;
+  margin-top: 2px;
 }
 body.www-kolhazman-co-il .eo-button .eo-logo {
   top: 7px;
   left: 27px;
   background-size: 81px;
+  margin-top: 2px;
 }
 body.www-kolhazman-co-il .eo-button .registered_symbol {
   top: 8px;

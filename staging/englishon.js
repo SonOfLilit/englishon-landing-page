@@ -7600,13 +7600,13 @@ var overlay_settings = {
         return e$('.sf-menu.hidden-xs');
       },
       'button_left_value': function () {
-        return -85;
+        return 46;
       },
       'button_top_value': function () {
-        return -8;
+        return 3;
       },
       'category_button_left_value': function () {
-        return -85;
+        return 46;
       },
       'placeLiveActions': function () {
         var startPoint = e$('#sidebar').offset().top - 10;
@@ -7950,7 +7950,17 @@ kolhazmanFrontOverlay = function (parts, url) {
     this.pageType = 'category-page';
     e$('body').addClass('category-page');
   }
+  e$('#eo-banner').css({ 'margin-right': (e$('#sidebar').width() - 270) / 2 });
   //e$('body').addClass('category-page');
+  e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 1000 });
+  e$('.menu-search').on('mouseenter', function () {
+    e$('.eo-button').css({ 'z-index': 10 });
+    e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 10 });
+  });
+  e$('.menu-search').on('mouseleave', function () {
+    e$('.eo-button').css({ 'z-index': 1000 });
+    e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 1000 });
+  });
   this.showButtons = function () {
     this.settings.pin_button_category().append(EnglishOnButton.element());
     if (document.englishonConfig.isUser) {
@@ -8011,6 +8021,17 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
   this.settings = overlay_settings['kolhazman'][document.englishonConfig.media];
   //this.tutorial_selector = this.settings['pin-tutotial-article'];
   this.pageType = 'article';
+  e$('#eo-banner').css({ 'margin-right': (e$('#sidebar').width() - 270) / 2 });
+  //e$('body').addClass('category-page');
+  e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 1000 });
+  e$('.menu-search').on('mouseenter', function () {
+    e$('.eo-button').css({ 'z-index': 10 });
+    e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 10 });
+  });
+  e$('.menu-search').on('mouseleave', function () {
+    e$('.eo-button').css({ 'z-index': 1000 });
+    e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 1000 });
+  });
   this.getLineDetails = function () {
     return [e$('.entry-content').offset().left, e$('.entry-content').width()];
   };
