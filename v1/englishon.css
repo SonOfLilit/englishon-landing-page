@@ -560,7 +560,7 @@
 /*TUTORIAL*/
 
 .shepherd {
-  z-index: 13;
+  z-index: 10000;
 }
 /*!
  *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
@@ -1415,19 +1415,39 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+body.www-kolhazman-co-il.category-page .category-icon {
+  display: inline-block;
+  margin: 0px;
+  padding: 0px;
+  width: 11px;
+  height: 11px;
+  background-size: 11px;
+  margin-left: 5px;
+}
 body.www-kolhazman-co-il .ui-dialog {
   z-index: 10000;
 }
 body.www-kolhazman-co-il .eo-button {
-  left: -110px;
-  top: -8px;
-  z-index: 10000;
+  top: 3px;
+  left: 46px;
+  height: 36px;
+  width: 160px;
+  z-index: 1000;
+}
+body.www-kolhazman-co-il .eo-button .eo-icon {
+  background-size: 27px;
+  margin-top: 2px;
 }
 body.www-kolhazman-co-il .eo-button .eo-logo {
-  top: 6px;
+  top: 7px;
+  left: 27px;
+  background-size: 81px;
+  margin-top: 2px;
 }
 body.www-kolhazman-co-il .eo-button .registered_symbol {
   top: 8px;
+  left: 116px;
+  font-size: 11px;
 }
 body.www-kolhazman-co-il #eo-live {
   background-color: white;
