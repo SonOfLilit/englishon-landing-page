@@ -1450,11 +1450,15 @@ body.www-kolhazman-co-il .eo-button .registered_symbol {
   font-size: 11px;
 }
 body.www-kolhazman-co-il #eo-live {
-  background-color: white;
+  width: 400px;
+  padding: 0px 50px;
+  background-color: #eee;
 }
 body.www-kolhazman-co-il #eo-live.eo-live-maximize {
+  width: 400px;
   height: 208px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: #eee;
+  padding: 20px 57px;
 }
 
 body.www-shturem-net div.eo-paragraph,
@@ -2832,9 +2836,10 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 #eo-movie video {
   position: absolute;
-  top: 100px;
+  top: 0px;
   height: 637.5px;
   width: 1020px;
+  object-fit: fill;
   cursor: pointer;
   z-index: 1000000;
 }
@@ -3202,6 +3207,20 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 /* responsive.scss */
 @media (max-width: 981px) {
+  #eo-banner {
+    width: 100%;
+  }
+  #eo-banner video {
+    width: 100%;
+  }
+
+  #eo-movie video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: black;
+  }
+
   #lc_chat_layout.lc-expanded {
     right: 0px !important;
   }
