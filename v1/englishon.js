@@ -6238,13 +6238,11 @@ UserInfo = function () {
     var lang = str.charCodeAt(0) >= 65 && str.charCodeAt(0) <= 122 ? 'eng' : 'heb';
     return lang;
   };
-
   this.listenToInput = function (e) {
     var key = e.keyCode;
     var element = e$('#personal-word');
     element.removeClass('heb eng');
     if (element.val()[0]) element.addClass(this.detectLanguage(element.val()[0]));
-
     if (key === 13 || key === 10) {
       var word = e$(e.target).val().trim();
       if (word == '') {
@@ -6269,11 +6267,9 @@ UserInfo = function () {
         alert('you typed in two language');
         return;
       }
-
       if (e$('#personal-word-btn').find('option').length > 1) {
         return;
       }
-
       this.createMeaningsList(word);
     } else {
       $('#personal-word-btn').find('option').slice(1).remove();
@@ -6290,7 +6286,6 @@ UserInfo = function () {
       });
     }.bind(this));
   };
-
   this.addPersonalWord = function () {
     var input = $('#personal-word').val();
     var select = $('#personal-word-btn').val();
@@ -6445,14 +6440,11 @@ UserInfo = function () {
       format: 'd'
     });
     e$('#eo-live').off('click');
-
     //keypress is not a good choice, because it is not recognizing backspace
     e$('#personal-word').on('keyup', this.listenToInput.bind(this));
-
     e$('#personal-word-btn').on('change', this.addPersonalWord.bind(this));
     e$('#personal-word').val('');
     e$('#personal-word-btn').find('option').slice(1).remove();
-
     e$('#eo-live').on('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -6502,13 +6494,9 @@ UserInfo = function () {
       if (e.target.is('#personal-word-btn')) {
         return;
       }
-
       if (e.target.is('.eo-close')) {
         if (e$('#eo-live').hasClass('eo-live-maximize')) {
-          e$('#vocabulary').addClass('hidden');
-          e$('#eo-live-main').removeClass('hidden');
-          e$('#eo-live').removeClass('eo-live-maximize vocabulary-open');
-          clearInterval(document.vocabulary_interval);
+          this.minimize();
           return;
         }
         e$('#eo-banner').show();
@@ -6586,18 +6574,6 @@ UserInfo = function () {
       //'1000000' is a hack to display trailing zero... till not supported with format
       e$('#eo-odometer').text(1000000 + data['#words'] * 10);
     });
-  };
-  this.testVocabulary = function () {
-    document.eo_user.showLiveActions();
-    e$('#eo-live').addClass('eo-live-maximize vocabulary-open');
-    e$('#vocabulary').removeClass('hidden');
-    e$('#eo-live-main').addClass('hidden');
-
-    word = { 'mastery': 0.2, 'word': 'very_very_long_word', 'translation': 'מילה ארוכה' };
-    word2 = { 'mastery': 0.2, 'word': 'average', 'translation': 'תרגוםארוךבמיוחד' };
-    word3 = { 'mastery': 0.2, 'word': 'smile', 'translation': 'חיוך' };
-    words_list = [word, word2, word3, word2, word, word3, word, word2, word, word, word, word, word];
-    document.eo_user.renderVocabulary(words_list);
   };
 };
 //
@@ -6699,6 +6675,15 @@ Injector = function (paragraphs) {
               console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
               q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
             }*/
+      if (!q.replacement.hasClass('eo-expired')) {
+        q.qobj.questionOnClick(q.replacement.find('.eo-hint'));
+        var open_width = q.replacement.find('.eo-options').outerWidth();
+        if (open_width > spaceInCurrentLine) {
+          console.log('IN THIS CASE question is expected to BE CUT after openning, ' + open_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
+          q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+        }
+        document.overlay.closeUnAnswered();
+      }
       if (future_width > spaceInCurrentLine) {
         console.log('IN THIS CASE question is expected to go DOWN after action, ' + future_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
         q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
@@ -6886,7 +6871,6 @@ AbstractQuestion.prototype.questionOnClick = function (e) {
     e.stopPropagation();
     this.movePointer();
   }
-
   this.touch();
   if (e$(e.target).parents('.eo-question.eo-active').length) {
     this.closeUnanswered();
@@ -6906,23 +6890,17 @@ AbstractQuestion.prototype.animateStateChange = function (classesToAdd, classesT
   var offset = this.element.offset().left;
   var future_point = offset - (finalWidth - Number(this.element.css('width').replace(/[^\d\.\-]/g, '')));
   var parentoffset = this.element.parent().offset().left;
-  if (future_point < parentoffset) {
-    this.element.addClass(classesToAdd);
-    this.element.removeClass(classesToRemove);
-    console.log('edge question!');
-  } else {
-    // explicitly set initial width
-    // +1 because rounding down makes the text sometimes not fit, and one pixel is a small price for solving it
-    this.element.css('width', this.element.outerWidth() + 1);
-    // force repaint
-    this.element.width();
-    // change state
-    this.element.addClass(classesToAdd);
-    this.element.removeClass(classesToRemove);
-    this.element.width();
-    // explicitly set target width
-    this.element.css('width', finalWidth + 1);
-  }
+  // explicitly set initial width
+  // +1 because rounding down makes the text sometimes not fit, and one pixel is a small price for solving it
+  this.element.css('width', this.element.outerWidth() + 1);
+  // force repaint
+  this.element.width();
+  // change state
+  this.element.addClass(classesToAdd);
+  this.element.removeClass(classesToRemove);
+  this.element.width();
+  // explicitly set target width
+  this.element.css('width', finalWidth + 1);
   // cancle fixed width for question and give it fit width
   if (this.element.is('.eo-answered')) {
     this.element.removeAttr('style');
@@ -9268,8 +9246,6 @@ window.setIntervalX = function (name, callback, delay, repetitions) {
 };
 document.playMovie = function () {
   if (document.englishonConfig.media === 'desktop') {
-    //var valx = (e$(window).width() - e$('#demo_video').width()* e$(window).width() / 100) / 2;
-    //var valy = (e$(window).height() - e$('#demo_video').height()* e$(window).height() / 100) / 2;
     var valx = (e$(window).width() - e$('#demo_video').css('width').slice(0, -2)) / 2;
     var valy = (e$(window).height() - e$('#demo_video').css('height').slice(0, -2)) / 2;
     e$('#demo_video').css({ left: valx, top: valy });
@@ -9958,5 +9934,61 @@ function createLogoutButton() {
     });
   }));
 }
+//
+Editor.prototype.testEdgeQuestions = function (word1, ctx1, word2 = null, ctx2 = null, word3 = null, ctx3 = null) {
+  /*first word = a short hebrew word in the edge of line
+  second word = a normal word
+  third word = a long hebrew word
+  
+  NOTE!    CANCEL USE OF PERSONAL DISTRACTORS FOR THIS TEST
+  http://actualic.co.il/%D7%9E%D7%A9%D7%94-%D7%A7%D7%9C%D7%99%D7%99%D7%9F-%D7%91%D7%A1%D7%99%D7%A0%D7%92%D7%9C-%D7%97%D7%93%D7%A9-%D7%95%D7%A1%D7%95%D7%97%D7%A3-%D7%95%D7%A7%D7%95%D7%9C%D7%95-%D7%A0%D7%A9%D7%9E%D7%A2/
+  var str6 = 'היכולות הווקאליות הנדירות';
+  var str5 = 'הווקאליות';
+  var str4 = 'דהן כשעל מלאכת';
+  var str3 = 'כשעל';
+  var str1 ='נאה'
+  var str2 ='דבר נאה ומתקבל'
+  document._editor.testEdgeQuestions(str1,str2,str3,str4,str5,str6);
+  http://actualic.co.il/%D7%94%D7%A9%D7%91%D7%9B-%D7%95%D7%A6%D7%94%D7%9C-%D7%A4%D7%A9%D7%98%D7%95-%D7%A2%D7%9C-%D7%94%D7%9B%D7%A4%D7%A8%D7%99%D7%9D/
+  var str4 = 'בכפר בית עווא כספי ';
+  var str3 = 'בית';
+  var str1 ='עממי'
+  var str2 ='טרור עממי ובהפרות'
+  document._editor.testEdgeQuestions(str1,str2,str3,str4);
+  */
+  createFictiveQuestion(word1, ctx1, [{ word: 'one', translation: 'אחד' }, { word: 'one', translation: 'אחד' }, { word: 'one', translation: 'אחד' }], 'longlongword');
+  createFictiveQuestion(word2, ctx2, [{ word: 'longlonglonglong', translation: 'אחד' }, { word: 'longlonglonglong', translation: 'אחד' }, { word: 'longlonglonglong', translation: 'אחד' }], 'home');
+  createFictiveQuestion(word3, ctx3, [{ word: 'size', translation: 'אחד' }, { word: 'size', translation: 'אחד' }, { word: 'size', translation: 'אחד' }], 'to');
+
+  function createFictiveQuestion(word, ctx, wrong, correct) {
+    var question = {
+      'context': ctx,
+      'replaced': word,
+      'hint': word,
+      'correct_answers': [correct],
+      'wrong_answers': wrong,
+      'hint_language': 'he',
+      'answer_language': 'en',
+      'preposition': ''
+    };
+    console.log("Finished create the object in createAutoquestion");
+    document.englishonBackend.createQuestion(question).then(function (res) {
+      console.log('created');
+    }, function (reason) {
+      alert('Error creating question');
+    });
+  }
+};
+document.testVocabulary = function () {
+  document.eo_user.showLiveActions();
+  e$('#eo-live').addClass('eo-live-maximize vocabulary-open');
+  e$('#vocabulary').removeClass('hidden');
+  e$('#eo-live-main').addClass('hidden');
+  word = { 'mastery': 0.2, 'word': 'very_very_long_word', 'translation': 'מילה ארוכה' };
+  word2 = { 'mastery': 0.2, 'word': 'average', 'translation': 'תרגוםארוךבמיוחד' };
+  word3 = { 'mastery': 0.2, 'word': 'smile', 'translation': 'חיוך' };
+  words_list = [word, word2, word3, word2, word, word3, word, word2, word, word, word, word, word];
+  document.eo_user.renderVocabulary(words_list);
+};
 //
 //# sourceMappingURL=englishon.map
