@@ -5600,6 +5600,7 @@ HerokuBackend.prototype.rejectedTerms = function (address) {
 HerokuBackend.prototype.getArticle = function (address, limit = 5) {
   this.url = encodeURIComponent(address) + '/'.toLowerCase();
   console.log('backend console *****token: ' + this.token);
+
   return this.ajax("GET", "/quiz/page/" + limit + "/" + this.url).then(function (data) {
     this.pageid = data.id;
     return data.questions;
@@ -8690,7 +8691,7 @@ var Speaker = new function () {
   this.cache = {};
 
   this.toggle = function (enable) {
-    gainNode.gain.value = enable ? 100 : 0;
+    gainNode.gain.value = enable ? 60 : 0;
   };
 
   this.changeVolume = function (value) {
