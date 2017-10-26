@@ -8689,22 +8689,26 @@ var Speaker = new function () {
   var gainNode = audioContext.createGain();
   gainNode.connect(audioContext.destination);
   this.cache = {};
-
   this.toggle = function (enable) {
-    gainNode.gain.value = enable ? 60 : 0;
+    if (document.englishonConfig.media == 'desktop') {
+      gainNode.gain.value = enable ? 1.0 : 0;
+    } else {
+      gainNode.gain.value = enable ? 2.0 : 0;
+    }
   };
-
   this.changeVolume = function (value) {
-    gainNode.gain.value = value;
+    if (document.englishonConfig.media == 'desktop') {
+      gainNode.gain.value = value / 100;
+    } else {
+      gainNode.gain.value = value / 100 * 2;
+    }
   };
-
   this.fetch = function (language, phrase) {
     var key = language + '/' + phrase;
     if (this.cache[key]) {
       return this.cache[key];
     }
     var r = e$.Deferred();
-
     // can't use jQuery because it doesn't support arraybuffer yet
     var xhr = new XMLHttpRequest();
     xhr.open('GET', document.englishonBackend.base + "/tts/speak/" + language + '/' + phrase, true);
@@ -8720,11 +8724,9 @@ var Speaker = new function () {
     this.cache[key] = r;
     return r;
   };
-
   this.speak = function (language, phrase) {
     this.fetch(language, phrase).then(this.playBuffer.bind(this));
   };
-
   this.playBuffer = function (audioBuffer) {
     var audioSourceNode = audioContext.createBufferSource();
     audioSourceNode.buffer = audioBuffer;
@@ -8733,7 +8735,6 @@ var Speaker = new function () {
     audioSourceNode.start();
   };
 }();
-
 // var context = AudioContext();
 // source= context.createBufferSource();
 // context.nodes.push(source);
