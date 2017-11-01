@@ -5600,7 +5600,6 @@ HerokuBackend.prototype.rejectedTerms = function (address) {
 HerokuBackend.prototype.getArticle = function (address, limit = 5) {
   this.url = encodeURIComponent(address) + '/'.toLowerCase();
   console.log('backend console *****token: ' + this.token);
-
   return this.ajax("GET", "/quiz/page/" + limit + "/" + this.url).then(function (data) {
     this.pageid = data.id;
     return data.questions;
@@ -5807,12 +5806,12 @@ Editor.prototype.createAutoQuestion = function (event) {
   console.log("Finished create the object in createAutoquestion");
   this.span = span;
   document.englishonBackend.createQuestion(question).then(function (res) {
-    this.span.removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click', 'onClick');
+    this.span.removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click');
     document._editor.pointer--;
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
     document._editor.EditNext(pointer);
     // .on('click', this.question_onClick.bind(this));
-    span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
+    this.span.on('click', this.question_onClick.bind(this)).children().click(function (e) {
       e.stopPropagation();
     });
   }.bind(this), function (reason) {
@@ -5841,7 +5840,7 @@ Editor.prototype.question_onClick = function (event) {
     q_dialog.dialog('close');
     document.englishonBackend.deleteQuestion(question).then(function (res) {
       console.log('Question deleted');
-      this.span.removeClass('eo-editor-question').addClass('eo-editor-candidate').off('click').on('click', this.onClick.bind(this));
+      this.span.removeClass('eo-editor-question current').addClass('eo-editor-candidate').off('click').on('click', this.onClick.bind(this));
     }.bind(this), function (reason) {
       console.log('Error delete question. Reason is: ' + reason);
     });
@@ -5849,7 +5848,6 @@ Editor.prototype.question_onClick = function (event) {
   q_dialog.dialog();
 };
 Editor.prototype.onClick = function (event) {
-  //build!!!! build!!! build!!!!
   event.preventDefault();
   var span = e$(event.target);
   var ctx = this.autoContext(span); // TODO: bug: context is breakdown-dependent, and here we pretend it isn't.
@@ -7740,6 +7738,18 @@ PageOverlay = function () {
       e$('.eo-question').eq(next).addClass('next');
       return;
     }
+    if (e$('.eo-question.repeat').length) {
+      e$('.eo-question').removeClass('next repeat');
+      e = e$('.eo-question').eq(document.overlay.pointer);
+      var context = e.data('context');
+      var current = document.overlay.injector.elements.filter(function (q) {
+        return q.qobj.data.context == context;
+      })[0];
+      current.qobj.QuestionAudio(e.find('.eo-correct'));
+      var next = (document.overlay.pointer + 1) % e$('.eo-question').length;
+      e$('.eo-question').eq(next).addClass('next');
+      return;
+    }
     e$('.eo-question').removeClass('next');
     document.overlay.pointer = pointer;
     //alert('Next '+document.overlay.pointer);
@@ -7753,8 +7763,7 @@ PageOverlay = function () {
     if (!e.hasClass('eo-answered')) {
       current.qobj.questionOnClick(e.find('.eo-hint'));
     } else {
-      e.addClass('next');
-      current.qobj.QuestionAudio(e.find('.eo-correct'));
+      e.addClass('next repeat');
     }
     window.scrollTo(0, e.offset().top - 200);
   };
@@ -8735,6 +8744,7 @@ var Speaker = new function () {
     audioSourceNode.start();
   };
 }();
+
 // var context = AudioContext();
 // source= context.createBufferSource();
 // context.nodes.push(source);
