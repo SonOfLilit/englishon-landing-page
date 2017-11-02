@@ -5545,6 +5545,10 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
   });
 };
 
+HerokuBackend.prototype.indicateEditedArticles = function (urls) {
+  return this.ajax("POST", "/quiz/indicateEditedArticles/", { urls: urls });
+};
+
 // a way to prevent data loss when a user only remembers to log in
 // *after* starting a quiz.
 HerokuBackend.prototype.mergeTokens = function (oldToken, newToken) {
@@ -6051,6 +6055,7 @@ Editor.prototype.removeShortcut = function () {
   shortcut.remove('Enter');
   shortcut.remove('Up');
   shortcut.remove('Down');
+  console.log('asddfsdfsadfsfdasaadsfdfdafsfdfa removeShortcut');
 };
 Editor.prototype.shortcut = function () {
   this.removeShortcut();
@@ -7720,7 +7725,9 @@ PageOverlay = function () {
     console.log('adding class first-loading');
   };
   this.shortcut = function () {
+    console.log('dsshsdfhgdsfghdfgdfhddafhdhdfgdgdafdsfdsdaadadaddadasfdsasdsfa bind short cut');
     shortcut.add("Tab", function () {
+      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..overlay Tab');
       var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
       document.overlay.Next(pointer);
     });
@@ -8408,11 +8415,14 @@ actualicCategoryOverlay = function (parts, category_url) {
       console.log('Marks for edited articles did not display. This user never turn on enlishon');
       return;
     }
-    var promises = e$.map(this.parts, function (part, url) {
-      url = url.toLowerCase();
-      return document.englishonBackend.getArticle(url, 1).then(function (questions) {
-        if (questions.length) {
-          //if (true) {
+
+    var urls = e$.map(this.parts, function (part, url) {
+      return url;
+    });
+    document.englishonBackend.indicateEditedArticles(urls).then(function (res) {
+      console.log('res: ' + res);
+      e$.each(document.overlay.parts, function (url, part) {
+        if (res.urls[url]) {
           if (!e$(part).find('.category-icon').length) {
             e$(part).find('.show-for-large, p, .ttl').last().append(e$('<div>').addClass('category-icon'));
           }
