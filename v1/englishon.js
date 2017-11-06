@@ -5519,9 +5519,9 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
     data: JSON.stringify(data),
     contentType: 'application/json',
     dataType: 'json',
+    cache: false,
     beforeSend: function (xhr, settings) {
       xhr.setRequestHeader('Authorization', 'Token ' + token);
-      //xhr.setRequestHeader('Authorization', token);
     }
   };
   return e$.ajax(requestData).then(null, function (xhr, type) {
@@ -6058,7 +6058,8 @@ Editor.prototype.removeShortcut = function () {
   console.log('asddfsdfsadfsfdasaadsfdfdafsfdfa removeShortcut');
 };
 Editor.prototype.shortcut = function () {
-  this.removeShortcut();
+  //this.removeShortcut();
+  document.overlay.removeShortcut();
   shortcut.all_shortcuts = {};
   shortcut.add("Tab", function () {
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
@@ -6833,9 +6834,9 @@ var AbstractQuestion = function (qdata, toggleSound) {
   this.touched = false;
 };
 AbstractQuestion.prototype.replacement = function () {
-  if (!this.element) {
-    this.element = this.createElement();
-  }
+  //jquery replaceWith() removes all data associated with the removed nodes. 
+  //so we need to call createElement again
+  this.element = this.createElement();
   this.bindInput();
   return this.element;
 };
@@ -7142,9 +7143,7 @@ MultipleChoice.prototype.replacement = function () {
   //jquery replaceWith() removes all data associated with the removed nodes. 
   //so we need to call createElement again
   //if (!this.element) {
-  if (!this.element || !this.element.hasClass('eo-answered')) {
-    this.element = this.createElement();
-  }
+  this.element = this.createElement();
   this.bindInput();
   return this.element;
 };
@@ -7724,6 +7723,7 @@ PageOverlay = function () {
     e$('body').addClass('first-loading');
     console.log('adding class first-loading');
   };
+
   this.shortcut = function () {
     console.log('dsshsdfhgdsfghdfgdfhddafhdhdfgdgdafdsfdsdaadadaddadasfdsasdsfa bind short cut');
     shortcut.add("Tab", function () {
@@ -7909,6 +7909,11 @@ PageOverlay = function () {
     shortcut.remove('Up');
     shortcut.remove('Down');
     shortcut.remove('Enter');
+  };
+  this.removeShortcut = function () {
+    shortcut.remove('Tab');
+    shortcut.remove('Left');
+    shortcut.remove('Right');
   };
 };
 PageOverlay.prototype.showButtons = function () {};
@@ -8415,7 +8420,6 @@ actualicCategoryOverlay = function (parts, category_url) {
       console.log('Marks for edited articles did not display. This user never turn on enlishon');
       return;
     }
-
     var urls = e$.map(this.parts, function (part, url) {
       return url;
     });
@@ -8519,6 +8523,7 @@ actualicOverlay = function (url, subtitle, bodytext) {
     }
   };
   this.powerOff = function () {
+    this.removeShortcut();
     this.hideQuestions();
     if (document.eo_user) {
       document.eo_user.hideLiveActions();
@@ -9736,18 +9741,20 @@ var EnglishOnMenu = function () {
     e.preventDefault();
     if (!document.englishonConfig.email && e$('.eo-answered').length) {
       //if (true) {
-      console.log('user leaving the page!');
-      document.show_signin_tutorial = true;
-      document.tutorialInterval = setInterval(function () {
-        console.log('setTimeout----------------');
-        if (document.show_signin_tutorial) {
-          console.log('setTimeout!!!!!!!!!!!!');
-          Tour.signinTutorial();
-          document.tour.start();
-          clearInterval(document.tutorialInterval);
-        }
-      }, 500);
-      return false;
+      timeout = setTimeout(function () {
+        console.log('user leaving the page!');
+        document.show_signin_tutorial = true;
+        document.tutorialInterval = setInterval(function () {
+          console.log('setTimeout----------------');
+          if (document.show_signin_tutorial) {
+            console.log('setTimeout!!!!!!!!!!!!');
+            Tour.signinTutorial();
+            document.tour.start();
+            clearInterval(document.tutorialInterval);
+          }
+        }, 500);
+      }, 1000);
+      return 'prompt user to leave page';
     }
   });
   this.bindEvents();
