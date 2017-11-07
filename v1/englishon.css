@@ -2883,6 +2883,8 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 #eo-live.vocabulary-open {
   background-color: black;
+}
+#eo-live.vocabulary-open #vocabulary {
   overflow: auto;
 }
 #eo-live.vocabulary-open .eo-close {

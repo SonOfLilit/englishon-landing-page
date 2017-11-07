@@ -5510,20 +5510,33 @@ HerokuBackend = function (base, token) {
   this.base = base;
   this.token = token;
 };
-
 HerokuBackend.prototype.ajax = function (method, url, data) {
   var token = this.token;
-  var requestData = {
-    method: method,
-    url: this.base + url,
-    data: JSON.stringify(data),
-    contentType: 'application/json',
-    dataType: 'json',
-    cache: false,
-    beforeSend: function (xhr, settings) {
-      xhr.setRequestHeader('Authorization', 'Token ' + token);
-    }
-  };
+  if (url.startsWith('/quiz/page/')) {
+    //if user asking questions, turn off cache.this ebable user see new work he did when browsing with back button too.
+    var requestData = {
+      method: method,
+      url: this.base + url,
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      dataType: 'json',
+      cache: false,
+      beforeSend: function (xhr, settings) {
+        xhr.setRequestHeader('Authorization', 'Token ' + token);
+      }
+    };
+  } else {
+    var requestData = {
+      method: method,
+      url: this.base + url,
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      dataType: 'json',
+      beforeSend: function (xhr, settings) {
+        xhr.setRequestHeader('Authorization', 'Token ' + token);
+      }
+    };
+  }
   return e$.ajax(requestData).then(null, function (xhr, type) {
     console.log("Ajax error", xhr, type);
     if (xhr.status === 401) {
@@ -5531,7 +5544,6 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
       // remove the token, so on refresh we get a fresh guest account
       // we decided not to get a guest token immediately and retry the request
       // because *this should only happen to us* and we want to know when it does.
-
       // TODO: report this to user?
       configStorage.set({ token: null });
       return null;
@@ -5544,24 +5556,20 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
     }
   });
 };
-
 HerokuBackend.prototype.indicateEditedArticles = function (urls) {
   return this.ajax("POST", "/quiz/indicateEditedArticles/", { urls: urls });
 };
-
 // a way to prevent data loss when a user only remembers to log in
 // *after* starting a quiz.
 HerokuBackend.prototype.mergeTokens = function (oldToken, newToken) {
   return this.report('MergeTokens', { guest: oldToken, registered: newToken });
 };
-
 HerokuBackend.prototype.getMeanings = function (word, lang) {
   return this.ajax("POST", "/quiz/getMeanings/", { 'word': word, 'lang': lang });
 };
 HerokuBackend.prototype.addPersonalWord = function (word) {
   return this.ajax("POST", "/quiz/addPersonalWord/", { 'word': word });
 };
-
 HerokuBackend.prototype.milotrage = function () {
   return this.ajax("POST", "/quiz/score/milotrage/", { 'token': this.token });
 };
@@ -5571,7 +5579,6 @@ HerokuBackend.prototype.checkpersistence = function () {
 HerokuBackend.prototype.allSRQuestions = function () {
   return this.ajax("POST", "/quiz/score/allSRQuestions/", { 'token': this.token });
 };
-
 HerokuBackend.prototype.score = function (score_num) {
   var post = this.ajax("POST", "/quiz/score/score/", { 'token': this.token, 'scores_num': score_num });
   post.done(function () {
@@ -5581,26 +5588,21 @@ HerokuBackend.prototype.score = function (score_num) {
     console.log('error give scores to user!');
   });
 };
-
 HerokuBackend.prototype.checkWeeklyPresence = function () {
   return this.ajax("POST", "/quiz/score/checkWeeklyPresence/", { 'token': this.token });
 };
-
 HerokuBackend.prototype.getSRStatus = function (address) {
   return this.ajax("POST", "/quiz/getSRStatus/", { 'token': this.token });
 };
-
 HerokuBackend.prototype.getLevel = function (address) {
   return this.ajax("POST", "/quiz/score/getLevel/", { 'token': this.token });
 };
-
 HerokuBackend.prototype.acceptedTerms = function (address) {
   return this.ajax("POST", "/quiz/acceptedTerms/", { 'token': this.token });
 };
 HerokuBackend.prototype.rejectedTerms = function (address) {
   return this.ajax("POST", "/quiz/rejectedTerms/", { 'token': this.token });
 };
-
 HerokuBackend.prototype.getArticle = function (address, limit = 5) {
   this.url = encodeURIComponent(address) + '/'.toLowerCase();
   console.log('backend console *****token: ' + this.token);
@@ -5625,18 +5627,15 @@ HerokuBackend.prototype.getArticleForEditor = function (address) {
     }
   });
 };
-
 HerokuBackend.prototype.getSupportedLinks = function (urls) {
   // makeArray is essential, otherwise we get a jquery object with kilobytes of weird stuff
   return this.ajax("POST", "/quiz/supported_urls/", { urls: e$.makeArray(urls) }).then(function (data) {
     return data.supported_urls;
   });
 };
-
 HerokuBackend.prototype.deleteQuestion = function (question) {
   return this.ajax('POST', '/quiz/editor/deletequestion/' + this.url, question);
 };
-
 HerokuBackend.prototype.createQuestion = function (question) {
   question.page = this.pageid;
   question.correct_answers = question.correct_answers.map(function (a) {
@@ -5647,11 +5646,9 @@ HerokuBackend.prototype.createQuestion = function (question) {
   });
   return this.ajax('POST', '/quiz/editor/question/' + this.url, question);
 };
-
 HerokuBackend.prototype.resetUser = function () {
   return this.ajax('POST', '/quiz/editor/user/clean/');
 };
-
 HerokuBackend.prototype.report = function (msg, data) {
   // add "constant" parameters
   // should probably include some means of identifying the user.
@@ -5660,13 +5657,10 @@ HerokuBackend.prototype.report = function (msg, data) {
   var r = this.ajax('POST', '/quiz/report/' + msg + '/', data);
   return r;
 };
-
 HerokuBackend.prototype.fetchDictionary = function () {
   return this.ajax('GET', '/quiz/editor/dictionary/');
 };
-
 HerokuBackend.prototype.dictionary = function (new_word) {
-
   post = this.ajax('POST', '/quiz/editor/dictionary/add/', new_word);
   post.done(function (res) {
     console.log("Dictionary changed! (A word or new meanings added or removed)");
@@ -5678,7 +5672,6 @@ HerokuBackend.prototype.dictionary = function (new_word) {
 HerokuBackend.prototype.create_all_questions = function (address, question) {
   console.log("backend///create_all_questions before ajax action ");
   url = encodeURIComponent(address) + '/';
-
   var post = this.ajax('POST', '/quiz/editor/question/' + this.url, question);
   post.done(function (data) {
     console.log("Created question");
@@ -5687,7 +5680,6 @@ HerokuBackend.prototype.create_all_questions = function (address, question) {
     alert('Error creating question');
   });
 };
-
 HerokuBackend.prototype.is_new_session = function () {
   return this.ajax('GET', '/quiz/IsNewSession/').then(function (data) {
     return data.last;
@@ -7229,7 +7221,6 @@ MultipleChoice.prototype.closeUnanswered = function () {
 };
 MultipleChoice.prototype.closeAnswered = function () {
   // see super for more documentation
-  document.overlay.removeQuestionShortcut();
   //document.overlay.pointer --;
   //if (document.overlay.pointer == -1) { document.overlay.pointer = e$('.eo-question').length - 2; }
   var correctOption = this.element.find('.eo-option.eo-correct_option span');
@@ -7242,7 +7233,10 @@ MultipleChoice.prototype.closeAnswered = function () {
   AbstractQuestion.prototype.closeAnswered.call(this);
   correct.css('top', 0);
   var index = (document.overlay.pointer + 1) % e$('.eo-question').length;
-  e$('.eo-question').eq(index).addClass('next');
+  if (!e$('.eo-question.eo-active').length) {
+    document.overlay.removeQuestionShortcut();
+    e$('.eo-question').eq(index).addClass('next');
+  }
 };
 // completely non-interactive
 var AbstractExpiredQuestion = function (question) {
@@ -7723,7 +7717,6 @@ PageOverlay = function () {
     e$('body').addClass('first-loading');
     console.log('adding class first-loading');
   };
-
   this.shortcut = function () {
     console.log('dsshsdfhgdsfghdfgdfhddafhdhdfgdgdafdsfdsdaadadaddadasfdsasdsfa bind short cut');
     shortcut.add("Tab", function () {
@@ -7759,7 +7752,6 @@ PageOverlay = function () {
     }
     e$('.eo-question').removeClass('next');
     document.overlay.pointer = pointer;
-    //alert('Next '+document.overlay.pointer);
     document.overlay.closeUnAnswered();
     e = e$('.eo-question').eq(document.overlay.pointer);
     var context = e.data('context');
@@ -7909,6 +7901,7 @@ PageOverlay = function () {
     shortcut.remove('Up');
     shortcut.remove('Down');
     shortcut.remove('Enter');
+    document.overlay.optionPointer = -1;
   };
   this.removeShortcut = function () {
     shortcut.remove('Tab');
