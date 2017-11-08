@@ -7389,7 +7389,7 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
         <div class='subtitle' id='subtitle'></div>\
       </div>\
       \
-<!--       <div class='Grid-cell eo-row4'>\
+       <div class='Grid-cell eo-row4'>\
         <div id='google-iframe'></div>\
       </div>\
       <div class='Grid-cell hidden'>\
@@ -7401,7 +7401,7 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
           <div class='Grid-cell v-align h-align'> <span class='subtitle' id='or'>OR</span> </div>\
           <div class='Grid-cell line eo-delimiter'></div>\
         </div>\
-      </div> -->\
+      </div> \
 \
 \
       <div class='Grid-cell eo-row6 h-align'>\
@@ -9719,7 +9719,7 @@ var EnglishOnMenu = function () {
   }
   e$('#eo-iframe').on('load', function () {
     var popup = this.contentWindow;
-    popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+    popup.postMessage({ token: document.englishonBackend.token, email: document.englishonConfig.email }, document.englishonBackend.base);
   });
   var _originalSize = e$(window).width() + e$(window).height();
   e$(window).resize(function () {
