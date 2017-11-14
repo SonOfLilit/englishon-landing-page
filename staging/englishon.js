@@ -7822,9 +7822,7 @@ PageOverlay = function () {
     console.log('adding class first-loading');
   };
   this.shortcut = function () {
-    console.log('dsshsdfhgdsfghdfgdfhddafhdhdfgdgdafdsfdsdaadadaddadasfdsasdsfa bind short cut');
     shortcut.add("Tab", function () {
-      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..overlay Tab');
       var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
       document.overlay.Next(pointer);
     });

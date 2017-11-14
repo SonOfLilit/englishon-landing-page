@@ -2424,7 +2424,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 
 .eo-row4 {
-  height: 205px;
+  height: 70px;
 }
 
 .eo-row5 {
@@ -2734,7 +2734,9 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   border: none;
 }
 
-#eo-mail-login-btn {
+#eo-mail-login-btn,
+#link-btn,
+#verify-btn {
   width: 152px;
   height: 26.66px;
   border-radius: 3px;
@@ -2745,7 +2747,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   cursor: pointer;
 }
 
-#eo-dlg-inner {
+.eo-dlg-inner {
   margin: 0px 29px;
   overflow: hidden;
   height: 100%;
@@ -3023,6 +3025,31 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 
 /*POPUPS*/
+#eo-dlg-link-done {
+  padding: 40px 10px;
+}
+
+.eo-area.english .eo-inner-area {
+  direction: ltr;
+}
+
+.eo-area.hebrew .eo-inner-area {
+  direction: rtl;
+}
+
+#eo-dlg-link .eo-link-row,
+#eo-dlg-verify .eo-link-row,
+#eo-dlg-verify-sent .eo-link-row,
+#eo-dlg-link-done .eo-link-row {
+  padding: 20px 20px;
+}
+#eo-dlg-link .eo-row9,
+#eo-dlg-verify .eo-row9,
+#eo-dlg-verify-sent .eo-row9,
+#eo-dlg-link-done .eo-row9 {
+  padding: 0px 20px;
+}
+
 #eo-upgrade-dialog {
   background-color: #eceff1;
   font-family: Roboto-Light, sans-serif;
@@ -3091,7 +3118,7 @@ it's top left values will re-computed everytime progress bar is moving*/
   font-size: 14px;
   text-align: center;
 }
-#eo-dlg-terms #eo-dlg-inner {
+#eo-dlg-terms .eo-dlg-inner {
   padding-top: 70px;
 }
 #eo-dlg-terms #eo-accept-btn, #eo-dlg-terms #eo-reject-btn {
