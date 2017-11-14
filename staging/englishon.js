@@ -5295,7 +5295,15 @@ var MESSAGES = {
     NO_QUESTIONS_SHTUREM_ARTICLE: "Please look at home page </br>for articles marked</br>with this icon",
     COMPLETE_QUIZ: 'Well Done!</br>Sign up for Free</br> to save your Work!',
     ALPHABET_VOCABULARY: 'By Alphabetical Order',
-    SR_VOCABULARY: 'Prioritized for Review'
+    SR_VOCABULARY: 'Prioritized for Review',
+    LINK_MESSAGE: 'We have found a matching englishon account registered to this email. Log in to your englihson account to link both accounts.</br> (You will only have to do this once)',
+    LINK_BTN: 'Link accounts',
+    ACCOUNTS_LINKED: 'Your accounts are now linked. </br>Enjoy EnglishON!',
+    VERIFY_HEADER: 'Set Up Your Account',
+    VERIFY_MESSAGE: 'Please verify your email to finish setting up your EnglishON account.',
+    VERIFY_BTN: 'Verify email',
+    VERIFY_SENT_HEADER: 'EnglishON Account',
+    VERIFY_SENT_MESSAGE: 'Please verify your email to finish setting up your EnglishON account. We sent a confirmation email to your email. </br>Please click the link in that email to finish setting up your EnglishON account.'
   },
   'hebrew': {
     LANGUAGE: 'hebrew',
@@ -5344,7 +5352,16 @@ var MESSAGES = {
     NO_QUESTIONS_SHTUREM_ARTICLE: "חפש בדף הבית </br>כתבות לצידם </br>יש את הסימון",
     COMPLETE_QUIZ: '!כל הכבוד</br>הירשם בחינם</br>לשמירת התקדמותך',
     ALPHABET_VOCABULARY: 'לפי סדר אלפבית',
-    SR_VOCABULARY: 'לפי סדר עדיפות לתרגול'
+    SR_VOCABULARY: 'לפי סדר עדיפות לתרגול',
+    LINK_MESSAGE: 'מצאנו חשבון אינגלישון זהה ל- Gmail הזה. כנס/י לחשבון עם הסיסמה איתה נרשמת לאינגלישון כדי לקשר בין שני החשבונות.</br> פעולה זו נדרשת אך פעם אחת.',
+    LINK_BTN: 'קשר חשבונות',
+    ACCOUNTS_LINKED: 'חשבונות האימייל וגוגל שלך מקושרים. </br>לימוד מהנה!',
+    VERIFY_HEADER: 'אימות חשבון',
+    VERIFY_MESSAGE: 'נא לאשר את כתובת הדוא"ל על מנת להשלים את הרשמתכם לאינגלישון',
+    VERIFY_BTN: 'אשר כתובת דוא"ל',
+    VERIFY_SENT_HEADER: 'חשבון אינגלישון',
+    VERIFY_SENT_MESSAGE: 'נשלח דוא"ל לחשבונכם. נא ללחוץ על הקישורית בדוא"ל זה להשלמת ההרשמה'
+
   }
 };
 // Until we have real RTL, it's important not to finish sentences with periods, because they'll align wrong
@@ -5398,14 +5415,12 @@ var I18N = WEBSITE_I18N[location.hostname];
 Authenticator = function (base) {
   this.base = base;
 };
-
 Authenticator.prototype.getTokenFor = function (userToken) {
   var promise = e$.get(this.base + "/tokens/from-user-token/" + encodeURIComponent(userToken) + "/").then(function (response) {
     return response.token;
   });
   return promise;
 };
-
 Authenticator.prototype.getTokenForGuest = function () {
   console.log("getTokenForGuest****! base is: " + this.base);
   var promise = e$.post(this.base + "/tokens/create/").then(function (response) {
@@ -5432,7 +5447,51 @@ function showTOS() {
     });
   });
 }
-
+Authenticator.prototype.verifiyEmail = function (email) {
+  var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
+  element = 'eo-dlg-verify';
+  document.eoDialogs.toggleDialog(element, 'show');
+  e$('#verify-header').html(messages.VERIFY_HEADER);
+  e$('#verify-message').html(messages.VERIFY_MESSAGE);
+  e$('#verify-email').val(email.val());
+  e$('#verify-btn').html(messages.VERIFY_BTN);
+  e$('#verify-btn').off('click');
+  e$('#verify-btn').on('click', function () {
+    document.englishonBackend.verifyEmail(email.val()).then(function (res) {
+      e$('#verify-sent-header').html(messages.VERIFY_SENT_HEADER);
+      e$('#verify-sent-message').html(messages.VERIFY_SENT_MESSAGE);
+      element = 'eo-dlg-verify-sent';
+      document.eoDialogs.toggleDialog(element, 'show');
+    });
+  });
+};
+Authenticator.prototype.linkAccounts = function (email, google_sec_token) {
+  var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
+  element = 'eo-dlg-link';
+  document.eoDialogs.toggleDialog(element, 'show');
+  e$('#link-email').val(email);
+  e$('#eo-dlg-link .eo-row9').css({ direction: messages.DIRECTION });
+  e$('#link-btn').html(messages.LINK_BTN);
+  e$('#link-message').html(messages.LINK_MESSAGE);
+  e$('#link-btn').off('click');
+  e$('#link-btn').on('click', function () {
+    e$('#eo-login-email').val(email);
+    e$('#eo-login-password').val(e$('#link-password').val());
+    document.menu.loginByMail();
+    window.link_interval = setInterval(function () {
+      if (document.link_flag) {
+        clearInterval(window.link_interval);
+        document.englishonBackend.linkAccounts(google_sec_token).then(function (res) {
+          element = 'eo-dlg-link-done';
+          document.eoDialogs.toggleDialog(element, 'show');
+          e$('#linked-message').html(messages.ACCOUNTS_LINKED);
+        });
+      }
+    }, 500);
+  });
+  var visibleNow = e$('.eo-area').filter(':visible').last().find('.eo-inner-area').length ? e$('.eo-area').filter(':visible').last().find('.eo-inner-area').filter(':visible') : e$('.eo-area').filter(':visible').last();
+  window.history.pushState({ 'elementToShow': visibleNow.attr('id') }, '');
+};
 Authenticator.prototype.register = function (user) {
   console.log('register by mail)');
   var res = e$.post(this.base + '/tokens/register/', user, function (res) {
@@ -5440,7 +5499,6 @@ Authenticator.prototype.register = function (user) {
   });
   return res;
 };
-
 Authenticator.prototype.validate = function (user) {
   emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
   //tips = e$('#eo-login-msg');
@@ -5479,22 +5537,18 @@ Authenticator.prototype.validate = function (user) {
     element = e$('#login-' + n + '-msg');
     element.text(t);
     //.addClass("ui-state-highlight");
-
     element.parent().removeClass('hidden');
     setTimeout(function () {
       element.removeClass("ui-state-highlight", 1500);
     }, 500);
   }
-
   var valid = true;
   //valid = valid && checkLength( name, "username", 3, 16 );
   valid = valid && checkLength(user.email, "email", 6, 80);
   valid = valid && checkLength(user.password, "password", 5, 16);
-
   //valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
   valid = valid && checkRegexp(user.email, emailRegex, "eg. user_name@gmail.com");
   //valid = valid && checkRegexp(user.password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9");
-
   return valid;
 };
 Authenticator.prototype.login = function (token) {
@@ -5555,6 +5609,12 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
       return e$.ajax(requestData);
     }
   });
+};
+HerokuBackend.prototype.linkAccounts = function (google_sec_token) {
+  return this.ajax("POST", "/tokens/linkAccounts/", { google_sec_token: google_sec_token });
+};
+HerokuBackend.prototype.verifyEmail = function (email) {
+  return this.ajax("POST", "/tokens/verifyEmail/", { email: email });
 };
 HerokuBackend.prototype.indicateEditedArticles = function (urls) {
   return this.ajax("POST", "/quiz/indicateEditedArticles/", { urls: urls });
@@ -7368,7 +7428,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
 //
 document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
   <div class='eo-close close-dialog'></div>\
-  <div id='eo-dlg-inner'>\
+  <div id='login-main' class='eo-inner-area hidden eo-dlg-inner'>\
     <div class='Grid Grid--full'>\
       <div class='Grid-cell eo-row14'>\
         <div class='Grid'>\
@@ -7388,8 +7448,7 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
       <div class='Grid-cell eo-row13 v-align h-align'>\
         <div class='subtitle' id='subtitle'></div>\
       </div>\
-      \
-       <div class='Grid-cell eo-row4'>\
+      <div class='Grid-cell eo-row4'>\
         <div id='google-iframe'></div>\
       </div>\
       <div class='Grid-cell hidden'>\
@@ -7401,9 +7460,7 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
           <div class='Grid-cell v-align h-align'> <span class='subtitle' id='or'>OR</span> </div>\
           <div class='Grid-cell line eo-delimiter'></div>\
         </div>\
-      </div> \
-\
-\
+      </div>\
       <div class='Grid-cell eo-row6 h-align'>\
         <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' /> </div>\
       <div class='Grid-cell hidden eo-row8'>\
@@ -7415,11 +7472,58 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
         <div id='login-password-msg' class='error eo-message'></div>\
       </div>\
       <div class='Grid-cell v-align right-align eo-row9'>\
-        <div class='v-align right-align eo-menu-footer'> <a id='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a> </div>\
+        <div class='v-align right-align eo-menu-footer'> <a class='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a> </div>\
       </div>\
       <div class='Grid-cell eo-row7 v-align h-align'>\
         <div id='eo-mail-login-btn' class='v-align h-align'>sign in</div>\
       </div>\
+    </div>\
+  </div>\
+  <div id='eo-dlg-link' class='eo-inner-area hidden'>\
+    <div class='Grid-cell eo-link-row v-align h-align'>\
+      <div id='link-message'></div>\
+    </div>\
+    <div class='Grid-cell eo-row6 h-align'>\
+      <input type='text' placeholder='Email Address' id='link-email' class='eo-input' /> </div>\
+    <div class='Grid-cell hidden eo-row8'>\
+      <div id='login-email-msg' class='error eo-message'></div>\
+    </div>\
+    <div class='Grid-cell eo-row6 h-align'>\
+      <input type='password' placeholder='Password' id='link-password' class='eo-input' /> </div>\
+    <div class='Grid-cell hidden eo-row8'>\
+      <div id='login-password-msg' class='error eo-message'></div>\
+    </div>\
+    <div class='Grid-cell v-align eo-row9'>\
+      <div class='v-align eo-menu-footer'> <a class='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a> </div>\
+    </div>\
+    <div class='Grid-cell eo-row7 v-align h-align'>\
+      <div id='link-btn' class='v-align h-align'>link accounts</div>\
+    </div>\
+  </div>\
+  <div id='eo-dlg-verify' class='eo-inner-area hidden'>\
+    <div class='Grid-cell eo-link-row v-align h-align'>\
+      <div id='verify-header'></div>\
+    </div>\
+    <div class='Grid-cell eo-link-row v-align h-align'>\
+      <div id='verify-message'></div>\
+    </div>\
+    <div class='Grid-cell eo-row6 h-align'>\
+      <input type='text' placeholder='Email Address' id='verify-email' class='eo-input' /> </div>\
+    <div class='Grid-cell eo-row7 v-align h-align'>\
+      <div id='verify-btn' class='v-align h-align'>sign in</div>\
+    </div>\
+  </div>\
+  <div id='eo-dlg-verify-sent' class='eo-inner-area hidden'>\
+    <div class='Grid-cell eo-link-row v-align h-align'>\
+      <div id='verify-sent-header'></div>\
+    </div>\
+    <div class='Grid-cell eo-link-row v-align h-align'>\
+      <div id='verify-sent-message'></div>\
+    </div>\
+  </div>\
+  <div id='eo-dlg-link-done' class='eo-inner-area hidden'>\
+    <div class='Grid-cell eo-link-row v-align h-align'>\
+      <div id='linked-message'></div>\
     </div>\
   </div>\
 </div>\
@@ -7534,7 +7638,7 @@ document.live_actions = "<div class='hidden' id='eo-live'>\
 document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
   <div id='eo-dlg-terms' class='hidden'>\
     <div class='eo-close terms-close'></div>\
-    <div id='eo-dlg-inner'>\
+    <div class='eo-dlg-inner'>\
       <div class='Grid Grid--full'>\
         <div class='Grid-cell eo-row2'>\
           <div class='Grid h-align'>\
@@ -7808,8 +7912,11 @@ PageOverlay = function () {
     //Give the user astatus of guest
     window.localStorage.removeItem('email');
     window.localStorage.removeItem('eo-user-name');
-    window.location.reload();
     document.englishonBackend.rejectedTerms();
+    document.menu.signout();
+    e$.when(document.signout_promise).done(function () {
+      window.location.reload();
+    });
   };
   this.TermsDialog = function () {
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
@@ -9395,10 +9502,10 @@ var EnglishOnMenu = function () {
     });
     e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
     e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
-    e$('#option-dlg-signin').data('elementToShowOnClick', 'eo-dlg-login');
+    e$('#option-dlg-signin').data('elementToShowOnClick', 'login-main');
     e$('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
     if (!localStorage.getItem('email')) {
-      e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
+      e$('#eo-account-name').data('elementToShowOnClick', 'login-main');
       uiLoginActions('guest');
     } else {
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
@@ -9454,7 +9561,7 @@ var EnglishOnMenu = function () {
         e$('#eo-mail-login-btn').click();
       }
     });
-    e$('#eo-mail-login-btn').on('click', loginByMail);
+    e$('#eo-mail-login-btn').on('click', this.loginByMail.bind(this));
     e$('#eo-login-email').on('click', function (e) {
       //causing the keyboard to open 
       e.target.focus();
@@ -9500,8 +9607,8 @@ var EnglishOnMenu = function () {
     e$('#dlg-sign-up-header').text(messages.LOGIN_SIGN_UP_TITLE);
     e$('#subtitle').html(messages.LOGIN_SUBTITLE);
     e$('#or').text(messages.OR);
-    e$('#eo-forgot-psw').text(messages.FORGOT_PASSWORD);
-    e$('#eo-forgot-psw').attr('href', document.englishonBackend.base + '/recover/');
+    e$('.eo-forgot-psw').text(messages.FORGOT_PASSWORD);
+    e$('.eo-forgot-psw').attr('href', document.englishonBackend.base + '/recover/');
     e$('#eo-mail-login-btn').text(messages.LOGIN_BUTTON);
     e$('#eo-choose-lang').text(messages.SITE_LANGUAGE);
     e$('#progress-tutorial-btn').text(messages.START_PROGRESS_TUTORIAL);
@@ -9536,7 +9643,7 @@ var EnglishOnMenu = function () {
       e$('body').toggleClass(cls, enabled);
     };
   };
-  var loginByMail = function () {
+  this.loginByMail = function () {
     var email = e$('#eo-login-email');
     var password = e$('#eo-login-password');
     var email_msg = e$('#login-email-msg');
@@ -9544,22 +9651,27 @@ var EnglishOnMenu = function () {
     var auth = new Authenticator(document.englishonConfig.backendUrl);
     if (auth.validate({ email: email, password: password, email_msg: email_msg, password_msg: password_msg })) {
       auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
+        if (res.status == 'verification required') {
+          auth.verifiyEmail(email);
+          return;
+        }
         if (res.status == 'error') {
           document.eoDialogs.displayMessage(res.message, e$('#login-password-msg'));
           return;
         }
         configStorage.set({ email: res.email, token: res.token, 'eo-user-name': e$('#eo-login-email').val() }).then(function () {
+          document.link_flag = true;
           document.englishonBackend.token = res.token;
           e$('#eo-account-area').removeClass('guest');
           e$('#eo-dlg-login').addClass('valid');
           e$('#eo-account-name').text(email.val());
           e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
           e$('body').addClass('logged').removeClass('guest');
+          e$('#eo-account-img').addClass('no-image');
           if (res.status == 'logged_in') {
             document.eoDialogs.hideDialogs(1000);
           } else if (res.status == 'terms_not_accepted') {
             document.eoDialogs.hideDialogs(0);
-            e$('#eo-account-img').addClass('no-iamge');
             document.overlay.showTermsDialog(document.menu.powerOn);
             e$('.category-icon').remove();
             return;
@@ -9634,8 +9746,9 @@ var EnglishOnMenu = function () {
           popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
         }
         e$('#eo-account-area').addClass('guest');
+        e$('#eo-account-img').removeAttr('style');
         e$('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
-        e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-login');
+        e$('#eo-account-name').data('elementToShowOnClick', 'login-main');
         message = document.MESSAGES[document.englishonConfig.siteLanguage].SIGN_OUT_FEEDBACK;
         document.eoDialogs.hideDialogs();
         e$('body').addClass('guest').removeClass('logged');
@@ -9876,6 +9989,11 @@ function receiveMessage(event) {
     return;
   }
   // event.source is popup
+  if (event.data.message == 'registered by email') {
+    var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
+    auth.linkAccounts(event.data.email, event.data.google_sec_token);
+    return;
+  }
   var django_token = event.data.token;
   var img = event.data.image;
   var email = event.data.email;
