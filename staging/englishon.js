@@ -6674,8 +6674,8 @@ Injector = function (paragraphs) {
       report("CompletedQuiz");
       if (!document.englishonConfig.email && !(e$('body').hasClass('www-shturem-net') && e$('body').hasClass('front-page'))) {
         setTimeout(function () {
-          e$('#eo-dlg-login').find('#subtitle').html(document.MESSAGES[document.englishonConfig.siteLanguage].COMPLETE_QUIZ);
-          document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
+          e$('#login-main').find('#subtitle').html(document.MESSAGES[document.englishonConfig.siteLanguage].COMPLETE_QUIZ);
+          document.eoDialogs.toggleDialog('login-main', 'show');
         }, 4000);
       }
     }
@@ -6697,10 +6697,6 @@ Injector = function (paragraphs) {
     e$('.eo-space').remove();
     e$(this.elements).each(function (i, q) {
       q.replacement.replaceWith(q.original);
-      //check if this is the right place!!!! 
-      //it good when user signout, but what it's efect if user just on and off?
-      q.qobj.touched = false;
-      q.qobj.tried = [];
     });
     //this.interacted = false;
     //this.userAnswered = false;
@@ -6748,6 +6744,15 @@ Injector = function (paragraphs) {
       if (width > future_width && spaceInCurrentLine >= lineWidth) {
         console.log('IN THIS CASE question is expected to go UP after action, ' + future_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
         q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+      }
+      if (q.qobj.tried.length) {
+        //a special treat for quesion answered now, without .eo-expired
+        q.replacement.click(q.qobj.QuestionAudio.bind(q.qobj));
+        q.replacement.addClass('eo-answered').removeAttr('style');
+        if (q.qobj.tried[0] != q.qobj.practicedWord) {
+          console.log('first answer was wrong...');
+          q.replacement.addClass('wrong-feedback');
+        }
       }
       if (q.qobj.data.tried.length && q.qobj.data.tried[0] != q.qobj.practicedWord) {
         console.log('first answer was wrong...');
@@ -8924,8 +8929,8 @@ Tour = new function () {
       return;
     }
     steps = [];
-    document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
-    window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
+    document.eoDialogs.toggleDialog('login-main', 'show');
+    window.history.pushState({ 'elementToShow': 'login-main' }, '');
     steps.push(new step('#eo-dlg-login right', '', 'הירשם/התחבר לשמירת ההתקדמות בחינם!', 'login2'));
     this.initTutorial(steps);
   };
@@ -9030,8 +9035,8 @@ Tour = new function () {
               e$('.eo-question').eq(0).find('.eo-hint').click();
             }
             if (document.tour.getCurrentStep().id === 'login') {
-              document.eoDialogs.toggleDialog('eo-dlg-login', 'show');
-              window.history.pushState({ 'elementToShow': 'eo-dlg-login' }, '');
+              document.eoDialogs.toggleDialog('login-main', 'show');
+              window.history.pushState({ 'elementToShow': 'login-main' }, '');
               e$('#eo-mail-login-btn').on('click', function () {
                 document.tour.hide();
               });
