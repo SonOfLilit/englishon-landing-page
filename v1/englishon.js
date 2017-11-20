@@ -9452,12 +9452,9 @@ var EnglishOnDialogs = function () {
     if (document.tour) {
       document.tour.hide();
     }
-    document.overlay.shortcut();
   };
   this.toggleDialog = function (element, action) {
     this.hideDialogs(0);
-    document.overlay.removeShortcut();
-    document.overlay.removeQuestionShortcut();
     e$('#eo-area-container').removeClass('hidden');
     e$('#eo-menu').removeClass('hidden'); //becouse it serves as container, giving the header and footer
     var elementObj = e$('#' + element);

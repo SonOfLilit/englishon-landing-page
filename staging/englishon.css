@@ -1352,7 +1352,7 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   margin: 10px;
   list-style-position: inside;
 }
-.eo-editor-candidate .editor_ul li.highlight {
+.eo-editor-candidate .editor_ul li:hover, .eo-editor-candidate .editor_ul li.highlight {
   background: #00CED1;
   cursor: pointer;
 }
