@@ -9626,7 +9626,7 @@ var EnglishOnMenu = function () {
   document.overlay.insertContent(e$(document.LOGIN_DLG));
   document.overlay.insertContent(e$(document.OPTIONS_DLG));
   document.overlay.insertContent(e$(document.live_actions));
-  e$('#demo_video').find('source').attr('src', staticUrl('demo.mp4'));
+  e$('#demo_video').find('source').attr('src', staticUrl('demo_v2.mp4'));
   e$('.eo-area, #eo-live').addClass(document.englishonConfig.siteLanguage);
   /* returns a toggler function that both updates `configEntry`
      and calls the given `toggle()` function, useful when you want
@@ -9888,7 +9888,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
         loop: true
       }));
       var movie = e$('<div id="eo-movie">').append(e$('<video/>', {
-        src: staticUrl('demo.mp4'),
+        src: staticUrl('demo_v2.mp4'),
         id: 'demo_video',
         type: 'video/mp4',
         autoplay: false,
