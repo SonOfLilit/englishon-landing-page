@@ -7647,10 +7647,10 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
       <div class='Grid Grid--full'>\
         <div class='Grid-cell eo-row2'>\
           <div class='Grid h-align'>\
-            <div class='Grid-cell terms-icon-cell'>\
+            <div class=''>\
               <div id='eo-dlg-icon'></div>\
             </div>\
-            <div class='Grid-cell header-cell left-align v-align' id='dlg-terms-header'>\
+            <div class='v-align' id='dlg-terms-header'>\
               <div class='eo-logo'></div>\
               <div class='registered_symbol'>&#174;</div>\
             </div>\
