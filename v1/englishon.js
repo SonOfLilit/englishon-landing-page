@@ -7453,7 +7453,7 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
       <div class='Grid-cell eo-row13 v-align h-align'>\
         <div class='subtitle' id='subtitle'></div>\
       </div>\
-      <div class='Grid-cell eo-row4'>\
+      <div class='Grid-cell eo-row4 h-align'>\
         <div id='google-iframe'></div>\
       </div>\
       <div class='Grid-cell hidden'>\
@@ -7712,7 +7712,13 @@ var overlay_settings = {
     },
     'mobile': {
       'pin_button_article': function () {
-        return e$('.entry-meta').find('.pull-right');
+        return e$('.entry-meta');
+      },
+      'button_left_value': function () {
+        return 0;
+      },
+      'button_top_value': function () {
+        return 0;
       }
 
     }
@@ -7753,7 +7759,7 @@ var overlay_settings = {
         return e$('.site-header');
       },
       'pin_button_category': function () {
-        return e$('.page-header');
+        return e$('.page-header').find('h1');
       },
       'button_left_value': function () {
         return 9;
@@ -8035,6 +8041,7 @@ PageOverlay.prototype.hideQuestions = function () {
   e$('body').removeClass('question-injected');
 };
 kolhazmanFrontOverlay = function (parts, url) {
+  e$('html').addClass('www-kolhazman-co-il');
   this.url = url.toLowerCase();
   this.parts = parts;
   this.interacted = false;
@@ -8048,8 +8055,6 @@ kolhazmanFrontOverlay = function (parts, url) {
     this.pageType = 'category-page';
     e$('body').addClass('category-page');
   }
-  e$('#eo-banner').css({ 'margin-right': (e$('#sidebar').width() - 270) / 2 });
-  //e$('body').addClass('category-page');
   e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 1000 });
   e$('.menu-search').on('mouseenter', function () {
     e$('.eo-button').css({ 'z-index': 10 });
@@ -8090,13 +8095,22 @@ kolhazmanFrontOverlay = function (parts, url) {
       return document.englishonBackend.getArticle(url, 1).then(function (questions) {
         //if (questions.length) {
         if (true) {
-          if (!e$(part).find('.category-icon').length) {
-            if (document.overlay.pageType == 'category-page') {
-              e$(part).find('.read-more').prepend(e$('<div>').addClass('category-icon'));
-            } else {
-              e$(part).find('.media-heading').append(e$('<div>').addClass('category-icon'));
+          e$(part).each(function () {
+            if (!e$(this).find('.category-icon').length) {
+              if (document.overlay.pageType == 'category-page') {
+                e$(this).find('.read-more').prepend(e$('<div>').addClass('category-icon'));
+                if (e$(this).hasClass('primary-title')) {
+                  e$(this).find('.media-heading').append(e$('<div>').addClass('category-icon'));
+                }
+              } else {
+                e$(this).find('.media-heading').append(e$('<div>').addClass('category-icon'));
+                if (e$(this).find('.icon-circle').length) {
+                  e$(this).find('.category-icon').addClass('left');
+                }
+              }
             }
-          }
+            // body...
+          });
         }
       });
     });
@@ -8109,6 +8123,7 @@ kolhazmanFrontOverlay = function (parts, url) {
   };
 };
 kolhazmanOverlay = function (url, subtitle, bodytext) {
+  e$('html').addClass('www-kolhazman-co-il');
   this.url = url.toLowerCase();
   this.subtitle = subtitle;
   this.bodytext = bodytext;
@@ -8119,8 +8134,6 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
   this.settings = overlay_settings['kolhazman'][document.englishonConfig.media];
   //this.tutorial_selector = this.settings['pin-tutotial-article'];
   this.pageType = 'article';
-  e$('#eo-banner').css({ 'margin-right': (e$('#sidebar').width() - 270) / 2 });
-  //e$('body').addClass('category-page');
   e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 1000 });
   e$('.menu-search').on('mouseenter', function () {
     e$('.eo-button').css({ 'z-index': 10 });
@@ -8678,12 +8691,19 @@ var kolhazmanFrontScraper = function () {
   this.scrape = function () {
     var parts = {};
     e$('.post').each(function (i, para) {
+      if (!e$(para).find('.media-heading').length) {
+        return;
+      }
       if (e$(para).find('a').length) {
         var url = e$(para).find('a')[0].href;
       } else {
         var url = e$(para).parent()[0].href;
+      } //in kol hazman url is not uique. same article may appear more than once.
+      if (parts[url]) {
+        parts[url].push(para);
+      } else {
+        parts[url] = [para];
       }
-      parts[url] = para;
     });
     var category_url = window.location.pathname;
     return new kolhazmanFrontOverlay(parts, category_url);
@@ -9626,7 +9646,7 @@ var EnglishOnMenu = function () {
   document.overlay.insertContent(e$(document.LOGIN_DLG));
   document.overlay.insertContent(e$(document.OPTIONS_DLG));
   document.overlay.insertContent(e$(document.live_actions));
-  e$('#demo_video').find('source').attr('src', staticUrl('demo_v2.mp4'));
+  e$('#demo_video').find('source').attr('src', staticUrl('videos/demo_v2.mp4'));
   e$('.eo-area, #eo-live').addClass(document.englishonConfig.siteLanguage);
   /* returns a toggler function that both updates `configEntry`
      and calls the given `toggle()` function, useful when you want
@@ -9877,18 +9897,18 @@ e$.when(document.questions_promise).done(function () {
     document.playMovie();
   }
 });
-e$.when(document.resources_promise, document.loaded_promise).done(function () {
-  if (location.pathname != '/') {
+window.pinBanner = function () {
+  if (location.pathname != '/' || location.host == 'www.kolhazman.co.il') {
     englishon_banner = new function () {
       var video = e$('<div id="eo-banner">').append(e$('<video/>', {
-        src: staticUrl('banner_with_movie.m4v'),
+        src: staticUrl('videos/banner_' + scraper.getHost() + '.mp4'),
         type: 'video/mp4',
         autoplay: true,
         muted: true,
         loop: true
       }));
       var movie = e$('<div id="eo-movie">').append(e$('<video/>', {
-        src: staticUrl('demo_v2.mp4'),
+        src: staticUrl('videos/demo_v2.mp4'),
         id: 'demo_video',
         type: 'video/mp4',
         autoplay: false,
@@ -9912,12 +9932,8 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
       });
     }();
   }
-  /* to hide the player: 
-   var player = videojs('my-player');
-  or:
-  player.on('ended', function() {
-    this.dispose();
-  });*/
+};
+e$.when(document.resources_promise, document.loaded_promise).done(function () {
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
   //register the handler for backspace/forward
@@ -9935,6 +9951,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     console.log("EnglishOn: unknown website");
     return;
   }
+  pinBanner();
   e$('body').addClass(scraper.getHost().replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
   document.overlay = scraper.scrape();
   document.overlay.showButtons();

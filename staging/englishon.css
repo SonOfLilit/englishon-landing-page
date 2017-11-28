@@ -1026,6 +1026,12 @@ div.eo-question.highlighted {
   background-size: 17px;
   background-repeat: no-repeat;
 }
+.category-icon.left {
+  display: inline-block;
+  vertical-align: bottom;
+  margin-bottom: 0px;
+  float: left;
+}
 
 body.www-shturem-net .category-icon,
 body.shturem-net .category-icon {
@@ -1352,7 +1358,7 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
   margin: 10px;
   list-style-position: inside;
 }
-.eo-editor-candidate .editor_ul li:hover, .eo-editor-candidate .editor_ul li.highlight {
+.eo-editor-candidate .editor_ul li.highlight {
   background: #00CED1;
   cursor: pointer;
 }
@@ -1415,6 +1421,14 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+body.www-kolhazman-co-il #eo-banner {
+  margin-right: 0px;
+}
+body.www-kolhazman-co-il #eo-banner video {
+  height: 60px;
+  width: 400px;
+  padding-left: 30px;
+}
 body.www-kolhazman-co-il.category-page .category-icon {
   display: inline-block;
   margin: 0px;
@@ -1423,6 +1437,12 @@ body.www-kolhazman-co-il.category-page .category-icon {
   height: 11px;
   background-size: 11px;
   margin-left: 5px;
+}
+body.www-kolhazman-co-il.category-page .primary-title .category-icon {
+  display: inherit;
+  width: 20px;
+  height: 20px;
+  background-size: 17px;
 }
 body.www-kolhazman-co-il .ui-dialog {
   z-index: 10000;
@@ -3236,22 +3256,48 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 /* responsive.scss */
 @media (max-width: 981px) {
-  #eo-banner {
-    width: 100%;
-  }
-  #eo-banner video {
-    width: 100%;
-  }
-
+  /* GENERAL*/
   #eo-movie video {
     width: 100%;
     height: 100%;
     object-fit: contain;
     background-color: black;
+    padding-left: 0px;
   }
 
   #lc_chat_layout.lc-expanded {
     right: 0px !important;
+  }
+
+  /*SITE SPECIFICATIONS*/
+  html.www-kolhazman-co-il {
+    overflow-x: hidden;
+  }
+
+  body.www-kolhazman-co-il {
+    overflow-x: hidden;
+  }
+  body.www-kolhazman-co-il #eo-banner {
+    width: 100%;
+  }
+  body.www-kolhazman-co-il #eo-banner video {
+    width: 100%;
+    height: 100%;
+    padding-left: 0px;
+  }
+  body.www-kolhazman-co-il .eo-button {
+    top: 0px;
+    left: 0px;
+    width: 0px;
+    height: 0px;
+    padding-right: 0px;
+  }
+  body.www-kolhazman-co-il .eo-button .eo-icon {
+    top: 15px;
+    left: 280px;
+    width: 22px;
+    height: 22px;
+    background-size: 22px;
   }
 
   body.actualic-co-il .contento_Container {
@@ -3297,11 +3343,14 @@ it's top left values will re-computed everytime progress bar is moving*/
   }
 
   /*the actualic line html structure in mobile is a combination of float and inline-block.
-different ways didn't work*/
+   different ways didn't work*/
   body.actualic-co-il.category-page .eo-button {
-    position: absolute;
-    top: 125px;
-    left: 3px;
+    position: static;
+    padding: 5px 0px;
+    float: left;
+  }
+  body.actualic-co-il.category-page .eo-button .eo-icon {
+    position: static;
   }
 }
 @media (max-width: 981px) and (max-width: 240px) {
