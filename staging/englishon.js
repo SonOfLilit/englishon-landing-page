@@ -7468,12 +7468,12 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
       </div>\
       <div class='Grid-cell eo-row6 h-align'>\
         <input type='text' placeholder='Email Address' id='eo-login-email' class='eo-input' /> </div>\
-      <div class='Grid-cell hidden eo-row8'>\
+      <div class='Grid-cell hidden eo-row8 h-align'>\
         <div id='login-email-msg' class='error eo-message'></div>\
       </div>\
       <div class='Grid-cell eo-row6 h-align'>\
         <input type='password' placeholder='Password' id='eo-login-password' class='eo-input' /> </div>\
-      <div class='Grid-cell hidden eo-row8'>\
+      <div class='Grid-cell hidden eo-row8 h-align'>\
         <div id='login-password-msg' class='error eo-message'></div>\
       </div>\
       <div class='Grid-cell v-align right-align eo-row9'>\
@@ -7490,12 +7490,12 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
     </div>\
     <div class='Grid-cell eo-row6 h-align'>\
       <input type='text' placeholder='Email Address' id='link-email' class='eo-input' /> </div>\
-    <div class='Grid-cell hidden eo-row8'>\
+    <div class='Grid-cell hidden eo-row8 h-align'>\
       <div id='login-email-msg' class='error eo-message'></div>\
     </div>\
     <div class='Grid-cell eo-row6 h-align'>\
       <input type='password' placeholder='Password' id='link-password' class='eo-input' /> </div>\
-    <div class='Grid-cell hidden eo-row8'>\
+    <div class='Grid-cell hidden eo-row8 h-align'>\
       <div id='login-password-msg' class='error eo-message'></div>\
     </div>\
     <div class='Grid-cell v-align eo-row9'>\
@@ -7714,13 +7714,19 @@ var overlay_settings = {
       'pin_button_article': function () {
         return e$('.entry-meta');
       },
+      'pin_button_category': function () {
+        return e$('.kolhazman-tickets');
+      },
       'button_left_value': function () {
         return 0;
       },
       'button_top_value': function () {
         return 0;
       },
-      'placeLiveActions': function () {}
+      'placeLiveActions': function () {},
+      'category_button_left_value': function () {
+        return 0;
+      }
 
     }
   },
@@ -8947,6 +8953,8 @@ Tour = new function () {
     if (document.englishonConfig.media === 'mobile') {
       steps = [];
       this.initTutorial(steps);
+      document.eoDialogs.toggleDialog('login-main', 'show');
+      window.history.pushState({ 'elementToShow': 'login-main' }, '');
       return;
     }
     steps = [];
@@ -9904,6 +9912,10 @@ e$.when(document.questions_promise).done(function () {
     document.playMovie();
   }
 });
+window.stopMovie = function (e) {
+  e$('#eo-movie').addClass('hidden');
+  document.getElementById('demo_video').pause();
+};
 window.pinBanner = function () {
   if (location.pathname != '/' || location.host == 'www.kolhazman.co.il') {
     englishon_banner = new function () {
@@ -9923,10 +9935,7 @@ window.pinBanner = function () {
         loop: true,
         controls: true,
         controlsList: 'nodownload'
-      })).append(e$('<div>').addClass('eo-close close-movie').on('click', function () {
-        e$('#eo-movie').addClass('hidden');
-        document.getElementById('demo_video').pause();
-      }));
+      })).append(e$('<div>').addClass('eo-close close-movie').on('click', window.stopMovie));
       e$('#sidebar').prepend(video);
       e$('body').prepend(movie);
       e$('#eo-movie').addClass('hidden');
