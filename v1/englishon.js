@@ -7418,7 +7418,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
       <div class='Grid-cell eo-row10 eo-menu-inner'>\
         <div class='Grid'>\
           <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='https://englishon.freshdesk.com'>Need Help?</a></div>\
-          <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a href='#'>Contact Us</a></div>\
+          <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a >Contact Us</a></div>\
         </div>\
       </div>\
       <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
@@ -7719,7 +7719,8 @@ var overlay_settings = {
       },
       'button_top_value': function () {
         return 0;
-      }
+      },
+      'placeLiveActions': function () {}
 
     }
   },
@@ -9258,13 +9259,19 @@ function englishon() {
   if (sites.indexOf(window.location.host) == -1) {
     return;
   }
-  //THIS LINE IS TEMP
+  //THESE LINES ARE TEMP
+
   if ((window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') && media != 'desktop') {
     return;
   }
   if ((window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') && !e$('#developement-only-version').length) {
     return;
   }
+  if (window.location.host == 'www.kolhazman.co.il' && !e$('#developement-only-version').length && window.location.pathname != '/241200') {
+    return;
+  }
+
+  //END OF TEMP LINES
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
   if (document.__englishon__) {

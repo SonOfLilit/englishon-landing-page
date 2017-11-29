@@ -2165,6 +2165,7 @@ eo-signout-layout .signout {
 }
 
 #eo-dlg-icon {
+  width: 37px;
   background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
   background-repeat: no-repeat;
   height: 40px;
@@ -2601,6 +2602,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 #eo-contact a {
   color: #c7d1d5;
+  cursor: pointer;
 }
 #eo-contact a:hover {
   color: #2cc6a8;
@@ -3105,6 +3107,10 @@ it's top left values will re-computed everytime progress bar is moving*/
   font-family: Roboto-Light, sans-serif;
   z-index: 10000;
 }
+#eo-dlg-terms .eo-logo {
+  width: 100px;
+  margin-left: 0px;
+}
 #eo-dlg-terms.hebrew .agree-Grid {
   direction: rtl;
 }
@@ -3277,6 +3283,10 @@ it's top left values will re-computed everytime progress bar is moving*/
   body.www-kolhazman-co-il {
     overflow-x: hidden;
   }
+  body.www-kolhazman-co-il #eo-live {
+    width: 100%;
+    padding: 0px 0px;
+  }
   body.www-kolhazman-co-il #eo-banner {
     width: 100%;
   }
@@ -3342,8 +3352,6 @@ it's top left values will re-computed everytime progress bar is moving*/
     display: none;
   }
 
-  /*the actualic line html structure in mobile is a combination of float and inline-block.
-   different ways didn't work*/
   body.actualic-co-il.category-page .eo-button {
     position: static;
     padding: 5px 0px;

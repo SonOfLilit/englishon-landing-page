@@ -2602,6 +2602,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 #eo-contact a {
   color: #c7d1d5;
+  cursor: pointer;
 }
 #eo-contact a:hover {
   color: #2cc6a8;
