@@ -7418,7 +7418,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
       <div class='Grid-cell eo-row10 eo-menu-inner'>\
         <div class='Grid'>\
           <div class='Grid-cell v-align right-align eo-menu-footer' id='eo-help'><a href='https://englishon.freshdesk.com'>Need Help?</a></div>\
-          <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a >Contact Us</a></div>\
+          <div class='Grid-cell v-align eo-menu-footer' id='eo-contact'><a>Contact Us</a></div>\
         </div>\
       </div>\
       <div class='Grid Grid--full u-textCenter eo-row eo-menu-inner hidden' id='editor-row'>\
