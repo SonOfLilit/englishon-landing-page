@@ -1422,12 +1422,14 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 
 /* Site specific */
 body.www-kolhazman-co-il #eo-banner {
+  height: 77px;
+  width: 100%;
   margin-right: 0px;
 }
 body.www-kolhazman-co-il #eo-banner video {
-  height: 60px;
-  width: 400px;
-  padding-left: 30px;
+  height: 67px;
+  width: 415px;
+  padding-left: 47px;
 }
 body.www-kolhazman-co-il.category-page .category-icon {
   display: inline-block;
@@ -1470,15 +1472,20 @@ body.www-kolhazman-co-il .eo-button .registered_symbol {
   font-size: 11px;
 }
 body.www-kolhazman-co-il #eo-live {
-  width: 400px;
+  width: 370px;
   padding: 0px 50px;
   background-color: #eee;
+  margin: 0px 15px;
 }
 body.www-kolhazman-co-il #eo-live.eo-live-maximize {
-  width: 400px;
+  width: 370px;
   height: 208px;
   background-color: #eee;
   padding: 20px 57px;
+  margin: 0px 15px;
+}
+body.www-kolhazman-co-il #eo-live.vocabulary-open {
+  background-color: black;
 }
 
 body.www-shturem-net div.eo-paragraph,
@@ -3307,6 +3314,12 @@ it's top left values will re-computed everytime progress bar is moving*/
   body.www-kolhazman-co-il #eo-live {
     width: 100%;
     padding: 0px 0px;
+    margin: 0px;
+  }
+  body.www-kolhazman-co-il #eo-live.eo-live-maximize {
+    width: 100%;
+    padding: 0px 0px;
+    margin: 0px;
   }
   body.www-kolhazman-co-il #eo-banner {
     width: 100%;

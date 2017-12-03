@@ -6530,10 +6530,10 @@ UserInfo = function () {
         Speaker.speak(document.englishonConfig.targetLanguage, origin_word.data('full').replaceAll('_', ' '));
         element.toggleText('?', element.data('translation'));
         if (element.text() != '?') {
-          element.addClass('show').removeClass('vocabulary-translation-big');
+          element.addClass('show-trs').removeClass('vocabulary-translation-big');
         } else {
-          element.removeClass('show');
-          e$('.vocabulary-translation:not(.show)').addClass('vocabulary-translation-big');
+          element.removeClass('show-trs');
+          e$('.vocabulary-translation:not(.show-trs)').addClass('vocabulary-translation-big');
           origin_word.html(origin_word.data('full').replaceAll('_', '&nbsp;'));
         }
         //if there is no enough place - show first letter only, + '...'
@@ -6578,7 +6578,7 @@ UserInfo = function () {
           e$('#vocabulary-content-list').html('');
           this.fetchVocabulary();
           document.vocabulary_interval = setInterval(function () {
-            e$('.vocabulary-translation:not(.show)').toggleClass('vocabulary-translation-big');
+            e$('.vocabulary-translation:not(.show-trs)').toggleClass('vocabulary-translation-big');
           }, 2000);
         } else {
           e$('#eo-live').removeClass('vocabulary-open');
@@ -9280,9 +9280,6 @@ function englishon() {
     return;
   }
   if ((window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') && !e$('#developement-only-version').length) {
-    return;
-  }
-  if (window.location.host == 'www.kolhazman.co.il' && !e$('#developement-only-version').length && window.location.pathname != '/241200') {
     return;
   }
 
