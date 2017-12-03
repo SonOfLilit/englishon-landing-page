@@ -5267,7 +5267,9 @@ var MESSAGES = {
     LOGIN_SIGN_UP_TITLE: 'Sign Up',
     LOGIN_SUBTITLE: 'Improve Language Skills</br>Fun, Easy, Free',
     FORGOT_PASSWORD: 'Forgot password?',
-
+    MIN_FIELD_LENGTH: 'Min length for this field is: ',
+    MAX_FIELD_LENGTH: 'Max length for this field is: ',
+    VALID_EMAIL: 'eg. user_name@gmail.com',
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
     REGISTER_MESSAGE: 'Thank you for registering! A confirmation message sent to the given email.',
     ENABLE: "Enable EnglishON",
@@ -5324,6 +5326,9 @@ var MESSAGES = {
     LOGIN_SIGN_IN_TITLE: 'התחבר',
     LOGIN_SIGN_UP_TITLE: 'הירשם',
     LOGIN_SUBTITLE: 'אנגלית בקליק </br>בכייף בקלות וללא עלות',
+    MIN_FIELD_LENGTH: 'מינימום אורך שדה זה הוא: ',
+    MAX_FIELD_LENGTH: 'מקסימום אורך שדה זה הוא: ',
+    VALID_EMAIL: 'לדוגמה: user_name@gmail.com',
     FORGOT_PASSWORD: '?שכחת סיסמה',
     REGISTER_MESSAGE: 'Thank you for registering! A confirmation message sent to the given email.',
     ERROR_CONNECTING: "There was an error connecting to EnglishON, please contact support@englishon.org",
@@ -5511,12 +5516,12 @@ Authenticator.prototype.validate = function (user) {
   function checkLength(o, n, min, max) {
     if (o.val().length > max) {
       o.addClass("eo-state-error");
-      updateTips("Max length for " + n + " is: " + max, n);
+      updateTips(document.MESSAGES[document.englishonConfig.siteLanguage]['MAX_FIELD_LENGTH'] + max, n);
       return false;
     }
     if (o.val().length < min) {
       o.addClass("eo-state-error");
-      updateTips("Min length for " + n + " is: " + min, n);
+      updateTips(document.MESSAGES[document.englishonConfig.siteLanguage]['MIN_FIELD_LENGTH'] + max, n);
       return false;
     } else {
       return true;
@@ -5543,12 +5548,9 @@ Authenticator.prototype.validate = function (user) {
     }, 500);
   }
   var valid = true;
-  //valid = valid && checkLength( name, "username", 3, 16 );
   valid = valid && checkLength(user.email, "email", 6, 80);
   valid = valid && checkLength(user.password, "password", 5, 16);
-  //valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
-  valid = valid && checkRegexp(user.email, emailRegex, "eg. user_name@gmail.com");
-  //valid = valid && checkRegexp(user.password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9");
+  valid = valid && checkRegexp(user.email, emailRegex, document.MESSAGES[document.englishonConfig.siteLanguage].VALID_EMAIL);
   return valid;
 };
 Authenticator.prototype.login = function (token) {
@@ -5609,6 +5611,10 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
       return e$.ajax(requestData);
     }
   });
+};
+
+HerokuBackend.prototype.updateLanguage = function (language) {
+  return this.ajax("POST", "/quiz/updateLanguage/", { language: language });
 };
 HerokuBackend.prototype.linkAccounts = function (google_sec_token) {
   return this.ajax("POST", "/tokens/linkAccounts/", { google_sec_token: google_sec_token });
@@ -7792,16 +7798,15 @@ var overlay_settings = {
       'pin_button_category': function () {
         return e$('.top-bar-right').find('ul').find('.menu-item.menu-item-type-taxonomy.menu-item-object-category.menu-item-has-children.has-submenu').find('ul');
       },
+      //'button_left_value': function() { return e$('#s').offset().left + (e$('#s').width() * 0.87) },
       'button_left_value': function () {
         return e$('#s').offset().left + e$('#s').width() + 30;
-        //return e$('#s').offset().left + e$('#s').width() * 0.87;
       },
       'button_top_value': function () {
         return 2;
       },
       'category_button_left_value': function () {
         return e$('#s').offset().left + e$('#s').width() + 30;
-        //return e$('#s').offset().left + e$('#s').width() * 0.87;
       },
       'placeLiveActions': function () {
         var startPoint = 206;
@@ -8102,8 +8107,8 @@ kolhazmanFrontOverlay = function (parts, url) {
     var promises = e$.map(this.parts, function (part, url) {
       url = url.toLowerCase();
       return document.englishonBackend.getArticle(url, 1).then(function (questions) {
-        //if (questions.length) {
-        if (true) {
+        if (questions.length) {
+          //if (true) {
           e$(part).each(function () {
             if (!e$(this).find('.category-icon').length) {
               if (document.overlay.pageType == 'category-page') {
@@ -9590,11 +9595,14 @@ var EnglishOnMenu = function () {
       document.tour.start();
     });
     e$('.eo-site-option').on('click', function (e) {
+      var lang = e$(e.target).attr('id');
       e$('.eo-area, #eo-live').removeClass('hebrew english');
-      e$('.eo-area, #eo-live').addClass(e$(e.target).attr('id'));
-      configStorage.set({ siteLanguage: e$(e.target).attr('id') });
+      e$('.eo-area, #eo-live').addClass(lang);
+      configStorage.set({ siteLanguage: lang });
       document.menu.displayMenuMessages();
       document.eoDialogs.toggleDialogTrigger(e);
+      document.englishonBackend.updateLanguage(lang);
+      e$('.eo-forgot-psw').attr('href', document.englishonBackend.base + '/tokens/recoveri18n/' + lang + '/');
     });
     e$('#eo-login-password').on('keydown', function (e) {
       if (e.keyCode == 13) {
@@ -9648,7 +9656,7 @@ var EnglishOnMenu = function () {
     e$('#subtitle').html(messages.LOGIN_SUBTITLE);
     e$('#or').text(messages.OR);
     e$('.eo-forgot-psw').text(messages.FORGOT_PASSWORD);
-    e$('.eo-forgot-psw').attr('href', document.englishonBackend.base + '/recover/');
+    e$('.eo-forgot-psw').attr('href', document.englishonBackend.base + '/tokens/recoveri18n/' + document.englishonConfig.siteLanguage + '/');
     e$('#eo-mail-login-btn').text(messages.LOGIN_BUTTON);
     e$('#eo-choose-lang').text(messages.SITE_LANGUAGE);
     e$('#progress-tutorial-btn').text(messages.START_PROGRESS_TUTORIAL);

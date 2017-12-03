@@ -2651,6 +2651,10 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   color: #a94442;
 }
 
+#eo-dlg-login.eo-area.hebrew .error {
+  direction: rtl;
+}
+
 #eo-dlg-login {
   overflow-y: auto;
 }
@@ -2695,6 +2699,12 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-dlg-terms .eo-menu-footer {
   font-size: 11px;
   line-height: 1.3;
+}
+#eo-menu .eo-menu-footer .eo-forgot-psw:hover,
+#eo-dlg-login .eo-menu-footer .eo-forgot-psw:hover,
+#eo-dlg-options .eo-menu-footer .eo-forgot-psw:hover,
+#eo-dlg-terms .eo-menu-footer .eo-forgot-psw:hover {
+  color: #2cc6a8;
 }
 @-moz-document url-prefix() {
   #eo-menu .eo-menu-footer,
