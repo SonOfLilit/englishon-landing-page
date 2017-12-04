@@ -8117,6 +8117,10 @@ kolhazmanFrontOverlay = function (parts, url) {
                   e$(this).find('.media-heading').append(e$('<div>').addClass('category-icon'));
                 }
               } else {
+                //THIS LINE IS TEMP, NEED A CSS FIX IN KOLHAZMAN
+                if (e$(this).parents('.section.home_buttom').length) {
+                  return;
+                }
                 e$(this).find('.media-heading').append(e$('<div>').addClass('category-icon'));
                 if (e$(this).find('.icon-circle').length) {
                   e$(this).find('.category-icon').addClass('left');
@@ -9282,6 +9286,9 @@ function englishon() {
   if ((window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') && !e$('#developement-only-version').length) {
     return;
   }
+  // if (window.location.host == 'www.kolhazman.co.il' && !e$('#developement-only-version').length && window.location.pathname!='/241200') {
+  //   return;
+  // }
 
   //END OF TEMP LINES
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
