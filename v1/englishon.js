@@ -7483,7 +7483,7 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
         <div id='login-password-msg' class='error eo-message'></div>\
       </div>\
       <div class='Grid-cell v-align right-align eo-row9'>\
-        <div class='v-align right-align eo-menu-footer'> <a class='eo-forgot-psw' class='eo-menu-footer'>Forgot password?</a> </div>\
+        <div class='v-align right-align eo-menu-footer'> <a class='eo-forgot-psw' class='eo-menu-footer' target='_blank'>Forgot password?</a> </div>\
       </div>\
       <div class='Grid-cell eo-row7 v-align h-align'>\
         <div id='eo-mail-login-btn' class='v-align h-align'>sign in</div>\
@@ -9704,8 +9704,14 @@ var EnglishOnMenu = function () {
     if (auth.validate({ email: email, password: password, email_msg: email_msg, password_msg: password_msg })) {
       auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
         if (res.status == 'verification required') {
-          auth.verifiyEmail(email);
-          return;
+          location = document.englishonConfig.backendUrl + '/tokens/verifyEmail/' + document.englishonConfig.siteLanguage + '/';
+          //auth.verifiyEmail(email);
+          //verify_location = document.englishonConfig.backendUrl+'/tokens/verifyEmail/'+document.englishonConfig.siteLanguage+'/';
+          //var redirectWindow = window.open(document.englishonConfig.backendUrl+'/tokens/verifyEmail/'+document.englishonConfig.siteLanguage+'/', '_blank');
+          //var redirectWindow = window.open('http://google.com', '_blank');
+          //redirectWindow.location;
+          //var url = "http://google.com";
+          //e$("<a>").attr("href", url).attr("target", "_blank")[0].click();
         }
         if (res.status == 'error') {
           document.eoDialogs.displayMessage(res.message, e$('#login-password-msg'));
