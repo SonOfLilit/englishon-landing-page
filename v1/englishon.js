@@ -7718,7 +7718,7 @@ var overlay_settings = {
     },
     'mobile': {
       'pin_button_article': function () {
-        return e$('.entry-meta');
+        return e$('.entry-meta').eq(0);
       },
       'pin_button_category': function () {
         return e$('.kolhazman-tickets');
