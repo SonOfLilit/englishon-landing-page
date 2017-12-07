@@ -6370,6 +6370,7 @@ UserInfo = function () {
     this.milotrage();
     e$('#eo-banner').hide();
     e$('#eo-live').removeClass('hidden vocabulary-open');
+    e$('#eo-live').find('.progressbar-text').html('&#10004;');
     clearInterval(document.vocabulary_interval);
     document.overlay.settings.placeLiveActions();
     //SHOW USER LEVEL JUST FOR TEAM
@@ -9420,6 +9421,14 @@ window.setIntervalX = function (name, callback, delay, repetitions) {
     }
   }, delay);
 };
+language_map = {
+  'en': 'english',
+  'eng': 'english',
+  'he': 'hebrew',
+  'heb': 'hebrew',
+  'english': 'english',
+  'hebrew': 'hebrew'
+};
 document.playMovie = function () {
   if (document.englishonConfig.media === 'desktop') {
     var valx = (e$(window).width() - e$('#demo_video').css('width').slice(0, -2)) / 2;
@@ -9717,7 +9726,7 @@ var EnglishOnMenu = function () {
           document.eoDialogs.displayMessage(res.message, e$('#login-password-msg'));
           return;
         }
-        configStorage.set({ email: res.email, token: res.token, 'eo-user-name': e$('#eo-login-email').val() }).then(function () {
+        configStorage.set({ email: res.email, token: res.token, siteLanguage: language_map[res.language], 'eo-user-name': e$('#eo-login-email').val() }).then(function () {
           document.link_flag = true;
           document.englishonBackend.token = res.token;
           e$('#eo-account-area').removeClass('guest');
@@ -9726,6 +9735,7 @@ var EnglishOnMenu = function () {
           e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
           e$('body').addClass('logged').removeClass('guest');
           e$('#eo-account-img').addClass('no-image');
+          document.menu.displayMenuMessages();
           if (res.status == 'logged_in') {
             document.eoDialogs.hideDialogs(1000);
           } else if (res.status == 'terms_not_accepted') {
@@ -9791,13 +9801,15 @@ var EnglishOnMenu = function () {
     localStorage.removeItem('email');
     localStorage.removeItem('eo-user-name');
     localStorage.removeItem('editor');
+    localStorage.removeItem('siteLanguage');
     document.englishonConfig.email = null;
     document.menu.powerOff();
     var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
     document.englishonConfig.token = null;
     auth.login(document.englishonConfig.token).then(function (token) {
-      configStorage.set({ token: token }).then(function () {
+      configStorage.set({ token: token, siteLanguage: I18N.SITE_LANGUAGE }).then(function () {
         document.signout_promise.resolve();
+        document.menu.displayMenuMessages();
         document.englishonBackend.token = token;
         if (e$('#eo-iframe').length) {
           //Give englishon the new guest token
@@ -10054,13 +10066,15 @@ function receiveMessage(event) {
   var img = event.data.image;
   var email = event.data.email;
   var user_name = event.data.name;
+  var lang = event.data.language;
   e$('#eo-account-img').css("background-image", "url(" + img + ")").removeClass('no-image');
   e$('body').addClass('logged').removeClass('guest');
   e$('#eo-account-name').text(user_name);
   e$('#eo-account-area').removeClass('guest');
   if (!localStorage.getItem('email')) {
     //this is a real login, as google made many 'fake logins'
-    configStorage.set({ email: email, token: django_token, 'eo-user-name': user_name }).then(function () {
+    configStorage.set({ email: email, token: django_token, siteLanguage: language_map[lang], 'eo-user-name': user_name }).then(function () {
+      document.menu.displayMenuMessages();
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
       if (event.data.status == 'terms_not_accepted') {
         document.eoDialogs.hideDialogs(0);
