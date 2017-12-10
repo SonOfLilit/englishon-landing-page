@@ -6370,7 +6370,6 @@ UserInfo = function () {
     this.milotrage();
     e$('#eo-banner').hide();
     e$('#eo-live').removeClass('hidden vocabulary-open');
-    e$('#eo-live').find('.progressbar-text').html('&#10004;');
     clearInterval(document.vocabulary_interval);
     document.overlay.settings.placeLiveActions();
     //SHOW USER LEVEL JUST FOR TEAM
@@ -8112,19 +8111,13 @@ kolhazmanFrontOverlay = function (parts, url) {
           //if (true) {
           e$(part).each(function () {
             if (!e$(this).find('.category-icon').length) {
-              if (document.overlay.pageType == 'category-page') {
-                e$(this).find('.read-more').prepend(e$('<div>').addClass('category-icon'));
-                if (e$(this).hasClass('primary-title')) {
-                  e$(this).find('.media-heading').append(e$('<div>').addClass('category-icon'));
-                }
-              } else {
-                //THIS LINE IS TEMP, NEED A CSS FIX IN KOLHAZMAN
-                if (e$(this).parents('.section.home_buttom').length) {
-                  return;
-                }
-                e$(this).find('.media-heading').append(e$('<div>').addClass('category-icon'));
-                if (e$(this).find('.icon-circle').length) {
-                  e$(this).find('.category-icon').addClass('left');
+              e$(this).find('.media-heading, .grid-heading').find('a').append(e$('<div>').addClass('category-icon'));
+              var icon = e$(this).find('.category-icon');
+              var link = e$(this).find('a:not(.image-link)');
+              if (link.length) {
+                var gap = Math.abs(icon.offset().left + icon.width() + Number(icon.css('margin-right').slice(0, -2)) - (link.offset().left + link.width()));
+                if (gap < 2) {
+                  e$(this).find('.category-icon').remove();
                 }
               }
             }
@@ -8710,9 +8703,7 @@ var kolhazmanFrontScraper = function () {
   this.scrape = function () {
     var parts = {};
     e$('.post').each(function (i, para) {
-      if (!e$(para).find('.media-heading').length) {
-        return;
-      }
+      //if (!e$(para).find('.media-heading').length){return;}
       if (e$(para).find('a').length) {
         var url = e$(para).find('a')[0].href;
       } else {
