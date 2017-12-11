@@ -7992,7 +7992,7 @@ PageOverlay = function () {
     if (window.localStorage.getItem('got_no_questions_dialog')) {
       return;
     }
-    no_questions_dlg = e$('<div>').addClass('no_questions_dlg').html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
+    no_questions_dlg = e$('<div>').addClass('no_questions_dlg').html(message + '<img src=' + staticUrl('img/button-logo-3d.png') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
     e$('.no_questions_dlg').addClass(dir);
     //e$('.no_questions_dlg').parents('.ui-dialog').css({ 'maxWidth': 240 });
     window.localStorage.setItem('got_no_questions_dialog', true);
@@ -8974,7 +8974,7 @@ Tour = new function () {
       window.localStorage.setItem('show_quiz_tutorial', true);
       var dir = document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION'];
       var message = document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS;
-      no_questions_dlg = e$('<div>').addClass('no_questions_dlg ' + dir).html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
+      no_questions_dlg = e$('<div>').addClass('no_questions_dlg ' + dir).html(message + '<img src=' + staticUrl('img/button-logo-3d.png') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
       e$('.no_questions_dlg').addClass(dir);
       steps = [];
       this.initTutorial(steps);
@@ -9193,7 +9193,7 @@ Tour = new function () {
 var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = null) {
   this.id = id;
   this.attachTo = attachTo;
-  this.title = '<img src=' + staticUrl('img/menu-logotype.svg') + ' class = "tutorial-logo"/><img src=' + staticUrl('img/button-logo.svg') + ' class = "tutorial-icon"/>';
+  this.title = '<img src=' + staticUrl('img/menu-logotype.svg') + ' class = "tutorial-logo"/><img src=' + staticUrl('img/button-logo-3d.png') + ' class = "tutorial-icon"/>';
   this.text = text;
   this.advanceOn = advanceOn;
   this.scroll_value = scroll_value;

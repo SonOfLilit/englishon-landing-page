@@ -1022,7 +1022,7 @@ div.eo-question.highlighted {
   width: 20px;
   height: 20px;
   margin-bottom: 10px;
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo-3d.png);
   background-size: 17px;
   background-repeat: no-repeat;
 }
@@ -1066,7 +1066,7 @@ body.shturem-net .category-icon {
   background-size: 30px;
 }
 .eo-icon.eo-button-off, .eo-icon.eo-button-on {
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo-3d.png);
   background-size: 30px;
 }
 
@@ -1650,15 +1650,15 @@ body.www-bloombergview-com .eo-button:hover {
   width: 50px !important;
 }
 body.www-bloombergview-com .eo-button.eo-button-loading {
-  background-image: url(http://www.englishon.org/v1/img/button-loading-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/loading-white);
   background-size: 30px;
 }
 body.www-bloombergview-com .eo-button.eo-button-unavailable {
-  background-image: url(http://www.englishon.org/v1/img/button-unavailable-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/unavailable-white);
   background-size: 30px;
 }
 body.www-bloombergview-com .eo-button.eo-button-off, body.www-bloombergview-com .eo-button.eo-button-on {
-  background-image: url(http://www.englishon.org/v1/img/button-logo-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/logo-white);
   background-size: 30px;
 }
 body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-off::before, body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-on::before {
@@ -2171,7 +2171,7 @@ eo-signout-layout .signout {
 
 #eo-dlg-icon {
   width: 37px;
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo-3d.png);
   background-repeat: no-repeat;
   height: 40px;
   background-size: 30.5px;
@@ -2183,7 +2183,7 @@ eo-signout-layout .signout {
   height: 27.5px;
   width: 27.5px;
   background-size: 27.5px;
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo-3d.png);
   background-repeat: no-repeat;
   background-position-y: center;
   margin-left: 9px;
