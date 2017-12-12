@@ -6686,6 +6686,12 @@ Injector = function (paragraphs) {
       }
     }
   };
+  this.paragraphs = paragraphs;
+  /*  e$.each(this.paragraphs, function(p) {
+    })*/
+  e$(this.paragraphs).each(function (i, p) {
+    p.pure_text = e$(p).text();
+  });
   this.elements = [];
   this.isActive = false;
   this.toggle = function (value) {
@@ -6708,15 +6714,11 @@ Injector = function (paragraphs) {
     //this.userAnswered = false;
     console.log("hide questions now");
   };
-  this.on = function () {
-    if (this.isActive) {
-      return;
-    }
-    this.isActive = true;
-    e$(this.elements).each(function (i, q) {
-      var hint = q.qobj.data.preposition + q.qobj.data.hint;
-      q.replacement = q.qobj.replacement();
-      q.original.replaceWith(q.replacement);
+  this.preventJumpyQuestions = function () {
+    e$('.eo-question').each(function (i, element) {
+      element = e$(element);
+      var ctx = element.data('context');
+      q = document.overlay.injector.elements.filter(el => el.qobj.data.context == ctx)[0];
       //if the question after answering is too long - add spaces
       var width = q.replacement.outerWidth(); //2 pixels for the border and 4 is spere...
       var [parentoffset, lineWidth] = document.overlay.getLineDetails();
@@ -6734,23 +6736,36 @@ Injector = function (paragraphs) {
               console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
               q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
             }*/
+      flag = true;
       if (!q.replacement.hasClass('eo-expired')) {
-        q.qobj.questionOnClick(q.replacement.find('.eo-hint'));
-        var open_width = q.replacement.find('.eo-options').outerWidth();
+        var open_width = Number(q.replacement.find('.eo-options').css('width').slice(0, -2));
         if (open_width > spaceInCurrentLine) {
-          console.log('IN THIS CASE question is expected to BE CUT after openning, ' + open_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
-          q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+          console.log('IN THIS CASE question have no enough place to oppened, ' + open_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
+          q.replacement.before(e$('<br/>').addClass('eo-space')); //the width is not exact to give some spere 
+          flag = false;
         }
         document.overlay.closeUnAnswered();
       }
-      if (future_width > spaceInCurrentLine) {
+      if (flag && future_width > spaceInCurrentLine) {
         console.log('IN THIS CASE question is expected to go DOWN after action, ' + future_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
-        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+        q.replacement.before(e$('<br/>').addClass('eo-space')); //the width is not exact to give some spere 
+        flag = false;
       }
-      if (width > future_width && spaceInCurrentLine >= lineWidth) {
+      if (flag && width > future_width && spaceInCurrentLine >= lineWidth) {
         console.log('IN THIS CASE question is expected to go UP after action, ' + future_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
-        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+        q.replacement.before(e$('<br/>').addClass('eo-space')); //the width is not exact to give some spere 
       }
+    });
+  };
+  this.on = function () {
+    if (this.isActive) {
+      return;
+    }
+    this.isActive = true;
+    e$(this.elements).each(function (i, q) {
+      var hint = q.qobj.data.preposition + q.qobj.data.hint;
+      q.replacement = q.qobj.replacement();
+      q.original.replaceWith(q.replacement);
       if (q.qobj.tried.length) {
         //a special treat for quesion answered now, without .eo-expired
         q.replacement.click(q.qobj.QuestionAudio.bind(q.qobj));
@@ -6765,7 +6780,7 @@ Injector = function (paragraphs) {
         q.replacement.addClass('wrong-feedback');
       }
     });
-    console.log('########after injector on: ' + e$('.eo-question').length);
+    this.preventJumpyQuestions();
   };
   this.setQuestions = function (questions, toggleSound) {
     this.elements = [];
@@ -6798,18 +6813,39 @@ Injector = function (paragraphs) {
   this.checkSpacing = function (q) {
     var questionsPerParagraph = 1;
     var availablePlace = true;
-    e$.each(paragraphs, function (i, p) {
+    e$.each(this.paragraphs, function (i, p) {
       if (!p) {
         return;
       }
+      var capacity = p.capacity;
+      var pure_text = p.pure_text;
       p = e$(p);
       var ctx = q.context;
-      var location = p.text().indexOf(q.context);
       var exist = p.find('.eo-injection-target').length;
-      if (p.text().indexOf(q.context) != -1 && p.find('.eo-injection-target').length >= questionsPerParagraph) {
-        availablePlace = false;
-        console.log('no available space in this paragraph');
+      var words_num = p.text();
+      if (p.text().indexOf(q.context) != -1) {
+        if (p.find('.eo-injection-target').length >= capacity) {
+          console.log('no available space in this paragraph');
+          availablePlace = false;
+        }
+        var _index = pure_text.indexOf(q.context) + q.context.indexOf(q.word);
+        e$.each(p.find('.eo-injection-target'), function (i, t) {
+          var t = e$(t);
+          var index = pure_text.indexOf(t.data('context')) + t.data('context').indexOf(t.text());
+          var chunk = pure_text.slice(Math.min(_index, index), Math.max(_index, index));
+          var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
+          var match = [];
+          var sum = 0;
+          while ((match = re.exec(chunk)) !== null) {
+            sum += 1;
+          }
+          if (sum < 20) {
+            availablePlace = false;
+            console.log('there is space in this paragraph, but there is addition question too close');
+          }
+        });
       }
+      //http://www.kolhazman.co.il/263519 check here!!!!
     });
     return availablePlace;
   };
@@ -6860,7 +6896,7 @@ Injector = function (paragraphs) {
           var ix = portion.text.indexOf(replaced);
           if (ix === -1) return portion.text;
           var before = document.createTextNode(portion.text.slice(0, ix));
-          var target = e$('<span>').addClass('eo-injection-target').text(portion.text.slice(ix, ix + replaced.length));
+          var target = e$('<span>').addClass('eo-injection-target').text(portion.text.slice(ix, ix + replaced.length)).data('context', ctx);
           var after = document.createTextNode(portion.text.slice(ix + replaced.length));
           var frag = document.createDocumentFragment();
           frag.appendChild(before);
@@ -7957,14 +7993,18 @@ PageOverlay = function () {
     }
   };
   this.getQuestionQuota = function () {
+    console.log('***************************getQuestionQuota');
     var total = 0;
     e$(this.paragraphs).each(function (i, p) {
+      var sum = 0;
       var text = e$(p).text();
       var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
       var match = [];
       while ((match = re.exec(text)) !== null) {
         total += 1;
+        sum += 1;
       }
+      p.capacity = Math.ceil(Math.max(sum / 60, 1));
     });
     return Math.max(1, Math.round(total / 100));
   };
@@ -8206,7 +8246,7 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
         //this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS_ARTICLE);
       }
       this.questions = questions;
-      console.log("Num questions: " + questions.length);
+      console.log("**************************define injector!!!!Num questions: " + questions.length);
       this.injector = new Injector(this.paragraphs);
       this.injector.setQuestions(questions);
       return questions;
