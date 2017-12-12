@@ -6729,31 +6729,27 @@ Injector = function (paragraphs) {
       future_text = future_text.replaceAll('_', '&nbsp;');
       var visible_element = q.replacement.hasClass('eo-expired') ? '.eo-correct' : '.eo-hint';
       q.replacement.find(visible_element).html(future_text);
-      var future_width = q.replacement.outerWidth(); //2 pixels for the border
+      var future_width = q.replacement.outerWidth();
       q.replacement.find(visible_element).html(curent_text);
-      /*      if (future_width > spaceInCurrentLine || ////a question which expected to go down after action
-              (width > future_width && spaceInCurrentLine >= lineWidth)) { //a question which expected to go up after action
-              console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
-              q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
-            }*/
       flag = true;
       if (!q.replacement.hasClass('eo-expired')) {
         var open_width = Number(q.replacement.find('.eo-options').css('width').slice(0, -2));
         if (open_width > spaceInCurrentLine) {
           console.log('IN THIS CASE question have no enough place to oppened, ' + open_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
-          q.replacement.before(e$('<br/>').addClass('eo-space')); //the width is not exact to give some spere 
+          q.replacement.before(e$('<br/>').addClass('eo-space'));
           flag = false;
         }
         document.overlay.closeUnAnswered();
       }
       if (flag && future_width > spaceInCurrentLine) {
         console.log('IN THIS CASE question is expected to go DOWN after action, ' + future_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
-        q.replacement.before(e$('<br/>').addClass('eo-space')); //the width is not exact to give some spere 
+        q.replacement.before(e$('<br/>').addClass('eo-space'));
         flag = false;
       }
-      if (flag && width > future_width && spaceInCurrentLine >= lineWidth) {
+      if (flag && width > future_width && spaceInCurrentLine + 1 >= lineWidth) {
+        //the +1 is a safety
         console.log('IN THIS CASE question is expected to go UP after action, ' + future_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
-        q.replacement.before(e$('<br/>').addClass('eo-space')); //the width is not exact to give some spere 
+        q.replacement.before(e$('<br/>').addClass('eo-space'));
       }
     });
   };
