@@ -5521,7 +5521,7 @@ Authenticator.prototype.validate = function (user) {
     }
     if (o.val().length < min) {
       o.addClass("eo-state-error");
-      updateTips(document.MESSAGES[document.englishonConfig.siteLanguage]['MIN_FIELD_LENGTH'] + min, n);
+      updateTips(document.MESSAGES[document.englishonConfig.siteLanguage]['MIN_FIELD_LENGTH'] + max, n);
       return false;
     } else {
       return true;
