@@ -4987,218 +4987,101 @@ window.heap = window.heap || [], heap.load = function (e, t) {
 };
 heap.load("3281332641");
 //
-/**
- * http://www.openjs.com/scripts/events/keyboard_shortcuts/
- * Version : 2.01.B
- * By Binny V A
- * License : BSD
- */
-shortcut = {
-	'all_shortcuts': {}, //All the shortcuts are stored in this array
-	'add': function (shortcut_combination, callback, opt) {
-		//Provide a set of default options
-		var default_options = {
-			'type': 'keydown',
-			'propagate': false,
-			'disable_in_input': false,
-			'target': document,
-			'keycode': false
-		};
-		if (!opt) opt = default_options;else {
-			for (var dfo in default_options) {
-				if (typeof opt[dfo] == 'undefined') opt[dfo] = default_options[dfo];
-			}
-		}
-
-		var ele = opt.target;
-		if (typeof opt.target == 'string') ele = document.getElementById(opt.target);
-		var ths = this;
-		shortcut_combination = shortcut_combination.toLowerCase();
-
-		//The function to be called at keypress
-		var func = function (e) {
-			e = e || window.event;
-
-			if (opt['disable_in_input']) {
-				//Don't enable shortcut keys in Input, Textarea fields
-				var element;
-				if (e.target) element = e.target;else if (e.srcElement) element = e.srcElement;
-				if (element.nodeType == 3) element = element.parentNode;
-
-				if (element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') return;
-			}
-
-			//Find Which key is pressed
-			if (e.keyCode) code = e.keyCode;else if (e.which) code = e.which;
-			var character = String.fromCharCode(code).toLowerCase();
-
-			if (code == 188) character = ","; //If the user presses , when the type is onkeydown
-			if (code == 190) character = "."; //If the user presses , when the type is onkeydown
-
-			var keys = shortcut_combination.split("+");
-			//Key Pressed - counts the number of valid keypresses - if it is same as the number of keys, the shortcut function is invoked
-			var kp = 0;
-
-			//Work around for stupid Shift key bug created by using lowercase - as a result the shift+num combination was broken
-			var shift_nums = {
-				"`": "~",
-				"1": "!",
-				"2": "@",
-				"3": "#",
-				"4": "$",
-				"5": "%",
-				"6": "^",
-				"7": "&",
-				"8": "*",
-				"9": "(",
-				"0": ")",
-				"-": "_",
-				"=": "+",
-				";": ":",
-				"'": "\"",
-				",": "<",
-				".": ">",
-				"/": "?",
-				"\\": "|"
-			};
-			//Special Keys - and their codes
-			var special_keys = {
-				'esc': 27,
-				'escape': 27,
-				'tab': 9,
-				'space': 32,
-				'return': 13,
-				'enter': 13,
-				'backspace': 8,
-
-				'scrolllock': 145,
-				'scroll_lock': 145,
-				'scroll': 145,
-				'capslock': 20,
-				'caps_lock': 20,
-				'caps': 20,
-				'numlock': 144,
-				'num_lock': 144,
-				'num': 144,
-
-				'pause': 19,
-				'break': 19,
-
-				'insert': 45,
-				'home': 36,
-				'delete': 46,
-				'end': 35,
-
-				'pageup': 33,
-				'page_up': 33,
-				'pu': 33,
-
-				'pagedown': 34,
-				'page_down': 34,
-				'pd': 34,
-
-				'left': 37,
-				'up': 38,
-				'right': 39,
-				'down': 40,
-
-				'f1': 112,
-				'f2': 113,
-				'f3': 114,
-				'f4': 115,
-				'f5': 116,
-				'f6': 117,
-				'f7': 118,
-				'f8': 119,
-				'f9': 120,
-				'f10': 121,
-				'f11': 122,
-				'f12': 123
-			};
-
-			var modifiers = {
-				shift: { wanted: false, pressed: false },
-				ctrl: { wanted: false, pressed: false },
-				alt: { wanted: false, pressed: false },
-				meta: { wanted: false, pressed: false } //Meta is Mac specific
-			};
-
-			if (e.ctrlKey) modifiers.ctrl.pressed = true;
-			if (e.shiftKey) modifiers.shift.pressed = true;
-			if (e.altKey) modifiers.alt.pressed = true;
-			if (e.metaKey) modifiers.meta.pressed = true;
-
-			for (var i = 0; k = keys[i], i < keys.length; i++) {
-				//Modifiers
-				if (k == 'ctrl' || k == 'control') {
-					kp++;
-					modifiers.ctrl.wanted = true;
-				} else if (k == 'shift') {
-					kp++;
-					modifiers.shift.wanted = true;
-				} else if (k == 'alt') {
-					kp++;
-					modifiers.alt.wanted = true;
-				} else if (k == 'meta') {
-					kp++;
-					modifiers.meta.wanted = true;
-				} else if (k.length > 1) {
-					//If it is a special key
-					if (special_keys[k] == code) kp++;
-				} else if (opt['keycode']) {
-					if (opt['keycode'] == code) kp++;
-				} else {
-					//The special keys did not match
-					if (character == k) kp++;else {
-						if (shift_nums[character] && e.shiftKey) {
-							//Stupid Shift key bug created by using lowercase
-							character = shift_nums[character];
-							if (character == k) kp++;
-						}
-					}
-				}
-			}
-
-			if (kp == keys.length && modifiers.ctrl.pressed == modifiers.ctrl.wanted && modifiers.shift.pressed == modifiers.shift.wanted && modifiers.alt.pressed == modifiers.alt.wanted && modifiers.meta.pressed == modifiers.meta.wanted) {
-				callback(e);
-
-				if (!opt['propagate']) {
-					//Stop the event
-					//e.cancelBubble is supported by IE - this will kill the bubbling process.
-					e.cancelBubble = true;
-					e.returnValue = false;
-
-					//e.stopPropagation works in Firefox.
-					if (e.stopPropagation) {
-						e.stopPropagation();
-						e.preventDefault();
-					}
-					return false;
-				}
-			}
-		};
-		this.all_shortcuts[shortcut_combination] = {
-			'callback': func,
-			'target': ele,
-			'event': opt['type']
-		};
-		//Attach the function with the event
-		if (ele.addEventListener) ele.addEventListener(opt['type'], func, false);else if (ele.attachEvent) ele.attachEvent('on' + opt['type'], func);else ele['on' + opt['type']] = func;
-	},
-
-	//Remove the shortcut - just specify the shortcut and I will remove the binding
-	'remove': function (shortcut_combination) {
-		shortcut_combination = shortcut_combination.toLowerCase();
-		var binding = this.all_shortcuts[shortcut_combination];
-		delete this.all_shortcuts[shortcut_combination];
-		if (!binding) return;
-		var type = binding['event'];
-		var ele = binding['target'];
-		var callback = binding['callback'];
-
-		if (ele.detachEvent) ele.detachEvent('on' + type, callback);else if (ele.removeEventListener) ele.removeEventListener(type, callback, false);else ele['on' + type] = false;
-	}
-};
+/* mousetrap v1.6.1 craig.is/killing/mice */
+(function (r, v, f) {
+  function w(a, b, g) {
+    a.addEventListener ? a.addEventListener(b, g, !1) : a.attachEvent("on" + b, g);
+  }function A(a) {
+    if ("keypress" == a.type) {
+      var b = String.fromCharCode(a.which);a.shiftKey || (b = b.toLowerCase());return b;
+    }return p[a.which] ? p[a.which] : t[a.which] ? t[a.which] : String.fromCharCode(a.which).toLowerCase();
+  }function F(a) {
+    var b = [];a.shiftKey && b.push("shift");a.altKey && b.push("alt");a.ctrlKey && b.push("ctrl");a.metaKey && b.push("meta");return b;
+  }function x(a) {
+    return "shift" == a || "ctrl" == a || "alt" == a || "meta" == a;
+  }function B(a, b) {
+    var g,
+        c,
+        d,
+        f = [];g = a;"+" === g ? g = ["+"] : (g = g.replace(/\+{2}/g, "+plus"), g = g.split("+"));for (d = 0; d < g.length; ++d) c = g[d], C[c] && (c = C[c]), b && "keypress" != b && D[c] && (c = D[c], f.push("shift")), x(c) && f.push(c);g = c;d = b;if (!d) {
+      if (!n) {
+        n = {};for (var q in p) 95 < q && 112 > q || p.hasOwnProperty(q) && (n[p[q]] = q);
+      }d = n[g] ? "keydown" : "keypress";
+    }"keypress" == d && f.length && (d = "keydown");return { key: c, modifiers: f, action: d };
+  }function E(a, b) {
+    return null === a || a === v ? !1 : a === b ? !0 : E(a.parentNode, b);
+  }function c(a) {
+    function b(a) {
+      a = a || {};var b = !1,
+          l;for (l in n) a[l] ? b = !0 : n[l] = 0;b || (y = !1);
+    }function g(a, b, u, e, c, g) {
+      var l,
+          m,
+          k = [],
+          f = u.type;if (!h._callbacks[a]) return [];"keyup" == f && x(a) && (b = [a]);for (l = 0; l < h._callbacks[a].length; ++l) if (m = h._callbacks[a][l], (e || !m.seq || n[m.seq] == m.level) && f == m.action) {
+        var d;(d = "keypress" == f && !u.metaKey && !u.ctrlKey) || (d = m.modifiers, d = b.sort().join(",") === d.sort().join(","));d && (d = e && m.seq == e && m.level == g, (!e && m.combo == c || d) && h._callbacks[a].splice(l, 1), k.push(m));
+      }return k;
+    }function f(a, b, c, e) {
+      h.stopCallback(b, b.target || b.srcElement, c, e) || !1 !== a(b, c) || (b.preventDefault ? b.preventDefault() : b.returnValue = !1, b.stopPropagation ? b.stopPropagation() : b.cancelBubble = !0);
+    }function d(a) {
+      "number" !== typeof a.which && (a.which = a.keyCode);var b = A(a);b && ("keyup" == a.type && z === b ? z = !1 : h.handleKey(b, F(a), a));
+    }function p(a, c, u, e) {
+      function l(c) {
+        return function () {
+          y = c;++n[a];clearTimeout(r);r = setTimeout(b, 1E3);
+        };
+      }function g(c) {
+        f(u, c, a);"keyup" !== e && (z = A(c));setTimeout(b, 10);
+      }for (var d = n[a] = 0; d < c.length; ++d) {
+        var m = d + 1 === c.length ? g : l(e || B(c[d + 1]).action);q(c[d], m, e, a, d);
+      }
+    }function q(a, b, c, e, d) {
+      h._directMap[a + ":" + c] = b;a = a.replace(/\s+/g, " ");var f = a.split(" ");1 < f.length ? p(a, f, b, c) : (c = B(a, c), h._callbacks[c.key] = h._callbacks[c.key] || [], g(c.key, c.modifiers, { type: c.action }, e, a, d), h._callbacks[c.key][e ? "unshift" : "push"]({ callback: b, modifiers: c.modifiers, action: c.action, seq: e, level: d, combo: a }));
+    }var h = this;a = a || v;if (!(h instanceof c)) return new c(a);h.target = a;h._callbacks = {};h._directMap = {};var n = {},
+        r,
+        z = !1,
+        t = !1,
+        y = !1;h._handleKey = function (a, c, d) {
+      var e = g(a, c, d),
+          k;c = {};var h = 0,
+          l = !1;for (k = 0; k < e.length; ++k) e[k].seq && (h = Math.max(h, e[k].level));for (k = 0; k < e.length; ++k) e[k].seq ? e[k].level == h && (l = !0, c[e[k].seq] = 1, f(e[k].callback, d, e[k].combo, e[k].seq)) : l || f(e[k].callback, d, e[k].combo);e = "keypress" == d.type && t;d.type != y || x(a) || e || b(c);t = l && "keydown" == d.type;
+    };h._bindMultiple = function (a, b, c) {
+      for (var d = 0; d < a.length; ++d) q(a[d], b, c);
+    };w(a, "keypress", d);w(a, "keydown", d);w(a, "keyup", d);
+  }if (r) {
+    var p = { 8: "backspace", 9: "tab", 13: "enter", 16: "shift", 17: "ctrl",
+      18: "alt", 20: "capslock", 27: "esc", 32: "space", 33: "pageup", 34: "pagedown", 35: "end", 36: "home", 37: "left", 38: "up", 39: "right", 40: "down", 45: "ins", 46: "del", 91: "meta", 93: "meta", 224: "meta" },
+        t = { 106: "*", 107: "+", 109: "-", 110: ".", 111: "/", 186: ";", 187: "=", 188: ",", 189: "-", 190: ".", 191: "/", 192: "`", 219: "[", 220: "\\", 221: "]", 222: "'" },
+        D = { "~": "`", "!": "1", "@": "2", "#": "3", $: "4", "%": "5", "^": "6", "&": "7", "*": "8", "(": "9", ")": "0", _: "-", "+": "=", ":": ";", '"': "'", "<": ",", ">": ".", "?": "/", "|": "\\" },
+        C = { option: "alt", command: "meta", "return": "enter",
+      escape: "esc", plus: "+", mod: /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? "meta" : "ctrl" },
+        n;for (f = 1; 20 > f; ++f) p[111 + f] = "f" + f;for (f = 0; 9 >= f; ++f) p[f + 96] = f.toString();c.prototype.bind = function (a, b, c) {
+      a = a instanceof Array ? a : [a];this._bindMultiple.call(this, a, b, c);return this;
+    };c.prototype.unbind = function (a, b) {
+      return this.bind.call(this, a, function () {}, b);
+    };c.prototype.trigger = function (a, b) {
+      if (this._directMap[a + ":" + b]) this._directMap[a + ":" + b]({}, a);return this;
+    };c.prototype.reset = function () {
+      this._callbacks = {};
+      this._directMap = {};return this;
+    };c.prototype.stopCallback = function (a, b) {
+      return -1 < (" " + b.className + " ").indexOf(" mousetrap ") || E(b, this.target) ? !1 : "INPUT" == b.tagName || "SELECT" == b.tagName || "TEXTAREA" == b.tagName || b.isContentEditable;
+    };c.prototype.handleKey = function () {
+      return this._handleKey.apply(this, arguments);
+    };c.addKeycodes = function (a) {
+      for (var b in a) a.hasOwnProperty(b) && (p[b] = a[b]);n = null;
+    };c.init = function () {
+      var a = c(v),
+          b;for (b in a) "_" !== b.charAt(0) && (c[b] = function (b) {
+        return function () {
+          return a[b].apply(a, arguments);
+        };
+      }(b));
+    };c.init();r.Mousetrap = c;"undefined" !== typeof module && module.exports && (module.exports = c);"function" === typeof define && define.amd && define(function () {
+      return c;
+    });
+  }
+})("undefined" !== typeof window ? window : null, "undefined" !== typeof window ? document : null);
 //
 //var configStorage;
 // in the real world we will store config on the server
@@ -6107,38 +5990,43 @@ Editor.prototype.EditPrev = function () {
   document._editor.pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
 };
 Editor.prototype.removeShortcut = function () {
-  shortcut.remove('Left');
-  shortcut.remove('Right');
-  shortcut.remove('Tab');
-  shortcut.remove('Enter');
-  shortcut.remove('Up');
-  shortcut.remove('Down');
-  console.log('asddfsdfsadfsfdasaadsfdfdafsfdfa removeShortcut');
+  Mousetrap.unbind('left');
+  Mousetrap.unbind('right');
+  Mousetrap.unbind('tab');
+  Mousetrap.unbind('enter');
+  Mousetrap.unbind('up');
+  Mousetrap.unbind('down');
 };
 Editor.prototype.shortcut = function () {
   //this.removeShortcut();
   document.overlay.removeShortcut();
-  shortcut.all_shortcuts = {};
-  shortcut.add("Tab", function () {
+  Mousetrap.bind('tab', function (e) {
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
     document._editor.EditNext(pointer);
+    return false;
   });
-  shortcut.add("Left", function () {
+  Mousetrap.bind('left', function (e) {
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
     document._editor.EditNext(pointer);
+    return false;
   });
-  shortcut.add("Right", document._editor.EditPrev);
-  shortcut.add("Up", function () {
+  Mousetrap.bind("right", function (e) {
+    document._editor.EditPrev();
+    return false;
+  });
+  Mousetrap.bind("up", function (e) {
     var index = e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('.highlight').index();
     e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
     e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index - 1).addClass('highlight');
+    return false;
   });
-  shortcut.add("Down", function () {
+  Mousetrap.bind("down", function (e) {
     var index = e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('.highlight').index();
     e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
     e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index + 1).addClass('highlight');
+    return false;
   });
-  shortcut.add("ENTER", function () {
+  Mousetrap.bind("enter", function () {
     elem = e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('.highlight');
     document._editor.createAutoQuestion(elem);
   });
@@ -7877,16 +7765,21 @@ PageOverlay = function () {
     console.log('adding class first-loading');
   };
   this.shortcut = function () {
-    return;
-    shortcut.add("Tab", function () {
+    //return false prevents the default action and stops the event from bubbling up
+    Mousetrap.bind("tab", function (e) {
       var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
       document.overlay.Next(pointer);
+      return false;
     });
-    shortcut.add("Left", function () {
+    Mousetrap.bind("left", function (e) {
       var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
       document.overlay.Next(pointer);
+      return false;
     });
-    shortcut.add("Right", document.overlay.Prev);
+    Mousetrap.bind("right", function (e) {
+      document.overlay.Prev();
+      return false;
+    });
   };
   this.Next = function (pointer) {
     //this function is getting pointer as an argument to enable call it when user click on a quiestion
@@ -8033,27 +7926,28 @@ PageOverlay = function () {
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
   this.questionShortcut = function () {
-    return;
     document.overlay.optionPointer = -1;
-    shortcut.add('Down', function () {
+    Mousetrap.bind('down', function (e) {
       document.overlay.optionPointer++;
       if (document.overlay.optionPointer >= 4) {
         document.overlay.optionPointer = 3;
-        return;
+        return false;
       }
       e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
       e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
+      return false;
     });
-    shortcut.add('Up', function () {
+    Mousetrap.bind('up', function (e) {
       document.overlay.optionPointer--;
       if (document.overlay.optionPointer <= -1) {
         document.overlay.optionPointer = 0;
-        return;
+        return false;
       }
       e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
       e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
+      return false;
     });
-    shortcut.add('Enter', function () {
+    Mousetrap.bind('enter', function () {
       var element = e$('.eo-question.eo-active');
       var span = element.find('.highlight').find('span');
       var current = document.overlay.injector.elements.filter(function (q) {
@@ -8064,17 +7958,13 @@ PageOverlay = function () {
     });
   };
   this.removeQuestionShortcut = function () {
-    return;
-    shortcut.remove('Up');
-    shortcut.remove('Down');
-    shortcut.remove('Enter');
+    Mousetrap.unbind('up');
+    Mousetrap.unbind('down');
+    Mousetrap.unbind('enter');
     document.overlay.optionPointer = -1;
   };
   this.removeShortcut = function () {
-    return;
-    shortcut.remove('Tab');
-    shortcut.remove('Left');
-    shortcut.remove('Right');
+    Mousetrap.reset();
   };
 };
 PageOverlay.prototype.showButtons = function () {};
