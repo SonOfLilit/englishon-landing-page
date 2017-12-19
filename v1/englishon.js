@@ -6946,7 +6946,10 @@ AbstractQuestion.prototype.isCorrect = function (answer) {
 AbstractQuestion.prototype.touch = function (event) {
   if (!this.touched) {
     this.report('StartedQuestion', {
-      question: this.data.id
+      question: this.data.id,
+      distractions: e$.map(this.data.personal_distractions, function (dis) {
+        return dis.answer;
+      }).join(',')
     });
     var language = document.englishonConfig.targetLanguage;
     if (this.practicedWord === this.data.hint) {
