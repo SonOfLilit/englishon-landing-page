@@ -9221,6 +9221,11 @@ function englishon() {
     return;
   }
   document.__englishon__ = true;
+  //temp line,the server didn't return 'language' after not accepted terms for a while, 
+  //so the client may save a wrong siteLanguage
+  if (localStorage.getItem('siteLanguage') == 'undefined') {
+    localStorage.removeItem('siteLanguage');
+  }
   var defaults = {
     'token': null,
     'backendUrl': DEFAULT_BACKEND_URL,
@@ -9648,7 +9653,8 @@ var EnglishOnMenu = function () {
           document.eoDialogs.displayMessage(res.message, e$('#login-password-msg'));
           return;
         }
-        configStorage.set({ email: res.email, token: res.token, siteLanguage: language_map[res.language], 'eo-user-name': e$('#eo-login-email').val() }).then(function () {
+        var lang = res.language ? res.language : I18N.SITE_LANGUAGE;
+        configStorage.set({ email: res.email, token: res.token, siteLanguage: language_map[lang], 'eo-user-name': e$('#eo-login-email').val() }).then(function () {
           document.link_flag = true;
           document.englishonBackend.token = res.token;
           e$('#eo-account-area').removeClass('guest');
@@ -9729,6 +9735,7 @@ var EnglishOnMenu = function () {
     var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
     document.englishonConfig.token = null;
     auth.login(document.englishonConfig.token).then(function (token) {
+
       configStorage.set({ token: token, siteLanguage: I18N.SITE_LANGUAGE }).then(function () {
         document.signout_promise.resolve();
         document.menu.displayMenuMessages();
@@ -9904,6 +9911,7 @@ window.pinBanner = function () {
   }
 };
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
+
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
   //register the handler for backspace/forward
@@ -9988,7 +9996,7 @@ function receiveMessage(event) {
   var img = event.data.image;
   var email = event.data.email;
   var user_name = event.data.name;
-  var lang = event.data.language;
+  var lang = event.data.language ? event.data.language : I18N.SITE_LANGUAGE;
   e$('#eo-account-img').css("background-image", "url(" + img + ")").removeClass('no-image');
   e$('body').addClass('logged').removeClass('guest');
   e$('#eo-account-name').text(user_name);
