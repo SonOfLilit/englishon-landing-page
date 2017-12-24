@@ -5105,6 +5105,7 @@ window.configStorage = {
     });
     return e$.Deferred().resolve(r);
   }
+
 };
 
 window.cleanEnglishonCookies = function () {
@@ -5125,6 +5126,7 @@ window.cleanEnglishonCookies = function () {
       window.localStorage.removeItem('got_no_questions_dialog');
       window.localStorage.removeItem('show_quiz_tutorial');
       window.localStorage.removeItem('siteLanguage');
+      window.localStorage.removeItem('vocabularyOrder');
     });
   }
 };
@@ -6287,9 +6289,10 @@ UserInfo = function () {
         // to get a value that is either negative, positive, or zero.
         return new Date(a.next_time) - new Date(b.next_time);
       });
-      e$('#vocabulary').data('order', 'alphabet');
-      this.renderVocabulary(this.srsByAlphabet);
-      e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].ALPHABET_VOCABULARY);
+      list = document.englishonConfig.vocabularyOrder == 'alphabet' ? this.srsByAlphabet : this.srsByTime;
+      text = document.MESSAGES[document.englishonConfig.siteLanguage][document.englishonConfig.vocabularyOrder.toUpperCase() + '_VOCABULARY'];
+      this.renderVocabulary(list);
+      e$('#eo-live #vocabulary-order').text(text);
     }.bind(this));
   };
   this.renderVocabulary = function (words_list) {
@@ -6401,15 +6404,13 @@ UserInfo = function () {
       e.stopPropagation();
       e.target = e$(e.target);
       if (e.target.is('#vocabulary-title') || e.target.parents('#vocabulary-title').length) {
-        if (e$('#vocabulary').data('order') == 'alphabet') {
-          e$('#vocabulary').data('order', 'srTime');
+        if (document.englishonConfig.vocabularyOrder == 'alphabet') {
+          configStorage.set({ vocabularyOrder: 'sr' });
           this.renderVocabulary(this.srsByTime);
-          //e$('#eo-live #vocabulary-order').text('לפי סדר עדיפות לתרגול');
           e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].SR_VOCABULARY);
         } else {
-          e$('#vocabulary').data('order', 'alphabet');
+          configStorage.set({ vocabularyOrder: 'alphabet' });
           this.renderVocabulary(this.srsByAlphabet);
-          //e$('#eo-live #vocabulary-order').text('לפי סדר אלפבית');
           e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].ALPHABET_VOCABULARY);
         }
         return;
@@ -9238,7 +9239,8 @@ function englishon() {
     'isUser': false,
     'siteLanguage': I18N.SITE_LANGUAGE,
     'media': media,
-    'email': undefined
+    'email': undefined,
+    'vocabularyOrder': 'alphabet'
   };
   // Store
   configStorage.get(defaults).then(function (config) {
@@ -9726,17 +9728,12 @@ var EnglishOnMenu = function () {
       var popup = e$('#eo-iframe')[0].contentWindow;
       popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
     }
-    localStorage.removeItem('email');
-    localStorage.removeItem('eo-user-name');
-    localStorage.removeItem('editor');
-    localStorage.removeItem('siteLanguage');
-    document.englishonConfig.email = null;
+    configStorage.set({ 'token': null, 'email': null, 'eo-user-name': null, 'editor': null, 'siteLanguage': null, 'vocabularyOrder': null });
     document.menu.powerOff();
     var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
-    document.englishonConfig.token = null;
     auth.login(document.englishonConfig.token).then(function (token) {
 
-      configStorage.set({ token: token, siteLanguage: I18N.SITE_LANGUAGE }).then(function () {
+      configStorage.set({ token: token, siteLanguage: I18N.SITE_LANGUAGE, vocabularyOrder: 'alphabet' }).then(function () {
         document.signout_promise.resolve();
         document.menu.displayMenuMessages();
         document.englishonBackend.token = token;
