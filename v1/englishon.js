@@ -8036,28 +8036,28 @@ kolhazmanFrontOverlay = function (parts, url) {
       console.log('Marks for edited articles did not display. This user never turn on enlishon');
       return;
     }
-    var promises = e$.map(this.parts, function (part, url) {
-      url = url.toLowerCase();
-      return document.englishonBackend.getArticle(url, 1).then(function (questions) {
-        if (questions.length) {
-          //if (true) {
-          e$(part).each(function () {
-            if (!e$(this).find('.category-icon').length) {
-              e$(this).find('.media-heading, .grid-heading').find('a').append(e$('<div>').addClass('category-icon'));
-              var icon = e$(this).find('.category-icon');
-              var link = e$(this).find('a:not(.image-link)');
-              if (link.length) {
-                var gap = Math.abs(icon.offset().left + icon.width() + Number(icon.css('margin-right').slice(0, -2)) - (link.offset().left + link.width()));
-                if (gap < 2) {
-                  e$(this).find('.category-icon').remove();
-                }
+    var urls = e$.map(this.parts, function (part, url) {
+      return url;
+    });
+    document.englishonBackend.indicateEditedArticles(urls).then(function (res) {
+      console.log('res: ' + res);
+      e$.each(document.overlay.parts, function (url, part) {
+        if (res.urls[url]) {
+          if (!e$(part).find('.category-icon').length) {
+            e$(part).find('.media-heading, .grid-heading').find('a').append(e$('<div>').addClass('category-icon'));
+            var icon = e$(part).find('.category-icon');
+            var link = e$(part).find('a:not(.image-link)');
+            if (link.length) {
+              var gap = Math.abs(icon.offset().left + icon.width() + Number(icon.css('margin-right').slice(0, -2)) - (link.offset().left + link.width()));
+              if (gap < 2) {
+                e$(part).find('.category-icon').remove();
               }
             }
-            // body...
-          });
+          }
         }
       });
     });
+
     document.questions_promise.resolve();
   };
   this.powerOff = function () {
@@ -9359,12 +9359,6 @@ language_map = {
   'hebrew': 'hebrew'
 };
 document.playMovie = function () {
-  if (document.englishonConfig.media === 'desktop') {
-    var valx = (e$(window).width() - e$('#demo_video').css('width').slice(0, -2)) / 2;
-    var valy = (e$(window).height() - e$('#demo_video').css('height').slice(0, -2)) / 2;
-    e$('#demo_video').css({ left: valx, top: valy });
-    e$('.eo-close.close-movie').css({ left: valx + Number(e$('#demo_video').css('width').slice(0, -2)) - 29, top: valy + 15 });
-  }
   e$('#eo-movie').removeClass('hidden');
   document.getElementById('demo_video').play();
 };
