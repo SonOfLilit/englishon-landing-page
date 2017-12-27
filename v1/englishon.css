@@ -1421,6 +1421,9 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+body.www-kolhazman-co-il .not_stretch {
+  text-align: unset;
+}
 body.www-kolhazman-co-il .media-heading .category-icon, body.www-kolhazman-co-il .grid-heading .category-icon {
   display: inline-block;
   margin: 0px 15px 0px 0px;
@@ -3123,8 +3126,14 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 
 #eo-dlg-terms {
+  width: 320px;
   font-family: Roboto-Light, sans-serif;
   z-index: 10000;
+}
+#eo-dlg-terms #eo-recaptcha {
+  width: 100%;
+  height: 300px;
+  border: none;
 }
 #eo-dlg-terms .eo-logo {
   width: 100px;
@@ -3164,7 +3173,8 @@ it's top left values will re-computed everytime progress bar is moving*/
   text-align: center;
 }
 #eo-dlg-terms .eo-dlg-inner {
-  padding-top: 70px;
+  padding-top: 30px;
+  margin: 0px;
 }
 #eo-dlg-terms #eo-accept-btn, #eo-dlg-terms #eo-reject-btn {
   cursor: pointer;

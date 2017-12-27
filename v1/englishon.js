@@ -5175,7 +5175,7 @@ var MESSAGES = {
     START_PROGRESS_TUTORIAL: 'Progress Bar Tour',
     START_TUTORIAL: 'Guided Tour',
     SITE_LANGUAGE: 'Site Language',
-    AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
+    AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & </br><a id-'privacy_link'>Privacy Policy</a>",
     AGREE: "I agree.",
     NO_QUESTIONS: "Please look for articles </br>marked with this icon",
     NO_QUESTIONS_ARTICLE: "Please look at category section </br>for articles marked</br>with this icon",
@@ -5235,7 +5235,7 @@ var MESSAGES = {
     START_PROGRESS_TUTORIAL: 'מדריך ללוח ההתקדמות',
     START_TUTORIAL: 'מדריך הפעלה',
     SITE_LANGUAGE: 'שפת התפריט',
-    AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'> ול<a>תנאי הפרטיות</a> ",
+    AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'></br> ול<a>תנאי הפרטיות</a> ",
     AGREE: "אני מסכים.",
     NO_QUESTIONS: "חפש כתבות לצידם </br>יש את הסימון",
     NO_QUESTIONS_ARTICLE: "חפש בדפי המדורים </br>כתבות לצידם </br>יש את הסימון",
@@ -6643,6 +6643,7 @@ Injector = function (paragraphs) {
     });
   };
   this.on = function () {
+    e$('.entry-content p').addClass('not_stretch');
     if (this.isActive) {
       return;
     }
@@ -6666,6 +6667,7 @@ Injector = function (paragraphs) {
       }
     });
     this.preventJumpyQuestions();
+    e$('.entry-content p').removeClass('not_stretch');
   };
   this.setQuestions = function (questions, toggleSound) {
     this.elements = [];
@@ -7587,12 +7589,9 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
         <div class='Grid-cell eo-row3 v-align h-align'>\
           <div id='tos'></div>\
         </div>\
-        <div class='Grid-cell eo-row4 v-align h-align'>\
-          <div class='agree-Grid v-align h-align'>\
-            <div class='Grid-cell checkbox-cell'>\
-              <input type='checkbox' id='eo-accept-checkbox' /> </div>\
-            <div class='Grid-cell checkbox-text-cell' id='agree'></div>\
-          </div>\
+\
+        <div class='Grid-cell'>\
+          <iframe id='eo-recaptcha'></iframe>\
         </div>\
       </div>\
     </div>\
@@ -7864,17 +7863,23 @@ PageOverlay = function () {
     window.localStorage.removeItem('email');
     window.localStorage.removeItem('eo-user-name');
     document.englishonBackend.rejectedTerms();
-    document.menu.signout();
-    e$.when(document.signout_promise).done(function () {
+    if (document.menu) {
+      document.menu.signout();
+      e$.when(document.signout_promise).done(function () {
+        window.location.reload();
+      });
+    } else {
       window.location.reload();
-    });
+    }
   };
-  this.TermsDialog = function () {
+  this.TermsDialog = function (token) {
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
     e$('#tos').html(messages.AGREE_TO_TOS);
-    e$('#agree').html(messages.AGREE);
     e$('#tos_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
     e$('#privacy_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
+    e$('#eo-recaptcha').attr('src', document.englishonBackend.base + '/tokens/googlecaptcha/' + token + '/' + document.englishonConfig.siteLanguage + '/');
+    e$('.terms-close').off('click');
+    e$('.terms-close').on('click', this.rejectTerms);
     if (document.englishonConfig.media == 'desktop') {
       if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
         var menuTop = 0;
@@ -7901,21 +7906,6 @@ PageOverlay = function () {
     return Math.max(1, Math.round(total / 100));
   };
   this.showTermsDialog = function (callback) {
-    e$('#eo-accept-checkbox').off('change');
-    e$('#eo-accept-checkbox').change(function (e) {
-      // this will contain a reference to the checkbox   
-      if (e.target.checked) {
-        document.englishonBackend.acceptedTerms().then(function () {
-          e$('#terms-container').addClass('hidden');
-          e$('#eo-dlg-terms').addClass('hidden');
-          e$('#eo-accept-checkbox').click();
-          this.fetchQuestions().then(function () {
-            callback();
-          }.bind(this));
-        }.bind(this));
-      }
-    }.bind(this));
-    e$('.terms-close').on('click', this.rejectTerms);
     e$('#terms-container').removeClass('hidden');
     e$('#eo-dlg-terms').removeClass('hidden');
   };
@@ -7926,7 +7916,6 @@ PageOverlay = function () {
     }
     no_questions_dlg = e$('<div>').addClass('no_questions_dlg').html(message + '<img src=' + staticUrl('img/button-logo-3d.png') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
     e$('.no_questions_dlg').addClass(dir);
-    //e$('.no_questions_dlg').parents('.ui-dialog').css({ 'maxWidth': 240 });
     window.localStorage.setItem('got_no_questions_dialog', true);
   };
   this.questionShortcut = function () {
@@ -8057,7 +8046,6 @@ kolhazmanFrontOverlay = function (parts, url) {
         }
       });
     });
-
     document.questions_promise.resolve();
   };
   this.powerOff = function () {
@@ -8132,11 +8120,6 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
     this.limit = this.getQuestionQuota();
     return backend.getArticle(this.url, this.limit).then(function (questions) {
       mixpanel.track('fetch questions. ' + document.overlay.url);
-      if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial')) {
-        //e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
-        //CAREFUTL DONT PUSH!!!!!!!
-        //this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS_ARTICLE);
-      }
       this.questions = questions;
       console.log("**************************define injector!!!!Num questions: " + questions.length);
       this.injector = new Injector(this.paragraphs);
@@ -8150,10 +8133,17 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
     }
     this.showQuestions();
     PageOverlay.prototype.powerOn.call(this);
-    document.questions_promise.resolve();
     if (document.eo_user && e$('.eo-expired').length) {
       document.eo_user.showLiveActions();
     }
+    if (window.localStorage.getItem('show_quiz_tutorial')) {
+      setTimeout(function () {
+        document.eoDialogs.hideDialogs();
+        Tour.quizTutorial();
+        document.tour.start();
+      }, 2000);
+    }
+    document.questions_promise.resolve();
   };
   this.powerOff = function () {
     this.hideQuestions();
@@ -9246,9 +9236,6 @@ function englishon() {
   configStorage.get(defaults).then(function (config) {
     document.englishonConfig = config;
     e$('body').addClass('eo-language-' + config.targetLanguage);
-    if (config.enableTutorial) {
-      startTutorial();
-    }
     if (document.englishonConfig.isUser) {
       var auth = new Authenticator(config.backendUrl);
       return auth.login(config.token).then(function (token) {
@@ -9270,28 +9257,7 @@ function englishon() {
     }
   });
 }
-var startTutorial = function () {
-  // e$('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
-  // var onPickLanguage = function() {
-  //   e$('.eo-language_picker-option').off('click', onPickLanguage);
-  //   e$('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
-  //   // in case questions are still hidden, keep trying
-  //   var timer = setInterval(function() {
-  //     var questions = e$('.eo-question');
-  //     if (questions.length > 0) {
-  //       questions.first().addClass('eo-first_question');
-  //       var onOpenQuestion = function() {
-  //         e$('.eo-hint').off('click', onOpenQuestion);
-  //         e$('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
-  //         configStorage.set({ enableTutorial: false });
-  //       };
-  //       e$('.eo-hint').click(onOpenQuestion);
-  //       clearInterval(timer);
-  //     }
-  //   }, 100);
-  // };
-  // e$('.eo-language_picker-option').click(onPickLanguage);
-};
+
 // **********
 // Dictionary
 // **********
@@ -9635,15 +9601,15 @@ var EnglishOnMenu = function () {
     var auth = new Authenticator(document.englishonConfig.backendUrl);
     if (auth.validate({ email: email, password: password, email_msg: email_msg, password_msg: password_msg })) {
       auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
+        if (res.status == 'terms_not_accepted') {
+          document.eoDialogs.hideDialogs(0);
+          document.overlay.TermsDialog(document.englishonBackend.token);
+          document.overlay.showTermsDialog();
+          e$('.category-icon').remove();
+          return;
+        }
         if (res.status == 'verification required') {
           location = document.englishonConfig.backendUrl + '/tokens/verifyEmail/' + document.englishonConfig.siteLanguage + '/';
-          //auth.verifiyEmail(email);
-          //verify_location = document.englishonConfig.backendUrl+'/tokens/verifyEmail/'+document.englishonConfig.siteLanguage+'/';
-          //var redirectWindow = window.open(document.englishonConfig.backendUrl+'/tokens/verifyEmail/'+document.englishonConfig.siteLanguage+'/', '_blank');
-          //var redirectWindow = window.open('http://google.com', '_blank');
-          //redirectWindow.location;
-          //var url = "http://google.com";
-          //e$("<a>").attr("href", url).attr("target", "_blank")[0].click();
         }
         if (res.status == 'error') {
           document.eoDialogs.displayMessage(res.message, e$('#login-password-msg'));
@@ -9662,11 +9628,6 @@ var EnglishOnMenu = function () {
           document.menu.displayMenuMessages();
           if (res.status == 'logged_in') {
             document.eoDialogs.hideDialogs(1000);
-          } else if (res.status == 'terms_not_accepted') {
-            document.eoDialogs.hideDialogs(0);
-            document.overlay.showTermsDialog(document.menu.powerOn);
-            e$('.category-icon').remove();
-            return;
           }
           //currently it can't happen in login, becuase click on button is turning on englishon if it's none user
           if (!document.englishonConfig.isUser) {
@@ -9680,7 +9641,8 @@ var EnglishOnMenu = function () {
             TODOAfterFetch();
           }, function (error) {
             if (error == 'terms_not_accepted') {
-              document.overlay.showTermsDialog(TODOAfterFetch);
+              document.overlay.TermsDialog(document.englishonBackend.token);
+              document.overlay.showTermsDialog();
             }
           });
         });
@@ -9726,7 +9688,6 @@ var EnglishOnMenu = function () {
     document.menu.powerOff();
     var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
     auth.login(document.englishonConfig.token).then(function (token) {
-
       configStorage.set({ token: token, siteLanguage: I18N.SITE_LANGUAGE, vocabularyOrder: 'alphabet' }).then(function () {
         document.signout_promise.resolve();
         document.menu.displayMenuMessages();
@@ -9902,7 +9863,6 @@ window.pinBanner = function () {
   }
 };
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
-
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
   //register the handler for backspace/forward
@@ -9945,7 +9905,6 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
   }
   document.overlay.insertContent(e$(document.TERMS_DLG));
   e$('#eo-dlg-terms').addClass(document.englishonConfig.siteLanguage);
-  document.overlay.TermsDialog();
   document.eoDialogs = new EnglishOnDialogs();
   if (document.englishonConfig.isUser) {
     document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
@@ -9961,7 +9920,8 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
       TODOAfterFetch();
     }, function (error) {
       if (error == 'terms_not_accepted') {
-        document.overlay.showTermsDialog(TODOAfterFetch);
+        document.overlay.TermsDialog(document.englishonConfig.token);
+        document.overlay.showTermsDialog();
       }
     });
   } else {
@@ -9978,6 +9938,38 @@ function receiveMessage(event) {
     return;
   }
   // event.source is popup
+  if (event.data.acceptPopup) {
+    if (!event.data.success) {
+      console.log('google recaptcha verification failed');
+      return;
+    }
+    configStorage.set({ email: event.data.email, token: event.data.token, siteLanguage: language_map[I18N.SITE_LANGUAGE], 'eo-user-name': event.data.email }).then(function () {
+      //alert('now close the register popup! and turn on!');
+      document.menu.displayMenuMessages();
+      e$('#terms-container').addClass('hidden');
+      e$('#eo-dlg-terms').addClass('hidden');
+      e$('#eo-accept-checkbox').click();
+      document.englishonBackend.token = event.data.token;
+      e$('body').addClass('logged').removeClass('guest');
+      e$('#eo-account-img').addClass('no-image');
+      e$('#eo-account-area').removeClass('guest');
+      e$('#eo-dlg-login').addClass('valid');
+      e$('#eo-account-name').text(event.data.email);
+      e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
+      //uiLoginActions('logged')
+      document.overlay.fetchQuestions().then(function () {
+        if (!document.menu) {
+          document.menu = new EnglishOnMenu();
+        }
+        if (!document.eo_user) {
+          document.eo_user = new UserInfo(document.englishonConfig.token);
+        }
+        document.eo_user.initial();
+        document.menu.powerOn();
+      });
+    });
+    return;
+  }
   if (event.data.message == 'registered by email') {
     var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
     auth.linkAccounts(event.data.email, event.data.google_sec_token);
@@ -9994,16 +9986,17 @@ function receiveMessage(event) {
   e$('#eo-account-area').removeClass('guest');
   if (!localStorage.getItem('email')) {
     //this is a real login, as google made many 'fake logins'
+    if (event.data.status == 'terms_not_accepted') {
+      document.eoDialogs.hideDialogs(0);
+      document.overlay.TermsDialog(django_token);
+      document.overlay.showTermsDialog();
+      //todo: use document.powerOff with an 'enable' parameter
+      e$('.category-icon').remove();
+      return;
+    }
     configStorage.set({ email: email, token: django_token, siteLanguage: language_map[lang], 'eo-user-name': user_name }).then(function () {
       document.menu.displayMenuMessages();
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
-      if (event.data.status == 'terms_not_accepted') {
-        document.eoDialogs.hideDialogs(0);
-        document.overlay.showTermsDialog(document.menu.powerOn);
-        //todo: use document.powerOff with an 'enable' parameter
-        e$('.category-icon').remove();
-        return;
-      }
       document.englishonBackend.token = django_token;
       var TODOAfterFetch = function () {
         document.eo_user.initial();
@@ -10013,7 +10006,8 @@ function receiveMessage(event) {
         TODOAfterFetch();
       }, function (error) {
         if (error == 'terms_not_accepted') {
-          document.overlay.showTermsDialog(TODOAfterFetch);
+          document.TermsDialog(document.englishonConfig.token);
+          document.overlay.showTermsDialog();
         }
       });
       //localStorage.setItem('email', email);
