@@ -5195,7 +5195,7 @@ var MESSAGES = {
   'hebrew': {
     LANGUAGE: 'hebrew',
     DIRECTION: 'rtl',
-    MENU_TITLE: 'כניסה ורישום',
+    MENU_TITLE: 'רישום וכניסה',
     POWER_SWICHT_ON: 'On',
     POWER_SWICHT_ON: 'Off',
     LANGUAGES_PICKER_TITLE: 'בחר שפה',
@@ -9147,36 +9147,18 @@ function englishon() {
       return 'http://www.englishon.org/v1/' + resource;
     };
   }
-  //function to retriave info about the browser
-  browserInfo = function () {
-    var ua = navigator.userAgent,
-        tem,
-        M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-    if (/trident/i.test(M[1])) {
-      tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-      return 'IE ' + (tem[1] || '');
-    }
-    if (M[1] === 'Chrome') {
-      tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
-      if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
-    }
-    M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
-    if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
-    return { 'browser': M[0], 'version': M[1] };
-  }();
-  document.browserInfo = browserInfo;
+
+  document.browserInfo = navigator.userAgent.indexOf('AppleWebKit') != -1 ? "Chrome" : "not_chrome";
   var check_media = function () {
     if (window.matchMedia("(min-width:1050px)").matches) return 'desktop';
     return 'mobile';
   };
   var media = check_media();
   //Restrict none chrome browsers or chrome versions older than 49
-  if (browserInfo.browser != 'Chrome')
-    //&& (browserInfo.browser != 'Firefox' || media != 'desktop')
-    {
-      console.log('BROWSER NOT SUPPORTED.');
-      //return;
-    }
+  if (document.browserInfo != 'Chrome') {
+    console.log('BROWSER NOT SUPPORTED.');
+    return;
+  }
   //THIS LINE IS TEMP
   /* if (window.location.host == 'actualic.co.il' &&
      media != 'desktop' &&
@@ -9205,7 +9187,6 @@ function englishon() {
   // }
 
   //END OF TEMP LINES
-  console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
   if (document.__englishon__) {
     console.log("EnglishOn already loaded");
@@ -9885,8 +9866,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
   document.overlay = scraper.scrape();
   document.overlay.showButtons();
   //TODO: move to separate function
-  //if (browserInfo.browser == "Chrome")
-  if (true)
+  if (browserInfo.browser == "Chrome")
     //upgrade_link = e$('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('here');
     upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";else if (browserInfo.browser == "Firefox") upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";
   upgrade_dialog = e$('<div id="eo-upgrade-dialog" title="englishON">').append(e$('<div>').addClass('upgrade-dlg').append(e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].UPGRADE_MESSAGE.replace('browswer_name', document.browserInfo.browser).replace('here', upgrade_link))));
