@@ -5195,7 +5195,7 @@ var MESSAGES = {
   'hebrew': {
     LANGUAGE: 'hebrew',
     DIRECTION: 'rtl',
-    MENU_TITLE: 'רישום וכניסה',
+    MENU_TITLE: 'כניסה ורישום',
     POWER_SWICHT_ON: 'On',
     POWER_SWICHT_ON: 'Off',
     LANGUAGES_PICKER_TITLE: 'בחר שפה',
@@ -9175,7 +9175,7 @@ function englishon() {
     //&& (browserInfo.browser != 'Firefox' || media != 'desktop')
     {
       console.log('BROWSER NOT SUPPORTED.');
-      return;
+      //return;
     }
   //THIS LINE IS TEMP
   /* if (window.location.host == 'actualic.co.il' &&
@@ -9885,7 +9885,8 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
   document.overlay = scraper.scrape();
   document.overlay.showButtons();
   //TODO: move to separate function
-  if (browserInfo.browser == "Chrome")
+  //if (browserInfo.browser == "Chrome")
+  if (true)
     //upgrade_link = e$('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('here');
     upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";else if (browserInfo.browser == "Firefox") upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";
   upgrade_dialog = e$('<div id="eo-upgrade-dialog" title="englishON">').append(e$('<div>').addClass('upgrade-dlg').append(e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].UPGRADE_MESSAGE.replace('browswer_name', document.browserInfo.browser).replace('here', upgrade_link))));
