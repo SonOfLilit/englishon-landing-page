@@ -5195,7 +5195,7 @@ var MESSAGES = {
   'hebrew': {
     LANGUAGE: 'hebrew',
     DIRECTION: 'rtl',
-    MENU_TITLE: 'כניסה ורישום',
+    MENU_TITLE: 'רישום וכניסה',
     POWER_SWICHT_ON: 'On',
     POWER_SWICHT_ON: 'Off',
     LANGUAGES_PICKER_TITLE: 'בחר שפה',
@@ -9171,12 +9171,11 @@ function englishon() {
   };
   var media = check_media();
   //Restrict none chrome browsers or chrome versions older than 49
-  if (browserInfo.browser != 'Chrome')
-    //&& (browserInfo.browser != 'Firefox' || media != 'desktop')
-    {
-      console.log('BROWSER NOT SUPPORTED.');
-      //return;
-    }
+  //a check for the browser rendering engine required too, because in iphone the browser name is not detecting as 'Chrome'
+  if (browserInfo.browser != 'Chrome' && navigator.userAgent.indexOf('AppleWebKit') == -1) {
+    console.log('BROWSER NOT SUPPORTED.');
+    return;
+  }
   //THIS LINE IS TEMP
   /* if (window.location.host == 'actualic.co.il' &&
      media != 'desktop' &&
@@ -9885,24 +9884,25 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
   document.overlay = scraper.scrape();
   document.overlay.showButtons();
   //TODO: move to separate function
-  //if (browserInfo.browser == "Chrome")
-  if (true)
-    //upgrade_link = e$('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('here');
-    upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";else if (browserInfo.browser == "Firefox") upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";
-  upgrade_dialog = e$('<div id="eo-upgrade-dialog" title="englishON">').append(e$('<div>').addClass('upgrade-dlg').append(e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].UPGRADE_MESSAGE.replace('browswer_name', document.browserInfo.browser).replace('here', upgrade_link))));
-  //upgrade_dialog.insertBefore(e$(e$('table')[0]));
-  document.overlay.insertContent(upgrade_dialog);
-  upgrade_dialog.dialog({
-    autoOpen: false,
-    modal: true
-  });
-  browserInfo = document.browserInfo;
-  if (browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) <= 46 ||
-  //if ((browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) > 46) ||
-  browserInfo.browser == 'Firefox' && parseInt(browserInfo.version) < 49) {
-    e$('.eo-button').off('click').on('click', function () {
-      e$('#eo-upgrade-dialog').dialog('open');
+  if (navigator.userAgent.indexOf('iPhone') == -1) {
+    if (browserInfo.browser == "Chrome")
+      //upgrade_link = e$('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('here');
+      upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";else if (browserInfo.browser == "Firefox") upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";
+    upgrade_dialog = e$('<div id="eo-upgrade-dialog" title="englishON">').append(e$('<div>').addClass('upgrade-dlg').append(e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].UPGRADE_MESSAGE.replace('browswer_name', document.browserInfo.browser).replace('here', upgrade_link))));
+    //upgrade_dialog.insertBefore(e$(e$('table')[0]));
+    document.overlay.insertContent(upgrade_dialog);
+    upgrade_dialog.dialog({
+      autoOpen: false,
+      modal: true
     });
+    browserInfo = document.browserInfo;
+    if (browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) <= 46 ||
+    //if ((browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) > 46) ||
+    browserInfo.browser == 'Firefox' && parseInt(browserInfo.version) < 49) {
+      e$('.eo-button').off('click').on('click', function () {
+        e$('#eo-upgrade-dialog').dialog('open');
+      });
+    }
   }
   document.overlay.insertContent(e$(document.TERMS_DLG));
   e$('#eo-dlg-terms').addClass(document.englishonConfig.siteLanguage);
