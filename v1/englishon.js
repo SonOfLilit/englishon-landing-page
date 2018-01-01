@@ -5754,6 +5754,7 @@ Editor.prototype.createAutoQuestion = function (event) {
   this.span = span;
   document.englishonBackend.createQuestion(question).then(function (res) {
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click');
+    this.span.data('word', replaced);
     document._editor.pointer--;
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
     document._editor.EditNext(pointer);
@@ -5786,7 +5787,9 @@ Editor.prototype.question_onClick = function (event) {
   q_dialog.append(e$('<button>').text("Delete Question").click(function (event) {
     q_dialog.dialog('close');
     document.englishonBackend.deleteQuestion(question).then(function (res) {
-      console.log('Question deleted');
+      if (res.message != 'question not found') {
+        console.log('Question deleted');
+      }
       this.span.removeClass('eo-editor-question current').addClass('eo-editor-candidate').off('click').on('click', this.onClick.bind(this));
     }.bind(this), function (reason) {
       console.log('Error delete question. Reason is: ' + reason);
@@ -9602,7 +9605,7 @@ var EnglishOnMenu = function () {
       auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
         if (res.status == 'terms_not_accepted') {
           document.eoDialogs.hideDialogs(0);
-          document.overlay.TermsDialog(document.englishonBackend.token);
+          document.overlay.TermsDialog(res.token);
           document.overlay.showTermsDialog();
           e$('.category-icon').remove();
           return;
