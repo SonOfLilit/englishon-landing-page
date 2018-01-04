@@ -6430,6 +6430,7 @@ UserInfo = function () {
         e$('#eo-live-main').toggleClass('hidden');
         e$('#vocabulary').toggleClass('hidden');
         if (!e$('#vocabulary').hasClass('hidden')) {
+          document.tour.hide();
           e$('#eo-live').addClass('vocabulary-open');
           e$('#vocabulary-content-list').html('');
           this.fetchVocabulary();
@@ -7580,7 +7581,7 @@ var overlay_settings = {
         var startPoint = e$('#sidebar').offset().top;
         var val = e$('#sidebar').offset().left;
         e$('#eo-live').css('left', val);
-        e$('#eo-live .close-vocabulary').css('left', val - 58);
+        e$('#eo-live .close-vocabulary').css('left', val + e$('#eo-live').outerWidth() - 8);
         var val = Math.max(startPoint - $(window).scrollTop(), 10);
         e$('#eo-live').css('top', val);
         e$('#eo-live .close-vocabulary').css('top', val + 180);
