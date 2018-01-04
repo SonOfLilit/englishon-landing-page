@@ -2135,6 +2135,10 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   border-bottom: 1px solid #d7dee3;
 }
 
+.eo-area.hebrew #eo-picker-tittle {
+  direction: rtl;
+}
+
 #coming_soon .Grid-cell .Grid .eo-tooltip,
 eo-signout-layout .signout {
   font-size: 16px;
@@ -2377,7 +2381,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   height: 45px;
 }
 
-#eo-speaker-res {
+#eo-speaker {
   background-image: url(http://www.englishon.org/v1/img/menu-sound-off.svg);
   background-repeat: no-repeat;
   padding-left: 10px;
@@ -2387,11 +2391,11 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   width: 100%;
   cursor: pointer;
 }
-#eo-speaker-res:hover {
+#eo-speaker:hover {
   background-size: 24px;
 }
 
-.eo-speaker #eo-speaker-res {
+.eo-speaker #eo-speaker {
   background-image: url(http://www.englishon.org/v1/img/question-sound-on.svg);
 }
 
@@ -2644,6 +2648,10 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-menu,
 #eo-dlg-login,
 #eo-dlg-terms {
+  top: 50%;
+  left: 50%;
+  margin-left: -120px;
+  margin-top: -180px;
   border: 1px solid #d7dee3;
   background-color: #eceff1;
   z-index: 10000;
@@ -2795,6 +2803,10 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 
 /*OPTIONS DIALOG*/
 #eo-dlg-options {
+  top: 50%;
+  left: 50%;
+  margin-left: -120px;
+  margin-top: -125px;
   cursor: pointer;
 }
 #eo-dlg-options #eo-dlg-options-main, #eo-dlg-options #eo-site-languages, #eo-dlg-options #eo-dlg-options-logged {
@@ -2825,10 +2837,8 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   height: 250px;
   background-color: #eceff1;
   font-family: Roboto, sans-serif;
-  top: 210px;
   color: #3d4c58;
   position: fixed;
-  left: 0px;
   z-index: 10000;
 }
 #eo-dlg-options .Grid-cell {
