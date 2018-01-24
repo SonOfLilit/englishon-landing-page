@@ -1022,7 +1022,7 @@ div.eo-question.highlighted {
   width: 20px;
   height: 20px;
   margin-bottom: 10px;
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo-3d.png);
   background-size: 17px;
   background-repeat: no-repeat;
 }
@@ -1066,7 +1066,7 @@ body.shturem-net .category-icon {
   background-size: 30px;
 }
 .eo-icon.eo-button-off, .eo-icon.eo-button-on {
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo-3d.png);
   background-size: 30px;
 }
 
@@ -1421,6 +1421,22 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+body.www-kolhazman-co-il .not_stretch {
+  text-align: unset;
+}
+body.www-kolhazman-co-il .media-heading .category-icon, body.www-kolhazman-co-il .grid-heading .category-icon {
+  display: inline-block;
+  margin: 0px 15px 0px 0px;
+  background-position-y: bottom;
+  width: 12px;
+  height: 12px;
+  background-size: 12px;
+}
+body.www-kolhazman-co-il .primary-title.small-thumbnail .category-icon {
+  width: 20px;
+  height: 20px;
+  background-size: 20px;
+}
 body.www-kolhazman-co-il #eo-banner {
   height: 77px;
   width: 100%;
@@ -1430,21 +1446,6 @@ body.www-kolhazman-co-il #eo-banner video {
   height: 67px;
   width: 415px;
   padding-left: 47px;
-}
-body.www-kolhazman-co-il.category-page .category-icon {
-  display: inline-block;
-  margin: 0px;
-  padding: 0px;
-  width: 11px;
-  height: 11px;
-  background-size: 11px;
-  margin-left: 5px;
-}
-body.www-kolhazman-co-il.category-page .primary-title .category-icon {
-  display: inherit;
-  width: 20px;
-  height: 20px;
-  background-size: 17px;
 }
 body.www-kolhazman-co-il .ui-dialog {
   z-index: 10000;
@@ -1652,15 +1653,15 @@ body.www-bloombergview-com .eo-button:hover {
   width: 50px !important;
 }
 body.www-bloombergview-com .eo-button.eo-button-loading {
-  background-image: url(http://www.englishon.org/v1/img/button-loading-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/loading-white);
   background-size: 30px;
 }
 body.www-bloombergview-com .eo-button.eo-button-unavailable {
-  background-image: url(http://www.englishon.org/v1/img/button-unavailable-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/unavailable-white);
   background-size: 30px;
 }
 body.www-bloombergview-com .eo-button.eo-button-off, body.www-bloombergview-com .eo-button.eo-button-on {
-  background-image: url(http://www.englishon.org/v1/img/button-logo-white.svg);
+  background-image: url(http://www.englishon.org/v1/img/logo-white);
   background-size: 30px;
 }
 body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-off::before, body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-on::before {
@@ -2134,6 +2135,10 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   border-bottom: 1px solid #d7dee3;
 }
 
+.eo-area.hebrew #eo-picker-tittle {
+  direction: rtl;
+}
+
 #coming_soon .Grid-cell .Grid .eo-tooltip,
 eo-signout-layout .signout {
   font-size: 16px;
@@ -2173,7 +2178,7 @@ eo-signout-layout .signout {
 
 #eo-dlg-icon {
   width: 37px;
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo-3d.png);
   background-repeat: no-repeat;
   height: 40px;
   background-size: 30.5px;
@@ -2185,7 +2190,7 @@ eo-signout-layout .signout {
   height: 27.5px;
   width: 27.5px;
   background-size: 27.5px;
-  background-image: url(http://www.englishon.org/v1/img/button-logo.svg);
+  background-image: url(http://www.englishon.org/v1/img/button-logo-3d.png);
   background-repeat: no-repeat;
   background-position-y: center;
   margin-left: 9px;
@@ -2346,7 +2351,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 
 .flag,
-#eo-account-img {
+.eo-account-img {
   background-size: 32px;
   background-repeat: no-repeat;
   height: 100%;
@@ -2376,7 +2381,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   height: 45px;
 }
 
-#eo-speaker-res {
+#eo-speaker {
   background-image: url(http://www.englishon.org/v1/img/menu-sound-off.svg);
   background-repeat: no-repeat;
   padding-left: 10px;
@@ -2386,11 +2391,11 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   width: 100%;
   cursor: pointer;
 }
-#eo-speaker-res:hover {
+#eo-speaker:hover {
   background-size: 24px;
 }
 
-.eo-speaker #eo-speaker-res {
+.eo-speaker #eo-speaker {
   background-image: url(http://www.englishon.org/v1/img/question-sound-on.svg);
 }
 
@@ -2503,7 +2508,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   cursor: pointer;
 }
 
-.guest #eo-account-img,
+.guest .eo-account-img,
 .no-image {
   background-image: url(http://www.englishon.org/v1/img/menu-avatar.svg) !important;
 }
@@ -2643,6 +2648,10 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-menu,
 #eo-dlg-login,
 #eo-dlg-terms {
+  top: 50%;
+  left: 50%;
+  margin-left: -120px;
+  margin-top: -180px;
   border: 1px solid #d7dee3;
   background-color: #eceff1;
   z-index: 10000;
@@ -2794,6 +2803,10 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 
 /*OPTIONS DIALOG*/
 #eo-dlg-options {
+  top: 50%;
+  left: 50%;
+  margin-left: -120px;
+  margin-top: -125px;
   cursor: pointer;
 }
 #eo-dlg-options #eo-dlg-options-main, #eo-dlg-options #eo-site-languages, #eo-dlg-options #eo-dlg-options-logged {
@@ -2824,10 +2837,8 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   height: 250px;
   background-color: #eceff1;
   font-family: Roboto, sans-serif;
-  top: 210px;
   color: #3d4c58;
   position: fixed;
-  left: 0px;
   z-index: 10000;
 }
 #eo-dlg-options .Grid-cell {
@@ -2865,6 +2876,8 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 #eo-movie .eo-close {
   position: absolute;
+  top: 7%;
+  left: 89.5%;
   width: 20px;
   height: 20px;
   color: gray;
@@ -2877,10 +2890,12 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 #eo-movie video {
   position: absolute;
-  top: 0px;
-  height: 637.5px;
-  width: 1020px;
-  object-fit: fill;
+  top: 5%;
+  left: 8%;
+  width: 84%;
+  height: 90%;
+  object-fit: contain;
+  background-color: black;
   cursor: pointer;
   z-index: 1000000;
 }
@@ -3121,8 +3136,14 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 
 #eo-dlg-terms {
+  width: 320px;
   font-family: Roboto-Light, sans-serif;
   z-index: 10000;
+}
+#eo-dlg-terms #eo-recaptcha {
+  width: 100%;
+  height: 300px;
+  border: none;
 }
 #eo-dlg-terms .eo-logo {
   width: 100px;
@@ -3162,7 +3183,8 @@ it's top left values will re-computed everytime progress bar is moving*/
   text-align: center;
 }
 #eo-dlg-terms .eo-dlg-inner {
-  padding-top: 70px;
+  padding-top: 30px;
+  margin: 0px;
 }
 #eo-dlg-terms #eo-accept-btn, #eo-dlg-terms #eo-reject-btn {
   cursor: pointer;
@@ -3277,6 +3299,31 @@ it's top left values will re-computed everytime progress bar is moving*/
   position: absolute;
   top: 8px;
 }
+
+/* REGISTER */
+.avatar-circle {
+  cursor: pointer;
+  width: 100px;
+  height: 100px;
+  background-color: blue;
+  text-align: center;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+}
+
+.initials {
+  position: relative;
+  top: 25px;
+  /* 25% of parent */
+  font-size: 50px;
+  /* 50% of parent */
+  line-height: 50px;
+  /* 50% of parent */
+  color: #fff;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+}
 /* responsive.scss */
 @media (max-width: 981px) {
   /* GENERAL*/
@@ -3284,7 +3331,13 @@ it's top left values will re-computed everytime progress bar is moving*/
     padding: 10px 0px;
   }
 
+  #eo-movie .eo-close {
+    top: 10px;
+    right: 10px;
+  }
   #eo-movie video {
+    top: 0px;
+    left: 0px;
     width: 100%;
     height: 100%;
     object-fit: contain;

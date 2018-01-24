@@ -4987,218 +4987,101 @@ window.heap = window.heap || [], heap.load = function (e, t) {
 };
 heap.load("3281332641");
 //
-/**
- * http://www.openjs.com/scripts/events/keyboard_shortcuts/
- * Version : 2.01.B
- * By Binny V A
- * License : BSD
- */
-shortcut = {
-	'all_shortcuts': {}, //All the shortcuts are stored in this array
-	'add': function (shortcut_combination, callback, opt) {
-		//Provide a set of default options
-		var default_options = {
-			'type': 'keydown',
-			'propagate': false,
-			'disable_in_input': false,
-			'target': document,
-			'keycode': false
-		};
-		if (!opt) opt = default_options;else {
-			for (var dfo in default_options) {
-				if (typeof opt[dfo] == 'undefined') opt[dfo] = default_options[dfo];
-			}
-		}
-
-		var ele = opt.target;
-		if (typeof opt.target == 'string') ele = document.getElementById(opt.target);
-		var ths = this;
-		shortcut_combination = shortcut_combination.toLowerCase();
-
-		//The function to be called at keypress
-		var func = function (e) {
-			e = e || window.event;
-
-			if (opt['disable_in_input']) {
-				//Don't enable shortcut keys in Input, Textarea fields
-				var element;
-				if (e.target) element = e.target;else if (e.srcElement) element = e.srcElement;
-				if (element.nodeType == 3) element = element.parentNode;
-
-				if (element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') return;
-			}
-
-			//Find Which key is pressed
-			if (e.keyCode) code = e.keyCode;else if (e.which) code = e.which;
-			var character = String.fromCharCode(code).toLowerCase();
-
-			if (code == 188) character = ","; //If the user presses , when the type is onkeydown
-			if (code == 190) character = "."; //If the user presses , when the type is onkeydown
-
-			var keys = shortcut_combination.split("+");
-			//Key Pressed - counts the number of valid keypresses - if it is same as the number of keys, the shortcut function is invoked
-			var kp = 0;
-
-			//Work around for stupid Shift key bug created by using lowercase - as a result the shift+num combination was broken
-			var shift_nums = {
-				"`": "~",
-				"1": "!",
-				"2": "@",
-				"3": "#",
-				"4": "$",
-				"5": "%",
-				"6": "^",
-				"7": "&",
-				"8": "*",
-				"9": "(",
-				"0": ")",
-				"-": "_",
-				"=": "+",
-				";": ":",
-				"'": "\"",
-				",": "<",
-				".": ">",
-				"/": "?",
-				"\\": "|"
-			};
-			//Special Keys - and their codes
-			var special_keys = {
-				'esc': 27,
-				'escape': 27,
-				'tab': 9,
-				'space': 32,
-				'return': 13,
-				'enter': 13,
-				'backspace': 8,
-
-				'scrolllock': 145,
-				'scroll_lock': 145,
-				'scroll': 145,
-				'capslock': 20,
-				'caps_lock': 20,
-				'caps': 20,
-				'numlock': 144,
-				'num_lock': 144,
-				'num': 144,
-
-				'pause': 19,
-				'break': 19,
-
-				'insert': 45,
-				'home': 36,
-				'delete': 46,
-				'end': 35,
-
-				'pageup': 33,
-				'page_up': 33,
-				'pu': 33,
-
-				'pagedown': 34,
-				'page_down': 34,
-				'pd': 34,
-
-				'left': 37,
-				'up': 38,
-				'right': 39,
-				'down': 40,
-
-				'f1': 112,
-				'f2': 113,
-				'f3': 114,
-				'f4': 115,
-				'f5': 116,
-				'f6': 117,
-				'f7': 118,
-				'f8': 119,
-				'f9': 120,
-				'f10': 121,
-				'f11': 122,
-				'f12': 123
-			};
-
-			var modifiers = {
-				shift: { wanted: false, pressed: false },
-				ctrl: { wanted: false, pressed: false },
-				alt: { wanted: false, pressed: false },
-				meta: { wanted: false, pressed: false } //Meta is Mac specific
-			};
-
-			if (e.ctrlKey) modifiers.ctrl.pressed = true;
-			if (e.shiftKey) modifiers.shift.pressed = true;
-			if (e.altKey) modifiers.alt.pressed = true;
-			if (e.metaKey) modifiers.meta.pressed = true;
-
-			for (var i = 0; k = keys[i], i < keys.length; i++) {
-				//Modifiers
-				if (k == 'ctrl' || k == 'control') {
-					kp++;
-					modifiers.ctrl.wanted = true;
-				} else if (k == 'shift') {
-					kp++;
-					modifiers.shift.wanted = true;
-				} else if (k == 'alt') {
-					kp++;
-					modifiers.alt.wanted = true;
-				} else if (k == 'meta') {
-					kp++;
-					modifiers.meta.wanted = true;
-				} else if (k.length > 1) {
-					//If it is a special key
-					if (special_keys[k] == code) kp++;
-				} else if (opt['keycode']) {
-					if (opt['keycode'] == code) kp++;
-				} else {
-					//The special keys did not match
-					if (character == k) kp++;else {
-						if (shift_nums[character] && e.shiftKey) {
-							//Stupid Shift key bug created by using lowercase
-							character = shift_nums[character];
-							if (character == k) kp++;
-						}
-					}
-				}
-			}
-
-			if (kp == keys.length && modifiers.ctrl.pressed == modifiers.ctrl.wanted && modifiers.shift.pressed == modifiers.shift.wanted && modifiers.alt.pressed == modifiers.alt.wanted && modifiers.meta.pressed == modifiers.meta.wanted) {
-				callback(e);
-
-				if (!opt['propagate']) {
-					//Stop the event
-					//e.cancelBubble is supported by IE - this will kill the bubbling process.
-					e.cancelBubble = true;
-					e.returnValue = false;
-
-					//e.stopPropagation works in Firefox.
-					if (e.stopPropagation) {
-						e.stopPropagation();
-						e.preventDefault();
-					}
-					return false;
-				}
-			}
-		};
-		this.all_shortcuts[shortcut_combination] = {
-			'callback': func,
-			'target': ele,
-			'event': opt['type']
-		};
-		//Attach the function with the event
-		if (ele.addEventListener) ele.addEventListener(opt['type'], func, false);else if (ele.attachEvent) ele.attachEvent('on' + opt['type'], func);else ele['on' + opt['type']] = func;
-	},
-
-	//Remove the shortcut - just specify the shortcut and I will remove the binding
-	'remove': function (shortcut_combination) {
-		shortcut_combination = shortcut_combination.toLowerCase();
-		var binding = this.all_shortcuts[shortcut_combination];
-		delete this.all_shortcuts[shortcut_combination];
-		if (!binding) return;
-		var type = binding['event'];
-		var ele = binding['target'];
-		var callback = binding['callback'];
-
-		if (ele.detachEvent) ele.detachEvent('on' + type, callback);else if (ele.removeEventListener) ele.removeEventListener(type, callback, false);else ele['on' + type] = false;
-	}
-};
+/* mousetrap v1.6.1 craig.is/killing/mice */
+(function (r, v, f) {
+  function w(a, b, g) {
+    a.addEventListener ? a.addEventListener(b, g, !1) : a.attachEvent("on" + b, g);
+  }function A(a) {
+    if ("keypress" == a.type) {
+      var b = String.fromCharCode(a.which);a.shiftKey || (b = b.toLowerCase());return b;
+    }return p[a.which] ? p[a.which] : t[a.which] ? t[a.which] : String.fromCharCode(a.which).toLowerCase();
+  }function F(a) {
+    var b = [];a.shiftKey && b.push("shift");a.altKey && b.push("alt");a.ctrlKey && b.push("ctrl");a.metaKey && b.push("meta");return b;
+  }function x(a) {
+    return "shift" == a || "ctrl" == a || "alt" == a || "meta" == a;
+  }function B(a, b) {
+    var g,
+        c,
+        d,
+        f = [];g = a;"+" === g ? g = ["+"] : (g = g.replace(/\+{2}/g, "+plus"), g = g.split("+"));for (d = 0; d < g.length; ++d) c = g[d], C[c] && (c = C[c]), b && "keypress" != b && D[c] && (c = D[c], f.push("shift")), x(c) && f.push(c);g = c;d = b;if (!d) {
+      if (!n) {
+        n = {};for (var q in p) 95 < q && 112 > q || p.hasOwnProperty(q) && (n[p[q]] = q);
+      }d = n[g] ? "keydown" : "keypress";
+    }"keypress" == d && f.length && (d = "keydown");return { key: c, modifiers: f, action: d };
+  }function E(a, b) {
+    return null === a || a === v ? !1 : a === b ? !0 : E(a.parentNode, b);
+  }function c(a) {
+    function b(a) {
+      a = a || {};var b = !1,
+          l;for (l in n) a[l] ? b = !0 : n[l] = 0;b || (y = !1);
+    }function g(a, b, u, e, c, g) {
+      var l,
+          m,
+          k = [],
+          f = u.type;if (!h._callbacks[a]) return [];"keyup" == f && x(a) && (b = [a]);for (l = 0; l < h._callbacks[a].length; ++l) if (m = h._callbacks[a][l], (e || !m.seq || n[m.seq] == m.level) && f == m.action) {
+        var d;(d = "keypress" == f && !u.metaKey && !u.ctrlKey) || (d = m.modifiers, d = b.sort().join(",") === d.sort().join(","));d && (d = e && m.seq == e && m.level == g, (!e && m.combo == c || d) && h._callbacks[a].splice(l, 1), k.push(m));
+      }return k;
+    }function f(a, b, c, e) {
+      h.stopCallback(b, b.target || b.srcElement, c, e) || !1 !== a(b, c) || (b.preventDefault ? b.preventDefault() : b.returnValue = !1, b.stopPropagation ? b.stopPropagation() : b.cancelBubble = !0);
+    }function d(a) {
+      "number" !== typeof a.which && (a.which = a.keyCode);var b = A(a);b && ("keyup" == a.type && z === b ? z = !1 : h.handleKey(b, F(a), a));
+    }function p(a, c, u, e) {
+      function l(c) {
+        return function () {
+          y = c;++n[a];clearTimeout(r);r = setTimeout(b, 1E3);
+        };
+      }function g(c) {
+        f(u, c, a);"keyup" !== e && (z = A(c));setTimeout(b, 10);
+      }for (var d = n[a] = 0; d < c.length; ++d) {
+        var m = d + 1 === c.length ? g : l(e || B(c[d + 1]).action);q(c[d], m, e, a, d);
+      }
+    }function q(a, b, c, e, d) {
+      h._directMap[a + ":" + c] = b;a = a.replace(/\s+/g, " ");var f = a.split(" ");1 < f.length ? p(a, f, b, c) : (c = B(a, c), h._callbacks[c.key] = h._callbacks[c.key] || [], g(c.key, c.modifiers, { type: c.action }, e, a, d), h._callbacks[c.key][e ? "unshift" : "push"]({ callback: b, modifiers: c.modifiers, action: c.action, seq: e, level: d, combo: a }));
+    }var h = this;a = a || v;if (!(h instanceof c)) return new c(a);h.target = a;h._callbacks = {};h._directMap = {};var n = {},
+        r,
+        z = !1,
+        t = !1,
+        y = !1;h._handleKey = function (a, c, d) {
+      var e = g(a, c, d),
+          k;c = {};var h = 0,
+          l = !1;for (k = 0; k < e.length; ++k) e[k].seq && (h = Math.max(h, e[k].level));for (k = 0; k < e.length; ++k) e[k].seq ? e[k].level == h && (l = !0, c[e[k].seq] = 1, f(e[k].callback, d, e[k].combo, e[k].seq)) : l || f(e[k].callback, d, e[k].combo);e = "keypress" == d.type && t;d.type != y || x(a) || e || b(c);t = l && "keydown" == d.type;
+    };h._bindMultiple = function (a, b, c) {
+      for (var d = 0; d < a.length; ++d) q(a[d], b, c);
+    };w(a, "keypress", d);w(a, "keydown", d);w(a, "keyup", d);
+  }if (r) {
+    var p = { 8: "backspace", 9: "tab", 13: "enter", 16: "shift", 17: "ctrl",
+      18: "alt", 20: "capslock", 27: "esc", 32: "space", 33: "pageup", 34: "pagedown", 35: "end", 36: "home", 37: "left", 38: "up", 39: "right", 40: "down", 45: "ins", 46: "del", 91: "meta", 93: "meta", 224: "meta" },
+        t = { 106: "*", 107: "+", 109: "-", 110: ".", 111: "/", 186: ";", 187: "=", 188: ",", 189: "-", 190: ".", 191: "/", 192: "`", 219: "[", 220: "\\", 221: "]", 222: "'" },
+        D = { "~": "`", "!": "1", "@": "2", "#": "3", $: "4", "%": "5", "^": "6", "&": "7", "*": "8", "(": "9", ")": "0", _: "-", "+": "=", ":": ";", '"': "'", "<": ",", ">": ".", "?": "/", "|": "\\" },
+        C = { option: "alt", command: "meta", "return": "enter",
+      escape: "esc", plus: "+", mod: /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? "meta" : "ctrl" },
+        n;for (f = 1; 20 > f; ++f) p[111 + f] = "f" + f;for (f = 0; 9 >= f; ++f) p[f + 96] = f.toString();c.prototype.bind = function (a, b, c) {
+      a = a instanceof Array ? a : [a];this._bindMultiple.call(this, a, b, c);return this;
+    };c.prototype.unbind = function (a, b) {
+      return this.bind.call(this, a, function () {}, b);
+    };c.prototype.trigger = function (a, b) {
+      if (this._directMap[a + ":" + b]) this._directMap[a + ":" + b]({}, a);return this;
+    };c.prototype.reset = function () {
+      this._callbacks = {};
+      this._directMap = {};return this;
+    };c.prototype.stopCallback = function (a, b) {
+      return -1 < (" " + b.className + " ").indexOf(" mousetrap ") || E(b, this.target) ? !1 : "INPUT" == b.tagName || "SELECT" == b.tagName || "TEXTAREA" == b.tagName || b.isContentEditable;
+    };c.prototype.handleKey = function () {
+      return this._handleKey.apply(this, arguments);
+    };c.addKeycodes = function (a) {
+      for (var b in a) a.hasOwnProperty(b) && (p[b] = a[b]);n = null;
+    };c.init = function () {
+      var a = c(v),
+          b;for (b in a) "_" !== b.charAt(0) && (c[b] = function (b) {
+        return function () {
+          return a[b].apply(a, arguments);
+        };
+      }(b));
+    };c.init();r.Mousetrap = c;"undefined" !== typeof module && module.exports && (module.exports = c);"function" === typeof define && define.amd && define(function () {
+      return c;
+    });
+  }
+})("undefined" !== typeof window ? window : null, "undefined" !== typeof window ? document : null);
 //
 //var configStorage;
 // in the real world we will store config on the server
@@ -5242,6 +5125,7 @@ window.cleanEnglishonCookies = function () {
       window.localStorage.removeItem('got_no_questions_dialog');
       window.localStorage.removeItem('show_quiz_tutorial');
       window.localStorage.removeItem('siteLanguage');
+      window.localStorage.removeItem('vocabularyOrder');
     });
   }
 };
@@ -5290,7 +5174,7 @@ var MESSAGES = {
     START_PROGRESS_TUTORIAL: 'Progress Bar Tour',
     START_TUTORIAL: 'Guided Tour',
     SITE_LANGUAGE: 'Site Language',
-    AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & <a id-'privacy_link'>Privacy Policy</a>",
+    AGREE_TO_TOS: "By signing up, I agree to the</br> <a id='tos_link'>Terms of Use</a> & </br><a id-'privacy_link'>Privacy Policy</a>",
     AGREE: "I agree.",
     NO_QUESTIONS: "Please look for articles </br>marked with this icon",
     NO_QUESTIONS_ARTICLE: "Please look at category section </br>for articles marked</br>with this icon",
@@ -5350,7 +5234,7 @@ var MESSAGES = {
     START_PROGRESS_TUTORIAL: 'מדריך ללוח ההתקדמות',
     START_TUTORIAL: 'מדריך הפעלה',
     SITE_LANGUAGE: 'שפת התפריט',
-    AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'> ול<a>תנאי הפרטיות</a> ",
+    AGREE_TO_TOS: "אני מסכים <a id='tos_link'>לתנאי השימוש</a id='privacy_link'></br> ול<a>תנאי הפרטיות</a> ",
     AGREE: "אני מסכים.",
     NO_QUESTIONS: "חפש כתבות לצידם </br>יש את הסימון",
     NO_QUESTIONS_ARTICLE: "חפש בדפי המדורים </br>כתבות לצידם </br>יש את הסימון",
@@ -5428,10 +5312,9 @@ Authenticator.prototype.getTokenFor = function (userToken) {
 };
 Authenticator.prototype.getTokenForGuest = function () {
   console.log("getTokenForGuest****! base is: " + this.base);
-  var promise = e$.post(this.base + "/tokens/create/").then(function (response) {
+  return e$.post(this.base + "/tokens/create/").then(function (response) {
     return response.token;
   });
-  return promise;
 };
 
 function showTOS() {
@@ -5470,7 +5353,7 @@ Authenticator.prototype.verifiyEmail = function (email) {
     });
   });
 };
-Authenticator.prototype.linkAccounts = function (email, google_sec_token) {
+Authenticator.prototype.linkAccounts = function (token, email, google_sec_token) {
   var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
   element = 'eo-dlg-link';
   document.eoDialogs.toggleDialog(element, 'show');
@@ -5482,17 +5365,15 @@ Authenticator.prototype.linkAccounts = function (email, google_sec_token) {
   e$('#link-btn').on('click', function () {
     e$('#eo-login-email').val(email);
     e$('#eo-login-password').val(e$('#link-password').val());
-    document.menu.loginByMail();
-    window.link_interval = setInterval(function () {
-      if (document.link_flag) {
-        clearInterval(window.link_interval);
-        document.englishonBackend.linkAccounts(google_sec_token).then(function (res) {
-          element = 'eo-dlg-link-done';
-          document.eoDialogs.toggleDialog(element, 'show');
-          e$('#linked-message').html(messages.ACCOUNTS_LINKED);
-        });
-      }
-    }, 500);
+    document.englishonConfig.token = token;
+    document.englishonBackend.token = token;
+    document.menu.loginByMail().then(function () {
+      document.englishonBackend.linkAccounts(google_sec_token).then(function (res) {
+        element = 'eo-dlg-link-done';
+        document.eoDialogs.toggleDialog(element, 'show');
+        e$('#linked-message').html(messages.ACCOUNTS_LINKED);
+      });
+    });
   });
   var visibleNow = e$('.eo-area').filter(':visible').last().find('.eo-inner-area').length ? e$('.eo-area').filter(':visible').last().find('.eo-inner-area').filter(':visible') : e$('.eo-area').filter(':visible').last();
   window.history.pushState({ 'elementToShow': visibleNow.attr('id') }, '');
@@ -5509,8 +5390,8 @@ Authenticator.prototype.validate = function (user) {
   //tips = e$('#eo-login-msg');
   allFields = e$([]).add(user.email).add(user.password);
   errors = e$([]).add(user.email_msg).add(user.password_msg);
-  errors.text('').removeClass('ui-state-highlight').parent().addClass('hidden');
-  //user.password_msg.text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+  errors.text('').parent().addClass('hidden');
+  //user.password_msg.text('').parent().addClass('hidden');
   allFields.removeClass('eo-state-error');
   //allFields.on('input',function(){})
   function checkLength(o, n, min, max) {
@@ -5521,7 +5402,7 @@ Authenticator.prototype.validate = function (user) {
     }
     if (o.val().length < min) {
       o.addClass("eo-state-error");
-      updateTips(document.MESSAGES[document.englishonConfig.siteLanguage]['MIN_FIELD_LENGTH'] + max, n);
+      updateTips(document.MESSAGES[document.englishonConfig.siteLanguage]['MIN_FIELD_LENGTH'] + min, n);
       return false;
     } else {
       return true;
@@ -5541,11 +5422,7 @@ Authenticator.prototype.validate = function (user) {
   function updateTips(t, n) {
     element = e$('#login-' + n + '-msg');
     element.text(t);
-    //.addClass("ui-state-highlight");
     element.parent().removeClass('hidden');
-    setTimeout(function () {
-      element.removeClass("ui-state-highlight", 1500);
-    }, 500);
   }
   var valid = true;
   valid = valid && checkLength(user.email, "email", 6, 80);
@@ -5647,12 +5524,8 @@ HerokuBackend.prototype.allSRQuestions = function () {
 };
 HerokuBackend.prototype.score = function (score_num) {
   var post = this.ajax("POST", "/quiz/score/score/", { 'token': this.token, 'scores_num': score_num });
-  post.done(function () {
-    console.log('user got scores');
-  });
-  post.fail(function () {
-    console.log('error give scores to user!');
-  });
+  post.done(function () {});
+  post.fail(function () {});
 };
 HerokuBackend.prototype.checkWeeklyPresence = function () {
   return this.ajax("POST", "/quiz/score/checkWeeklyPresence/", { 'token': this.token });
@@ -5671,7 +5544,6 @@ HerokuBackend.prototype.rejectedTerms = function (address) {
 };
 HerokuBackend.prototype.getArticle = function (address, limit = 5) {
   this.url = encodeURIComponent(address) + '/'.toLowerCase();
-  console.log('backend console *****token: ' + this.token);
   return this.ajax("GET", "/quiz/page/" + limit + "/" + this.url).then(function (data) {
     this.pageid = data.id;
     return data.questions;
@@ -5683,7 +5555,6 @@ HerokuBackend.prototype.getArticle = function (address, limit = 5) {
 };
 HerokuBackend.prototype.getArticleForEditor = function (address) {
   this.url = encodeURIComponent(address) + '/'.toLowerCase();
-  console.log('backend console *****token: ' + this.token);
   return this.ajax("GET", "/quiz/editor/page/" + this.url).then(function (data) {
     this.pageid = data.id;
     return data.questions;
@@ -5707,9 +5578,7 @@ HerokuBackend.prototype.createQuestion = function (question) {
   question.correct_answers = question.correct_answers.map(function (a) {
     return { answer: a };
   });
-  question.wrong_answers = question.wrong_answers.map(function (a) {
-    return { answer: a.word, translation: a.translation };
-  });
+
   return this.ajax('POST', '/quiz/editor/question/' + this.url, question);
 };
 HerokuBackend.prototype.resetUser = function () {
@@ -5736,7 +5605,6 @@ HerokuBackend.prototype.dictionary = function (new_word) {
   });
 };
 HerokuBackend.prototype.create_all_questions = function (address, question) {
-  console.log("backend///create_all_questions before ajax action ");
   url = encodeURIComponent(address) + '/';
   var post = this.ajax('POST', '/quiz/editor/question/' + this.url, question);
   post.done(function (data) {
@@ -5837,30 +5705,13 @@ Editor.prototype.createAutoQuestion = function (event) {
     return;
   }
   span.data('context', ctx);
-  //Creating a list of 4 Distractions randomaly, using the word buffer of the internal id
-  var wrong = [];
-  var wrong_words = [];
-  internal_id_keys = Object.keys(this.eo_dictionary);
-  if (internal_id_keys.length < 4) {
-    alert('dictionary is containing les than 4 words. cannot create questions. ');
-    return;
-  }
-  while (wrong.length < 3) {
-    translation = internal_id_keys[Math.floor(Math.random() * internal_id_keys.length + 0)];
-    arrayOfCandidate = this.eo_dictionary[translation];
-    candidate = arrayOfCandidate[Math.floor(Math.random() * arrayOfCandidate.length + 0)];
-    if (wrong_words.indexOf(candidate) == -1 && candidate != correct && translation != hint) {
-      wrong.push({ word: candidate, translation: translation });
-      wrong_words.push(candidate);
-    }
-  }
+
   preposition = span.data('preposition');
   var question = {
     'context': ctx,
     'replaced': replaced,
     'hint': hint,
     'correct_answers': [correct],
-    'wrong_answers': wrong,
     'hint_language': 'he',
     'answer_language': 'en',
     'preposition': preposition
@@ -5869,6 +5720,7 @@ Editor.prototype.createAutoQuestion = function (event) {
   this.span = span;
   document.englishonBackend.createQuestion(question).then(function (res) {
     this.span.removeClass('eo-editor-candidate').addClass('eo-editor-question').off('click');
+    this.span.data('word', replaced);
     document._editor.pointer--;
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
     document._editor.EditNext(pointer);
@@ -5901,7 +5753,9 @@ Editor.prototype.question_onClick = function (event) {
   q_dialog.append(e$('<button>').text("Delete Question").click(function (event) {
     q_dialog.dialog('close');
     document.englishonBackend.deleteQuestion(question).then(function (res) {
-      console.log('Question deleted');
+      if (res.message != 'question not found') {
+        console.log('Question deleted');
+      }
       this.span.removeClass('eo-editor-question current').addClass('eo-editor-candidate').off('click').on('click', this.onClick.bind(this));
     }.bind(this), function (reason) {
       console.log('Error delete question. Reason is: ' + reason);
@@ -6107,38 +5961,43 @@ Editor.prototype.EditPrev = function () {
   document._editor.pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
 };
 Editor.prototype.removeShortcut = function () {
-  shortcut.remove('Left');
-  shortcut.remove('Right');
-  shortcut.remove('Tab');
-  shortcut.remove('Enter');
-  shortcut.remove('Up');
-  shortcut.remove('Down');
-  console.log('asddfsdfsadfsfdasaadsfdfdafsfdfa removeShortcut');
+  Mousetrap.unbind('left');
+  Mousetrap.unbind('right');
+  Mousetrap.unbind('tab');
+  Mousetrap.unbind('enter');
+  Mousetrap.unbind('up');
+  Mousetrap.unbind('down');
 };
 Editor.prototype.shortcut = function () {
   //this.removeShortcut();
   document.overlay.removeShortcut();
-  shortcut.all_shortcuts = {};
-  shortcut.add("Tab", function () {
+  Mousetrap.bind('tab', function (e) {
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
     document._editor.EditNext(pointer);
+    return false;
   });
-  shortcut.add("Left", function () {
+  Mousetrap.bind('left', function (e) {
     var pointer = document._editor.pointer == e$('.eo-editor-candidate').length - 1 ? 0 : document._editor.pointer + 1;
     document._editor.EditNext(pointer);
+    return false;
   });
-  shortcut.add("Right", document._editor.EditPrev);
-  shortcut.add("Up", function () {
+  Mousetrap.bind("right", function (e) {
+    document._editor.EditPrev();
+    return false;
+  });
+  Mousetrap.bind("up", function (e) {
     var index = e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('.highlight').index();
     e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
     e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index - 1).addClass('highlight');
+    return false;
   });
-  shortcut.add("Down", function () {
+  Mousetrap.bind("down", function (e) {
     var index = e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('.highlight').index();
     e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index).removeClass('highlight');
     e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('li').eq(index + 1).addClass('highlight');
+    return false;
   });
-  shortcut.add("ENTER", function () {
+  Mousetrap.bind("enter", function () {
     elem = e$('.eo-editor-candidate').eq(document._editor.pointer - 1).find('.editor_ul').find('.highlight');
     document._editor.createAutoQuestion(elem);
   });
@@ -6262,14 +6121,12 @@ UserInfo = function () {
   this.scoreValue = { 'correct': 200, 'persistence': 300 };
   this.displaySRStatus = function () {
     var generall_sr = this.unAnswered.length + this.answered.length;
-    console.log('you answered ' + this.answered.sr_questions.length + ' from: ' + generall_sr);
   };
   this.scoreCorrect = function () {
     scores_num = this.scoreValue['correct'];
     document.englishonBackend.score(scores_num);
   };
   this.checkpersistence = function () {
-    console.log('checkpersistence');
     document.englishonBackend.checkpersistence();
   };
   this.getLevel = function () {
@@ -6399,9 +6256,10 @@ UserInfo = function () {
         // to get a value that is either negative, positive, or zero.
         return new Date(a.next_time) - new Date(b.next_time);
       });
-      e$('#vocabulary').data('order', 'alphabet');
-      this.renderVocabulary(this.srsByAlphabet);
-      e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].ALPHABET_VOCABULARY);
+      list = document.englishonConfig.vocabularyOrder == 'alphabet' ? this.srsByAlphabet : this.srsByTime;
+      text = document.MESSAGES[document.englishonConfig.siteLanguage][document.englishonConfig.vocabularyOrder.toUpperCase() + '_VOCABULARY'];
+      this.renderVocabulary(list);
+      e$('#eo-live #vocabulary-order').text(text);
     }.bind(this));
   };
   this.renderVocabulary = function (words_list) {
@@ -6513,15 +6371,13 @@ UserInfo = function () {
       e.stopPropagation();
       e.target = e$(e.target);
       if (e.target.is('#vocabulary-title') || e.target.parents('#vocabulary-title').length) {
-        if (e$('#vocabulary').data('order') == 'alphabet') {
-          e$('#vocabulary').data('order', 'srTime');
+        if (document.englishonConfig.vocabularyOrder == 'alphabet') {
+          configStorage.set({ vocabularyOrder: 'sr' });
           this.renderVocabulary(this.srsByTime);
-          //e$('#eo-live #vocabulary-order').text('לפי סדר עדיפות לתרגול');
           e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].SR_VOCABULARY);
         } else {
-          e$('#vocabulary').data('order', 'alphabet');
+          configStorage.set({ vocabularyOrder: 'alphabet' });
           this.renderVocabulary(this.srsByAlphabet);
-          //e$('#eo-live #vocabulary-order').text('לפי סדר אלפבית');
           e$('#eo-live #vocabulary-order').text(document.MESSAGES[document.englishonConfig.siteLanguage].ALPHABET_VOCABULARY);
         }
         return;
@@ -6574,6 +6430,7 @@ UserInfo = function () {
         e$('#eo-live-main').toggleClass('hidden');
         e$('#vocabulary').toggleClass('hidden');
         if (!e$('#vocabulary').hasClass('hidden')) {
+          document.tour.hide();
           e$('#eo-live').addClass('vocabulary-open');
           e$('#vocabulary-content-list').html('');
           this.fetchVocabulary();
@@ -6617,12 +6474,9 @@ UserInfo = function () {
   };
   this.checkWeeklyPresence = function () {
     e$(".day-bar").removeClass('eo-persistence');
-    console.log('checkWeeklyPresence');
     document.englishonBackend.checkWeeklyPresence().then(function (data) {
-      console.log('checkWeeklyPresence. got from server: ' + data);
       for (var day in data) {
         if (data.hasOwnProperty(day)) {
-          console.log(day + ': weekday: ' + data[day].weekday + data[day].len);
           if (data[day].len) {
             e$(e$(".day-bar").get(day - 1)).addClass('eo-persistence');
           }
@@ -6633,7 +6487,6 @@ UserInfo = function () {
   };
   this.milotrage = function () {
     document.englishonBackend.milotrage().then(function (data) {
-      console.log('data.#words: ' + data['#words']);
       //'1000000' is a hack to display trailing zero... till not supported with format
       e$('#eo-odometer').text(1000000 + data['#words'] * 10);
     });
@@ -6686,6 +6539,12 @@ Injector = function (paragraphs) {
       }
     }
   };
+  this.paragraphs = paragraphs;
+  /*  e$.each(this.paragraphs, function(p) {
+    })*/
+  e$(this.paragraphs).each(function (i, p) {
+    p.pure_text = e$(p).text();
+  });
   this.elements = [];
   this.isActive = false;
   this.toggle = function (value) {
@@ -6704,19 +6563,16 @@ Injector = function (paragraphs) {
     e$(this.elements).each(function (i, q) {
       q.replacement.replaceWith(q.original);
     });
+    e$('.eo-record').remove();
     //this.interacted = false;
     //this.userAnswered = false;
     console.log("hide questions now");
   };
-  this.on = function () {
-    if (this.isActive) {
-      return;
-    }
-    this.isActive = true;
-    e$(this.elements).each(function (i, q) {
-      var hint = q.qobj.data.preposition + q.qobj.data.hint;
-      q.replacement = q.qobj.replacement();
-      q.original.replaceWith(q.replacement);
+  this.preventJumpyQuestions = function () {
+    e$('.eo-question').each(function (i, element) {
+      element = e$(element);
+      var ctx = element.data('context');
+      q = document.overlay.injector.elements.filter(el => el.qobj.data.context == ctx)[0];
       //if the question after answering is too long - add spaces
       var width = q.replacement.outerWidth(); //2 pixels for the border and 4 is spere...
       var [parentoffset, lineWidth] = document.overlay.getLineDetails();
@@ -6727,30 +6583,40 @@ Injector = function (paragraphs) {
       future_text = future_text.replaceAll('_', '&nbsp;');
       var visible_element = q.replacement.hasClass('eo-expired') ? '.eo-correct' : '.eo-hint';
       q.replacement.find(visible_element).html(future_text);
-      var future_width = q.replacement.outerWidth(); //2 pixels for the border
+      var future_width = q.replacement.outerWidth();
       q.replacement.find(visible_element).html(curent_text);
-      /*      if (future_width > spaceInCurrentLine || ////a question which expected to go down after action
-              (width > future_width && spaceInCurrentLine >= lineWidth)) { //a question which expected to go up after action
-              console.log('IN THIS CASE QUESTION SHOULD DOWN LINE');
-              q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
-            }*/
+      flag = true;
       if (!q.replacement.hasClass('eo-expired')) {
-        q.qobj.questionOnClick(q.replacement.find('.eo-hint'));
-        var open_width = q.replacement.find('.eo-options').outerWidth();
+        var open_width = Number(q.replacement.find('.eo-options').css('width').slice(0, -2));
         if (open_width > spaceInCurrentLine) {
-          console.log('IN THIS CASE question is expected to BE CUT after openning, ' + open_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
-          q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+          console.log('IN THIS CASE question have no enough place to oppened, ' + open_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
+          q.replacement.before(e$('<br/>').addClass('eo-space'));
+          flag = false;
         }
         document.overlay.closeUnAnswered();
       }
-      if (future_width > spaceInCurrentLine) {
+      if (flag && future_width > spaceInCurrentLine) {
         console.log('IN THIS CASE question is expected to go DOWN after action, ' + future_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
-        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+        q.replacement.before(e$('<br/>').addClass('eo-space'));
+        flag = false;
       }
-      if (width > future_width && spaceInCurrentLine >= lineWidth) {
+      if (flag && width > future_width && spaceInCurrentLine + 1 >= lineWidth) {
+        //the +1 is a safety
         console.log('IN THIS CASE question is expected to go UP after action, ' + future_width + ' ,' + spaceInCurrentLine + ' context: ' + q.qobj.data.context);
-        q.replacement.before(e$('<div>').addClass('eo-space').css('width', spaceInCurrentLine - 10)); //the width is not exact to give some spere 
+        q.replacement.before(e$('<br/>').addClass('eo-space'));
       }
+    });
+  };
+  this.on = function () {
+    e$('.entry-content p').addClass('not_stretch');
+    if (this.isActive) {
+      return;
+    }
+    this.isActive = true;
+    e$(this.elements).each(function (i, q) {
+      var hint = q.qobj.data.preposition + q.qobj.data.hint;
+      q.replacement = q.qobj.replacement();
+      q.original.replaceWith(q.replacement);
       if (q.qobj.tried.length) {
         //a special treat for quesion answered now, without .eo-expired
         q.replacement.click(q.qobj.QuestionAudio.bind(q.qobj));
@@ -6760,12 +6626,23 @@ Injector = function (paragraphs) {
           q.replacement.addClass('wrong-feedback');
         }
       }
+      //if (q.replacement.hasClass('eo-expired')){
+      //TEMP LINE!!!!FOR TESTING NEW FEATURE!
+      if (q.replacement.hasClass('eo-expired') && window.location.pathname == '/241200') {
+        q.replacement.after(e$('<button>').addClass('eo-record').html('<i class="fa fa-microphone" aria-hidden="true"></i>').on('click', function (e) {
+          window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + q.qobj.data.word, 'record_window', 'width=315, height=475');
+        }));
+      }
       if (q.qobj.data.tried.length && q.qobj.data.tried[0] != q.qobj.practicedWord) {
         console.log('first answer was wrong...');
         q.replacement.addClass('wrong-feedback');
       }
     });
-    console.log('########after injector on: ' + e$('.eo-question').length);
+    this.preventJumpyQuestions();
+    e$('.entry-content p').removeClass('not_stretch');
+    // e$('.eo-question.eo-expired').after(e$('<button>').addClass('eo-record').html('<i class="fa fa-microphone" aria-hidden="true"></i>').on('click', function(e) {
+    //   window.open(document.englishonConfig.backendUrl+'/record/recordtemplate/'+document.englishonConfig.token+'/'+e$(e.target).data('word'), 'record_window', 'width=315, height=475');
+    // }));
   };
   this.setQuestions = function (questions, toggleSound) {
     this.elements = [];
@@ -6789,7 +6666,7 @@ Injector = function (paragraphs) {
   this.checkDuplicates = function (q) {
     isDuplicate = false;
     e$(this.elements).each(function (i, e) {
-      if (e.qobj.data.hint == q.hint && e.qobj.data.correct_answers[0].answer == q.correct_answers[0].answer) {
+      if (e.qobj.data.hint == q.hint && e.qobj.practicedWord == q.word) {
         isDuplicate = true;
       }
     });
@@ -6798,18 +6675,40 @@ Injector = function (paragraphs) {
   this.checkSpacing = function (q) {
     var questionsPerParagraph = 1;
     var availablePlace = true;
-    e$.each(paragraphs, function (i, p) {
+    e$.each(this.paragraphs, function (i, p) {
       if (!p) {
         return;
       }
+      var capacity = p.capacity;
+      var pure_text = p.pure_text;
       p = e$(p);
       var ctx = q.context;
-      var location = p.text().indexOf(q.context);
       var exist = p.find('.eo-injection-target').length;
-      if (p.text().indexOf(q.context) != -1 && p.find('.eo-injection-target').length >= questionsPerParagraph) {
-        availablePlace = false;
-        console.log('no available space in this paragraph');
+      var words_num = p.text();
+      if (p.text().indexOf(q.context) != -1) {
+        if (p.find('.eo-injection-target').length >= capacity) {
+          console.log('no available space in this paragraph');
+          availablePlace = false;
+          return;
+        }
+        var _index = pure_text.indexOf(q.context) + q.context.indexOf(q.word);
+        e$.each(p.find('.eo-injection-target'), function (i, t) {
+          var t = e$(t);
+          var index = pure_text.indexOf(t.data('context')) + t.data('context').indexOf(t.text());
+          var chunk = pure_text.slice(Math.min(_index, index), Math.max(_index, index));
+          var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
+          var match = [];
+          var sum = 0;
+          while ((match = re.exec(chunk)) !== null) {
+            sum += 1;
+          }
+          if (sum < 20) {
+            availablePlace = false;
+            console.log('there is space in this paragraph, but there is addition question too close');
+          }
+        });
       }
+      //http://www.kolhazman.co.il/263519 check here!!!!
     });
     return availablePlace;
   };
@@ -6828,14 +6727,11 @@ Injector = function (paragraphs) {
 
   function Question(question, toggleSound) {
     var isExpired = question.tried && question.tried.length > 0;
-    var isMultipleChoice = question.wrong_answers && question.wrong_answers.length !== 0;
+    var isMultipleChoice = question.personal_distractions && question.personal_distractions.length !== 0;
     var r;
     if (isExpired) {
-      if (isMultipleChoice) {
-        r = new ExpiredMultipleChoiceQuestion(question);
-      } else {
-        r = new ExpiredOpenQuestion(question);
-      }
+      //currently if expired, there is no need to distinct between multipleChoiceQuestion to openQuesion
+      r = new ExpiredMultipleChoiceQuestion(question);
     } else if (isMultipleChoice) {
       r = new MultipleChoice(question, toggleSound);
     } else {
@@ -6860,7 +6756,7 @@ Injector = function (paragraphs) {
           var ix = portion.text.indexOf(replaced);
           if (ix === -1) return portion.text;
           var before = document.createTextNode(portion.text.slice(0, ix));
-          var target = e$('<span>').addClass('eo-injection-target').text(portion.text.slice(ix, ix + replaced.length));
+          var target = e$('<span>').addClass('eo-injection-target').text(portion.text.slice(ix, ix + replaced.length)).data('context', ctx);
           var after = document.createTextNode(portion.text.slice(ix + replaced.length));
           var frag = document.createDocumentFragment();
           frag.appendChild(before);
@@ -6885,10 +6781,7 @@ updateProgressBars = function () {
 };
 var AbstractQuestion = function (qdata, toggleSound) {
   this.data = qdata;
-  if (typeof this.data.correct_answer === 'string') this.correct = [this.data.correct_answer];else // multiple correct answers
-    this.correct = this.data.correct_answers.map(function (a) {
-      return a.answer;
-    });
+  this.correct = [this.data.word];
   this.practicedWord = this.data.hint_language === document.englishonConfig.targetLanguage ? this.data.hint : this.correct[0];
   this.toggleSound = toggleSound;
   this.tried = [];
@@ -7025,15 +6918,18 @@ AbstractQuestion.prototype.isCorrect = function (answer) {
 AbstractQuestion.prototype.touch = function (event) {
   if (!this.touched) {
     this.report('StartedQuestion', {
-      question: this.data.id
+      question: this.data.id,
+      distractions: e$.map(this.data.personal_distractions, function (dis) {
+        return dis.answer;
+      }).join(',')
     });
     var language = document.englishonConfig.targetLanguage;
     if (this.practicedWord === this.data.hint) {
-      //Speaker.fetch(language, this.practicedWord);
+      Speaker.fetch(language, this.practicedWord);
     } else {
-      //Speaker.fetch(language, this.correct[0]);
-      for (i = 0; i < this.data.wrong_answers.length; i++) {
-        //Speaker.fetch(language, this.data.wrong_answers[i].answer);
+      Speaker.fetch(language, this.correct[0]);
+      for (i = 0; i < this.data.personal_distractions.length; i++) {
+        Speaker.fetch(language, this.data.personal_distractions[i].answer);
       }
     }
     this.touched = true;
@@ -7106,7 +7002,7 @@ AbstractQuestion.prototype.markAnswered = function () {
 };
 var OpenQuestion = function (question, toggleSound) {
   AbstractQuestion.call(this, question, toggleSound);
-  this.lang = languageOf(this.correct[0].charCodeAt(0));
+  //this.lang = languageOf(this.data.word.origin.charCodeAt(0));
 };
 OpenQuestion.prototype = Object.create(AbstractQuestion.prototype);
 OpenQuestion.prototype.constructor = OpenQuestion;
@@ -7282,7 +7178,6 @@ MultipleChoice.prototype.open = function () {
 MultipleChoice.prototype.closeUnanswered = function () {
   AbstractQuestion.prototype.closeUnanswered.call(this);
   document.overlay.removeQuestionShortcut();
-  //document.overlay.pointer --;
   if (!this.element.hasClass('eo-answered')) {
     if (this.element.hasClass('eo-show_solution')) {
       this.element.addClass('lost_focus');
@@ -7292,8 +7187,6 @@ MultipleChoice.prototype.closeUnanswered = function () {
 };
 MultipleChoice.prototype.closeAnswered = function () {
   // see super for more documentation
-  //document.overlay.pointer --;
-  //if (document.overlay.pointer == -1) { document.overlay.pointer = e$('.eo-question').length - 2; }
   var correctOption = this.element.find('.eo-option.eo-correct_option span');
   var initialTop = correctOption.offset().top - this.element.offset().top;
   var correct = this.element.find('.eo-correct');
@@ -7351,7 +7244,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
       <div id='eo-account-area'>\
         <div class='Grid u-textCenter eo-row eo-menu-inner'>\
           <div class='Grid-cell user-pic-cell'>\
-            <div id='eo-account-img'></div>\
+            <div class='eo-account-img'></div>\
           </div>\
           <div class='Grid-cell user-name-cell v-align h-align'>\
             <div id='eo-account-name'></div>\
@@ -7371,7 +7264,7 @@ document.MENU_HTML = "<div id='eo-area-container' class='hidden'>\
         <div class='Grid-cell'>\
           <div class='Grid'>\
             <div class='Grid-cell u-1of3 v-align h-align'>\
-              <div id='eo-speaker-res'></div>\
+              <div id='eo-speaker'></div>\
             </div>\
             <div class='Grid-cell v-align right-align'>\
               <div id='eo-slider'></div>\
@@ -7662,15 +7555,23 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
             </div>\
           </div>\
         </div>\
+      <div class='Grid-cell eo-row6 h-align'>\
+        <input type='text' placeholder='First name' id='first-name' class='eo-input' /> </div>\
+\
+      <div class='Grid-cell eo-row6 h-align'>\
+        <input type='text' placeholder='Last name' id='last-name' class='eo-input' /> </div>\
+          <div class='Grid-cell eo-row6 h-align'>\
+\
+          <div class='avatar-circle'>\
+          <span class='initials'>Df</span>\
+        </div>\
+\
         <div class='Grid-cell eo-row3 v-align h-align'>\
           <div id='tos'></div>\
         </div>\
-        <div class='Grid-cell eo-row4 v-align h-align'>\
-          <div class='agree-Grid v-align h-align'>\
-            <div class='Grid-cell checkbox-cell'>\
-              <input type='checkbox' id='eo-accept-checkbox' /> </div>\
-            <div class='Grid-cell checkbox-text-cell' id='agree'></div>\
-          </div>\
+\
+        <div class='Grid-cell'>\
+          <iframe id='eo-recaptcha'></iframe>\
         </div>\
       </div>\
     </div>\
@@ -7702,7 +7603,7 @@ var overlay_settings = {
         var startPoint = e$('#sidebar').offset().top;
         var val = e$('#sidebar').offset().left;
         e$('#eo-live').css('left', val);
-        e$('#eo-live .close-vocabulary').css('left', val - 58);
+        e$('#eo-live .close-vocabulary').css('left', val + e$('#eo-live').outerWidth() - 8);
         var val = Math.max(startPoint - $(window).scrollTop(), 10);
         e$('#eo-live').css('top', val);
         e$('#eo-live .close-vocabulary').css('top', val + 180);
@@ -7841,203 +7742,191 @@ var overlay_settings = {
   'CH10': {}
 };
 //
-PageOverlay = function () {
-  if (window.localStorage.getItem('show_quiz_tutorial')) {
-    e$('body').addClass('first-loading');
-    console.log('adding class first-loading');
-  };
-  this.shortcut = function () {
-    shortcut.add("Tab", function () {
-      var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
-      document.overlay.Next(pointer);
-    });
-    shortcut.add("Left", function () {
-      var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
-      document.overlay.Next(pointer);
-    });
-    shortcut.add("Right", document.overlay.Prev);
-  };
-  this.Next = function (pointer) {
-    //this function is getting pointer as an argument to enable call it when user click on a quiestion
-    if (e$('.eo-question').eq(document.overlay.pointer).hasClass('eo-active')) {
-      document.overlay.closeUnAnswered();
-      var next = (document.overlay.pointer + 1) % e$('.eo-question').length;
-      e$('.eo-question').eq(next).addClass('next');
-      return;
-    }
-    if (e$('.eo-question.repeat').length) {
-      e$('.eo-question').removeClass('next repeat');
-      e = e$('.eo-question').eq(document.overlay.pointer);
-      var context = e.data('context');
-      var current = document.overlay.injector.elements.filter(function (q) {
-        return q.qobj.data.context == context;
-      })[0];
-      current.qobj.QuestionAudio(e.find('.eo-correct'));
-      var next = (document.overlay.pointer + 1) % e$('.eo-question').length;
-      e$('.eo-question').eq(next).addClass('next');
-      return;
-    }
-    e$('.eo-question').removeClass('next');
-    document.overlay.pointer = pointer;
+PageOverlay = function () {};
+
+PageOverlay.prototype.shortcut = function () {
+  //return false prevents the default action and stops the event from bubbling up
+  Mousetrap.bind("tab", function (e) {
+    var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
+    document.overlay.Next(pointer);
+    return false;
+  });
+  Mousetrap.bind("left", function (e) {
+    var pointer = (document.overlay.pointer + 1) % e$('.eo-question').length;
+    document.overlay.Next(pointer);
+    return false;
+  });
+  Mousetrap.bind("right", function (e) {
+    document.overlay.Prev();
+    return false;
+  });
+};
+PageOverlay.prototype.Next = function (pointer) {
+  //this function is getting pointer as an argument to enable call it when user click on a quiestion
+  if (e$('.eo-question').eq(document.overlay.pointer).hasClass('eo-active')) {
     document.overlay.closeUnAnswered();
+    var next = (document.overlay.pointer + 1) % e$('.eo-question').length;
+    e$('.eo-question').eq(next).addClass('next');
+    return;
+  }
+  if (e$('.eo-question.repeat').length) {
+    e$('.eo-question').removeClass('next repeat');
     e = e$('.eo-question').eq(document.overlay.pointer);
     var context = e.data('context');
-    //need to be finded with context because the injector element are ordered by level, not by the page order
     var current = document.overlay.injector.elements.filter(function (q) {
       return q.qobj.data.context == context;
     })[0];
-    if (!e.hasClass('eo-answered')) {
-      current.qobj.questionOnClick(e.find('.eo-hint'));
-    } else {
-      e.addClass('next repeat');
+    current.qobj.QuestionAudio(e.find('.eo-correct'));
+    var next = (document.overlay.pointer + 1) % e$('.eo-question').length;
+    e$('.eo-question').eq(next).addClass('next');
+    return;
+  }
+  e$('.eo-question').removeClass('next');
+  document.overlay.pointer = pointer;
+  document.overlay.closeUnAnswered();
+  e = e$('.eo-question').eq(document.overlay.pointer);
+  var context = e.data('context');
+  //need to be finded with context because the injector elements ordered by level, not by the page order
+  var current = document.overlay.injector.elements.filter(function (q) {
+    return q.qobj.data.context == context;
+  })[0];
+  if (!e.hasClass('eo-answered')) {
+    current.qobj.questionOnClick(e.find('.eo-hint'));
+  } else {
+    e.addClass('next repeat');
+  }
+  window.scrollTo(0, e.offset().top - 200);
+};
+PageOverlay.prototype.Prev = function () {
+  e$('.eo-question').removeClass('next');
+  document.overlay.pointer = document.overlay.pointer < 1 ? e$('.eo-question').length - 1 : document.overlay.pointer - 1;
+  document.overlay.closeUnAnswered();
+  e = e$('.eo-question').eq(document.overlay.pointer);
+  var context = e.data('context');
+  //need to be finded with context because the injector element are ordered by level, not by the page order
+  var current = document.overlay.injector.elements.filter(function (q) {
+    return q.qobj.data.context == context;
+  })[0];
+  if (!e.hasClass('eo-answered')) {
+    current.qobj.questionOnClick(e.find('.eo-hint'));
+  } else {
+    e.addClass('next');
+    current.qobj.QuestionAudio(e.find('.eo-correct'));
+  }
+  window.scrollTo(0, e.offset().top - 200);
+};
+PageOverlay.prototype.closeUnAnswered = function () {
+  e$(this.injector.elements).each(function (i, q) {
+    if (q.qobj.element && q.qobj.element.is('.eo-active')) {
+      q.qobj.closeUnanswered();
     }
-    window.scrollTo(0, e.offset().top - 200);
-  };
-  this.Prev = function () {
-    e$('.eo-question').removeClass('next');
-    document.overlay.pointer = document.overlay.pointer < 1 ? e$('.eo-question').length - 1 : document.overlay.pointer - 1;
-    //document.overlay.pointer =  document.overlay.pointer - 1 + ();
-    document.overlay.closeUnAnswered();
-    e = e$('.eo-question').eq(document.overlay.pointer);
-    var context = e.data('context');
-    //need to be finded with context because the injector element are ordered by level, not by the page order
-    var current = document.overlay.injector.elements.filter(function (q) {
-      return q.qobj.data.context == context;
-    })[0];
-    if (!e.hasClass('eo-answered')) {
-      current.qobj.questionOnClick(e.find('.eo-hint'));
-    } else {
-      e.addClass('next');
-      current.qobj.QuestionAudio(e.find('.eo-correct'));
-    }
-    window.scrollTo(0, e.offset().top - 200);
-  };
-  this.closeUnAnswered = function () {
-    $(this.injector.elements).each(function (i, q) {
-      if (q.qobj.element && q.qobj.element.is('.eo-active')) {
-        q.qobj.closeUnanswered();
-      }
-    });
-  };
-  // stubs, just to make it "compile"
-  this.setReporter = function (backend) {};
-  this.fetchLinkStates = function (backend) {
-    return Promise.resolve();
-  };
-  this.insertContent = function (element) {
-    e$('body').append(element);
-  };
-  this.markLinks = function (links) {};
-  this.hideButtons = function () {
-    e$('.eo-button').addClass('hidden');
-  };
-  this.rejectTerms = function () {
-    //Give the user astatus of guest
-    window.localStorage.removeItem('email');
-    window.localStorage.removeItem('eo-user-name');
-    document.englishonBackend.rejectedTerms();
+  });
+};
+// stubs, just to make it "compile"
+PageOverlay.prototype.setReporter = function (backend) {};
+PageOverlay.prototype.fetchLinkStates = function (backend) {
+  return Promise.resolve();
+};
+PageOverlay.prototype.insertContent = function (element) {
+  e$('body').append(element);
+};
+PageOverlay.prototype.markLinks = function (links) {};
+PageOverlay.prototype.hideButtons = function () {
+  e$('.eo-button').addClass('hidden');
+};
+PageOverlay.prototype.rejectTerms = function () {
+  //Give the user astatus of guest
+  window.localStorage.removeItem('email');
+  window.localStorage.removeItem('eo-user-name');
+  document.englishonBackend.rejectedTerms();
+  if (document.menu) {
     document.menu.signout();
     e$.when(document.signout_promise).done(function () {
       window.location.reload();
     });
-  };
-  this.TermsDialog = function () {
-    var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
-    e$('#tos').html(messages.AGREE_TO_TOS);
-    e$('#agree').html(messages.AGREE);
-    e$('#tos_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
-    e$('#privacy_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
-    if (document.englishonConfig.media == 'desktop') {
-      if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
-        var menuTop = 0;
-      } else {
-        var menuTop = (screen.height - 540) / 2;
-      }
-      e$('#eo-dlg-terms').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
+  } else {
+    window.location.reload();
+  }
+};
+PageOverlay.prototype.TermsDialog = function (token) {
+  var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
+  e$('#tos').html(messages.AGREE_TO_TOS);
+  e$('#tos_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
+  e$('#privacy_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
+  e$('#eo-recaptcha').attr('src', document.englishonBackend.base + '/tokens/googlecaptcha/' + token + '/' + document.englishonConfig.siteLanguage + '/' + window.location.host + '/');
+  e$('.terms-close').off('click');
+  e$('.terms-close').on('click', this.rejectTerms);
+  e$('.avatar-circle').on('click', function () {
+    window.open(document.englishonConfig.backendUrl + '/tokens/uploadimage/' + document.englishonConfig.token, 'upload_window', 'width=315, height=475');
+  });
+};
+PageOverlay.prototype.getQuestionQuota = function () {
+  var total = 0;
+  e$(this.paragraphs).each(function (i, p) {
+    var sum = 0;
+    var text = e$(p).text();
+    var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
+    var match = [];
+    while ((match = re.exec(text)) !== null) {
+      total += 1;
+      sum += 1;
     }
-  };
-  this.getQuestionQuota = function () {
-    var total = 0;
-    e$(this.paragraphs).each(function (i, p) {
-      var text = e$(p).text();
-      var re = /[א-ת][א-ת'-]*"?[א-ת](?![א-ת])/g;
-      var match = [];
-      while ((match = re.exec(text)) !== null) {
-        total += 1;
-      }
-    });
-    return Math.max(1, Math.round(total / 100));
-  };
-  this.showTermsDialog = function (callback) {
-    e$('#eo-accept-checkbox').off('change');
-    e$('#eo-accept-checkbox').change(function (e) {
-      // this will contain a reference to the checkbox   
-      if (e.target.checked) {
-        document.englishonBackend.acceptedTerms().then(function () {
-          e$('#terms-container').addClass('hidden');
-          e$('#eo-dlg-terms').addClass('hidden');
-          e$('#eo-accept-checkbox').click();
-          this.fetchQuestions().then(function () {
-            callback();
-          }.bind(this));
-        }.bind(this));
-      }
-    }.bind(this));
-    e$('.terms-close').on('click', this.rejectTerms);
-    e$('#terms-container').removeClass('hidden');
-    e$('#eo-dlg-terms').removeClass('hidden');
-  };
-  this.openNoQuestionsDialog = function (message) {
-    var dir = document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION'];
-    if (window.localStorage.getItem('got_no_questions_dialog')) {
-      return;
+    p.capacity = Math.ceil(Math.max(sum / 60, 1));
+  });
+  return Math.max(1, Math.round(total / 100));
+};
+PageOverlay.prototype.showTermsDialog = function () {
+  e$('#terms-container').removeClass('hidden');
+  e$('#eo-dlg-terms').removeClass('hidden');
+};
+PageOverlay.prototype.openNoQuestionsDialog = function (message) {
+  var dir = document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION'];
+  if (window.localStorage.getItem('got_no_questions_dialog')) {
+    return;
+  }
+  no_questions_dlg = e$('<div>').addClass('no_questions_dlg').html(message + '<img src=' + staticUrl('img/button-logo-3d.png') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
+  e$('.no_questions_dlg').addClass(dir);
+  window.localStorage.setItem('got_no_questions_dialog', true);
+};
+PageOverlay.prototype.questionShortcut = function () {
+  document.overlay.optionPointer = -1;
+  Mousetrap.bind('down', function (e) {
+    document.overlay.optionPointer++;
+    if (document.overlay.optionPointer >= 4) {
+      document.overlay.optionPointer = 3;
+      return false;
     }
-    no_questions_dlg = e$('<div>').addClass('no_questions_dlg').html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
-    e$('.no_questions_dlg').addClass(dir);
-    //e$('.no_questions_dlg').parents('.ui-dialog').css({ 'maxWidth': 240 });
-    window.localStorage.setItem('got_no_questions_dialog', true);
-  };
-  this.questionShortcut = function () {
-    document.overlay.optionPointer = -1;
-    shortcut.add('Down', function () {
-      document.overlay.optionPointer++;
-      if (document.overlay.optionPointer >= 4) {
-        document.overlay.optionPointer = 3;
-        return;
-      }
-      e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
-      e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
-    });
-    shortcut.add('Up', function () {
-      document.overlay.optionPointer--;
-      if (document.overlay.optionPointer <= -1) {
-        document.overlay.optionPointer = 0;
-        return;
-      }
-      e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
-      e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
-    });
-    shortcut.add('Enter', function () {
-      var element = e$('.eo-question.eo-active');
-      var span = element.find('.highlight').find('span');
-      var current = document.overlay.injector.elements.filter(function (q) {
-        return q.qobj.data.context == element.data('context');
-      })[0];
-      //current.qobj.questionOnClick(e);
-      current.qobj.guess(span.data('word'), span);
-    });
-  };
-  this.removeQuestionShortcut = function () {
-    shortcut.remove('Up');
-    shortcut.remove('Down');
-    shortcut.remove('Enter');
-    document.overlay.optionPointer = -1;
-  };
-  this.removeShortcut = function () {
-    shortcut.remove('Tab');
-    shortcut.remove('Left');
-    shortcut.remove('Right');
-  };
+    e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
+    e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
+    return false;
+  });
+  Mousetrap.bind('up', function (e) {
+    document.overlay.optionPointer--;
+    if (document.overlay.optionPointer <= -1) {
+      document.overlay.optionPointer = 0;
+      return false;
+    }
+    e$('.eo-question.eo-active').find('.eo-option').removeClass('highlight');
+    e$('.eo-question.eo-active').find('.eo-option').eq(document.overlay.optionPointer).addClass('highlight');
+    return false;
+  });
+  Mousetrap.bind('enter', function () {
+    var element = e$('.eo-question.eo-active');
+    var span = element.find('.highlight').find('span');
+    var current = document.overlay.injector.elements.filter(function (q) {
+      return q.qobj.data.context == element.data('context');
+    })[0];
+    current.qobj.guess(span.data('word'), span);
+  });
+};
+PageOverlay.prototype.removeQuestionShortcut = function () {
+  Mousetrap.unbind('up');
+  Mousetrap.unbind('down');
+  Mousetrap.unbind('enter');
+  document.overlay.optionPointer = -1;
+};
+PageOverlay.prototype.removeShortcut = function () {
+  Mousetrap.reset();
 };
 PageOverlay.prototype.showButtons = function () {};
 PageOverlay.prototype.powerOn = function () {
@@ -8054,6 +7943,14 @@ PageOverlay.prototype.showQuestions = function () {
 PageOverlay.prototype.hideQuestions = function () {
   e$('body').removeClass('question-injected');
 };
+
+////*********************************************************************
+////*********************************************************************
+////*********************************************************************
+////*********************************************************************
+////*********************************************************************
+////*********************************************************************
+
 kolhazmanFrontOverlay = function (parts, url) {
   e$('html').addClass('www-kolhazman-co-il');
   this.url = url.toLowerCase();
@@ -8104,31 +8001,24 @@ kolhazmanFrontOverlay = function (parts, url) {
       console.log('Marks for edited articles did not display. This user never turn on enlishon');
       return;
     }
-    var promises = e$.map(this.parts, function (part, url) {
-      url = url.toLowerCase();
-      return document.englishonBackend.getArticle(url, 1).then(function (questions) {
-        if (questions.length) {
-          //if (true) {
-          e$(part).each(function () {
-            if (!e$(this).find('.category-icon').length) {
-              if (document.overlay.pageType == 'category-page') {
-                e$(this).find('.read-more').prepend(e$('<div>').addClass('category-icon'));
-                if (e$(this).hasClass('primary-title')) {
-                  e$(this).find('.media-heading').append(e$('<div>').addClass('category-icon'));
-                }
-              } else {
-                //THIS LINE IS TEMP, NEED A CSS FIX IN KOLHAZMAN
-                if (e$(this).parents('.section.home_buttom').length) {
-                  return;
-                }
-                e$(this).find('.media-heading').append(e$('<div>').addClass('category-icon'));
-                if (e$(this).find('.icon-circle').length) {
-                  e$(this).find('.category-icon').addClass('left');
-                }
+    var urls = e$.map(this.parts, function (part, url) {
+      return url;
+    });
+    document.englishonBackend.indicateEditedArticles(urls).then(function (res) {
+      console.log('res: ' + res);
+      e$.each(document.overlay.parts, function (url, part) {
+        if (res.urls[url]) {
+          if (!e$(part).find('.category-icon').length) {
+            e$(part).find('.media-heading, .grid-heading').find('a').append(e$('<div>').addClass('category-icon'));
+            var icon = e$(part).find('.category-icon');
+            var link = e$(part).find('a:not(.image-link)');
+            if (link.length) {
+              var gap = Math.abs(icon.offset().left + icon.width() + Number(icon.css('margin-right').slice(0, -2)) - (link.offset().left + link.width()));
+              if (gap < 2) {
+                e$(part).find('.category-icon').remove();
               }
             }
-            // body...
-          });
+          }
         }
       });
     });
@@ -8140,6 +8030,17 @@ kolhazmanFrontOverlay = function (parts, url) {
     }
   };
 };
+kolhazmanFrontOverlay.prototype = Object.create(PageOverlay.prototype);
+kolhazmanFrontOverlay.prototype.constructor = kolhazmanFrontOverlay;
+
+////*********************************************************************
+////*********************************************************************
+////*********************************************************************
+////*********************************************************************
+////*********************************************************************
+////*********************************************************************
+
+
 kolhazmanOverlay = function (url, subtitle, bodytext) {
   e$('html').addClass('www-kolhazman-co-il');
   this.url = url.toLowerCase();
@@ -8148,7 +8049,6 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
   this.paragraphs = e$(bodytext).find('p').toArray().concat(subtitle);
   this.interacted = false;
   this.userAnswered = false;
-  PageOverlay.call(this);
   this.settings = overlay_settings['kolhazman'][document.englishonConfig.media];
   //this.tutorial_selector = this.settings['pin-tutotial-article'];
   this.pageType = 'article';
@@ -8206,13 +8106,8 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
     this.limit = this.getQuestionQuota();
     return backend.getArticle(this.url, this.limit).then(function (questions) {
       mixpanel.track('fetch questions. ' + document.overlay.url);
-      if (!document.englishonConfig.editor && !questions.length && window.localStorage.getItem('show_quiz_tutorial')) {
-        //e$('.eo-button').off('click', EnglishOnButton.showMainMenu);
-        //CAREFUTL DONT PUSH!!!!!!!
-        //this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS_ARTICLE);
-      }
       this.questions = questions;
-      console.log("Num questions: " + questions.length);
+      console.log("**************************define injector!!!!Num questions: " + questions.length);
       this.injector = new Injector(this.paragraphs);
       this.injector.setQuestions(questions);
       return questions;
@@ -8224,10 +8119,17 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
     }
     this.showQuestions();
     PageOverlay.prototype.powerOn.call(this);
-    document.questions_promise.resolve();
     if (document.eo_user && e$('.eo-expired').length) {
       document.eo_user.showLiveActions();
     }
+    if (window.localStorage.getItem('show_quiz_tutorial')) {
+      setTimeout(function () {
+        document.eoDialogs.hideDialogs();
+        Tour.quizTutorial();
+        document.tour.start();
+      }, 2000);
+    }
+    document.questions_promise.resolve();
   };
   this.powerOff = function () {
     this.hideQuestions();
@@ -8236,6 +8138,10 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
     }
   };
 };
+
+kolhazmanOverlay.prototype = Object.create(PageOverlay.prototype);
+kolhazmanOverlay.prototype.constructor = kolhazmanOverlay;
+
 ShturemFrontpageOverlay = function (parts, pageType) {
   this.parts = {};
   this.interacted = false;
@@ -8709,9 +8615,7 @@ var kolhazmanFrontScraper = function () {
   this.scrape = function () {
     var parts = {};
     e$('.post').each(function (i, para) {
-      if (!e$(para).find('.media-heading').length) {
-        return;
-      }
+      //if (!e$(para).find('.media-heading').length){return;}
       if (e$(para).find('a').length) {
         var url = e$(para).find('a')[0].href;
       } else {
@@ -8900,12 +8804,70 @@ var Speaker = new function () {
     audioSourceNode.start();
   };
 }();
-
-// var context = AudioContext();
-// source= context.createBufferSource();
-// context.nodes.push(source);
-// source.buffer = Audiobuffer;
-// source.playbackRate.value = 1.5;
+var Recorder = new function () {
+  var onSuccess = function (stream) {
+    //var record = e$('.eo-record');
+    //var stop = e$('.stop');
+    //var soundClips = e$('.sound-clips');
+    document.mediaRecorder = new MediaRecorder(stream);
+    var chunks = [];
+    document.mediaRecorder.ondataavailable = function (e) {
+      console.log('on data available');
+      chunks.push(e.data);
+    };
+    stop.onclick = function () {
+      mediaRecorder.stop();
+      console.log(mediaRecorder.state);
+      console.log("recorder stopped");
+      record.style.background = "";
+      record.style.color = "";
+    };
+    document.mediaRecorder.onstop = function (e) {
+      console.log("recorder stopped");
+      var clipName = prompt('Enter a name for your sound clip');
+      var clipContainer = document.createElement('article');
+      var clipLabel = document.createElement('p');
+      var audio = document.createElement('audio');
+      var deleteButton = document.createElement('button');
+      clipContainer.classList.add('clip');
+      audio.setAttribute('controls', '');
+      deleteButton.innerHTML = "Delete";
+      clipLabel.innerHTML = clipName;
+      clipContainer.appendChild(audio);
+      clipContainer.appendChild(clipLabel);
+      clipContainer.appendChild(deleteButton);
+      soundClips.appendChild(clipContainer);
+      var blob = new Blob(chunks, { 'type': 'audio/ogg; codecs=opus' });
+      chunks = [];
+      var audioURL = window.URL.createObjectURL(blob);
+      audio.src = audioURL;
+      deleteButton.onclick = function (e) {
+        var evtTgt = e.target;
+        evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
+      };
+    };
+  };
+  var onError = function (err) {
+    console.log('The following gUM error occured: ' + err);
+    var stream = new MediaStream();
+    document.mediaRecorder = new MediaRecorder(stream);
+    document.mediaRecorder.ondataavailable = function (e) {
+      console.log('on data available');
+      chunks.push(e.data);
+    };
+  };
+  //Finally for this section, we set up the basic gUM structure:
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    console.log('getUserMedia supported.');
+    navigator.mediaDevices.getUserMedia(
+    // constraints - only audio needed for this app
+    {
+      audio: true
+    }).then(onSuccess, onError);
+  } else {
+    console.log('getUserMedia not supported on your browser!');
+  }
+}();
 //
 window.englishon_chat = function () {
   var fc_CSS = document.createElement('link');fc_CSS.setAttribute('rel', 'stylesheet');var fc_isSecured = window.location && window.location.protocol == 'https:';var fc_lang = document.getElementsByTagName('html')[0].getAttribute('lang');var fc_rtlLanguages = ['ar', 'he'];var fc_rtlSuffix = fc_rtlLanguages.indexOf(fc_lang) >= 0 ? '-rtl' : '';fc_CSS.setAttribute('type', 'text/css');fc_CSS.setAttribute('href', (fc_isSecured ? 'https://d36mpcpuzc4ztk.cloudfront.net' : 'http://assets1.chat.freshdesk.com') + '/css/visitor' + fc_rtlSuffix + '.css');document.getElementsByTagName('head')[0].appendChild(fc_CSS);var fc_JS = document.createElement('script');fc_JS.type = 'text/javascript';fc_JS.defer = true;fc_JS.src = (fc_isSecured ? 'https://d36mpcpuzc4ztk.cloudfront.net' : 'http://assets.chat.freshdesk.com') + '/js/visitor.js';(document.body ? document.body : document.getElementsByTagName('head')[0]).appendChild(fc_JS);window.livechat_setting = 'eyJ3aWRnZXRfc2l0ZV91cmwiOiJlbmdsaXNob24uZnJlc2hkZXNrLmNvbSIsInByb2R1Y3RfaWQiOm51bGwsIm5hbWUiOiJlbmdsaXNob24iLCJ3aWRnZXRfZXh0ZXJuYWxfaWQiOm51bGwsIndpZGdldF9pZCI6ImVjNGQ3MzZkLTIxMTctNGRiNi1iMjAwLTkyMmIyODlhMjk0YiIsInNob3dfb25fcG9ydGFsIjpmYWxzZSwicG9ydGFsX2xvZ2luX3JlcXVpcmVkIjpmYWxzZSwibGFuZ3VhZ2UiOiJlbiIsInRpbWV6b25lIjoiRWFzdGVybiBUaW1lIChVUyAmIENhbmFkYSkiLCJpZCI6MzMwMDAwMjUyNzksIm1haW5fd2lkZ2V0IjoxLCJmY19pZCI6IjZiODQyYjkxOTE4Zjg0MGNmZWEzOGEyYjc4NjY3MjhiIiwic2hvdyI6MSwicmVxdWlyZWQiOjIsImhlbHBkZXNrbmFtZSI6ImVuZ2xpc2hvbiIsIm5hbWVfbGFiZWwiOiJOYW1lIiwibWVzc2FnZV9sYWJlbCI6Ik1lc3NhZ2UiLCJwaG9uZV9sYWJlbCI6IlBob25lIiwidGV4dGZpZWxkX2xhYmVsIjoiVGV4dGZpZWxkIiwiZHJvcGRvd25fbGFiZWwiOiJEcm9wZG93biIsIndlYnVybCI6ImVuZ2xpc2hvbi5mcmVzaGRlc2suY29tIiwibm9kZXVybCI6ImNoYXQuZnJlc2hkZXNrLmNvbSIsImRlYnVnIjoxLCJtZSI6Ik1lIiwiZXhwaXJ5IjoxNTA0Njk3NTQxMDAwLCJlbnZpcm9ubWVudCI6InByb2R1Y3Rpb24iLCJlbmRfY2hhdF90aGFua19tc2ciOiJUaGFuayB5b3UhISEiLCJlbmRfY2hhdF9lbmRfdGl0bGUiOiJFbmQiLCJlbmRfY2hhdF9jYW5jZWxfdGl0bGUiOiJDYW5jZWwiLCJzaXRlX2lkIjoiNmI4NDJiOTE5MThmODQwY2ZlYTM4YTJiNzg2NjcyOGIiLCJhY3RpdmUiOjEsInJvdXRpbmciOm51bGwsInByZWNoYXRfZm9ybSI6MSwiYnVzaW5lc3NfY2FsZW5kYXIiOm51bGwsInByb2FjdGl2ZV9jaGF0IjowLCJwcm9hY3RpdmVfdGltZSI6bnVsbCwic2l0ZV91cmwiOiJlbmdsaXNob24uZnJlc2hkZXNrLmNvbSIsImV4dGVybmFsX2lkIjpudWxsLCJkZWxldGVkIjowLCJtb2JpbGUiOjEsImFjY291bnRfaWQiOm51bGwsImNyZWF0ZWRfYXQiOiIyMDE3LTA4LTA2VDExOjM0OjE3LjAwMFoiLCJ1cGRhdGVkX2F0IjoiMjAxNy0wOC0wNlQxMzoyMTo1Mi4wMDBaIiwiY2JEZWZhdWx0TWVzc2FnZXMiOnsiY29icm93c2luZ19zdGFydF9tc2ciOiJZb3VyIHNjcmVlbnNoYXJlIHNlc3Npb24gaGFzIHN0YXJ0ZWQiLCJjb2Jyb3dzaW5nX3N0b3BfbXNnIjoiWW91ciBzY3JlZW5zaGFyaW5nIHNlc3Npb24gaGFzIGVuZGVkIiwiY29icm93c2luZ19kZW55X21zZyI6IllvdXIgcmVxdWVzdCB3YXMgZGVjbGluZWQiLCJjb2Jyb3dzaW5nX2FnZW50X2J1c3kiOiJBZ2VudCBpcyBpbiBzY3JlZW4gc2hhcmUgc2Vzc2lvbiB3aXRoIGN1c3RvbWVyIiwiY29icm93c2luZ192aWV3aW5nX3NjcmVlbiI6IllvdSBhcmUgdmlld2luZyB0aGUgdmlzaXRvcuKAmXMgc2NyZWVuIiwiY29icm93c2luZ19jb250cm9sbGluZ19zY3JlZW4iOiJZb3UgaGF2ZSBhY2Nlc3MgdG8gdmlzaXRvcuKAmXMgc2NyZWVuLiIsImNvYnJvd3NpbmdfcmVxdWVzdF9jb250cm9sIjoiUmVxdWVzdCB2aXNpdG9yIGZvciBzY3JlZW4gYWNjZXNzICIsImNvYnJvd3NpbmdfZ2l2ZV92aXNpdG9yX2NvbnRyb2wiOiJHaXZlIGFjY2VzcyBiYWNrIHRvIHZpc2l0b3IgIiwiY29icm93c2luZ19zdG9wX3JlcXVlc3QiOiJFbmQgeW91ciBzY3JlZW5zaGFyaW5nIHNlc3Npb24gIiwiY29icm93c2luZ19yZXF1ZXN0X2NvbnRyb2xfcmVqZWN0ZWQiOiJZb3VyIHJlcXVlc3Qgd2FzIGRlY2xpbmVkICIsImNvYnJvd3NpbmdfY2FuY2VsX3Zpc2l0b3JfbXNnIjoiU2NyZWVuc2hhcmluZyBpcyBjdXJyZW50bHkgdW5hdmFpbGFibGUgIiwiY29icm93c2luZ19hZ2VudF9yZXF1ZXN0X2NvbnRyb2wiOiJBZ2VudCBpcyByZXF1ZXN0aW5nIGFjY2VzcyB0byB5b3VyIHNjcmVlbiAiLCJjYl92aWV3aW5nX3NjcmVlbl92aSI6IkFnZW50IGNhbiB2aWV3IHlvdXIgc2NyZWVuICIsImNiX2NvbnRyb2xsaW5nX3NjcmVlbl92aSI6IkFnZW50IGhhcyBhY2Nlc3MgdG8geW91ciBzY3JlZW4gIiwiY2Jfdmlld19tb2RlX3N1YnRleHQiOiJZb3VyIGFjY2VzcyB0byB0aGUgc2NyZWVuIGhhcyBiZWVuIHdpdGhkcmF3biAiLCJjYl9naXZlX2NvbnRyb2xfdmkiOiJBbGxvdyBhZ2VudCB0byBhY2Nlc3MgeW91ciBzY3JlZW4gIiwiY2JfdmlzaXRvcl9zZXNzaW9uX3JlcXVlc3QiOiJBZ2VudCBzZWVrcyBhY2Nlc3MgdG8geW91ciBzY3JlZW4gIn19';
@@ -8979,10 +8941,9 @@ Tour = new function () {
       e$('.contento_Container').hide(); //hide the other banner area in actualic
     }
     if (!e$('.eo-question').length) {
-      window.localStorage.setItem('show_quiz_tutorial', true);
       var dir = document.MESSAGES[document.englishonConfig.siteLanguage]['DIRECTION'];
       var message = document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS;
-      no_questions_dlg = e$('<div>').addClass('no_questions_dlg ' + dir).html(message + '<img src=' + staticUrl('img/button-logo.svg') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
+      no_questions_dlg = e$('<div>').addClass('no_questions_dlg ' + dir).html(message + '<img src=' + staticUrl('img/button-logo-3d.png') + ' class = "no-questions-dlg-icon"/>').dialog({ auto_open: true, modal: true });
       e$('.no_questions_dlg').addClass(dir);
       steps = [];
       this.initTutorial(steps);
@@ -9201,7 +9162,7 @@ Tour = new function () {
 var step = function (attachTo, title, text, id, scroll_value = 0, advanceOn = null) {
   this.id = id;
   this.attachTo = attachTo;
-  this.title = '<img src=' + staticUrl('img/menu-logotype.svg') + ' class = "tutorial-logo"/><img src=' + staticUrl('img/button-logo.svg') + ' class = "tutorial-icon"/>';
+  this.title = '<img src=' + staticUrl('img/menu-logotype.svg') + ' class = "tutorial-logo"/><img src=' + staticUrl('img/button-logo-3d.png') + ' class = "tutorial-icon"/>';
   this.text = text;
   this.advanceOn = advanceOn;
   this.scroll_value = scroll_value;
@@ -9216,7 +9177,7 @@ document.resources_promise = e$.Deferred();
 document.loaded_promise = e$.Deferred();
 document.questions_promise = e$.Deferred();
 document.dic_promise = e$.Deferred();
-//document.show_signin_tutorial = e$.Deferred();
+
 function englishon() {
   if (e$('#developement-only-version').length) {
     if (e$("[cls='development-local-only']").length) {
@@ -9233,6 +9194,7 @@ function englishon() {
       return 'http://www.englishon.org/v1/' + resource;
     };
   }
+
   //function to retriave info about the browser
   browserInfo = function () {
     var ua = navigator.userAgent,
@@ -9250,30 +9212,17 @@ function englishon() {
     if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
     return { 'browser': M[0], 'version': M[1] };
   }();
-  document.browserInfo = browserInfo;
-  var check_media = function () {
+  media = function () {
     if (window.matchMedia("(min-width:1050px)").matches) return 'desktop';
     return 'mobile';
-  };
-  var media = check_media();
-  //Restrict none chrome browsers or chrome versions older than 49
-  if (browserInfo.browser != 'Chrome')
-    //&& (browserInfo.browser != 'Firefox' || media != 'desktop')
-    {
-      console.log('BROWSER NOT SUPPORTED.');
-      return;
-    }
-  //THIS LINE IS TEMP
-  /* if (window.location.host == 'actualic.co.il' &&
-     media != 'desktop' &&
-     !e$('#developement-only-version').length) {
-     return;
-   } */
-  /*   if (window.location.host == 'actualic.co.il' &&
-      media != 'desktop' &&
-      decodeURIComponent(window.location.pathname)!= '/רפואת-ילדים-עולם-ומלואו/') {
-      return;
-    }*/
+  }();
+  //Block none chrome browsers 
+  //a check for the browser rendering engine required too, because in iphone the browser name is not detecting as 'Chrome'
+  if (browserInfo.browser != 'Chrome' && navigator.userAgent.indexOf('AppleWebKit') == -1) {
+    console.log('BROWSER NOT SUPPORTED.');
+    return;
+  }
+
   sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il'];
   if (sites.indexOf(window.location.host) == -1) {
     return;
@@ -9298,6 +9247,11 @@ function englishon() {
     return;
   }
   document.__englishon__ = true;
+  //temp line,the server didn't return 'language' after not accepted terms for a while, 
+  //so the client may save a wrong siteLanguage
+  if (localStorage.getItem('siteLanguage') == 'undefined') {
+    localStorage.removeItem('siteLanguage');
+  }
   var defaults = {
     'token': null,
     'backendUrl': DEFAULT_BACKEND_URL,
@@ -9310,15 +9264,13 @@ function englishon() {
     'isUser': false,
     'siteLanguage': I18N.SITE_LANGUAGE,
     'media': media,
-    'email': undefined
+    'email': undefined,
+    'vocabularyOrder': 'alphabet'
   };
   // Store
   configStorage.get(defaults).then(function (config) {
     document.englishonConfig = config;
     e$('body').addClass('eo-language-' + config.targetLanguage);
-    if (config.enableTutorial) {
-      startTutorial();
-    }
     if (document.englishonConfig.isUser) {
       var auth = new Authenticator(config.backendUrl);
       return auth.login(config.token).then(function (token) {
@@ -9340,28 +9292,7 @@ function englishon() {
     }
   });
 }
-var startTutorial = function () {
-  // e$('body').addClass('eo-tutorial').addClass('eo-tutorial-1');
-  // var onPickLanguage = function() {
-  //   e$('.eo-language_picker-option').off('click', onPickLanguage);
-  //   e$('body').removeClass('eo-tutorial-1').addClass('eo-tutorial-2');
-  //   // in case questions are still hidden, keep trying
-  //   var timer = setInterval(function() {
-  //     var questions = e$('.eo-question');
-  //     if (questions.length > 0) {
-  //       questions.first().addClass('eo-first_question');
-  //       var onOpenQuestion = function() {
-  //         e$('.eo-hint').off('click', onOpenQuestion);
-  //         e$('body').removeClass('eo-tutorial-2').removeClass('eo-tutorial');
-  //         configStorage.set({ enableTutorial: false });
-  //       };
-  //       e$('.eo-hint').click(onOpenQuestion);
-  //       clearInterval(timer);
-  //     }
-  //   }, 100);
-  // };
-  // e$('.eo-language_picker-option').click(onPickLanguage);
-};
+
 // **********
 // Dictionary
 // **********
@@ -9374,39 +9305,37 @@ function languageOf(char) {
   if (char >= 1488 && char <= 1514) return 'he';
 }
 
-function parseDictionary(data) {
-  var dict = buckets.MultiDictionary();
-  var lines = data.split('\r\n');
-  e$(lines).each(function (ix, line) {
-    var parts = line.split(' ').map(function (part) {
-      return part.trim().replace('_', ' ');
-    });
-    var heb = [];
-    var eng = [];
-    e$(parts).each(function (ix, part) {
-      if (part === '') {
-        // do nothing, there was a bunch of adjacent whitespace chars.
-      } else {
-        var lang = languageOf(part.charCodeAt(0));
-        if (lang === 'en') eng.push(part);
-        if (lang === 'he') heb.push(part);
-      }
-    });
-    e$(heb).each(function (ix, h) {
-      e$(eng).each(function (jx, e) {
-        dict.set(h, e);
-        dict.set(e, h);
-      });
-    });
-  });
-  return dict;
-}
 // this line must be last!
 e$(englishon);
 //
 // ******
 // Button
 // ******
+e$.fn.extend({
+  toggleText: function (a, b) {
+    if (this.text() != a && this.text() != b) {
+      this.text(a);
+    } else if (this.text() == a) {
+      this.text(b);
+    } else if (this.text() == b) {
+      this.text(a);
+    }
+    return this;
+  },
+  //for toggle text which containing html entities
+  toggleHtml: function (a, b) {
+    a = a.replaceAll('_', '&nbsp;');
+    if (b) b = b.replaceAll('_', '&nbsp;');
+    if (this.html() != a && this.html() != b) {
+      this.html(a);
+    } else if (this.html() == a) {
+      this.html(b);
+    } else if (this.html() == b) {
+      this.html(a);
+    }
+    return this;
+  }
+});
 String.prototype.replaceAll = function (search, replacement) {
   var target = this;
   return target.replace(new RegExp(search, 'g'), replacement);
@@ -9420,21 +9349,23 @@ window.setIntervalX = function (name, callback, delay, repetitions) {
     }
   }, delay);
 };
+language_map = {
+  'en': 'english',
+  'eng': 'english',
+  'he': 'hebrew',
+  'heb': 'hebrew',
+  'english': 'english',
+  'hebrew': 'hebrew'
+};
 document.playMovie = function () {
-  if (document.englishonConfig.media === 'desktop') {
-    var valx = (e$(window).width() - e$('#demo_video').css('width').slice(0, -2)) / 2;
-    var valy = (e$(window).height() - e$('#demo_video').css('height').slice(0, -2)) / 2;
-    e$('#demo_video').css({ left: valx, top: valy });
-    e$('.eo-close.close-movie').css({ left: valx + Number(e$('#demo_video').css('width').slice(0, -2)) - 29, top: valy + 15 });
-  }
   e$('#eo-movie').removeClass('hidden');
   document.getElementById('demo_video').play();
 };
 document.firstTimeUser = function () {
-  configStorage.set({ 'isUser': true, 'isActive': true });
-  window.localStorage.setItem('show_quiz_tutorial', true);
-  //window.localStorage.setItem('show_progress_tutorial', true);
-  window.location.reload();
+  configStorage.set({ 'isUser': true, 'isActive': true }).then(function () {
+    window.localStorage.setItem('show_quiz_tutorial', true);
+    window.location.reload();
+  });
 };
 var EnglishOnButton = new function () {
   this.showMainMenu = function (e) {
@@ -9446,22 +9377,21 @@ var EnglishOnButton = new function () {
     e$('#eo-menu').removeClass('hidden');
     e$('#eo-area-container').removeClass('hidden');
     window.history.pushState({ 'elementToShow': 'eo-menu' }, '');
-    e$(document).mouseup(function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      var button = e$('.eo-button');
-      if (button.is(e.target)) return;
-      if (e$('[data-id="welcome_1"]').hasClass('shepherd-open')) return;
-      if (!e$(e.target).hasClass('eo-area') && !e$(e.target).parents().hasClass('eo-area')) {
-        document.eoDialogs.hideDialogs(0);
-        window.history.pushState({ 'elementToShow': 'page' }, '');
-        e$(document).off('mouseup');
-      }
-    });
+    e$(document).on('mouseup', EnglishOnButton.hideMainMenu);
+  };
+  this.hideMainMenu = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var button = e$('.eo-button');
+    if (button.is(e.target)) return;
+    if (!e$(e.target).hasClass('eo-area') && !e$(e.target).parents().hasClass('eo-area')) {
+      document.eoDialogs.hideDialogs(0);
+      window.history.pushState({ 'elementToShow': 'page' }, '');
+      e$(document).off('mouseup', this.hideMainMenu);
+    }
   };
   this.currentState = 'eo-button-on';
   this.element = function () {
-    //return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo')).append(e$('<div>').addClass('registered_symbol').html('&#174;'));
     return e$('<div>').addClass('eo-button').append(e$('<div>').addClass('eo-icon').addClass(this.currentState)).append(e$('<div>').addClass('eo-logo')).append(e$('<div>').addClass('registered_symbol').html('&#174;'));
   };
   this.changeState = function (state) {
@@ -9487,14 +9417,13 @@ var EnglishOnButton = new function () {
 // ****
 var EnglishOnDialogs = function () {
   this.displayMessage = function (msg, element) {
-    //element.text(msg).addClass('ui-state-highlight').parent().removeClass('hidden');
     element.text(msg).parent().removeClass('hidden');
   };
   this.hideDialogs = function (milliseconds) {
     e$('#eo-area-container').addClass('hidden');
     e$('.eo-area').addClass('hidden');
     e$('.eo-inner-area').addClass('hidden');
-    e$('.eo-message').text('').removeClass('ui-state-highlight').parent().addClass('hidden');
+    e$('.eo-message').text('').parent().addClass('hidden');
     if (document.tour) {
       document.tour.hide();
     }
@@ -9502,15 +9431,12 @@ var EnglishOnDialogs = function () {
   this.toggleDialog = function (element, action) {
     this.hideDialogs(0);
     e$('#eo-area-container').removeClass('hidden');
-    e$('#eo-menu').removeClass('hidden'); //becouse it serves as container, giving the header and footer
+    e$('#eo-menu').removeClass('hidden'); //Serves as container, giving the header and footer
     var elementObj = e$('#' + element);
     var elementsArray = [elementObj[0]];
-    if (elementObj.parent().hasClass('eo-area')) {
-      //case of partial element
-      elementObj.parent().find('.eo-inner-area').addClass('hidden'); //hide other parts of element
-      var elementParent = elementObj.parent()[0];
-      elementsArray = [elementObj[0], elementParent]; //looking after a normal syntax... e$([]).add doesn't work
-    };
+    elementObj.parent().find('.eo-inner-area').addClass('hidden'); //hide other parts of element
+    var elementParent = elementObj.parent()[0];
+    elementsArray = [elementObj[0], elementParent];
     e$(elementsArray).toggleClass('hidden', action == 'hide');
   };
   this.toggleDialogTrigger = function (e) {
@@ -9530,11 +9456,13 @@ var EnglishOnDialogs = function () {
 // Menu
 // ****
 var EnglishOnMenu = function () {
+  // ****
+  // Function section
+  // ****
   this.bindEvents = function () {
     // ***********************
     // Register Event Handlers
     // ***********************
-    e$('#eo-editor-btn').off('click');
     e$('#eo-editor-btn').on('click', function (event) {
       document.menu.powerOn();
       document.overlay.hideQuestions();
@@ -9545,7 +9473,6 @@ var EnglishOnMenu = function () {
       // (for now. this should be fixed.)
       document.overlay.hideButtons();
       document._editor.fetchQuestions().then(function () {
-        console.log('------------------------------questions for editor');
         document._editor.highlight();
       });
     });
@@ -9553,12 +9480,12 @@ var EnglishOnMenu = function () {
     e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
     e$('#option-dlg-signin').data('elementToShowOnClick', 'login-main');
     e$('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
-    if (!localStorage.getItem('email')) {
+    if (!document.englishonConfig.email) {
       e$('#eo-account-name').data('elementToShowOnClick', 'login-main');
-      uiLoginActions('guest');
+      document.menu.uiLoginActions('guest');
     } else {
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
-      uiLoginActions('logged');
+      document.menu.uiLoginActions('logged');
     }
     e$('#eo-contact').on('click', function () {
       clearInterval(hide_chat);
@@ -9566,6 +9493,7 @@ var EnglishOnMenu = function () {
       e$('#lc_chat_title').click();
     });
     e$('.languages_picker .available').on('click', function (e) {
+      document.menu.powerOn();
       e$(e.target).parents().find('.available').addClass('checked-language');
       if (!document.englishonConfig.isUser) {
         document.menu.powerOn();
@@ -9573,18 +9501,14 @@ var EnglishOnMenu = function () {
       }
     });
     e$('#eo-power-switch').on('click', this.togglePower);
-    e$('.languages_picker .available').on('click', this.powerOn);
-    e$('#eo-speaker-res').on('click', function () {
+    e$('#eo-speaker').on('click', function () {
       toggleSound();
       document.menu.volume.syncWithSpeaker();
     });
     e$('.eo-close.close-dialog').on('click', document.eoDialogs.hideDialogs);
     e$('#signout_btn').on('click', this.signout);
     e$('#eo-account-name').on('click', document.eoDialogs.toggleDialogTrigger);
-    e$('#options-button').on('click', function (e) {
-      document.eoDialogs.toggleDialogTrigger(e);
-      e$('#options-button').toggleClass('open');
-    });
+    e$('#options-button').on('click', document.eoDialogs.toggleDialogTrigger);
     e$('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger);
     e$('#option-dlg-signin').on('click', document.eoDialogs.toggleDialogTrigger);
     e$('#progress-tutorial-btn').on('click', function () {
@@ -9610,48 +9534,21 @@ var EnglishOnMenu = function () {
     });
     e$('#eo-login-password').on('keydown', function (e) {
       if (e.keyCode == 13) {
-        e$('#eo-mail-login-btn').click();
+        document.menu.loginByMail();
+        //e$('#eo-mail-login-btn').click();
       }
     });
     e$('#eo-mail-login-btn').on('click', this.loginByMail.bind(this));
     e$('#eo-login-email').on('click', function (e) {
-      //causing the keyboard to open 
+      //causing the keyboard to open on mobile 
       e.target.focus();
-      //Shturem is missing <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      //This is causing chrome to compute the body width as 980px anycase, in inspector too
     });
   };
-  e$.fn.extend({
-    toggleText: function (a, b) {
-      if (this.text() != a && this.text() != b) {
-        this.text(a);
-      } else if (this.text() == a) {
-        this.text(b);
-      } else if (this.text() == b) {
-        this.text(a);
-      }
-      return this;
-    },
-    //for toggle text which containing html entities
-    toggleHtml: function (a, b) {
-      a = a.replaceAll('_', '&nbsp;');
-      if (b) b = b.replaceAll('_', '&nbsp;');
-      if (this.html() != a && this.html() != b) {
-        this.html(a);
-      } else if (this.html() == a) {
-        this.html(b);
-      } else if (this.html() == b) {
-        this.html(a);
-      }
-      return this;
-    }
-  });
   this.displayMenuMessages = function () {
     switch_text = JSON.parse(document.englishonConfig.isActive) ? 'On' : 'Off';
     e$('#eo-power-switch-text').text(switch_text);
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
-    e$('#eo-picker-tittle').css({ direction: messages.DIRECTION });
-    if (!localStorage.getItem('email')) e$('#eo-account-name').text(messages.MENU_TITLE);
+    if (!document.englishonConfig.email) e$('#eo-account-name').text(messages.MENU_TITLE);
     e$('#eo-language_header').text(messages.LANGUAGES_PICKER_TITLE);
     e$('#eo-help').find('a').text(messages.HELP);
     e$('#eo-contact').find('a').text(messages.CONTACT);
@@ -9668,15 +9565,6 @@ var EnglishOnMenu = function () {
     e$('#get-started').text(messages.GET_STARTED);
     e$('#signout_btn').text(messages.SIGN_OUT);
   };
-  setIntervalX('hide_chat', function () {
-    e$('#lc_chat_layout').hide();
-  }, 500, 20);
-  document.overlay.insertContent(e$(document.MENU_HTML));
-  document.overlay.insertContent(e$(document.LOGIN_DLG));
-  document.overlay.insertContent(e$(document.OPTIONS_DLG));
-  document.overlay.insertContent(e$(document.live_actions));
-  e$('#demo_video').find('source').attr('src', staticUrl('videos/demo_v2.mp4'));
-  e$('.eo-area, #eo-live').addClass(document.englishonConfig.siteLanguage);
   /* returns a toggler function that both updates `configEntry`
      and calls the given `toggle()` function, useful when you want
      your saved configuration to always match what's on screen
@@ -9701,57 +9589,48 @@ var EnglishOnMenu = function () {
     var email_msg = e$('#login-email-msg');
     var password_msg = e$('#login-password-msg');
     var auth = new Authenticator(document.englishonConfig.backendUrl);
-    if (auth.validate({ email: email, password: password, email_msg: email_msg, password_msg: password_msg })) {
-      auth.register({ email: email.val(), password: password.val(), token: document.englishonBackend.token }).then(function (res) {
-        if (res.status == 'verification required') {
-          location = document.englishonConfig.backendUrl + '/tokens/verifyEmail/' + document.englishonConfig.siteLanguage + '/';
-          //auth.verifiyEmail(email);
-          //verify_location = document.englishonConfig.backendUrl+'/tokens/verifyEmail/'+document.englishonConfig.siteLanguage+'/';
-          //var redirectWindow = window.open(document.englishonConfig.backendUrl+'/tokens/verifyEmail/'+document.englishonConfig.siteLanguage+'/', '_blank');
-          //var redirectWindow = window.open('http://google.com', '_blank');
-          //redirectWindow.location;
-          //var url = "http://google.com";
-          //e$("<a>").attr("href", url).attr("target", "_blank")[0].click();
-        }
-        if (res.status == 'error') {
-          document.eoDialogs.displayMessage(res.message, e$('#login-password-msg'));
-          return;
-        }
-        configStorage.set({ email: res.email, token: res.token, 'eo-user-name': e$('#eo-login-email').val() }).then(function () {
-          document.link_flag = true;
-          document.englishonBackend.token = res.token;
-          e$('#eo-account-area').removeClass('guest');
-          e$('#eo-dlg-login').addClass('valid');
-          e$('#eo-account-name').text(email.val());
-          e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
-          e$('body').addClass('logged').removeClass('guest');
-          e$('#eo-account-img').addClass('no-image');
-          if (res.status == 'logged_in') {
-            document.eoDialogs.hideDialogs(1000);
-          } else if (res.status == 'terms_not_accepted') {
-            document.eoDialogs.hideDialogs(0);
-            document.overlay.showTermsDialog(document.menu.powerOn);
-            e$('.category-icon').remove();
-            return;
-          }
-          //currently it can't happen in login, becuase click on button is turning on englishon if it's none user
-          if (!document.englishonConfig.isUser) {
-            document.firstTimeUser();
-          }
-          var TODOAfterFetch = function () {
-            document.eo_user.initial();
-            document.menu.powerOn();
-          };
-          document.overlay.fetchQuestions().then(function () {
-            TODOAfterFetch();
-          }, function (error) {
-            if (error == 'terms_not_accepted') {
-              document.overlay.showTermsDialog(TODOAfterFetch);
-            }
-          });
-        });
-      });
+    if (!auth.validate({ email: email, password: password, email_msg: email_msg, password_msg: password_msg })) {
+      return e$.Deferred().resolve();
     }
+    return auth.register({ email: email.val(), password: password.val(), token: document.englishonConfig.token }).then(function (res) {
+      if (res.status == 'terms_not_accepted') {
+        document.eoDialogs.hideDialogs(0);
+        document.overlay.TermsDialog(res.token);
+        document.overlay.showTermsDialog();
+        e$('.category-icon').remove();
+        return e$.Deferred().resolve();
+      }
+      if (res.status == 'verification required') {
+        location = document.englishonConfig.backendUrl + '/tokens/verifyEmail/' + document.englishonConfig.siteLanguage + '/';
+      }
+      if (res.status == 'error') {
+        document.eoDialogs.displayMessage(res.message, e$('#login-password-msg'));
+        return e$.Deferred().resolve();
+      }
+      var lang = res.language ? res.language : I18N.SITE_LANGUAGE;
+      return configStorage.set({ email: res.email, token: res.token, siteLanguage: language_map[lang], 'eo-user-name': res.email }).then(function () {
+        document.englishonBackend.token = res.token;
+        document.menu.uiLoginActions('logged');
+        document.menu.displayMenuMessages();
+        if (res.status == 'logged_in') {
+          document.eoDialogs.hideDialogs(1000);
+        }
+        //currently it can't happen in login, becuase click on button is turning on englishon if it's none user
+        if (!document.englishonConfig.isUser) {
+          document.firstTimeUser();
+        }
+        document.overlay.fetchQuestions().then(function () {
+          document.eo_user.initial();
+          document.menu.powerOn();
+        }, function (error) {
+          if (error == 'terms_not_accepted') {
+            document.overlay.TermsDialog(document.englishonBackend.token);
+            document.overlay.showTermsDialog();
+          }
+        });
+        return e$.Deferred().resolve();
+      });
+    });
   };
   var toggleSound = toggler('eo-speaker', 'enableSound', Speaker.toggle.bind(Speaker));
   this.togglePower = toggler('eo-active', 'isActive', function (enable) {
@@ -9770,10 +9649,9 @@ var EnglishOnMenu = function () {
     if (!document.englishonConfig.isUser) {
       document.firstTimeUser();
     }
-    console.log('POWER ON#########');
     configStorage.set({ 'isActive': true });
     e$('#eo-power-switch-text').text('On');
-    e$('body').addClass('eo-active', true);
+    e$('body').addClass('eo-active');
     document.overlay.powerOn();
   };
   this.powerOff = function () {
@@ -9788,35 +9666,53 @@ var EnglishOnMenu = function () {
       var popup = e$('#eo-iframe')[0].contentWindow;
       popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
     }
-    localStorage.removeItem('email');
-    localStorage.removeItem('eo-user-name');
-    localStorage.removeItem('editor');
-    document.englishonConfig.email = null;
-    document.menu.powerOff();
-    var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
-    document.englishonConfig.token = null;
-    auth.login(document.englishonConfig.token).then(function (token) {
-      configStorage.set({ token: token }).then(function () {
-        document.signout_promise.resolve();
-        document.englishonBackend.token = token;
-        if (e$('#eo-iframe').length) {
-          //Give englishon the new guest token
-          popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
-        }
-        e$('#eo-account-area').addClass('guest');
-        e$('#eo-account-img').removeAttr('style');
-        e$('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
-        e$('#eo-account-name').data('elementToShowOnClick', 'login-main');
-        message = document.MESSAGES[document.englishonConfig.siteLanguage].SIGN_OUT_FEEDBACK;
-        document.eoDialogs.hideDialogs();
-        e$('body').addClass('guest').removeClass('logged');
-        //prepare questions for guest
-        document.overlay.fetchQuestions().then(function () {
-          document.eo_user.initial();
+    configStorage.set({ 'token': null, 'email': null, 'eo-user-name': null, 'editor': null, 'siteLanguage': null, 'vocabularyOrder': null }).then(function () {
+      document.menu.powerOff();
+      var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
+      auth.login(document.englishonConfig.token).then(function (token) {
+        configStorage.set({ token: token, siteLanguage: I18N.SITE_LANGUAGE, vocabularyOrder: 'alphabet' }).then(function () {
+          document.englishonBackend.token = token;
+          document.signout_promise.resolve();
+          document.menu.displayMenuMessages();
+          if (e$('#eo-iframe').length) {
+            //Give englishon the new guest token
+            popup.postMessage({ token: document.englishonBackend.token }, document.englishonBackend.base);
+          }
+          document.eoDialogs.hideDialogs();
+          document.menu.uiLoginActions('guest');
+          //prepare questions for guest
+          document.overlay.fetchQuestions().then(function () {
+            document.eo_user.initial();
+          });
         });
       });
     });
   };
+  this.uiLoginActions = function (state) {
+    if (state == 'guest') {
+      e$('.eo-account-img').removeAttr('style'); //Remove the image for google user
+      e$('#eo-account-name').data('elementToShowOnClick', 'login-main');
+      e$('body').addClass('guest').removeClass('logged');
+      e$('#eo-account-area').addClass('guest');
+      e$('.eo-account-img').addClass('no-image');
+      e$('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
+      return;
+    }
+    e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
+    e$('#eo-account-area').removeClass('guest');
+    e$('body').addClass('logged').removeClass('guest');
+    e$('#eo-account-name').text(document.englishonConfig.email);
+    e$('.eo-account-img').addClass('no-image');
+  };
+  // ****
+  // Function calls section
+  // ****
+  document.overlay.insertContent(e$(document.MENU_HTML));
+  document.overlay.insertContent(e$(document.LOGIN_DLG));
+  document.overlay.insertContent(e$(document.OPTIONS_DLG));
+  document.overlay.insertContent(e$(document.live_actions));
+  e$('#demo_video').find('source').attr('src', staticUrl('videos/demo_v2.mp4'));
+  e$('.eo-area, #eo-live').addClass(document.englishonConfig.siteLanguage);
   if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') {
     e$('body').addClass('heroku-staging');
   }
@@ -9846,34 +9742,13 @@ var EnglishOnMenu = function () {
       stop: this.changeVolume
     });
   }();
-  //container = e$('#progress-container1');
   this.displayMenuMessages();
-  if (document.englishonConfig.media == 'desktop') {
-    //top left values to display centered dialogs 
-    if (document.englishonConfig.backendUrl == 'http://localhost:8080') {
-      var menuTop = 60;
-    } else {
-      var menuTop = (screen.height - 540) / 2;
-    }
-    e$('#eo-menu').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
-    e$('#eo-dlg-login').css({ top: menuTop + 'px', left: (screen.width - 360) / 2 + 'px' });
-    e$('#eo-dlg-options').css({ top: menuTop + 55 + 'px', left: (screen.width - 360) / 2 + 'px' });
-    //FOR SHTUREM THE LEFT NEED DIFFERENT VALUE. check reason.
-    //e$('#eo-dlg-options').css({ top: menuTop + 55 + 'px', left: (screen.width - 360) / 2 + 1 + 'px' })
-  }
   englishon_chat();
-  var uiLoginActions = function (state) {
-    if (state == 'guest') {
-      e$('body').addClass('guest').removeClass('logged');
-      e$('#eo-account-area').addClass('guest');
-      e$('#eo-account-img').addClass('no-image');
-      e$('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
-    } else {
-      e$('body').addClass('logged').removeClass('guest');
-      e$('#eo-account-name').text(localStorage.getItem('eo-user-name'));
-      e$('#eo-account-img').addClass('no-image');
-    }
-  };
+  //we want the chat to be alive, but invisible. Timeout required because we don't know when it will be inserted to DOM
+  setIntervalX('hide_chat', function () {
+    e$('#lc_chat_layout').hide();
+  }, 500, 20);
+
   if (JSON.parse(document.englishonConfig.editor)) {
     e$('#eo-menu').addClass('menu-editor');
     e$('#editor-row').removeClass('hidden');
@@ -9883,15 +9758,16 @@ var EnglishOnMenu = function () {
   } else {
     e$('#eo-menu').removeClass('menu-editor');
   }
-  var token = encodeURIComponent(document.englishonBackend.token);
+  var token = encodeURIComponent(document.englishonConfig.token);
   if (document.englishonConfig.isUser) {
     var google_login = '<iframe src=' + document.englishonBackend.base + '/tokens/google-login/?token=' + token + ' id="eo-iframe"><p>Your browser does not support iframes.</p></iframe>';
     e$('#google-iframe').append(google_login);
   }
   e$('#eo-iframe').on('load', function () {
     var popup = this.contentWindow;
-    popup.postMessage({ token: document.englishonBackend.token, email: document.englishonConfig.email }, document.englishonBackend.base);
+    popup.postMessage({ token: document.englishonConfig.token, email: document.englishonConfig.email }, document.englishonBackend.base);
   });
+  //Detect keyboard opened in mobile, and keep email input in view
   var _originalSize = e$(window).width() + e$(window).height();
   e$(window).resize(function () {
     if (e$(window).width() + e$(window).height() != _originalSize) {
@@ -9900,29 +9776,29 @@ var EnglishOnMenu = function () {
     }
   });
   //i don't know why this line is needed.  
-  window.history.pushState({ 'elementToShow': 'page' }, '');
-  e$(window).on('beforeunload', function (e) {
-    e.preventDefault();
-    if (!document.englishonConfig.email && e$('.eo-answered').length) {
-      //if (true) {
-      timeout = setTimeout(function () {
-        console.log('user leaving the page!');
-        document.show_signin_tutorial = true;
-        document.tutorialInterval = setInterval(function () {
-          console.log('setTimeout----------------');
-          if (document.show_signin_tutorial) {
-            console.log('setTimeout!!!!!!!!!!!!');
-            Tour.signinTutorial();
-            document.tour.start();
-            clearInterval(document.tutorialInterval);
-          }
-        }, 500);
-      }, 1000);
-      return 'prompt user to leave page';
-    }
-  });
-  this.bindEvents();
+  //////////////////window.history.pushState({ 'elementToShow': 'page' }, '');
+  //this.bindEvents();
 };
+// ****
+// Handle window object
+// ****
+e$(window).on('beforeunload', function (e) {
+  e.preventDefault();
+  if (!document.englishonConfig.email && e$('.eo-answered').length) {
+    //if (true) {
+    timeout = setTimeout(function () {
+      document.show_signin_tutorial = true;
+      document.tutorialInterval = setInterval(function () {
+        if (document.show_signin_tutorial) {
+          Tour.signinTutorial();
+          document.tour.start();
+          clearInterval(document.tutorialInterval);
+        }
+      }, 500);
+    }, 1000);
+    return 'prompt user to leave page';
+  }
+});
 e$(function () {
   document.loaded_promise.resolve();
 });
@@ -9969,6 +9845,26 @@ window.pinBanner = function () {
     }();
   }
 };
+window.upgrade = function () {
+  if (navigator.userAgent.indexOf('iPhone') != -1) {
+    return;
+  } //Don't check browser version for iphone
+  if (browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) <= 46 || browserInfo.browser == 'Firefox' && parseInt(browserInfo.version) < 49) {
+    if (browserInfo.browser == "Chrome") {
+      upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";
+    } else if (browserInfo.browser == "Firefox") {
+      upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";
+    }
+    upgrade_dialog = e$('<div id="eo-upgrade-dialog" title="englishON">').append(e$('<div>').addClass('upgrade-dlg').append(e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].UPGRADE_MESSAGE.replace('browswer_name', browserInfo.browser).replace('here', upgrade_link))));
+    upgrade_dialog.dialog({
+      autoOpen: false,
+      modal: true
+    });
+    e$('.eo-button').off('click').on('click', function () {
+      upgrade_dialog.dialog('open');
+    });
+  }
+};
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
   //event to get messageses from englishon backend
   window.addEventListener("message", receiveMessage, false);
@@ -9991,49 +9887,28 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
   e$('body').addClass(scraper.getHost().replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
   document.overlay = scraper.scrape();
   document.overlay.showButtons();
-  //TODO: move to separate function
-  if (browserInfo.browser == "Chrome")
-    //upgrade_link = e$('<a>').attr('href', 'https://www.google.com/chrome/browser/desktop/').text('here');
-    upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";else if (browserInfo.browser == "Firefox") upgrade_link = "<a href='https://www.google.com/chrome/browser/desktop/'>here</a>";
-  upgrade_dialog = e$('<div id="eo-upgrade-dialog" title="englishON">').append(e$('<div>').addClass('upgrade-dlg').append(e$('<div>').html(document.MESSAGES[document.englishonConfig.siteLanguage].UPGRADE_MESSAGE.replace('browswer_name', document.browserInfo.browser).replace('here', upgrade_link))));
-  //upgrade_dialog.insertBefore(e$(e$('table')[0]));
-  document.overlay.insertContent(upgrade_dialog);
-  upgrade_dialog.dialog({
-    autoOpen: false,
-    modal: true
-  });
-  browserInfo = document.browserInfo;
-  if (browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) <= 46 ||
-  //if ((browserInfo.browser == 'Chrome' && parseInt(browserInfo.version) > 46) ||
-  browserInfo.browser == 'Firefox' && parseInt(browserInfo.version) < 49) {
-    e$('.eo-button').off('click').on('click', function () {
-      e$('#eo-upgrade-dialog').dialog('open');
-    });
-  }
+  window.upgrade();
   document.overlay.insertContent(e$(document.TERMS_DLG));
   e$('#eo-dlg-terms').addClass(document.englishonConfig.siteLanguage);
-  document.overlay.TermsDialog();
   document.eoDialogs = new EnglishOnDialogs();
   if (document.englishonConfig.isUser) {
     document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
-    var TODOAfterFetch = function () {
+    document.overlay.fetchQuestions().then(function (questions) {
       document.menu = new EnglishOnMenu();
+      document.menu.bindEvents();
       document.eo_user = new UserInfo(document.englishonConfig.token);
       document.eo_user.initial();
       if (e$('.eo-expired').length) {
         document.eo_user.showLiveActions();
       }
-    };
-    document.overlay.fetchQuestions().then(function (questions) {
-      TODOAfterFetch();
     }, function (error) {
       if (error == 'terms_not_accepted') {
-        document.overlay.showTermsDialog(TODOAfterFetch);
+        document.overlay.TermsDialog(document.englishonConfig.token);
+        document.overlay.showTermsDialog();
       }
     });
   } else {
     document.menu = new EnglishOnMenu();
-    Tour.welcomeTutorial();
   }
 });
 
@@ -10045,43 +9920,67 @@ function receiveMessage(event) {
     return;
   }
   // event.source is popup
+  if (event.data.acceptPopup) {
+    if (!event.data.success) {
+      console.log('google recaptcha verification failed');
+      return;
+    }
+    configStorage.set({ email: event.data.email, token: event.data.token, siteLanguage: language_map[I18N.SITE_LANGUAGE], 'eo-user-name': event.data.email }).then(function () {
+      document.menu.displayMenuMessages();
+      e$('#terms-container').addClass('hidden');
+      e$('#eo-dlg-terms').addClass('hidden');
+      document.englishonBackend.token = event.data.token;
+      document.menu.uiLoginActions('logged');
+      document.overlay.fetchQuestions().then(function () {
+        if (!document.menu) {
+          document.menu = new EnglishOnMenu();
+        }
+        if (!document.eo_user) {
+          document.eo_user = new UserInfo(document.englishonConfig.token);
+        }
+        document.eo_user.initial();
+        document.menu.powerOn();
+      });
+    });
+    return;
+  }
+  //EVENT SOURCE IS GOOGLE LOGIN IFRAME
   if (event.data.message == 'registered by email') {
-    var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
-    auth.linkAccounts(event.data.email, event.data.google_sec_token);
+    var auth = new Authenticator(document.englishonConfig.backendUrl);
+    auth.linkAccounts(event.data.token, event.data.email, event.data.google_sec_token);
     return;
   }
   var django_token = event.data.token;
   var img = event.data.image;
   var email = event.data.email;
   var user_name = event.data.name;
-  e$('#eo-account-img').css("background-image", "url(" + img + ")").removeClass('no-image');
+  var lang = event.data.language ? event.data.language : I18N.SITE_LANGUAGE;
+  e$('.eo-account-img').css("background-image", "url(" + img + ")").removeClass('no-image');
   e$('body').addClass('logged').removeClass('guest');
   e$('#eo-account-name').text(user_name);
   e$('#eo-account-area').removeClass('guest');
   if (!localStorage.getItem('email')) {
     //this is a real login, as google made many 'fake logins'
-    configStorage.set({ email: email, token: django_token, 'eo-user-name': user_name }).then(function () {
+    if (event.data.status == 'terms_not_accepted') {
+      document.eoDialogs.hideDialogs(0);
+      document.overlay.TermsDialog(django_token);
+      document.overlay.showTermsDialog();
+      e$('.category-icon').remove();
+      return;
+    }
+    configStorage.set({ email: email, token: django_token, siteLanguage: language_map[lang], 'eo-user-name': user_name }).then(function () {
+      document.menu.displayMenuMessages();
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
-      if (event.data.status == 'terms_not_accepted') {
-        document.eoDialogs.hideDialogs(0);
-        document.overlay.showTermsDialog(document.menu.powerOn);
-        //todo: use document.powerOff with an 'enable' parameter
-        e$('.category-icon').remove();
-        return;
-      }
       document.englishonBackend.token = django_token;
-      var TODOAfterFetch = function () {
+      document.overlay.fetchQuestions().then(function () {
         document.eo_user.initial();
         document.menu.powerOn();
-      };
-      document.overlay.fetchQuestions().then(function () {
-        TODOAfterFetch();
       }, function (error) {
         if (error == 'terms_not_accepted') {
-          document.overlay.showTermsDialog(TODOAfterFetch);
+          document.TermsDialog(document.englishonConfig.token);
+          document.overlay.showTermsDialog();
         }
       });
-      //localStorage.setItem('email', email);
       document.eoDialogs.hideDialogs(0);
     });
   }
