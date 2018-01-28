@@ -5189,7 +5189,8 @@ var MESSAGES = {
     VERIFY_MESSAGE: 'Please verify your email to finish setting up your EnglishON account.',
     VERIFY_BTN: 'Verify email',
     VERIFY_SENT_HEADER: 'EnglishON Account',
-    VERIFY_SENT_MESSAGE: 'Please verify your email to finish setting up your EnglishON account. We sent a confirmation email to your email. </br>Please click the link in that email to finish setting up your EnglishON account.'
+    VERIFY_SENT_MESSAGE: 'Please verify your email to finish setting up your EnglishON account. We sent a confirmation email to your email. </br>Please click the link in that email to finish setting up your EnglishON account.',
+    UPLOAD_PHOTO: 'Uplad a photo here'
   },
   'hebrew': {
     LANGUAGE: 'hebrew',
@@ -5249,8 +5250,8 @@ var MESSAGES = {
     VERIFY_MESSAGE: 'נא לאשר את כתובת הדוא"ל על מנת להשלים את הרשמתכם לאינגלישון',
     VERIFY_BTN: 'אשר כתובת דוא"ל',
     VERIFY_SENT_HEADER: 'חשבון אינגלישון',
-    VERIFY_SENT_MESSAGE: 'נשלח דוא"ל לחשבונכם. נא ללחוץ על הקישורית בדוא"ל זה להשלמת ההרשמה'
-
+    VERIFY_SENT_MESSAGE: 'נשלח דוא"ל לחשבונכם. נא ללחוץ על הקישורית בדוא"ל זה להשלמת ההרשמה',
+    UPLOAD_PHOTO: 'בחר כאן את תמונתך'
   }
 };
 // Until we have real RTL, it's important not to finish sentences with periods, because they'll align wrong
@@ -5490,6 +5491,9 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
   });
 };
 
+HerokuBackend.prototype.getUserProfile = function (token) {
+  return this.ajax("GET", "/tokens/getUserProfile/");
+};
 HerokuBackend.prototype.updateLanguage = function (language) {
   return this.ajax("POST", "/quiz/updateLanguage/", { language: language });
 };
@@ -7458,6 +7462,22 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
       <div class='eo-site-option' id='hebrew'>עברית</div>\
     </div>\
   </div>\
+  <div id='eo-upload-photo' class='Grid Grid--full eo-inner-area hidden'>\
+    <div class='Grid-cell eo-link-row v-align h-align'>\
+      <div id='upload-line'>upload photo here</div>\
+    </div>\
+    <div class='Grid-cell v-align h-align'>\
+      <div class='circle'>\
+        <!-- User Profile Image --><img class='profile-pic' src='http://cdn.cutestpaw.com/wp-content/uploads/2012/07/l-Wittle-puppy-yawning.jpg'>\
+        <!-- Default Image -->\
+        <!-- <i class='fa fa-user fa-5x'></i> -->\
+        <!-- <div class='avatar-circle'> <span class='initials'></span>--></div>\
+      <div class='p-image'> <i class='fa fa-camera eo-upload-button'></i>\
+        <input class='file-upload eo-upload' type='file' accept='image/*' /> </div>\
+    </div>\
+  </div>\
+</div>\
+</div>\
 </div>";
 //
 document.live_actions = "<div class='hidden' id='eo-live'>\
@@ -9181,20 +9201,26 @@ document.dic_promise = e$.Deferred();
 function englishon() {
   if (e$('#developement-only-version').length) {
     if (e$("[cls='development-local-only']").length) {
+      window.PRONUNCIATION_BUCKET = 'https://s3-eu-west-1.amazonaws.com/localhost.pronunciation/';
+      window.PHOTO_BUCKET = 'https://s3-eu-west-1.amazonaws.com/localhost.photo/';
       window.staticUrl = function (resource) {
         return 'http://localhost:8080/static/ex/' + resource;
       };
     } else {
+      window.PRONUNCIATION_BUCKET = 'https://s3-eu-west-1.amazonaws.com/eo.pronunciation/';
+      window.PHOTO_BUCKET = 'https://s3-eu-west-1.amazonaws.com/eo.photo/';
       window.staticUrl = function (resource) {
         return 'http://www.englishon.org/staging/' + resource;
+        //NOTE: THERE IS NO SEPARATE BUCKET FOR STAGING!
       };
     }
   } else {
     window.staticUrl = function (resource) {
       return 'http://www.englishon.org/v1/' + resource;
+      window.PRONUNCIATION_BUCKET = 'https://s3-eu-west-1.amazonaws.com/eo.pronunciation/';
+      window.PHOTO_BUCKET = 'https://s3-eu-west-1.amazonaws.com/eo.photo/';
     };
   }
-
   //function to retriave info about the browser
   browserInfo = function () {
     var ua = navigator.userAgent,
@@ -9222,13 +9248,11 @@ function englishon() {
     console.log('BROWSER NOT SUPPORTED.');
     return;
   }
-
   sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il'];
   if (sites.indexOf(window.location.host) == -1) {
     return;
   }
   //THESE LINES ARE TEMP
-
   if ((window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') && media != 'desktop') {
     return;
   }
@@ -9238,7 +9262,6 @@ function englishon() {
   // if (window.location.host == 'www.kolhazman.co.il' && !e$('#developement-only-version').length && window.location.pathname!='/241200') {
   //   return;
   // }
-
   //END OF TEMP LINES
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
@@ -9282,7 +9305,10 @@ function englishon() {
     }
   }).then(function (backend) {
     document.englishonBackend = backend;
-    document.resources_promise.resolve();
+    document.englishonBackend.getUserProfile(backend.token).then(function (profile) {
+      configStorage.set({ photo: profile.photo, first: profile.first, last: profile.last });
+      return document.resources_promise.resolve();
+    });
   }).then(function () {
     if (JSON.parse(document.englishonConfig.editor)) {
       return document.englishonBackend.fetchDictionary().then(function (eo_dictionary) {
@@ -9292,7 +9318,6 @@ function englishon() {
     }
   });
 }
-
 // **********
 // Dictionary
 // **********
@@ -9304,7 +9329,6 @@ function languageOf(char) {
   if (char >= 97 && char <= 122) return 'en';
   if (char >= 1488 && char <= 1514) return 'he';
 }
-
 // this line must be last!
 e$(englishon);
 //
@@ -9433,7 +9457,7 @@ var EnglishOnDialogs = function () {
     e$('#eo-area-container').removeClass('hidden');
     e$('#eo-menu').removeClass('hidden'); //Serves as container, giving the header and footer
     var elementObj = e$('#' + element);
-    var elementsArray = [elementObj[0]];
+    //var elementsArray = [elementObj[0]];
     elementObj.parent().find('.eo-inner-area').addClass('hidden'); //hide other parts of element
     var elementParent = elementObj.parent()[0];
     elementsArray = [elementObj[0], elementParent];
@@ -9480,6 +9504,8 @@ var EnglishOnMenu = function () {
     e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
     e$('#option-dlg-signin').data('elementToShowOnClick', 'login-main');
     e$('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
+    e$('.eo-account-img').data('elementToShowOnClick', 'eo-upload-photo');
+    e$('.eo-account-img').find('*').data('elementToShowOnClick', 'eo-upload-photo');
     if (!document.englishonConfig.email) {
       e$('#eo-account-name').data('elementToShowOnClick', 'login-main');
       document.menu.uiLoginActions('guest');
@@ -9543,6 +9569,12 @@ var EnglishOnMenu = function () {
       //causing the keyboard to open on mobile 
       e.target.focus();
     });
+    //e$('.eo-account-img').on('click', document.eoDialogs.toggleDialogTrigger);
+    e$('.eo-account-img').on('click', function (e) {
+      if (document.englishonConfig.email) {
+        document.eoDialogs.toggleDialogTrigger(e);
+      }
+    });
   };
   this.displayMenuMessages = function () {
     switch_text = JSON.parse(document.englishonConfig.isActive) ? 'On' : 'Off';
@@ -9564,6 +9596,7 @@ var EnglishOnMenu = function () {
     e$('#tutorial-btn').text(messages.START_TUTORIAL);
     e$('#get-started').text(messages.GET_STARTED);
     e$('#signout_btn').text(messages.SIGN_OUT);
+    e$('#upload-line').text(messages.UPLOAD_PHOTO);
   };
   /* returns a toggler function that both updates `configEntry`
      and calls the given `toggle()` function, useful when you want
@@ -9666,7 +9699,7 @@ var EnglishOnMenu = function () {
       var popup = e$('#eo-iframe')[0].contentWindow;
       popup.postMessage({ action: 'signout' }, document.englishonBackend.base);
     }
-    configStorage.set({ 'token': null, 'email': null, 'eo-user-name': null, 'editor': null, 'siteLanguage': null, 'vocabularyOrder': null }).then(function () {
+    configStorage.set({ 'token': null, 'email': null, 'eo-user-name': null, 'editor': null, 'siteLanguage': null, 'vocabularyOrder': null, 'photo': null, 'first': null, 'last': null }).then(function () {
       document.menu.powerOff();
       var auth = new Authenticator(document.englishonConfig.backendUrl); //Create a new guest token
       auth.login(document.englishonConfig.token).then(function (token) {
@@ -9694,7 +9727,7 @@ var EnglishOnMenu = function () {
       e$('#eo-account-name').data('elementToShowOnClick', 'login-main');
       e$('body').addClass('guest').removeClass('logged');
       e$('#eo-account-area').addClass('guest');
-      e$('.eo-account-img').addClass('no-image');
+      e$('.eo-account-img').addClass('no-image').html('');
       e$('#eo-account-name').text(document.MESSAGES[document.englishonConfig.siteLanguage].MENU_TITLE);
       return;
     }
@@ -9702,7 +9735,16 @@ var EnglishOnMenu = function () {
     e$('#eo-account-area').removeClass('guest');
     e$('body').addClass('logged').removeClass('guest');
     e$('#eo-account-name').text(document.englishonConfig.email);
-    e$('.eo-account-img').addClass('no-image');
+    document.englishonBackend.getUserProfile(document.englishonConfig.token).then(function (profile) {
+      configStorage.set({ photo: profile.photo, first: profile.first, last: profile.last });
+      if (document.englishonConfig.photo) {
+        e$('.eo-account-img').removeClass('no-image').html('').css("background-image", "url(" + PHOTO_BUCKET + document.englishonConfig.token + ")");
+      } else {
+        e$('.eo-account-img').append($('<div>').addClass('avatar-circle').append($('<span>').addClass('initials').text(document.englishonConfig.first[0] + document.englishonConfig.last[0])));
+      }
+      e$('.eo-account-img').data('elementToShowOnClick', 'eo-upload-photo');
+      e$('.eo-account-img').find('*').data('elementToShowOnClick', 'eo-upload-photo');
+    });
   };
   // ****
   // Function calls section
@@ -9720,6 +9762,39 @@ var EnglishOnMenu = function () {
     e$('body').addClass('localhost');
   }
   EnglishOnButton.on();
+  this.photo = new function () {
+    this.readPhotoURL = function (input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          new_photo = e.target.result;
+          e$('.profile-pic').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+        var fd = new FormData();
+        fd.append('photo', input.files[0]);
+        fd.append('user_token', document.englishonConfig.token);
+        //the backend ajax setup didn't work here,it not build for files delivery
+        //consider compatible it
+        $.ajax({
+          type: 'POST',
+          url: document.englishonConfig.backendUrl + '/tokens/photo/',
+          data: fd,
+          processData: false,
+          contentType: false
+        }).then(function (res) {
+          console.log('baruch hashem!!!' + res);
+          e$('.eo-account-img').css("background-image", "url(" + new_photo + ")");
+        });
+      }
+    };
+    e$(".eo-upload").on('change', function () {
+      document.menu.photo.readPhotoURL(this);
+    });
+    e$(".eo-upload-button").on('click', function () {
+      e$(".eo-upload").click();
+    });
+  }();
   this.volume = new function () {
     this.changeVolume = function () {
       var val = e$('#eo-slider').slider('value');
@@ -9748,7 +9823,6 @@ var EnglishOnMenu = function () {
   setIntervalX('hide_chat', function () {
     e$('#lc_chat_layout').hide();
   }, 500, 20);
-
   if (JSON.parse(document.englishonConfig.editor)) {
     e$('#eo-menu').addClass('menu-editor');
     e$('#editor-row').removeClass('hidden');
@@ -9920,6 +9994,9 @@ function receiveMessage(event) {
     return;
   }
   // event.source is popup
+  if (event.data.uploadPhoto) {
+    alert('refresh now my photo!!!!');
+  }
   if (event.data.acceptPopup) {
     if (!event.data.success) {
       console.log('google recaptcha verification failed');
@@ -9955,7 +10032,6 @@ function receiveMessage(event) {
   var email = event.data.email;
   var user_name = event.data.name;
   var lang = event.data.language ? event.data.language : I18N.SITE_LANGUAGE;
-  e$('.eo-account-img').css("background-image", "url(" + img + ")").removeClass('no-image');
   e$('body').addClass('logged').removeClass('guest');
   e$('#eo-account-name').text(user_name);
   e$('#eo-account-area').removeClass('guest');

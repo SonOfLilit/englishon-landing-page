@@ -3301,10 +3301,12 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 
 /* REGISTER */
+/*code for initials: https://codepen.io/jacoahmad/pen/mmYRqe*/
 .avatar-circle {
+  margin-top: 6px;
   cursor: pointer;
-  width: 100px;
-  height: 100px;
+  width: 38px;
+  height: 38px;
   background-color: blue;
   text-align: center;
   border-radius: 50%;
@@ -3313,16 +3315,71 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 
 .initials {
-  position: relative;
-  top: 25px;
-  /* 25% of parent */
-  font-size: 50px;
-  /* 50% of parent */
-  line-height: 50px;
-  /* 50% of parent */
+  line-height: 38px;
   color: #fff;
-  font-family: "Courier New", monospace;
-  font-weight: bold;
+}
+
+/* UPLOAD PHOTO PAGE */
+.profile-pic {
+  max-width: 200px;
+  max-height: 200px;
+  display: block;
+}
+
+.eo-upload {
+  display: none !important;
+}
+
+#eo-dlg-options #eo-upload-photo .Grid-cell {
+  border-top: none;
+}
+
+#eo-dlg-options .Grid--full .Grid-cell #upload-line {
+  text-align: center;
+}
+#eo-dlg-options .Grid--full .Grid-cell > div.circle {
+  width: 128px;
+  height: 128px;
+}
+#eo-dlg-options .Grid--full .Grid-cell > div.p-image {
+  width: initial;
+  height: initial;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.circle {
+  border-radius: 1000px !important;
+  overflow: hidden;
+  width: 128px;
+  height: 128px;
+  border: 8px solid rgba(255, 255, 255, 0.7);
+  position: absolute;
+  top: 72px;
+}
+
+.p-image {
+  position: absolute;
+  top: 137px;
+  left: 160px;
+  color: #666666;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.p-image:hover {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.eo-upload-button {
+  font-size: 1.2em;
+}
+
+.eo-upload-button:hover {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: #999;
 }
 /* responsive.scss */
 @media (max-width: 981px) {
