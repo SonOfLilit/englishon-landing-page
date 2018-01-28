@@ -7468,10 +7468,7 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
     </div>\
     <div class='Grid-cell v-align h-align'>\
       <div class='circle'>\
-        <!-- User Profile Image --><img class='profile-pic' src='http://cdn.cutestpaw.com/wp-content/uploads/2012/07/l-Wittle-puppy-yawning.jpg'>\
-        <!-- Default Image -->\
-        <!-- <i class='fa fa-user fa-5x'></i> -->\
-        <!-- <div class='avatar-circle'> <span class='initials'></span>--></div>\
+        </div>\
       <div class='p-image'> <i class='fa fa-camera eo-upload-button'></i>\
         <input class='file-upload eo-upload' type='file' accept='image/*' /> </div>\
     </div>\
@@ -9738,9 +9735,9 @@ var EnglishOnMenu = function () {
     document.englishonBackend.getUserProfile(document.englishonConfig.token).then(function (profile) {
       configStorage.set({ photo: profile.photo, first: profile.first, last: profile.last });
       if (document.englishonConfig.photo) {
-        e$('.eo-account-img').removeClass('no-image').html('').css("background-image", "url(" + PHOTO_BUCKET + document.englishonConfig.token + ")");
+        e$('.eo-account-img, .eo-area .circle').removeClass('no-image').html('').css("background-image", "url(" + PHOTO_BUCKET + document.englishonConfig.token + ")");
       } else {
-        e$('.eo-account-img').append($('<div>').addClass('avatar-circle').append($('<span>').addClass('initials').text(document.englishonConfig.first[0] + document.englishonConfig.last[0])));
+        e$('.eo-account-img, .eo-area .circle').removeClass('no-image').append(e$('<div>').addClass('avatar-circle').append(e$('<span>').addClass('initials').text(document.englishonConfig.first[0] + document.englishonConfig.last[0])));
       }
       e$('.eo-account-img').data('elementToShowOnClick', 'eo-upload-photo');
       e$('.eo-account-img').find('*').data('elementToShowOnClick', 'eo-upload-photo');
@@ -9768,7 +9765,7 @@ var EnglishOnMenu = function () {
         var reader = new FileReader();
         reader.onload = function (e) {
           new_photo = e.target.result;
-          e$('.profile-pic').attr('src', e.target.result);
+          e$('#eo-upload-photo .circle').css("background-image", "url(" + new_photo + ")");
         };
         reader.readAsDataURL(input.files[0]);
         var fd = new FormData();

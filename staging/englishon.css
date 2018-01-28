@@ -3302,6 +3302,7 @@ it's top left values will re-computed everytime progress bar is moving*/
 
 /* REGISTER */
 /*code for initials: https://codepen.io/jacoahmad/pen/mmYRqe*/
+/* avatar default */
 .avatar-circle {
   margin-top: 6px;
   cursor: pointer;
@@ -3315,8 +3316,26 @@ it's top left values will re-computed everytime progress bar is moving*/
 }
 
 .initials {
-  line-height: 38px;
   color: #fff;
+}
+
+#eo-menu .avatar-circle {
+  margin-top: 6px;
+  width: 38px;
+  height: 38px;
+}
+#eo-menu .initials {
+  line-height: 38px;
+}
+
+#eo-upload-photo .avatar-circle {
+  margin-top: 0px;
+  width: 100%;
+  height: 100%;
+}
+#eo-upload-photo .initials {
+  line-height: 108px;
+  font-size: 40px;
 }
 
 /* UPLOAD PHOTO PAGE */
@@ -3345,13 +3364,11 @@ it's top left values will re-computed everytime progress bar is moving*/
   width: initial;
   height: initial;
 }
-
-img {
+#eo-dlg-options .Grid--full .Grid-cell img {
   max-width: 100%;
   height: auto;
 }
-
-.circle {
+#eo-dlg-options .Grid--full .Grid-cell .circle {
   border-radius: 1000px !important;
   overflow: hidden;
   width: 128px;
@@ -3359,25 +3376,23 @@ img {
   border: 8px solid rgba(255, 255, 255, 0.7);
   position: absolute;
   top: 72px;
+  background-repeat: no-repeat;
+  background-size: 160px;
 }
-
-.p-image {
+#eo-dlg-options .Grid--full .Grid-cell .p-image {
   position: absolute;
   top: 137px;
   left: 160px;
   color: #666666;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-
-.p-image:hover {
+#eo-dlg-options .Grid--full .Grid-cell .p-image:hover {
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-
-.eo-upload-button {
+#eo-dlg-options .Grid--full .Grid-cell .eo-upload-button {
   font-size: 1.2em;
 }
-
-.eo-upload-button:hover {
+#eo-dlg-options .Grid--full .Grid-cell .eo-upload-button:hover {
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   color: #999;
 }
