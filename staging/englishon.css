@@ -1953,6 +1953,10 @@ body.www-bloombergview-com .eo-menu > .eo-superuser p {
   width: 67% !important;
 }
 
+.user-input-cell {
+  width: 50% !important;
+}
+
 .vocabulary-cog-cell {
   width: 12% !important;
 }
@@ -2498,6 +2502,10 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   height: 36px;
 }
 
+.eo-row15 {
+  height: 43px;
+}
+
 .eo-dlg-header {
   color: #3d4c58;
   font-size: 20px;
@@ -2784,7 +2792,8 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 
 #eo-mail-login-btn,
 #link-btn,
-#verify-btn {
+#verify-btn,
+#profile-btn {
   width: 152px;
   height: 26.66px;
   border-radius: 3px;
@@ -2818,6 +2827,21 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-dlg-options .option-dlg-guest:hover, #eo-dlg-options .option-dlg-logged:hover, #eo-dlg-options .option:hover, #eo-dlg-options .option:hover {
   background-color: #b8c6cf;
 }
+#eo-dlg-options #eo-profile .profile-row1 {
+  height: 60px;
+}
+#eo-dlg-options #eo-profile .profile-row2 {
+  height: 40px;
+}
+#eo-dlg-options #eo-profile .profile-row3 {
+  height: 100px;
+}
+#eo-dlg-options #eo-profile .profile-row4 {
+  height: 60px;
+}
+#eo-dlg-options #eo-profile .circle {
+  top: 92px;
+}
 
 .guest .option-dlg-logged {
   display: none;
@@ -2841,15 +2865,14 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   position: fixed;
   z-index: 10000;
 }
-#eo-dlg-options .Grid-cell {
+#eo-dlg-options .border .Grid-cell {
   border-top: 1px solid #d7dee3;
-  height: 83px;
+  height: 60px;
 }
 
-#eo-dlg-options .Grid--full .Grid-cell > div {
+#eo-dlg-options #eo-dlg-options-main .Grid-cell > div {
   height: 100%;
   width: 100%;
-  line-height: 80px;
 }
 
 /*BANNER*/
@@ -3328,14 +3351,18 @@ it's top left values will re-computed everytime progress bar is moving*/
   line-height: 38px;
 }
 
-#eo-upload-photo .avatar-circle {
+#eo-dlg-options .avatar-circle {
   margin-top: 0px;
   width: 100%;
   height: 100%;
 }
-#eo-upload-photo .initials {
+#eo-dlg-options .initials {
   line-height: 108px;
   font-size: 40px;
+}
+#eo-dlg-options #eo-profile .initials {
+  line-height: 68px;
+  font-size: 32px;
 }
 
 /* UPLOAD PHOTO PAGE */
@@ -3345,7 +3372,8 @@ it's top left values will re-computed everytime progress bar is moving*/
   display: block;
 }
 
-.eo-upload {
+.eo-upload1,
+.eo-upload2 {
   display: none !important;
 }
 
@@ -3353,48 +3381,59 @@ it's top left values will re-computed everytime progress bar is moving*/
   border-top: none;
 }
 
-#eo-dlg-options .Grid--full .Grid-cell #upload-line {
+#eo-dlg-options #upload-line {
   text-align: center;
 }
-#eo-dlg-options .Grid--full .Grid-cell > div.circle {
-  width: 128px;
-  height: 128px;
-}
-#eo-dlg-options .Grid--full .Grid-cell > div.p-image {
+#eo-dlg-options > div.p-image {
   width: initial;
   height: initial;
 }
-#eo-dlg-options .Grid--full .Grid-cell img {
+#eo-dlg-options img {
   max-width: 100%;
   height: auto;
 }
-#eo-dlg-options .Grid--full .Grid-cell .circle {
+#eo-dlg-options div.circle {
   border-radius: 1000px !important;
   overflow: hidden;
-  width: 128px;
-  height: 128px;
   border: 8px solid rgba(255, 255, 255, 0.7);
   position: absolute;
   top: 72px;
   background-repeat: no-repeat;
   background-size: 160px;
 }
-#eo-dlg-options .Grid--full .Grid-cell .p-image {
+#eo-dlg-options .p-image {
   position: absolute;
-  top: 137px;
-  left: 160px;
   color: #666666;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-#eo-dlg-options .Grid--full .Grid-cell .p-image:hover {
+#eo-dlg-options .p-image:hover {
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-#eo-dlg-options .Grid--full .Grid-cell .eo-upload-button {
+#eo-dlg-options .eo-upload-button {
   font-size: 1.2em;
 }
-#eo-dlg-options .Grid--full .Grid-cell .eo-upload-button:hover {
+#eo-dlg-options .eo-upload-button:hover {
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   color: #999;
+}
+#eo-dlg-options #eo-upload-photo div.circle {
+  width: 128px;
+  height: 128px;
+}
+#eo-dlg-options #eo-upload-photo .p-image {
+  top: 167px;
+  left: 150px;
+}
+#eo-dlg-options #eo-profile div.circle {
+  width: 98px;
+  height: 98px;
+}
+#eo-dlg-options #eo-profile .p-image {
+  top: 157px;
+  left: 160px;
+}
+#eo-dlg-options #eo-profile #profile-btn {
+  height: 37px;
 }
 /* responsive.scss */
 @media (max-width: 981px) {

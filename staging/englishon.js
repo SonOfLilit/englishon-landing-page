@@ -7438,23 +7438,26 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
 </div>";
 //
 document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
-  <div id='eo-dlg-options-main' class='Grid Grid--full eo-inner-area hidden'>\
+  <div id='eo-dlg-options-main' class='Grid Grid--full eo-inner-area hidden border'>\
     <div class='Grid-cell option'>\
-      <div id='tutorial-btn'>Quick Guide to EnglishOn</div>\
+      <div class='eo-set-profile v-align h-align'>Set profile</div>\
     </div>\
     <div class='Grid-cell option'>\
-      <div id='progress-tutorial-btn'>Progress Bar Tutorial</div>\
+      <div id='tutorial-btn' class='v-align h-align'>Quick Guide to EnglishOn</div>\
     </div>\
     <div class='Grid-cell option'>\
-      <div id='eo-choose-lang'>Choose site language</div>\
+      <div id='progress-tutorial-btn' class='v-align h-align'>Progress Bar Tutorial</div>\
+    </div>\
+    <div class='Grid-cell option'>\
+      <div id='eo-choose-lang' class='v-align h-align'>Choose site language</div>\
     </div>\
   </div>\
-  <div id='eo-dlg-options-logged' class='Grid Grid--full eo-inner-area hidden'>\
-    <div class='Grid-cell option-dlg-logged'>\
+  <div id='eo-dlg-options-logged' class='Grid Grid--full eo-inner-area hidden border'>\
+    <div class='Grid-cell v-align h-align option-dlg-logged'>\
       <div id='signout_btn'>Sign out</div>\
     </div>\
   </div>\
-  <div id='eo-site-languages' class='hidden Grid Grid--full eo-inner-area'>\
+  <div id='eo-site-languages' class='hidden Grid Grid--full eo-inner-area border'>\
     <div class='Grid-cell option'>\
       <div class='eo-site-option' id='english'>English</div>\
     </div>\
@@ -7467,10 +7470,30 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
       <div id='upload-line'>upload photo here</div>\
     </div>\
     <div class='Grid-cell v-align h-align'>\
-      <div class='circle'>\
-        </div>\
-      <div class='p-image'> <i class='fa fa-camera eo-upload-button'></i>\
-        <input class='file-upload eo-upload' type='file' accept='image/*' /> </div>\
+      <div class='circle'> </div>\
+      <div class='p-image'> <i class='fa fa-camera eo-upload-button upload1-btn'></i>\
+        <input class='file-upload eo-upload1' type='file' accept='.png, .jpg, .jpeg' /> </div>\
+    </div>\
+  </div>\
+  <div id='eo-profile' class='Grid Grid--full eo-inner-area hidden'>\
+    <div class='Grid-cell profile-row1'>\
+      <div class='Grid'>\
+        <div class='Grid-cell eo-row15 user-input-cell'>\
+          <input type='text' placeholder='First name' id='eo-first-name' class='eo-input' /> </div>\
+        <div class='Grid-cell eo-row15 user-input-cell'>\
+          <input type='text' placeholder='Last name' id='eo-last-name' class='eo-input' /> </div>\
+      </div>\
+    </div>\
+    <div class='Grid-cell profile-row2 v-align h-align'>\
+      <div id='upload-line'>upload photo here</div>\
+    </div>\
+    <div class='Grid-cell profile-row3 v-align h-align'>\
+      <div class='circle'> </div>\
+      <div class='p-image'> <i class='fa fa-camera eo-upload-button upload2-btn'></i>\
+        <input class='file-upload eo-upload2' type='file' accept='.png, .jpg, .jpeg' /> </div>\
+    </div>\
+    <div class='Grid-cell profile-row4 v-align h-align'>\
+      <div id='profile-btn' class='v-align h-align'>Save profile</div>\
     </div>\
   </div>\
 </div>\
@@ -7572,17 +7595,6 @@ document.TERMS_DLG = "<div id='terms-container' class='hidden'>\
             </div>\
           </div>\
         </div>\
-      <div class='Grid-cell eo-row6 h-align'>\
-        <input type='text' placeholder='First name' id='first-name' class='eo-input' /> </div>\
-\
-      <div class='Grid-cell eo-row6 h-align'>\
-        <input type='text' placeholder='Last name' id='last-name' class='eo-input' /> </div>\
-          <div class='Grid-cell eo-row6 h-align'>\
-\
-          <div class='avatar-circle'>\
-          <span class='initials'>Df</span>\
-        </div>\
-\
         <div class='Grid-cell eo-row3 v-align h-align'>\
           <div id='tos'></div>\
         </div>\
@@ -7873,9 +7885,6 @@ PageOverlay.prototype.TermsDialog = function (token) {
   e$('#eo-recaptcha').attr('src', document.englishonBackend.base + '/tokens/googlecaptcha/' + token + '/' + document.englishonConfig.siteLanguage + '/' + window.location.host + '/');
   e$('.terms-close').off('click');
   e$('.terms-close').on('click', this.rejectTerms);
-  e$('.avatar-circle').on('click', function () {
-    window.open(document.englishonConfig.backendUrl + '/tokens/uploadimage/' + document.englishonConfig.token, 'upload_window', 'width=315, height=475');
-  });
 };
 PageOverlay.prototype.getQuestionQuota = function () {
   var total = 0;
@@ -9302,10 +9311,7 @@ function englishon() {
     }
   }).then(function (backend) {
     document.englishonBackend = backend;
-    document.englishonBackend.getUserProfile(backend.token).then(function (profile) {
-      configStorage.set({ photo: profile.photo, first: profile.first, last: profile.last });
-      return document.resources_promise.resolve();
-    });
+    document.resources_promise.resolve();
   }).then(function () {
     if (JSON.parse(document.englishonConfig.editor)) {
       return document.englishonBackend.fetchDictionary().then(function (eo_dictionary) {
@@ -9510,6 +9516,7 @@ var EnglishOnMenu = function () {
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
       document.menu.uiLoginActions('logged');
     }
+    e$('.eo-set-profile').data('elementToShowOnClick', 'eo-profile');
     e$('#eo-contact').on('click', function () {
       clearInterval(hide_chat);
       e$('#lc_chat_layout').show();
@@ -9534,6 +9541,7 @@ var EnglishOnMenu = function () {
     e$('#options-button').on('click', document.eoDialogs.toggleDialogTrigger);
     e$('#eo-choose-lang').on('click', document.eoDialogs.toggleDialogTrigger);
     e$('#option-dlg-signin').on('click', document.eoDialogs.toggleDialogTrigger);
+    e$('.eo-set-profile').on('click', document.eoDialogs.toggleDialogTrigger);
     e$('#progress-tutorial-btn').on('click', function () {
       document.eoDialogs.hideDialogs();
       document.eo_user.showLiveActions();
@@ -9759,37 +9767,58 @@ var EnglishOnMenu = function () {
     e$('body').addClass('localhost');
   }
   EnglishOnButton.on();
-  this.photo = new function () {
+  this.profile = new function () {
+    this.updateProfile = function (photo, first_name = '', last_name = '') {
+      var fd = new FormData();
+      fd.append('photo', photo);
+      fd.append('user_token', document.englishonConfig.token);
+      fd.append('first_name', first_name);
+      fd.append('last_name', last_name);
+      //the backend ajax setup didn't work here,it not build for files delivery
+      //consider compatible it
+      $.ajax({
+        type: 'POST',
+        url: document.englishonConfig.backendUrl + '/tokens/profile/',
+        data: fd,
+        processData: false,
+        contentType: false
+      }).then(function (res) {
+        console.log('baruch hashem!!!' + res);
+        if (photo != '') {
+          e$('.eo-account-img').css("background-image", "url(" + new_photo + ")");
+        }
+      });
+    };
     this.readPhotoURL = function (input) {
       if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
           new_photo = e.target.result;
-          e$('#eo-upload-photo .circle').css("background-image", "url(" + new_photo + ")");
+          e$('#eo-dlg-options .circle').css("background-image", "url(" + new_photo + ")");
         };
         reader.readAsDataURL(input.files[0]);
-        var fd = new FormData();
-        fd.append('photo', input.files[0]);
-        fd.append('user_token', document.englishonConfig.token);
-        //the backend ajax setup didn't work here,it not build for files delivery
-        //consider compatible it
-        $.ajax({
-          type: 'POST',
-          url: document.englishonConfig.backendUrl + '/tokens/photo/',
-          data: fd,
-          processData: false,
-          contentType: false
-        }).then(function (res) {
-          console.log('baruch hashem!!!' + res);
-          e$('.eo-account-img').css("background-image", "url(" + new_photo + ")");
-        });
       }
     };
-    e$(".eo-upload").on('change', function () {
-      document.menu.photo.readPhotoURL(this);
+    e$(".eo-upload1").on('change', function () {
+      document.menu.profile.readPhotoURL(this);
+      document.menu.profile.updateProfile(this.files[0]);
     });
-    e$(".eo-upload-button").on('click', function () {
-      e$(".eo-upload").click();
+    e$(".eo-upload2").on('change', function () {
+      document.menu.profile.readPhotoURL(this);
+    });
+    e$('#profile-btn').on('click', function () {
+      if (e$(".eo-upload2").get(0).files && e$(".eo-upload2").get(0).files[0]) {
+        var photo = e$(".eo-upload2").get(0).files[0];
+      } else {
+        var photo = '';
+      }
+      document.menu.profile.updateProfile(photo, e$('#eo-first-name').val(), e$('#eo-last-name').val());
+    });
+    e$(".upload1-btn").on('click', function () {
+      e$(".eo-upload1").click();
+    });
+    e$(".upload2-btn").on('click', function () {
+      e$(".eo-upload2").click();
     });
   }();
   this.volume = new function () {
@@ -9991,9 +10020,6 @@ function receiveMessage(event) {
     return;
   }
   // event.source is popup
-  if (event.data.uploadPhoto) {
-    alert('refresh now my photo!!!!');
-  }
   if (event.data.acceptPopup) {
     if (!event.data.success) {
       console.log('google recaptcha verification failed');
@@ -10003,6 +10029,8 @@ function receiveMessage(event) {
       document.menu.displayMenuMessages();
       e$('#terms-container').addClass('hidden');
       e$('#eo-dlg-terms').addClass('hidden');
+      e$('.eo-set-profile').click();
+      //document.eoDialogs.toggleDialog('eo-profile');
       document.englishonBackend.token = event.data.token;
       document.menu.uiLoginActions('logged');
       document.overlay.fetchQuestions().then(function () {
