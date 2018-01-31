@@ -6632,11 +6632,9 @@ Injector = function (paragraphs) {
           q.replacement.addClass('wrong-feedback');
         }
       }
-      //if (q.replacement.hasClass('eo-expired')){
-      //TEMP LINE!!!!FOR TESTING NEW FEATURE!
-      if (q.replacement.hasClass('eo-expired') && window.location.pathname == '/241200') {
+      if (q.replacement.hasClass('eo-expired')) {
         q.replacement.after(e$('<button>').addClass('eo-record').html('<i class="fa fa-microphone" aria-hidden="true"></i>').on('click', function (e) {
-          window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + q.qobj.data.word, '_blank', 'width=315, height=475, toolbar=0, scrollbars=0, location=0');
+          window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + q.qobj.data.word, 'record_window', 'width=315, height=475');
         }));
       }
       if (q.qobj.data.tried.length && q.qobj.data.tried[0] != q.qobj.practicedWord) {
@@ -6646,9 +6644,6 @@ Injector = function (paragraphs) {
     });
     this.preventJumpyQuestions();
     e$('.entry-content p').removeClass('not_stretch');
-    // e$('.eo-question.eo-expired').after(e$('<button>').addClass('eo-record').html('<i class="fa fa-microphone" aria-hidden="true"></i>').on('click', function(e) {
-    //   window.open(document.englishonConfig.backendUrl+'/record/recordtemplate/'+document.englishonConfig.token+'/'+e$(e.target).data('word'), 'record_window', 'width=315, height=475');
-    // }));
   };
   this.setQuestions = function (questions, toggleSound) {
     this.elements = [];
@@ -6892,6 +6887,9 @@ AbstractQuestion.prototype.closeUnanswered = function () {
 };
 AbstractQuestion.prototype.closeAnswered = function () {
   this.animateStateChange('eo-answered', 'eo-active', this.element.find('.eo-correct').outerWidth());
+  this.element.after(e$('<button>').addClass('eo-record').html('<i class="fa fa-microphone" aria-hidden="true"></i>').on('click', function (e) {
+    window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + this.data.word, 'record_window', 'width=315, height=475');
+  }.bind(this)));
 };
 AbstractQuestion.prototype.isCorrect = function (answer) {
   var _iteratorNormalCompletion = true;
