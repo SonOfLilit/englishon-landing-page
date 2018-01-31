@@ -5190,7 +5190,8 @@ var MESSAGES = {
     VERIFY_BTN: 'Verify email',
     VERIFY_SENT_HEADER: 'EnglishON Account',
     VERIFY_SENT_MESSAGE: 'Please verify your email to finish setting up your EnglishON account. We sent a confirmation email to your email. </br>Please click the link in that email to finish setting up your EnglishON account.',
-    UPLOAD_PHOTO: 'Uplad a photo here'
+    PROFILE: 'Profile',
+    PROFILE_BTN: 'Save profile'
   },
   'hebrew': {
     LANGUAGE: 'hebrew',
@@ -5251,7 +5252,8 @@ var MESSAGES = {
     VERIFY_BTN: 'אשר כתובת דוא"ל',
     VERIFY_SENT_HEADER: 'חשבון אינגלישון',
     VERIFY_SENT_MESSAGE: 'נשלח דוא"ל לחשבונכם. נא ללחוץ על הקישורית בדוא"ל זה להשלמת ההרשמה',
-    UPLOAD_PHOTO: 'בחר כאן את תמונתך'
+    PROFILE: 'פרופיל',
+    PROFILE_BTN: 'שמור פרופיל'
   }
 };
 // Until we have real RTL, it's important not to finish sentences with periods, because they'll align wrong
@@ -6634,7 +6636,7 @@ Injector = function (paragraphs) {
       //TEMP LINE!!!!FOR TESTING NEW FEATURE!
       if (q.replacement.hasClass('eo-expired') && window.location.pathname == '/241200') {
         q.replacement.after(e$('<button>').addClass('eo-record').html('<i class="fa fa-microphone" aria-hidden="true"></i>').on('click', function (e) {
-          window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + q.qobj.data.word, 'record_window', 'width=315, height=475');
+          window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + q.qobj.data.word, '_blank', 'width=315, height=475, toolbar=0, scrollbars=0, location=0');
         }));
       }
       if (q.qobj.data.tried.length && q.qobj.data.tried[0] != q.qobj.practicedWord) {
@@ -7439,7 +7441,7 @@ document.LOGIN_DLG = "<div class='hidden eo-area' id='eo-dlg-login'>\
 //
 document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
   <div id='eo-dlg-options-main' class='Grid Grid--full eo-inner-area hidden border'>\
-    <div class='Grid-cell option'>\
+    <div class='Grid-cell option option-dlg-logged'>\
       <div class='eo-set-profile v-align h-align'>Set profile</div>\
     </div>\
     <div class='Grid-cell option'>\
@@ -7466,9 +7468,6 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
     </div>\
   </div>\
   <div id='eo-upload-photo' class='Grid Grid--full eo-inner-area hidden'>\
-    <div class='Grid-cell eo-link-row v-align h-align'>\
-      <div id='upload-line'>upload photo here</div>\
-    </div>\
     <div class='Grid-cell v-align h-align'>\
       <div class='circle'> </div>\
       <div class='p-image'> <i class='fa fa-camera eo-upload-button upload1-btn'></i>\
@@ -7484,9 +7483,7 @@ document.OPTIONS_DLG = "<div class='hidden eo-area' id='eo-dlg-options'>\
           <input type='text' placeholder='Last name' id='eo-last-name' class='eo-input' /> </div>\
       </div>\
     </div>\
-    <div class='Grid-cell profile-row2 v-align h-align'>\
-      <div id='upload-line'>upload photo here</div>\
-    </div>\
+\
     <div class='Grid-cell profile-row3 v-align h-align'>\
       <div class='circle'> </div>\
       <div class='p-image'> <i class='fa fa-camera eo-upload-button upload2-btn'></i>\
@@ -9507,8 +9504,8 @@ var EnglishOnMenu = function () {
     e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
     e$('#option-dlg-signin').data('elementToShowOnClick', 'login-main');
     e$('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
-    e$('.eo-account-img').data('elementToShowOnClick', 'eo-upload-photo');
-    e$('.eo-account-img').find('*').data('elementToShowOnClick', 'eo-upload-photo');
+    e$('.eo-account-img').data('elementToShowOnClick', 'eo-profile');
+    e$('.eo-account-img').find('*').data('elementToShowOnClick', 'eo-profile');
     if (!document.englishonConfig.email) {
       e$('#eo-account-name').data('elementToShowOnClick', 'login-main');
       document.menu.uiLoginActions('guest');
@@ -9585,7 +9582,9 @@ var EnglishOnMenu = function () {
     switch_text = JSON.parse(document.englishonConfig.isActive) ? 'On' : 'Off';
     e$('#eo-power-switch-text').text(switch_text);
     var messages = document.MESSAGES[document.englishonConfig.siteLanguage];
-    if (!document.englishonConfig.email) e$('#eo-account-name').text(messages.MENU_TITLE);
+    if (!document.englishonConfig.email) {
+      e$('#eo-account-name').html(messages.MENU_TITLE);
+    }
     e$('#eo-language_header').text(messages.LANGUAGES_PICKER_TITLE);
     e$('#eo-help').find('a').text(messages.HELP);
     e$('#eo-contact').find('a').text(messages.CONTACT);
@@ -9601,7 +9600,8 @@ var EnglishOnMenu = function () {
     e$('#tutorial-btn').text(messages.START_TUTORIAL);
     e$('#get-started').text(messages.GET_STARTED);
     e$('#signout_btn').text(messages.SIGN_OUT);
-    e$('#upload-line').text(messages.UPLOAD_PHOTO);
+    e$('.eo-set-profile').text(messages.PROFILE);
+    e$('#profile-btn').text(messages.PROFILE_BTN);
   };
   /* returns a toggler function that both updates `configEntry`
      and calls the given `toggle()` function, useful when you want
@@ -9739,16 +9739,26 @@ var EnglishOnMenu = function () {
     e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
     e$('#eo-account-area').removeClass('guest');
     e$('body').addClass('logged').removeClass('guest');
-    e$('#eo-account-name').text(document.englishonConfig.email);
     document.englishonBackend.getUserProfile(document.englishonConfig.token).then(function (profile) {
       configStorage.set({ photo: profile.photo, first: profile.first, last: profile.last });
       if (document.englishonConfig.photo) {
-        e$('.eo-account-img, .eo-area .circle').removeClass('no-image').html('').css("background-image", "url(" + PHOTO_BUCKET + document.englishonConfig.token + ")");
+        // using always the amazon source was not good, because when uploading a new image it didn't updated immediatly. probably cashed.
+        var source = window.new_photo ? new_photo : PHOTO_BUCKET + document.englishonConfig.token;
+        e$('.eo-account-img, .eo-area .circle').removeClass('no-image').html('').css("background-image", "url(" + source + ")");
       } else {
-        e$('.eo-account-img, .eo-area .circle').removeClass('no-image').append(e$('<div>').addClass('avatar-circle').append(e$('<span>').addClass('initials').text(document.englishonConfig.first[0] + document.englishonConfig.last[0])));
+        e$('.eo-account-img, .eo-area .circle').removeClass('no-image').css("background-image", "none").html('').append(e$('<div>').addClass('avatar-circle').append(e$('<span>').addClass('initials').text(document.englishonConfig.email[0] + document.englishonConfig.email[0])));
       }
-      e$('.eo-account-img').data('elementToShowOnClick', 'eo-upload-photo');
-      e$('.eo-account-img').find('*').data('elementToShowOnClick', 'eo-upload-photo');
+      if (document.englishonConfig.first && document.englishonConfig.last) {
+        e$('.eo-account-img, .eo-area .circle').find('.initials').text(document.englishonConfig.first[0] + document.englishonConfig.last[0]);
+        e$('#eo-account-name').html(document.englishonConfig.first + '&nbsp;' + document.englishonConfig.last);
+        e$('#eo-first-name').val(document.englishonConfig.first);
+        e$('#eo-last-name').val(document.englishonConfig.last);
+      } else {
+        e$('#eo-first-name, #eo-last-name').val('');
+        e$('#eo-account-name').html(document.englishonConfig.email);
+      }
+      //e$('.eo-account-img').data('elementToShowOnClick', 'eo-profile');
+      e$('.eo-account-img').find('*').data('elementToShowOnClick', 'eo-profile');
     });
   };
   // ****
@@ -9783,10 +9793,20 @@ var EnglishOnMenu = function () {
         processData: false,
         contentType: false
       }).then(function (res) {
-        console.log('baruch hashem!!!' + res);
+        console.log('b"h, ' + res);
         if (photo != '') {
           e$('.eo-account-img').css("background-image", "url(" + new_photo + ")");
         }
+        if (first_name != '' && last_name != '') {
+          var first = first_name;
+          var last = last_name;
+        } else {
+          var first = document.englishonConfig.email;
+          var last = document.englishonConfig.email;
+        }
+        configStorage.set({ photo: photo != '', first: first, last: last }).then(function () {
+          document.menu.uiLoginActions('logged');
+        });
       });
     };
     this.readPhotoURL = function (input) {
@@ -9794,7 +9814,7 @@ var EnglishOnMenu = function () {
         var reader = new FileReader();
         reader.onload = function (e) {
           new_photo = e.target.result;
-          e$('#eo-dlg-options .circle').css("background-image", "url(" + new_photo + ")");
+          e$('#eo-dlg-options .circle').html('').css("background-image", "url(" + new_photo + ")");
         };
         reader.readAsDataURL(input.files[0]);
       }
@@ -10030,7 +10050,6 @@ function receiveMessage(event) {
       e$('#terms-container').addClass('hidden');
       e$('#eo-dlg-terms').addClass('hidden');
       e$('.eo-set-profile').click();
-      //document.eoDialogs.toggleDialog('eo-profile');
       document.englishonBackend.token = event.data.token;
       document.menu.uiLoginActions('logged');
       document.overlay.fetchQuestions().then(function () {
@@ -10057,9 +10076,6 @@ function receiveMessage(event) {
   var email = event.data.email;
   var user_name = event.data.name;
   var lang = event.data.language ? event.data.language : I18N.SITE_LANGUAGE;
-  e$('body').addClass('logged').removeClass('guest');
-  e$('#eo-account-name').text(user_name);
-  e$('#eo-account-area').removeClass('guest');
   if (!localStorage.getItem('email')) {
     //this is a real login, as google made many 'fake logins'
     if (event.data.status == 'terms_not_accepted') {
@@ -10070,9 +10086,10 @@ function receiveMessage(event) {
       return;
     }
     configStorage.set({ email: email, token: django_token, siteLanguage: language_map[lang], 'eo-user-name': user_name }).then(function () {
+      document.englishonBackend.token = django_token;
+      document.menu.uiLoginActions('logged');
       document.menu.displayMenuMessages();
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
-      document.englishonBackend.token = django_token;
       document.overlay.fetchQuestions().then(function () {
         document.eo_user.initial();
         document.menu.powerOn();

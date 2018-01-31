@@ -2839,9 +2839,6 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-dlg-options #eo-profile .profile-row4 {
   height: 60px;
 }
-#eo-dlg-options #eo-profile .circle {
-  top: 92px;
-}
 
 .guest .option-dlg-logged {
   display: none;
@@ -3397,7 +3394,6 @@ it's top left values will re-computed everytime progress bar is moving*/
   overflow: hidden;
   border: 8px solid rgba(255, 255, 255, 0.7);
   position: absolute;
-  top: 72px;
   background-repeat: no-repeat;
   background-size: 160px;
 }
@@ -3421,7 +3417,7 @@ it's top left values will re-computed everytime progress bar is moving*/
   height: 128px;
 }
 #eo-dlg-options #eo-upload-photo .p-image {
-  top: 167px;
+  top: 137px;
   left: 150px;
 }
 #eo-dlg-options #eo-profile div.circle {
@@ -3429,11 +3425,12 @@ it's top left values will re-computed everytime progress bar is moving*/
   height: 98px;
 }
 #eo-dlg-options #eo-profile .p-image {
-  top: 157px;
-  left: 160px;
+  top: 137px;
+  left: 150px;
 }
 #eo-dlg-options #eo-profile #profile-btn {
   height: 37px;
+  font-size: 16px;
 }
 /* responsive.scss */
 @media (max-width: 981px) {
