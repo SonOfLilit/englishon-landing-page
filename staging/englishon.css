@@ -2827,6 +2827,9 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-dlg-options .option-dlg-guest:hover, #eo-dlg-options .option-dlg-logged:hover, #eo-dlg-options .option:hover, #eo-dlg-options .option:hover {
   background-color: #b8c6cf;
 }
+#eo-dlg-options #eo-profile .eo-input {
+  margin: 3px;
+}
 #eo-dlg-options #eo-profile .profile-row1 {
   height: 60px;
 }
@@ -3396,6 +3399,8 @@ it's top left values will re-computed everytime progress bar is moving*/
   position: absolute;
   background-repeat: no-repeat;
   background-size: 160px;
+  image-orientation: from-image;
+  /* Use EXIF data from the image */
 }
 #eo-dlg-options .p-image {
   position: absolute;

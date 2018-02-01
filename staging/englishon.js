@@ -6634,7 +6634,7 @@ Injector = function (paragraphs) {
       }
       if (q.replacement.hasClass('eo-expired')) {
         q.replacement.after(e$('<button>').addClass('eo-record').html('<i class="fa fa-microphone" aria-hidden="true"></i>').on('click', function (e) {
-          window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + q.qobj.data.word, 'record_window', 'width=315, height=475');
+          window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + q.qobj.data.word, '_blank', 'width=315, height=475');
         }));
       }
       if (q.qobj.data.tried.length && q.qobj.data.tried[0] != q.qobj.practicedWord) {
@@ -6888,7 +6888,7 @@ AbstractQuestion.prototype.closeUnanswered = function () {
 AbstractQuestion.prototype.closeAnswered = function () {
   this.animateStateChange('eo-answered', 'eo-active', this.element.find('.eo-correct').outerWidth());
   this.element.after(e$('<button>').addClass('eo-record').html('<i class="fa fa-microphone" aria-hidden="true"></i>').on('click', function (e) {
-    window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + this.data.word, 'record_window', 'width=315, height=475');
+    window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + this.data.word, '_blank', 'width=315, height=475');
   }.bind(this)));
 };
 AbstractQuestion.prototype.isCorrect = function (answer) {
@@ -9805,6 +9805,7 @@ var EnglishOnMenu = function () {
         configStorage.set({ photo: photo != '', first: first, last: last }).then(function () {
           document.menu.uiLoginActions('logged');
         });
+        document.eoDialogs.hideDialogs();
       });
     };
     this.readPhotoURL = function (input) {
@@ -9812,7 +9813,9 @@ var EnglishOnMenu = function () {
         var reader = new FileReader();
         reader.onload = function (e) {
           new_photo = e.target.result;
+
           e$('#eo-dlg-options .circle').html('').css("background-image", "url(" + new_photo + ")");
+          //e$('#eo-dlg-options .circle').html('').css("background-image", "url('https://s3-eu-west-1.amazonaws.com/eo.photo/10d6bd4e816b36332e168821f9f25b9c5c82c65f')");
         };
         reader.readAsDataURL(input.files[0]);
       }
