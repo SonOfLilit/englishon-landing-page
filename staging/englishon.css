@@ -3401,6 +3401,7 @@ it's top left values will re-computed everytime progress bar is moving*/
   background-size: 160px;
   image-orientation: from-image;
   /* Use EXIF data from the image */
+  background-size: cover;
 }
 #eo-dlg-options .p-image {
   position: absolute;
