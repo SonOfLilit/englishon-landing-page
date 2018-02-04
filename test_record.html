@@ -1,0 +1,271 @@
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://use.fontawesome.com/releases/v5.0.3/css/all.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+  <style type="text/css">
+    .avatar-circle {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    background-color: blue;
+    text-align: center;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+  }
+  .audio-container{
+    position:relative;
+    top:10px;
+    width:180px;
+    overflow: hidden;
+    direction: ltl;
+    border-top-right-radius: 0.5em 0.5em;
+    border-bottom-right-radius: 1em 0.7em;
+  }
+
+  .initials {
+    position: relative;
+    top: 8px;/* 25% of parent */
+    /* left: -5px; */
+    font-size: 16px;/* 50% of parent */
+    line-height: 16px;/* 50% of parent */
+    color: #fff;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+  }
+
+  .record {
+    width: 300px;
+    height: 50px;
+
+  }
+  .record.active{
+    background-color: red;
+  }
+  .recorder-img{
+    width : 30px;
+    height: 30px;
+    margin-right: 20px;
+    background-size: 30px;
+    background-repeat: no-repeat;
+    border-radius: 50px;
+    background-size: cover;
+    background-position: center;
+  }
+  .fa.fa-thumbs-up, 
+  {
+    color :#2cc6a8;
+  }
+ 
+  div div{
+    display: inline-block;
+  }
+  article{
+    margin-top: 30px;
+  }
+  i{
+    margin-left: 10px;
+  }
+
+  </style>
+</head>
+
+<body>
+  <script>
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+      function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+        // Only send the token to relative URLs i.e. locally.
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+      }
+    }
+  });
+  </script>
+  <button class="record"><i class="fa fa-microphone" aria-hidden="true"></i></button>
+  <section class="sound-clips"> </section>
+  <script type="text/javascript">
+  $(function() {
+      PRONUNCIATION_BUCKET = 'https://s3-eu-west-1.amazonaws.com/localhost.pronunciation/';
+      PHOTO_BUCKET = 'https://s3-eu-west-1.amazonaws.com/localhost.photo/';
+
+    var recordings = [];
+    $.each(recordings, function(i, record) {
+      console.log('record: ', record);
+      var clipContainer = createClip(record);
+      $(clipContainer).find('audio').attr('src',  PRONUNCIATION_BUCKET+ '{{word}}'+'/'+record['token']);
+      soundClips.append(clipContainer);
+    });
+  });
+  var record = $('.record');
+  var stop = $('.stop');
+  var soundClips = $('.sound-clips');
+  var self_clip = function(rating) {
+    $('.clip.first').remove();
+    var clipContainer = createClip({ 'first': 'yehuda','last':'levi' ,'rating':0 , 
+      'token': '000000000000','photo':'false'})
+    $(soundClips).prepend($(clipContainer).addClass('first'));
+    $(clipContainer).find('audio').attr('src', PRONUNCIATION_BUCKET + 
+      'test' + '/' + '000000000000');
+  };
+  var opinion = function(e){
+        var e = $(e.target);
+        if (e.is('.expired')) {return;}
+        if (e.is('.fa-thumbs-up')){
+        var like = 'true';
+        var rating = e.siblings().find('.rating');
+        rating.html(Number(rating.html())+1);
+        }
+        else {
+        var like = ''; 
+        }
+        e.addClass('expired');
+      console.log('thumb up');
+
+  }
+  var createClip = function(record) {
+    console.log('create clip');
+    //TODO:   Full first name and first initial of last name
+    if (record['first'] && record['last']){
+      var name = record['first'] + '&nbsp;' + record['last'];
+      var initials = record['first'][0]+record['last'][0];
+    } else {
+      var name = record['email'].slice(0,5);
+      var initials = record['email'].slice(0,1);
+    }
+    var clipName = name;
+    var clipContainer = $('<article>').addClass('clip');
+    var raw1 = $('<div>').addClass('row1');
+    var raw2 = $('<div>').addClass('row2');
+    if (record['photo'] == "true"){
+    var image = $('<img>').addClass('recorder-img')
+    .css("background-image",
+      "url(" + PHOTO_BUCKET+record['token']
+      + ")" )
+    }
+    else{
+        var image = $('<div>').addClass('avatar-circle')
+        .append($('<span>').addClass('initials')
+          .text(initials))
+    }
+
+    // var image = $('<img>').addClass('recorder-img').css("background-image",
+    //   "url(" + "http://www.englishon.org/v1/img/menu-avatar.svg" 
+    //   + ")" );
+
+
+    var clipLabel = $('<div>').html(clipName);
+    var ratingLabel = $('<div>')
+    .html('<span class = "rating">'+record['rating']+'</span> likes');
+    raw1.append(image, clipLabel);
+    var audio = $('<div>').addClass('audio-container')
+    .append($('<audio controls>'));
+    var thumb = $('<i aria-hidden="true">').addClass('fa fa-thumbs-up')
+    .data({'recorder':record['token'],'word':record['word']})
+      .on('click', opinion);
+    var thumb_down = $('<i>').addClass('fas fa-thumbs-down')
+      .data({'recorder':record['token'],'word':record['word']})
+      .on('click', opinion);
+    raw2.append(audio,ratingLabel,thumb,thumb_down);
+    clipContainer.append(raw1,raw2);
+    return clipContainer;
+  };
+  var onSuccess = function(stream) {
+    window.mediaRecorder = new MediaRecorder(stream);
+    var stopRecord = function() {
+      clearTimeout(document.recordTimeout);
+      if (mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
+      console.log(mediaRecorder.state);
+      console.log("recorder stopped");
+      $('.record').removeClass('active');
+
+    }
+      media = function() {
+    if (window.matchMedia("(min-width:1050px)").matches) return 'desktop';
+    return 'mobile';
+  }();
+        //determine which events to use
+    var startEventType = 'mousedown',
+        endEventType   = 'mouseup';
+
+    if (media=='mobile') {
+        startEventType = 'touchstart';
+        endEventType   = 'touchend';
+    }
+
+    record.on(startEventType, function() {
+      $('.record').addClass('active');
+      document.recordTimeout = window.setTimeout(function() {
+        stopRecord();
+      }, 2500)
+      mediaRecorder.start();
+      console.log(mediaRecorder.state);
+      console.log("------------------recorder started");
+    });
+    record.on(endEventType, function() {
+      console.log('***************endEventType');
+      stopRecord();
+    });
+    var chunks = [];
+    mediaRecorder.ondataavailable = function(e) {
+      console.log('on data available');
+      chunks.push(e.data);
+    }
+
+    mediaRecorder.onstop = function(e) {
+      $('.clip.first').remove();
+      var clipContainer = createClip({ 'token': '{{user_token}}','first': '{{first}}',
+        'last':'{{last}}' ,'rating':0, 'photo':'{{photo}}'})
+      $(soundClips).prepend($(clipContainer).addClass('first'));
+      var blob = new Blob(chunks, { 'type': 'audio/ogg; codecs=opus' });
+      chunks = [];
+      var audioURL = window.URL.createObjectURL(blob);
+      $(clipContainer).find('audio').attr('src', audioURL);
+      var fd = new FormData();
+      fd.append('user', '{{user_token}}');
+      fd.append('word', '{{word}}');
+      fd.append('blob', blob);
+      $.ajax({
+        type: 'POST',
+        url: '../../../record/',
+        data: fd,
+        processData: false,
+        contentType: false
+      }).then(function(res) {
+        console.log(res);
+      });
+    }
+  }
+  var onError = function(err) {
+    console.log('The following gUM error occured: ' + err);
+  };
+  //Finally for this section, we set up the basic gUM structure:
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    //console.log('getUserMedia supported.');
+    navigator.mediaDevices.getUserMedia({
+      audio: true,
+    }).then(onSuccess, onError);
+  } else {
+    console.log('getUserMedia not supported on your browser!');
+  }
+  </script>
+</body>
+
+</html>
