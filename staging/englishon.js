@@ -6633,9 +6633,7 @@ Injector = function (paragraphs) {
         }
       }
       if (q.replacement.hasClass('eo-expired')) {
-        q.replacement.after(e$('<button>').addClass('eo-record').html('<i class="fa fa-microphone" aria-hidden="true"></i>').on('click', function (e) {
-          window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + q.qobj.data.word, '_blank', 'width=315, height=475');
-        }));
+        q.qobj.addRecordButton();
       }
       if (q.qobj.data.tried.length && q.qobj.data.tried[0] != q.qobj.practicedWord) {
         console.log('first answer was wrong...');
@@ -6797,6 +6795,12 @@ AbstractQuestion.prototype.replacement = function () {
   this.bindInput();
   return this.element;
 };
+AbstractQuestion.prototype.addRecordButton = function (element) {
+  this.element.after(e$('<button>').addClass('eo-record').html('<i class="fa fa-headphones" aria-hidden="true"></i>').on('click', function (e) {
+    var str = document.englishonConfig.media == 'mobile' ? '' : 'width= 315 height = 475';
+    window.recordings_win = window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + this.data.word, '_blank', str);
+  }.bind(this)));
+};
 AbstractQuestion.prototype.createElement = function () {
   var textWithPreposition = this.data.preposition + this.data.hint;
   var prepositionClass = this.data.preposition ? 'preposition' : '';
@@ -6887,9 +6891,7 @@ AbstractQuestion.prototype.closeUnanswered = function () {
 };
 AbstractQuestion.prototype.closeAnswered = function () {
   this.animateStateChange('eo-answered', 'eo-active', this.element.find('.eo-correct').outerWidth());
-  this.element.after(e$('<button>').addClass('eo-record').html('<i class="fa fa-microphone" aria-hidden="true"></i>').on('click', function (e) {
-    window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + this.data.word, '_blank', 'width=315, height=475');
-  }.bind(this)));
+  this.addRecordButton();
 };
 AbstractQuestion.prototype.isCorrect = function (answer) {
   var _iteratorNormalCompletion = true;
