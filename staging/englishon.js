@@ -6797,7 +6797,7 @@ AbstractQuestion.prototype.replacement = function () {
 };
 AbstractQuestion.prototype.addRecordButton = function (element) {
   this.element.after(e$('<button>').addClass('eo-record').html('<i class="fa fa-headphones" aria-hidden="true"></i>').on('click', function (e) {
-    var str = document.englishonConfig.media == 'mobile' ? '' : 'width= 315 height = 475';
+    var str = document.englishonConfig.media == 'mobile' ? '' : 'width= 345 height = 475';
     window.recordings_win = window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + this.data.word, '_blank', str);
   }.bind(this)));
 };
