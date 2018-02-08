@@ -6436,7 +6436,9 @@ UserInfo = function () {
         e$('#eo-live-main').toggleClass('hidden');
         e$('#vocabulary').toggleClass('hidden');
         if (!e$('#vocabulary').hasClass('hidden')) {
-          document.tour.hide();
+          if (document.tour) {
+            document.tour.hide();
+          }
           e$('#eo-live').addClass('vocabulary-open');
           e$('#vocabulary-content-list').html('');
           this.fetchVocabulary();
@@ -9262,9 +9264,7 @@ function englishon() {
   if ((window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') && !e$('#developement-only-version').length) {
     return;
   }
-  // if (window.location.host == 'www.kolhazman.co.il' && !e$('#developement-only-version').length && window.location.pathname!='/241200') {
-  //   return;
-  // }
+
   //END OF TEMP LINES
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
