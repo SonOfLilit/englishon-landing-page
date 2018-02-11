@@ -9741,12 +9741,13 @@ var EnglishOnMenu = function () {
     e$('body').addClass('logged').removeClass('guest');
     document.englishonBackend.getUserProfile(document.englishonConfig.token).then(function (profile) {
       configStorage.set({ photo: profile.photo, first: profile.first, last: profile.last });
-      if (document.englishonConfig.photo) {
+      if (document.englishonConfig.photo == 'aws3') {
         // using always the amazon source was not good, because when uploading a new image it didn't updated immediatly. probably cashed.
         var source = window.new_photo ? new_photo : PHOTO_BUCKET + document.englishonConfig.token;
         e$('.eo-account-img, .eo-area .circle').removeClass('no-image').html('').css("background-image", "url(" + source + ")");
       } else {
-        e$('.eo-account-img, .eo-area .circle').removeClass('no-image').css("background-image", "none").html('').append(e$('<div>').addClass('avatar-circle').append(e$('<span>').addClass('initials').text(document.englishonConfig.email[0] + document.englishonConfig.email[0])));
+        e$('.eo-account-img, .eo-area .circle').removeClass('no-image').css({ "background-image": "none" }).html('').append(e$('<div>').addClass('avatar-circle').append(e$('<span>').addClass('initials').text(document.englishonConfig.email[0])));
+        e$('.avatar-circle').css({ "background-color": document.englishonConfig.photo });
       }
       if (document.englishonConfig.first && document.englishonConfig.last) {
         e$('.eo-account-img, .eo-area .circle').find('.initials').text(document.englishonConfig.first[0] + document.englishonConfig.last[0]);

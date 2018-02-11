@@ -3340,7 +3340,6 @@ it's top left values will re-computed everytime progress bar is moving*/
   cursor: pointer;
   width: 38px;
   height: 38px;
-  background-color: blue;
   text-align: center;
   border-radius: 50%;
   -webkit-border-radius: 50%;
