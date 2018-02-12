@@ -3406,6 +3406,7 @@ it's top left values will re-computed everytime progress bar is moving*/
     height: 250px;
     top: 55px;
     left: 0px;
+    margin: 0px;
   }
 
   #eo-menu,
