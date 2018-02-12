@@ -3415,6 +3415,7 @@ it's top left values will re-computed everytime progress bar is moving*/
     height: 100%;
     top: 0px;
     left: 0px;
+    margin: 0px;
   }
 
   .eo-button .eo-logo {
