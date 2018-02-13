@@ -2258,10 +2258,8 @@ eo-signout-layout .signout {
 }
 
 #options-button {
-  width: 40px;
-  height: 40px;
-  font-size: 24px;
-  margin-top: 15px;
+  width: 25px;
+  height: 25px;
 }
 #options-button:hover {
   color: #2cc6a8;
