@@ -1010,10 +1010,11 @@ div.eo-question.highlighted {
 .eo-record {
   border: none;
   background-color: white;
-  color: #eceff1;
+  color: #cfd3d6;
 }
 .eo-record:hover {
   color: #2cc6a8;
+  outline: none;
 }
 
 /* in open questions, when you have the wrong keyboard language */
