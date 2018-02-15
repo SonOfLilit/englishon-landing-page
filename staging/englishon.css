@@ -1016,6 +1016,9 @@ div.eo-question.highlighted {
   color: #2cc6a8;
   outline: none;
 }
+.eo-record:focus {
+  outline: none;
+}
 
 /* in open questions, when you have the wrong keyboard language */
 .eo-layout-warning {
@@ -3418,6 +3421,7 @@ it's top left values will re-computed everytime progress bar is moving*/
   image-orientation: from-image;
   /* Use EXIF data from the image */
   background-size: cover;
+  background-position: center;
 }
 #eo-dlg-options .p-image {
   position: absolute;
@@ -3445,6 +3449,7 @@ it's top left values will re-computed everytime progress bar is moving*/
 #eo-dlg-options #eo-profile div.circle {
   width: 98px;
   height: 98px;
+  background-position: center;
 }
 #eo-dlg-options #eo-profile .p-image {
   top: 137px;
