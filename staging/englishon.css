@@ -2385,6 +2385,9 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   background-size: cover;
   background-position: center;
 }
+.eo-account-img.photo {
+  overflow: hidden;
+}
 
 #eo-picker-footer {
   height: 29px;

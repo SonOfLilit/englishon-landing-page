@@ -9817,7 +9817,6 @@ var EnglishOnMenu = function () {
     e$('#eo-login-password').on('keydown', function (e) {
       if (e.keyCode == 13) {
         document.menu.loginByMail();
-        //e$('#eo-mail-login-btn').click();
       }
     });
     e$('#eo-mail-login-btn').on('click', this.loginByMail.bind(this));
@@ -9832,13 +9831,15 @@ var EnglishOnMenu = function () {
       }
     });
     //font awesome svg elements probably repaint, and binded events are gone. so this interval solved the problem.
-    setIntervalX('bind_upload_event', function () {
+    setIntervalX('bind_awesome_events', function () {
+      e$('#options-button').off('click');
+      e$('.upload2-btn').off('click');
       e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
       e$('#options-button').on('click', document.eoDialogs.toggleDialogTrigger);
       e$(".upload2-btn").on('click', function () {
         e$(".eo-upload2").click();
       });
-    }, 1000, 1);
+    }, 1000, 5);
   };
   this.displayMenuMessages = function () {
     switch_text = JSON.parse(document.englishonConfig.isActive) ? 'On' : 'Off';
@@ -10006,9 +10007,17 @@ var EnglishOnMenu = function () {
       if (document.englishonConfig.photo == 'aws3') {
         // using always the amazon source was not good, because when uploading a new image it didn't updated immediatly. probably cashed.
         var source = window.new_photo ? new_photo : PHOTO_BUCKET + document.englishonConfig.token;
-        e$('.eo-account-img, .eo-area .circle').removeClass('no-image').html('').css("background-image", "url(" + source + ")");
+        loadImage(source, function (img) {
+          e$('.eo-account-img').removeClass('no-image').html('').addClass('photo').append(img);
+          e$('.eo-account-img').find('*').data('elementToShowOnClick', 'eo-profile');
+        }, { maxWidth: 30, maxHeight: 30, cover: true, orientation: true } // Options
+        );
+        loadImage(source, function (img) {
+          e$('.eo-area .circle').removeClass('no-image').html('').append(img);
+        }, { maxWidth: 82, maxHeight: 82, cover: true, orientation: true } // Options
+        );
       } else {
-        e$('.eo-account-img, .eo-area .circle').removeClass('no-image').css({ "background-image": "none" }).html('').append(e$('<div>').addClass('avatar-circle').append(e$('<span>').addClass('initials').text(document.englishonConfig.email[0])));
+        e$('.eo-account-img, .eo-area .circle').removeClass('photo').removeClass('no-image').html('').append(e$('<div>').addClass('avatar-circle').append(e$('<span>').addClass('initials').text(document.englishonConfig.email[0])));
         e$('.avatar-circle').css({ "background-color": document.englishonConfig.photo });
       }
       if (document.englishonConfig.first && document.englishonConfig.last) {
@@ -10020,7 +10029,6 @@ var EnglishOnMenu = function () {
         e$('#eo-first-name, #eo-last-name').val('');
         e$('#eo-account-name').html(document.englishonConfig.email);
       }
-      //e$('.eo-account-img').data('elementToShowOnClick', 'eo-profile');
       e$('.eo-account-img').find('*').data('elementToShowOnClick', 'eo-profile');
     });
   };
@@ -10082,8 +10090,11 @@ var EnglishOnMenu = function () {
           //e$('#eo-dlg-options .circle').html('').css("background-image", "url(" + new_photo + ")");
 
           loadImage(input.files[0], function (img) {
+            document.photo_with_orientation = img;
             e$('#eo-dlg-options .circle').html('').css("background-image", 'url("null")').append(img);
-          }, { maxWidth: 82, maxHeight: 82, cover: true, orientation: true } // Options
+          },
+          //{ minWidth:82, minHeight: 82, cover: true, orientation: true} // Options
+          { minWidth: 92, minHeight: 92, contain: true, orientation: true } // Options
           );
         };
 
