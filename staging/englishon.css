@@ -2861,6 +2861,7 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 }
 #eo-dlg-options #eo-profile .profile-row3 {
   height: 100px;
+  direction: ltr;
 }
 #eo-dlg-options #eo-profile .profile-row4 {
   height: 60px;

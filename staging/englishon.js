@@ -10091,10 +10091,10 @@ var EnglishOnMenu = function () {
 
           loadImage(input.files[0], function (img) {
             document.photo_with_orientation = img;
-            e$('#eo-dlg-options .circle').html('').css("background-image", 'url("null")').append(img);
+            e$('#eo-dlg-options .circle').html('').append(img);
           },
           //{ minWidth:82, minHeight: 82, cover: true, orientation: true} // Options
-          { minWidth: 92, minHeight: 92, contain: true, orientation: true } // Options
+          { maxWidth: 82, maxHeight: 82, cover: true, orientation: true } // Options
           );
         };
 
