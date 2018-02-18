@@ -10012,7 +10012,7 @@ var EnglishOnMenu = function () {
           e$('.eo-account-img').find('*').data('elementToShowOnClick', 'eo-profile');
         },
         //{ maxWidth:30, maxHeight: 30, cover: true, orientation: true} // Options
-        { maxWidth: 30, canvas: true, orientation: true } // Options
+        { maxWidth: 30, canvas: true, pixelRatio: window.devicePixelRatio, downsamplingRatio: 0.5, orientation: true } // Options
         );
         loadImage(source, function (img) {
           e$('.eo-area .circle').removeClass('no-image').html('').append(img);
