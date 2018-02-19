@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>cropit</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="../dist/jquery.cropit.js"></script>
+  <style>
+  .cropit-preview {
+    background-color: #f8f8f8;
+    background-size: cover;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-top: 7px;
+    width: 250px;
+    height: 250px;
+  }
+
+  .cropit-preview-image-container {
+    cursor: move;
+  }
+
+  .image-size-label {
+    margin-top: 10px;
+  }
+
+  input,
+  .export {
+    display: block;
+  }
+
+  button {
+    margin-top: 10px;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="image-editor">
+    <input type="file" class="cropit-image-input">
+    <div class="cropit-preview"></div>
+    <div class="image-size-label"> Resize image </div>
+    <input type="range" class="cropit-image-zoom-input">
+    <button class="rotate-ccw">Rotate counterclockwise</button>
+    <button class="rotate-cw">Rotate clockwise</button>
+    <button class="export">Export</button>
+    <button class="save">Save in Amazon</button>
+    <button class="amazon">Show form Amazon</button>
+  </div>
+  <script>
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+      function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+        // Only send the token to relative URLs i.e. locally.
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+      }
+    }
+  });
+  $(function() {
+    window.save = function() {
+      var fd = new FormData();
+      fd.append('photo', $('img'));
+      fd.append('user_token', '1096a5a28bf345b72a17f901e0b7573e946524ac');
+      //the backend ajax setup didn't work here,it not build for files delivery
+      //consider compatible it
+      $.ajax({
+        type: 'POST',
+        url: 'englishon-staging.herokuapp.com/profile/tokens/profile/',
+        data: fd,
+        processData: false,
+        contentType: false
+      }).then(function(res) {
+        console.log('b"h, ' + res);
+        if (photo != '') {
+          e$('.eo-account-img').css("background-image", "url(" + new_photo + ")");
+        }
+      });
+    }
+    $('.save').on('click', function() {
+      window.save();
+    })
+    $('.image-editor').cropit({
+      imageState: {
+        src: 'http://lorempixel.com/500/400/',
+      },
+    });
+    $('.rotate-cw').click(function() {
+      $('.image-editor').cropit('rotateCW');
+    });
+    $('.rotate-ccw').click(function() {
+      $('.image-editor').cropit('rotateCCW');
+    });
+    $('.export').click(function() {
+      var imageData = $('.image-editor').cropit('export');
+      window.open(imageData);
+    });
+  });
+  </script>
+</body>
+
+</html>
