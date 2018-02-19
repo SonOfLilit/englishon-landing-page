@@ -9840,6 +9840,14 @@ var EnglishOnMenu = function () {
         e$(".eo-upload2").click();
       });
     }, 1000, 5);
+    e$('#eo-first-name, #eo-last-name').on('keyup', function (e) {
+      e = e$(e.target);
+      if (e.val() != '') {
+        e.addClass('not-empty');
+      } else {
+        e.removeClass('not-empty');
+      }
+    });
   };
   this.displayMenuMessages = function () {
     switch_text = JSON.parse(document.englishonConfig.isActive) ? 'On' : 'Off';
@@ -10025,8 +10033,8 @@ var EnglishOnMenu = function () {
       if (document.englishonConfig.first && document.englishonConfig.last) {
         e$('.eo-account-img, .eo-area .circle').find('.initials').text(document.englishonConfig.first[0] + document.englishonConfig.last[0]);
         e$('#eo-account-name').html(document.englishonConfig.first + '&nbsp;' + document.englishonConfig.last);
-        e$('#eo-first-name').val(document.englishonConfig.first);
-        e$('#eo-last-name').val(document.englishonConfig.last);
+        e$('#eo-first-name').val(document.englishonConfig.first).addClass('not-empty');
+        e$('#eo-last-name').val(document.englishonConfig.last).addClass('not-empty');
       } else {
         e$('#eo-first-name, #eo-last-name').val('');
         e$('#eo-account-name').html(document.englishonConfig.email);

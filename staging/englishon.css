@@ -2842,16 +2842,34 @@ source: https://codepen.io/designcouch/pen/Atyop*/
   left: 50%;
   margin-left: -120px;
   margin-top: -125px;
-  cursor: pointer;
 }
 #eo-dlg-options #eo-dlg-options-main, #eo-dlg-options #eo-site-languages, #eo-dlg-options #eo-dlg-options-logged {
   text-align: center;
+  cursor: pointer;
 }
 #eo-dlg-options #eo-dlg-options-logged .Grid-cell {
   border-bottom: 1px solid #d7dee3;
 }
 #eo-dlg-options .option-dlg-guest:hover, #eo-dlg-options .option-dlg-logged:hover, #eo-dlg-options .option:hover, #eo-dlg-options .option:hover {
   background-color: #b8c6cf;
+}
+#eo-dlg-options #eo-profile #eo-first-name, #eo-dlg-options #eo-profile #eo-last-name {
+  background-color: white;
+  border: none;
+  cursor: pointer;
+}
+#eo-dlg-options #eo-profile #eo-first-name:focus, #eo-dlg-options #eo-profile #eo-last-name:focus {
+  border: solid 1px #2cc6a8;
+  outline: none;
+}
+#eo-dlg-options #eo-profile #eo-first-name.not-empty, #eo-dlg-options #eo-profile #eo-last-name.not-empty {
+  background-color: initial;
+}
+#eo-dlg-options #eo-profile ::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #cac5c5;
+  opacity: 1;
+  /* Firefox */
 }
 #eo-dlg-options #eo-profile .profile-row1 {
   height: 60px;
@@ -3442,14 +3460,6 @@ it's top left values will re-computed everytime progress bar is moving*/
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   color: #999;
 }
-#eo-dlg-options #eo-upload-photo div.circle {
-  width: 128px;
-  height: 128px;
-}
-#eo-dlg-options #eo-upload-photo .p-image {
-  top: 137px;
-  left: 150px;
-}
 #eo-dlg-options #eo-profile div.circle {
   width: 98px;
   height: 98px;
@@ -3458,6 +3468,7 @@ it's top left values will re-computed everytime progress bar is moving*/
 #eo-dlg-options #eo-profile .p-image {
   top: 137px;
   left: 150px;
+  cursor: pointer;
 }
 #eo-dlg-options #eo-profile #profile-btn {
   height: 37px;
@@ -3570,6 +3581,7 @@ it's top left values will re-computed everytime progress bar is moving*/
     height: 250px;
     top: 55px;
     left: 0px;
+    margin: 0px;
   }
 
   #eo-menu,
@@ -3579,6 +3591,7 @@ it's top left values will re-computed everytime progress bar is moving*/
     height: 100%;
     top: 0px;
     left: 0px;
+    margin: 0px;
   }
 
   .eo-button .eo-logo {
