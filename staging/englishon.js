@@ -9507,7 +9507,7 @@ function englishon() {
     console.log('BROWSER NOT SUPPORTED.');
     return;
   }
-  sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il'];
+  sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il', 'localhost:8080', 'englishon-staging.herokuapp.com', 'englishon.herokuapp.com'];
   if (sites.indexOf(window.location.host) == -1) {
     return;
   }
