@@ -5555,7 +5555,7 @@ var WEBSITE_I18N = {
     DEFAULT_TARGET_LANGUAGE: 'en',
     SITE_LANGUAGE: 'hebrew'
   },
-  'localhost:8080': {
+  'localhost': {
     DIRECTION: LTR,
     DEFAULT_TARGET_LANGUAGE: 'en',
     SITE_LANGUAGE: 'hebrew'
