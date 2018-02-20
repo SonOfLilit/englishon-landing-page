@@ -8124,6 +8124,9 @@ PageOverlay.prototype.setReporter = function (backend) {};
 PageOverlay.prototype.fetchLinkStates = function (backend) {
   return Promise.resolve();
 };
+PageOverlay.prototype.fetchQuestions = function (backend) {
+  return Promise.resolve();
+};
 PageOverlay.prototype.insertContent = function (element) {
   e$('body').append(element);
 };
