@@ -10110,9 +10110,9 @@ var EnglishOnMenu = function () {
         contentType: false
       }).then(function (res) {
         if (document.returnToRecords) {
-          window.history.back();
+          //window.history.back();
           //record/recordtemplate/c12e88943369984634e4b9c12a020357ef7cb69e/every/hebrew/
-          //window.location.pathname = 'record/recordtemplate/'+document.englishonConfig.token+ '/hebrew/';
+          window.location.pathname = 'record/recordtemplate/' + document.englishonConfig.token + '/hebrew/' + document.recordTemplateWord;
         }
         console.log('b"h, ' + res);
         if (photo != '') {
