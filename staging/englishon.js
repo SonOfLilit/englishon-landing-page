@@ -10111,7 +10111,8 @@ var EnglishOnMenu = function () {
       }).then(function (res) {
         if (document.returnToRecords) {
           window.history.back();
-          window.location.pathname = 'tokens/login/' + document.englishonConfig.token + '/hebrew/';
+          //record/recordtemplate/c12e88943369984634e4b9c12a020357ef7cb69e/every/hebrew/
+          //window.location.pathname = 'record/recordtemplate/'+document.englishonConfig.token+ '/hebrew/';
         }
         console.log('b"h, ' + res);
         if (photo != '') {
