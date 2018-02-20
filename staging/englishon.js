@@ -9509,10 +9509,10 @@ function englishon() {
       };
     }
   } else {
+    window.PRONUNCIATION_BUCKET = 'https://s3-eu-west-1.amazonaws.com/eo.pronunciation/';
+    window.PHOTO_BUCKET = 'https://s3-eu-west-1.amazonaws.com/eo.photo/';
     window.staticUrl = function (resource) {
       return 'http://www.englishon.org/v1/' + resource;
-      window.PRONUNCIATION_BUCKET = 'https://s3-eu-west-1.amazonaws.com/eo.pronunciation/';
-      window.PHOTO_BUCKET = 'https://s3-eu-west-1.amazonaws.com/eo.photo/';
     };
   }
   //function to retriave info about the browser
@@ -9957,6 +9957,9 @@ var EnglishOnMenu = function () {
         document.menu.uiLoginActions('logged');
         document.menu.displayMenuMessages();
         if (res.status == 'logged_in') {
+          if (document.returnToRecords) {
+            window.history.back();
+          }
           document.eoDialogs.hideDialogs(1000);
         }
         //currently it can't happen in login, becuase click on button is turning on englishon if it's none user
