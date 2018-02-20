@@ -8230,6 +8230,7 @@ PageOverlay.prototype.powerOn = function () {
   this.shortcut();
   e$('.eo-question').eq(0).addClass('next');
 };
+PageOverlay.prototype.powerOff = function () {};
 PageOverlay.prototype.showQuestions = function () {
   //a touch in shruerm css... increase space between lines
   e$('body').addClass('question-injected');
