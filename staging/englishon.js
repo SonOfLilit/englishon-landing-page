@@ -10112,7 +10112,7 @@ var EnglishOnMenu = function () {
         if (document.returnToRecords) {
           //window.history.back();
           //record/recordtemplate/c12e88943369984634e4b9c12a020357ef7cb69e/every/hebrew/
-          window.location.pathname = 'record/recordtemplate/' + document.englishonConfig.token + '/hebrew/' + document.recordTemplateWord;
+          window.location.pathname = 'record/recordtemplate/' + document.englishonConfig.token + '/' + document.recordTemplateWord + '/hebrew';
         }
         console.log('b"h, ' + res);
         if (photo != '') {
