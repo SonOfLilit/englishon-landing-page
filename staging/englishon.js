@@ -9957,9 +9957,6 @@ var EnglishOnMenu = function () {
         document.menu.uiLoginActions('logged');
         document.menu.displayMenuMessages();
         if (res.status == 'logged_in') {
-          if (document.returnToRecords) {
-            window.history.back();
-          }
           document.eoDialogs.hideDialogs(1000);
         }
         //currently it can't happen in login, becuase click on button is turning on englishon if it's none user
@@ -10112,6 +10109,9 @@ var EnglishOnMenu = function () {
         processData: false,
         contentType: false
       }).then(function (res) {
+        if (document.returnToRecords) {
+          window.history.back();
+        }
         console.log('b"h, ' + res);
         if (photo != '') {
           e$('.eo-account-img').css("background-image", "url(" + new_photo + ")");
