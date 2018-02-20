@@ -8900,6 +8900,22 @@ ScraperFactory = function (location) {
       return new kolhazmanScraper();
     }
   }
+  englishon_sites = ['localhost:8080', 'englishon.herokuapp.com', 'englishon-staging.herokuapp.com'];
+  if (englishon_sites.indexOf(location.host) != -1) {
+    return new englishonScraper();
+  }
+};
+
+var englishonScraper = function () {
+  this.getHost = function () {
+    return window.location.host;
+  };
+  this.scrape = function () {
+    url = window.location.host.replace(/#.*$/, '');
+    var subtitle = [];
+    var bodytext = [];
+    return new PageOverlay(url, subtitle, bodytext);
+  };
 };
 
 var kolhazmanFrontScraper = function () {
