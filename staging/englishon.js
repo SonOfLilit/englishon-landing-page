@@ -5554,6 +5554,21 @@ var WEBSITE_I18N = {
     DIRECTION: LTR,
     DEFAULT_TARGET_LANGUAGE: 'en',
     SITE_LANGUAGE: 'hebrew'
+  },
+  'localhost:8080': {
+    DIRECTION: LTR,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'hebrew'
+  },
+  'englishon-staging.herokuapp.com': {
+    DIRECTION: LTR,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'hebrew'
+  },
+  'englishon.herokuapp.com': {
+    DIRECTION: LTR,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'hebrew'
   }
 };
 var I18N = WEBSITE_I18N[location.hostname];
