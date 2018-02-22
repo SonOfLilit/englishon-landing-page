@@ -5738,6 +5738,26 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
       contentType: 'application/json',
       dataType: 'json',
       beforeSend: function (xhr, settings) {
+        function getCookie(name) {
+          var cookieValue = null;
+          if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) == name + '=') {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+              }
+            }
+          }
+          return cookieValue;
+        }
+        //if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+        if (true) {
+          // Only send the token to relative URLs i.e. locally.
+          xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
         xhr.setRequestHeader('Authorization', 'Token ' + token);
       }
     };
@@ -5760,6 +5780,10 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
       return e$.ajax(requestData);
     }
   });
+};
+
+HerokuBackend.prototype.isRegistered = function (token) {
+  return this.ajax("GET", "/tokens/isRegistered/");
 };
 
 HerokuBackend.prototype.getUserProfile = function (token) {
@@ -7070,6 +7094,19 @@ AbstractQuestion.prototype.addRecordButton = function (element) {
   this.element.after(e$('<button>').addClass('eo-record').html('<i class="fas fa-volume-up"></i>').on('click', function (e) {
     var str = document.englishonConfig.media == 'mobile' ? '' : 'width= 345 height = 475';
     window.recordings_win = window.open(document.englishonConfig.backendUrl + '/record/recordtemplate/' + document.englishonConfig.token + '/' + this.data.word + '/' + document.englishonConfig.siteLanguage, '_blank', str);
+    if (!document.englishonConfig.email) {
+      console.log('now bind the event to check if i registered already' + document.englishonConfig.token);
+      $(window).one('focus', function () {
+        //alert('now check if i registered already!' + document.englishonConfig.token);
+        document.englishonBackend.isRegistered(document.englishonConfig.token).then(function (res) {
+          if (res.email) {
+            configStorage.set({ email: res.email }).then(function () {
+              document.menu.uiLoginActions();
+            });
+          }
+        });
+      });
+    }
   }.bind(this)));
 };
 AbstractQuestion.prototype.createElement = function () {
@@ -9557,6 +9594,10 @@ function englishon() {
   //END OF TEMP LINES
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
+  // inner_sites = ['englishon.herokuapp.com''localhost:8080','englishon-staging.herokuapp.com'];
+  // if (inner_sites.indexOf(window.location.host)!= -1){
+
+  // }
   if (document.__englishon__) {
     console.log("EnglishOn already loaded");
     return;
@@ -9871,7 +9912,7 @@ var EnglishOnMenu = function () {
       e$('.upload2-btn').off('click');
       e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
       e$('#options-button').on('click', document.eoDialogs.toggleDialogTrigger);
-      e$(".upload2-btn").on('click', function () {
+      e$(".upload2-btn").on('keydown', function () {
         e$(".eo-upload2").click();
       });
     }, 1000, 5);
@@ -10102,16 +10143,15 @@ var EnglishOnMenu = function () {
       fd.append('last_name', last_name);
       //the backend ajax setup didn't work here,it not build for files delivery
       //consider compatible it
-      $.ajax({
+      e$.ajax({
         type: 'POST',
         url: document.englishonConfig.backendUrl + '/tokens/profile/',
         data: fd,
         processData: false,
         contentType: false
       }).then(function (res) {
-        if (document.returnToRecords) {
+        if (document.returnToRecordings) {
           //window.history.back();
-          //record/recordtemplate/c12e88943369984634e4b9c12a020357ef7cb69e/every/hebrew/
           window.location.pathname = 'record/recordtemplate/' + document.englishonConfig.token + '/' + document.recordTemplateWord + '/hebrew';
         }
         console.log('b"h, ' + res);
@@ -10328,7 +10368,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     return;
   }
   pinBanner();
-  e$('body').addClass(scraper.getHost().replace(/\./g, '-')).addClass('eo-direction-' + I18N.DIRECTION);
+  e$('body').addClass(scraper.getHost().replace(/\./g, '-').replace(':', '-')).addClass('eo-direction-' + I18N.DIRECTION);
   document.overlay = scraper.scrape();
   document.overlay.showButtons();
   window.upgrade();
