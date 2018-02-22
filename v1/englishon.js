@@ -9736,8 +9736,8 @@ window.pinBanner = function () {
     englishon_banner = new function () {
       var video = e$('<div id="eo-banner">').append(e$('<video/>', {
         src: staticUrl('videos/banner_' + scraper.getHost() + '.mp4'),
-        type: 'video/mp4',
-        autoplay: true,
+        //type: 'video/mp4',
+        //autoplay: true,
         muted: true,
         loop: true
       }));
@@ -9754,6 +9754,8 @@ window.pinBanner = function () {
       e$('#sidebar').prepend(video);
       e$('body').prepend(movie);
       e$('#eo-movie').addClass('hidden');
+      //on mobile autoPlay is not working
+      e$('#eo-banner').find('video').get(0).play();
       e$('#eo-banner').on('click', function () {
         if (document.englishonConfig.isUser) {
           document.playMovie();
