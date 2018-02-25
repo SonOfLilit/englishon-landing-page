@@ -9755,7 +9755,14 @@ window.pinBanner = function () {
         controls: true,
         controlsList: 'nodownload'
       })).append(e$('<div>').addClass('eo-close close-movie').on('click', window.stopMovie));
-      e$('#sidebar').prepend(video);
+      if (window.location.pathname.indexOf('241200') != -1) {
+        e$('body').append(e$('<button>').text('englishon test banner').on('click', function () {
+          e$('#eo-banner').find('video').get(0).play();
+        }));
+        e$('body').append(video);
+      } else {
+        e$('#sidebar').prepend(video);
+      }
       e$('body').prepend(movie);
       e$('#eo-movie').addClass('hidden');
       //on mobile autoPlay is not working
