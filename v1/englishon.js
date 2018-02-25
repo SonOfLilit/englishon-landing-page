@@ -9744,7 +9744,8 @@ window.pinBanner = function () {
         //autoplay: true,
         muted: true,
         loop: true,
-        preload: 'auto'
+        preload: 'auto',
+        controls: 'controls'
       }));
       var movie = e$('<div id="eo-movie">').append(e$('<video/>', {
         src: staticUrl('videos/demo_v2.mp4'),
