@@ -9161,6 +9161,10 @@ function englishon() {
   //END OF TEMP LINES
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
+  // inner_sites = ['englishon.herokuapp.com''localhost:8080','englishon-staging.herokuapp.com'];
+  // if (inner_sites.indexOf(window.location.host)!= -1){
+
+  // }
   if (document.__englishon__) {
     console.log("EnglishOn already loaded");
     return;
@@ -9756,6 +9760,12 @@ window.pinBanner = function () {
       e$('#eo-movie').addClass('hidden');
       //on mobile autoPlay is not working
       e$('#eo-banner').find('video').get(0).play();
+      setTimeout(function () {
+        e$('#eo-banner').find('video').get(0).play();
+      }, 5000);
+      setTimeout(function () {
+        e$('#eo-banner').find('video').get(0).play();
+      }, 10000);
       e$('#eo-banner').on('click', function () {
         if (document.englishonConfig.isUser) {
           document.playMovie();
