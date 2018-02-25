@@ -9760,12 +9760,7 @@ window.pinBanner = function () {
       e$('#eo-movie').addClass('hidden');
       //on mobile autoPlay is not working
       e$('#eo-banner').find('video').get(0).play();
-      setTimeout(function () {
-        e$('#eo-banner').find('video').get(0).play();
-      }, 5000);
-      setTimeout(function () {
-        e$('#eo-banner').find('video').get(0).play();
-      }, 10000);
+
       e$('#eo-banner').on('click', function () {
         if (document.englishonConfig.isUser) {
           document.playMovie();
