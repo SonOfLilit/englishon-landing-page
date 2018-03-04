@@ -5652,7 +5652,12 @@ Authenticator.prototype.linkAccounts = function (token, email, google_sec_token)
 };
 Authenticator.prototype.register = function (user) {
   console.log('register by mail)');
-  var res = e$.post(this.base + '/tokens/register/', user, function (res) {
+  inner_domains = ['localhost:8080', 'englishon-staging.herokuapp.com', 'englishon.herokuapp.com'];
+  data = e$.extend({ 'our_domain': '' }, user);
+  if (inner_domains.indexOf(window.location.host) != -1) {
+    data['our_domain'] = true;
+  }
+  var res = e$.post(this.base + '/tokens/register/', data, function (res) {
     return res;
   });
   return res;
@@ -7100,7 +7105,9 @@ AbstractQuestion.prototype.addRecordButton = function (element) {
         //alert('now check if i registered already!' + document.englishonConfig.token);
         document.englishonBackend.isRegistered(document.englishonConfig.token).then(function (res) {
           if (res.email) {
-            configStorage.set({ email: res.email }).then(function () {
+            window.localStorage.setItem('token', res.token);
+            document.englishonBackend.token = res.token;
+            configStorage.set({ email: res.email, token: res.token }).then(function () {
               document.menu.uiLoginActions();
             });
           }
@@ -9594,10 +9601,6 @@ function englishon() {
   //END OF TEMP LINES
   console.log('Browser info: ' + browserInfo.browser + ' ' + browserInfo.version);
   var DEFAULT_BACKEND_URL = 'https://englishon.herokuapp.com';
-  // inner_sites = ['englishon.herokuapp.com''localhost:8080','englishon-staging.herokuapp.com'];
-  // if (inner_sites.indexOf(window.location.host)!= -1){
-
-  // }
   if (document.__englishon__) {
     console.log("EnglishOn already loaded");
     return;
@@ -9912,7 +9915,7 @@ var EnglishOnMenu = function () {
       e$('.upload2-btn').off('click');
       e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
       e$('#options-button').on('click', document.eoDialogs.toggleDialogTrigger);
-      e$(".upload2-btn").on('keydown', function () {
+      e$(".upload2-btn").on('click', function () {
         e$(".eo-upload2").click();
       });
     }, 1000, 5);
@@ -9999,6 +10002,10 @@ var EnglishOnMenu = function () {
         document.menu.displayMenuMessages();
         if (res.status == 'logged_in') {
           document.eoDialogs.hideDialogs(1000);
+          if (document.returnToRecordings) {
+            //window.history.back();
+            window.location.pathname = 'record/recordtemplate/' + document.englishonConfig.token + '/' + document.recordTemplateWord + '/hebrew';
+          }
         }
         //currently it can't happen in login, becuase click on button is turning on englishon if it's none user
         if (!document.englishonConfig.isUser) {
@@ -10094,9 +10101,7 @@ var EnglishOnMenu = function () {
         loadImage(source, function (img) {
           e$('.eo-account-img').removeClass('no-image').html('').addClass('photo').append(img);
           e$('.eo-account-img').find('*').data('elementToShowOnClick', 'eo-profile');
-        },
-        //{ maxWidth:30, maxHeight: 30, cover: true, orientation: true} // Options
-        { maxWidth: 30, canvas: true, pixelRatio: window.devicePixelRatio, downsamplingRatio: 0.5, orientation: true } // Options
+        }, { maxWidth: 30, maxHeight: 30, cover: true, orientation: true } // Options
         );
         loadImage(source, function (img) {
           e$('.eo-area .circle').removeClass('no-image').html('').append(img);
@@ -10451,6 +10456,10 @@ function receiveMessage(event) {
     }
     configStorage.set({ email: email, token: django_token, siteLanguage: language_map[lang], 'eo-user-name': user_name }).then(function () {
       document.englishonBackend.token = django_token;
+      if (document.returnToRecordings) {
+        //window.history.back();
+        window.location.pathname = 'record/recordtemplate/' + document.englishonConfig.token + '/' + document.recordTemplateWord + '/hebrew';
+      }
       document.menu.uiLoginActions('logged');
       document.menu.displayMenuMessages();
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');
