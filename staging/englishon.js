@@ -5569,6 +5569,11 @@ var WEBSITE_I18N = {
     DIRECTION: LTR,
     DEFAULT_TARGET_LANGUAGE: 'en',
     SITE_LANGUAGE: 'hebrew'
+  },
+  'www.israelhayom.co.il': {
+    DIRECTION: RTL,
+    DEFAULT_TARGET_LANGUAGE: 'en',
+    SITE_LANGUAGE: 'hebrew'
   }
 };
 var I18N = WEBSITE_I18N[location.hostname];
@@ -7932,13 +7937,16 @@ var overlay_settings = {
         return e$('.sf-menu.hidden-xs');
       },
       'button_left_value': function () {
-        return 46;
+        return 30;
       },
       'button_top_value': function () {
-        return 3;
+        return 5;
       },
       'category_button_left_value': function () {
-        return 46;
+        return 30;
+      },
+      'pin_banner': function () {
+        return e$('#sidebar');
       },
       'placeLiveActions': function () {
         var startPoint = e$('#sidebar').offset().top;
@@ -7950,6 +7958,67 @@ var overlay_settings = {
         e$('#eo-live .close-vocabulary').css('top', val + 180);
         $(window).scroll(function () {
           var val = Math.max(startPoint - $(window).scrollTop(), 10);
+          e$('#eo-live').css('top', val);
+          e$('#eo-live .close-vocabulary').css('top', val + 180);
+        });
+      },
+      'pin-tutotial-article': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-post-ancestor.menu-item-has-children',
+      'pin-tutotial-category': '.menu-item.menu-item-type-taxonomy.menu-item-object-category.current-menu-item.menu-item-has-children.active.has-submenu',
+      'pin-tutotial-front': '.front-page'
+    },
+    'mobile': {
+      'pin_button_article': function () {
+        return e$('.entry-meta').eq(0);
+      },
+      'pin_button_category': function () {
+        return e$('.kolhazman-tickets');
+      },
+      'button_left_value': function () {
+        return 0;
+      },
+      'button_top_value': function () {
+        return 0;
+      },
+      'placeLiveActions': function () {},
+      'category_button_left_value': function () {
+        return 0;
+      }
+
+    }
+  },
+  'ish': {
+    'desktop': {
+      'pin_button_article': function () {
+        return e$('#sub-menu').find('.pane-content');
+      },
+      'pin_button_front': function () {
+        return e$('#sub-menu').find('.pane-content');
+      },
+      'pin_button_category': function () {
+        return e$('#sub-menu').find('.pane-content');
+      },
+      'button_left_value': function () {
+        return e$('#search-box').offset().left + e$('#search-box').width() / 2 - 50 - e$('.pane-content').offset().left;
+      },
+      'button_top_value': function () {
+        return 3;
+      },
+      'category_button_left_value': function () {
+        return 70;
+      },
+      'pin_banner': function () {
+        return e$('.panel-col-last');
+      },
+      'placeLiveActions': function () {
+        var startPoint = e$('.panel-col-last').offset().top;
+        var val = e$('.panel-col-last').offset().left;
+        e$('#eo-live').css('left', val);
+        e$('#eo-live .close-vocabulary').css('left', val + e$('#eo-live').outerWidth() - 8);
+        var val = Math.max(startPoint - $(window).scrollTop(), 82);
+        e$('#eo-live').css('top', val);
+        e$('#eo-live .close-vocabulary').css('top', val + 180);
+        $(window).scroll(function () {
+          var val = Math.max(startPoint - $(window).scrollTop(), 82);
           e$('#eo-live').css('top', val);
           e$('#eo-live .close-vocabulary').css('top', val + 180);
         });
@@ -8484,6 +8553,183 @@ kolhazmanOverlay = function (url, subtitle, bodytext) {
 kolhazmanOverlay.prototype = Object.create(PageOverlay.prototype);
 kolhazmanOverlay.prototype.constructor = kolhazmanOverlay;
 
+ishFrontOverlay = function (parts, url) {
+  this.url = url.toLowerCase();
+  this.parts = parts;
+  this.interacted = false;
+  this.userAnswered = false;
+  PageOverlay.call(this);
+  this.settings = overlay_settings['ish'][document.englishonConfig.media];
+  this.tutorial_selector = this.settings['pin-tutotial-category'];
+  if (location.pathname == '/') {
+    this.pageType = 'front-page';
+  } else {
+    this.pageType = 'category-page';
+    e$('body').addClass('category-page');
+  }
+  e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 1000 });
+  e$('.menu-search').on('mouseenter', function () {
+    e$('.eo-button').css({ 'z-index': 10 });
+    e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 10 });
+  });
+  e$('.menu-search').on('mouseleave', function () {
+    e$('.eo-button').css({ 'z-index': 1000 });
+    e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 1000 });
+  });
+  this.showButtons = function () {
+    this.settings.pin_button_category().append(EnglishOnButton.element());
+    if (document.englishonConfig.isUser) {
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    } else {
+      e$('.eo-button').on('click', document.firstTimeUser);
+    }
+    if (window.localStorage.getItem('show_quiz_tutorial') && !document.englishonConfig.editor) {
+      this.openNoQuestionsDialog(document.MESSAGES[document.englishonConfig.siteLanguage].NO_QUESTIONS);
+    }
+    e$('.eo-button').css('left', this.settings.category_button_left_value());
+  };
+  this.fetchQuestions = function () {
+    //just to enable compile
+    return e$.Deferred().resolve().then(function () {
+      return [];
+    });
+  };
+  this.hideQuestions = function () {};
+  this.showQuestions = function () {};
+  this.powerOn = function () {
+    PageOverlay.prototype.powerOn.call(this);
+    if (!document.englishonConfig.isUser) {
+      console.log('Marks for edited articles did not display. This user never turn on enlishon');
+      return;
+    }
+    var urls = e$.map(this.parts, function (part, url) {
+      return url;
+    });
+    document.englishonBackend.indicateEditedArticles(urls).then(function (res) {
+      console.log('res: ' + res);
+      e$.each(document.overlay.parts, function (url, part) {
+        //if (res.urls[url]) {
+        if (true) {
+          if (!e$(part).find('.category-icon').length) {
+            //do we want to indicate edited articles in the דעות? 
+            //if yes, add it to e$('.author') 
+            e$(part).find('.content_bottom, .content-bottom').append(e$('<div>').addClass('category-icon'));
+          }
+        }
+      });
+    });
+    document.questions_promise.resolve();
+  };
+  this.powerOff = function () {
+    if (!document.englishonConfig.email) {
+      e$('.category-icon').remove();
+    }
+  };
+};
+ishFrontOverlay.prototype = Object.create(PageOverlay.prototype);
+ishFrontOverlay.prototype.constructor = ishFrontOverlay;
+
+ishOverlay = function (url, subtitle, bodytext) {
+  e$('html').addClass('www-yisraelhayom-co-il');
+  this.url = url.toLowerCase();
+  this.subtitle = subtitle;
+  this.bodytext = bodytext;
+  this.paragraphs = e$(bodytext).find('div').toArray().concat(subtitle);
+  this.interacted = false;
+  this.userAnswered = false;
+  this.settings = overlay_settings['ish'][document.englishonConfig.media];
+  //this.tutorial_selector = this.settings['pin-tutotial-article'];
+  this.pageType = 'article';
+  e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 1000 });
+  e$('.menu-search').on('mouseenter', function () {
+    e$('.eo-button').css({ 'z-index': 10 });
+    e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 10 });
+  });
+  e$('.menu-search').on('mouseleave', function () {
+    e$('.eo-button').css({ 'z-index': 1000 });
+    e$('.eo-button').parent().find('.menu-item-112685').css({ 'z-index': 1000 });
+  });
+  this.getLineDetails = function () {
+    return [e$('.field-name-body').offset().left, e$('.field-name-body').width()];
+  };
+  this.showButtons = function () {
+    this.settings.pin_button_article().append(EnglishOnButton.element());
+    if (document.englishonConfig.isUser) {
+      e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
+    } else {
+      e$('.eo-button').on('click', document.firstTimeUser);
+    }
+    /*    in an article page it was easiest to find top left values for button with js
+        in a category page it was easiest to define top with css
+    */
+    e$('.eo-button').css({ 'left': this.settings.button_left_value(), 'top': this.settings.button_top_value() });
+    //sometime the button_top_value is not computed correctly the first time in mobile. don't know the reason.
+    setButtonInterval(function () {
+      console.log('-------------setTimeOut button_top_value');
+      e$('.eo-button').css({ 'top': document.overlay.settings.button_top_value() });
+    }, 500, 20);
+  };
+  this.showQuestions = function () {
+    PageOverlay.prototype.showQuestions.call(this);
+    if (this.injector) {
+      this.injector.on();
+    }
+  }.bind(this);
+  this.hideQuestions = function () {
+    PageOverlay.prototype.hideQuestions.call(this);
+    if (this.injector) this.injector.off();
+  }.bind(this);
+  this.fetchQuestions = function () {
+    e$('.eo-injection-target').contents().unwrap();
+    var backend = document.englishonBackend;
+    this.questions = []; //to enable fetch again after login
+    if (this.injector) {
+      this.injector.off();
+    }
+    //remove only 'eo-injection-target' tags,not content
+    //check if better do that native
+    e$('.eo-injection-target').contents().unwrap();
+    this.interacted = false;
+    this.userAnswered = false;
+    this.limit = this.getQuestionQuota();
+    return backend.getArticle(this.url, this.limit).then(function (questions) {
+      mixpanel.track('fetch questions. ' + document.overlay.url);
+      this.questions = questions;
+      console.log("**************************define injector!!!!Num questions: " + questions.length);
+      this.injector = new Injector(this.paragraphs);
+      this.injector.setQuestions(questions);
+      return questions;
+    }.bind(this));
+  };
+  this.powerOn = function () {
+    if (!document.englishonConfig.isUser) {
+      return;
+    }
+    this.showQuestions();
+    PageOverlay.prototype.powerOn.call(this);
+    if (document.eo_user && e$('.eo-expired').length) {
+      document.eo_user.showLiveActions();
+    }
+    if (window.localStorage.getItem('show_quiz_tutorial')) {
+      setTimeout(function () {
+        document.eoDialogs.hideDialogs();
+        Tour.quizTutorial();
+        document.tour.start();
+      }, 2000);
+    }
+    document.questions_promise.resolve();
+  };
+  this.powerOff = function () {
+    this.hideQuestions();
+    if (document.eo_user) {
+      document.eo_user.hideLiveActions();
+    }
+  };
+};
+
+ishOverlay.prototype = Object.create(PageOverlay.prototype);
+ishOverlay.prototype.constructor = ishOverlay;
+
 ShturemFrontpageOverlay = function (parts, pageType) {
   this.parts = {};
   this.interacted = false;
@@ -8948,8 +9194,16 @@ ScraperFactory = function (location) {
       return new kolhazmanScraper();
     }
   }
-  englishon_sites = ['localhost:8080', 'englishon.herokuapp.com', 'englishon-staging.herokuapp.com'];
-  if (englishon_sites.indexOf(location.host) != -1) {
+  if (location.host === 'www.israelhayom.co.il') {
+    var reg = /^[a-z]+$/i;
+    var dregex = /^[0-9]*$/;
+    if (reg.test(location.pathname.slice(1)) || location.pathname == '/') {
+      return new ishFrontScraper();
+    } else if (dregex.test(location.pathname.slice(9))) {
+      return new ishScraper();
+    }
+  }
+  if (inner_sites.indexOf(location.host) != -1) {
     return new englishonScraper();
   }
 };
@@ -8966,6 +9220,38 @@ var englishonScraper = function () {
   };
 };
 
+var ishFrontScraper = function () {
+  this.getHost = function () {
+    return 'www.israelhayom.co.il';
+  };
+  this.scrape = function () {
+    var parts = {};
+    e$('article, .content-second').each(function (i, para) {
+      //if (!e$(para).find('.media-heading').length){return;}
+      if (e$(para).find('a').length) {
+        var url = e$(para).find('a')[0].href;
+      }
+      if (parts[url]) {
+        parts[url].push(para);
+      } else {
+        parts[url] = [para];
+      }
+    });
+    var category_url = window.location.pathname;
+    return new ishFrontOverlay(parts, category_url);
+  };
+};
+var ishScraper = function () {
+  this.getHost = function () {
+    return 'www.israelhayom.co.il';
+  };
+  this.scrape = function () {
+    url = ('http://www.israelhayom.co.il' + location.pathname + location.search).replace(/#.*$/, '');
+    var subtitle = e$('.page-title').find('p');
+    var bodytext = e$('.field-name-body')[0];
+    return new ishOverlay(url, subtitle, bodytext);
+  };
+};
 var kolhazmanFrontScraper = function () {
   this.getHost = function () {
     return 'www.kolhazman.co.il';
@@ -9161,70 +9447,6 @@ var Speaker = new function () {
     audioSourceNode.connect(gainNode);
     audioSourceNode.start();
   };
-}();
-var Recorder = new function () {
-  var onSuccess = function (stream) {
-    //var record = e$('.eo-record');
-    //var stop = e$('.stop');
-    //var soundClips = e$('.sound-clips');
-    document.mediaRecorder = new MediaRecorder(stream);
-    var chunks = [];
-    document.mediaRecorder.ondataavailable = function (e) {
-      console.log('on data available');
-      chunks.push(e.data);
-    };
-    stop.onclick = function () {
-      mediaRecorder.stop();
-      console.log(mediaRecorder.state);
-      console.log("recorder stopped");
-      record.style.background = "";
-      record.style.color = "";
-    };
-    document.mediaRecorder.onstop = function (e) {
-      console.log("recorder stopped");
-      var clipName = prompt('Enter a name for your sound clip');
-      var clipContainer = document.createElement('article');
-      var clipLabel = document.createElement('p');
-      var audio = document.createElement('audio');
-      var deleteButton = document.createElement('button');
-      clipContainer.classList.add('clip');
-      audio.setAttribute('controls', '');
-      deleteButton.innerHTML = "Delete";
-      clipLabel.innerHTML = clipName;
-      clipContainer.appendChild(audio);
-      clipContainer.appendChild(clipLabel);
-      clipContainer.appendChild(deleteButton);
-      soundClips.appendChild(clipContainer);
-      var blob = new Blob(chunks, { 'type': 'audio/ogg; codecs=opus' });
-      chunks = [];
-      var audioURL = window.URL.createObjectURL(blob);
-      audio.src = audioURL;
-      deleteButton.onclick = function (e) {
-        var evtTgt = e.target;
-        evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
-      };
-    };
-  };
-  var onError = function (err) {
-    console.log('The following gUM error occured: ' + err);
-    var stream = new MediaStream();
-    document.mediaRecorder = new MediaRecorder(stream);
-    document.mediaRecorder.ondataavailable = function (e) {
-      console.log('on data available');
-      chunks.push(e.data);
-    };
-  };
-  //Finally for this section, we set up the basic gUM structure:
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    console.log('getUserMedia supported.');
-    navigator.mediaDevices.getUserMedia(
-    // constraints - only audio needed for this app
-    {
-      audio: true
-    }).then(onSuccess, onError);
-  } else {
-    console.log('getUserMedia not supported on your browser!');
-  }
 }();
 //
 window.englishon_chat = function () {
@@ -9586,10 +9808,11 @@ function englishon() {
     console.log('BROWSER NOT SUPPORTED.');
     return;
   }
-  sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il', 'localhost:8080', 'englishon-staging.herokuapp.com', 'englishon.herokuapp.com'];
+  sites = ['shturem.net', 'www.shturem.net', 'actualic.co.il', 'www.englishon.org', 'www.kolhazman.co.il', 'www.israelhayom.co.il', 'localhost:8080', 'englishon-staging.herokuapp.com', 'englishon.herokuapp.com'];
   if (sites.indexOf(window.location.host) == -1) {
     return;
   }
+  inner_sites = ['localhost:8080', 'englishon-staging.herokuapp.com', 'englishon.herokuapp.com'];
   //THESE LINES ARE TEMP
   if ((window.location.host == 'shturem.net' || window.location.host == 'www.shturem.net') && media != 'desktop') {
     return;
@@ -10302,6 +10525,9 @@ window.stopMovie = function (e) {
   document.getElementById('demo_video').pause();
 };
 window.pinBanner = function () {
+  if (inner_sites.indexOf(window.location.host) != -1) {
+    return;
+  }
   if (location.pathname != '/' || location.host == 'www.kolhazman.co.il') {
     englishon_banner = new function () {
       var video = e$('<div id="eo-banner">').append(e$('<video/>', {
@@ -10321,7 +10547,8 @@ window.pinBanner = function () {
         controls: true,
         controlsList: 'nodownload'
       })).append(e$('<div>').addClass('eo-close close-movie').on('click', window.stopMovie));
-      e$('#sidebar').prepend(video);
+      document.overlay.settings['pin_banner']().prepend(video);
+      //e$('#sidebar').prepend(video);
       e$('body').prepend(movie);
       e$('#eo-movie').addClass('hidden');
       e$('#eo-banner').on('click', function () {
@@ -10372,10 +10599,10 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
     console.log("EnglishOn: unknown website");
     return;
   }
-  pinBanner();
   e$('body').addClass(scraper.getHost().replace(/\./g, '-').replace(':', '-')).addClass('eo-direction-' + I18N.DIRECTION);
   document.overlay = scraper.scrape();
   document.overlay.showButtons();
+  pinBanner();
   window.upgrade();
   document.overlay.insertContent(e$(document.TERMS_DLG));
   e$('#eo-dlg-terms').addClass(document.englishonConfig.siteLanguage);

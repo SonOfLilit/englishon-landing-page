@@ -613,8 +613,6 @@
 }
 
 .eo-icon {
-  height: 31px;
-  width: 30px;
   background-repeat: no-repeat;
 }
 
@@ -1053,40 +1051,25 @@ body.shturem-net .category-icon {
   left: -300px;
 }
 
-.eo-logo {
-  width: 110px;
-  height: 23px;
-  margin-left: 5px;
-  cursor: pointer;
-  overflow: visible;
-  background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
-  background-size: 91px;
-  background-repeat: no-repeat;
-}
-
 .eo-icon {
   position: absolute;
-  top: 3px;
+  top: 8%;
   left: 0px;
-  width: 34px;
+  width: 22%;
+  height: 86%;
+  background-size: 79%;
 }
 .eo-icon.eo-button-loading {
   background-image: url(http://www.englishon.org/v1/img/button-loading.svg);
-  background-size: 30px;
+  /*background-size: 30px;*/
 }
 .eo-icon.eo-button-unavailable {
   background-image: url(http://www.englishon.org/v1/img/button-unavailable.svg);
-  background-size: 30px;
+  /*background-size: 30px;*/
 }
 .eo-icon.eo-button-off, .eo-icon.eo-button-on {
   background-image: url(http://www.englishon.org/v1/img/button-logo-3d.png);
-  background-size: 30px;
-}
-
-.registered_symbol {
-  font-size: 14px;
-  color: #b1b4b6;
-  margin: 5px 0px 0px 0px;
+  /*background-size: 30px;*/
 }
 
 .eo-button {
@@ -1094,17 +1077,25 @@ body.shturem-net .category-icon {
   overflow: visible;
   display: inline-block;
   position: relative;
-  padding-right: 30px;
 }
 .eo-button .eo-logo {
   position: absolute;
-  top: 10px;
-  left: 33px;
+  top: 22%;
+  left: 22%;
+  width: 60.60%;
+  height: 63.88%;
+  cursor: pointer;
+  overflow: visible;
+  background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
+  background-size: 90%;
+  background-repeat: no-repeat;
 }
 .eo-button .registered_symbol {
   position: absolute;
-  left: 136px;
-  top: 11px;
+  left: 80%;
+  top: 40%;
+  font-size: 60%;
+  color: #b1b4b6;
 }
 
 /* Menu */
@@ -1434,6 +1425,56 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+body.www-israelhayom-co-il #eo-menu.hebrew #eo-help {
+  flex: 0 1 51%;
+}
+body.www-israelhayom-co-il #sub-menu .pane-content {
+  height: 28px;
+}
+body.www-israelhayom-co-il #sub-menu .menu.clearfix.desktop {
+  display: inline-block;
+}
+body.www-israelhayom-co-il #sub-menu .sub-menu-content {
+  display: inline-block;
+}
+body.www-israelhayom-co-il #eo-banner {
+  width: 100%;
+  margin-bottom: 10px;
+}
+body.www-israelhayom-co-il #eo-banner video {
+  width: 100%;
+  object-fit: cover;
+}
+body.www-israelhayom-co-il .category-icon {
+  dispaly: inline-block;
+  float: left;
+  margin-left: 20px;
+}
+body.www-israelhayom-co-il .eo-button {
+  position: absolute;
+  width: 120px;
+  height: 27px;
+  z-index: 1000;
+}
+body.www-israelhayom-co-il .eo-editor-question {
+  display: inline;
+}
+body.www-israelhayom-co-il .pane-node-content .pane-content article .field-type-text-with-summary .eo-question span {
+  width: auto;
+}
+body.www-israelhayom-co-il .eo-record {
+  background-image: none;
+}
+body.www-israelhayom-co-il #eo-live {
+  padding: 0px 50px;
+  background-color: #eee;
+  width: 290px;
+}
+body.www-israelhayom-co-il #eo-live.eo-live-maximize {
+  height: 195px;
+  padding: 26px 50px 0px 50px;
+}
+
 body.localhost-8080 #eo-help,
 body.englishon-staging-herokuapp-com #eo-help,
 body.englishon-herokuapp-com #eo-help {
@@ -1475,26 +1516,11 @@ body.www-kolhazman-co-il .ui-dialog {
   z-index: 10000;
 }
 body.www-kolhazman-co-il .eo-button {
-  top: 3px;
-  left: 46px;
+  top: 5px;
+  left: 30px;
   height: 36px;
-  width: 160px;
+  width: 140px;
   z-index: 1000;
-}
-body.www-kolhazman-co-il .eo-button .eo-icon {
-  background-size: 27px;
-  margin-top: 2px;
-}
-body.www-kolhazman-co-il .eo-button .eo-logo {
-  top: 7px;
-  left: 27px;
-  background-size: 81px;
-  margin-top: 2px;
-}
-body.www-kolhazman-co-il .eo-button .registered_symbol {
-  top: 8px;
-  left: 116px;
-  font-size: 11px;
 }
 body.www-kolhazman-co-il #eo-live {
   width: 370px;
@@ -1678,15 +1704,15 @@ body.www-bloombergview-com .eo-button:hover {
 }
 body.www-bloombergview-com .eo-button.eo-button-loading {
   background-image: url(http://www.englishon.org/v1/img/loading-white);
-  background-size: 30px;
+  /*background-size: 30px;*/
 }
 body.www-bloombergview-com .eo-button.eo-button-unavailable {
   background-image: url(http://www.englishon.org/v1/img/unavailable-white);
-  background-size: 30px;
+  /*background-size: 30px;*/
 }
 body.www-bloombergview-com .eo-button.eo-button-off, body.www-bloombergview-com .eo-button.eo-button-on {
   background-image: url(http://www.englishon.org/v1/img/logo-white);
-  background-size: 30px;
+  /*background-size: 30px;*/
 }
 body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-off::before, body.www-bloombergview-com.eo-tutorial-1 .eo-button.eo-button-on::before {
   width: 17px;
