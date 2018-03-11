@@ -10225,10 +10225,6 @@ var EnglishOnMenu = function () {
         document.menu.displayMenuMessages();
         if (res.status == 'logged_in') {
           document.eoDialogs.hideDialogs(1000);
-          if (document.returnToRecordings) {
-            //window.history.back();
-            window.location.pathname = 'record/recordtemplate/' + document.englishonConfig.token + '/' + document.recordTemplateWord + '/hebrew';
-          }
         }
         //currently it can't happen in login, becuase click on button is turning on englishon if it's none user
         if (!document.englishonConfig.isUser) {
@@ -10297,7 +10293,9 @@ var EnglishOnMenu = function () {
           document.menu.uiLoginActions('guest');
           //prepare questions for guest
           document.overlay.fetchQuestions().then(function () {
-            document.eo_user.initial();
+            if (document.eo_user) {
+              document.eo_user.initial();
+            }
           });
         });
       });
@@ -10351,8 +10349,8 @@ var EnglishOnMenu = function () {
   // ****
   document.overlay.insertContent(e$(document.MENU_HTML));
   document.overlay.insertContent(e$(document.LOGIN_DLG));
-  document.overlay.insertContent(e$(document.OPTIONS_DLG));
   document.overlay.insertContent(e$(document.live_actions));
+  document.overlay.insertContent(e$(document.OPTIONS_DLG));
   e$('#demo_video').find('source').attr('src', staticUrl('videos/demo_v2.mp4'));
   e$('.eo-area, #eo-live').addClass(document.englishonConfig.siteLanguage);
   if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') {
@@ -10378,10 +10376,6 @@ var EnglishOnMenu = function () {
         processData: false,
         contentType: false
       }).then(function (res) {
-        if (document.returnToRecordings) {
-          //window.history.back();
-          window.location.pathname = 'record/recordtemplate/' + document.englishonConfig.token + '/' + document.recordTemplateWord + '/hebrew';
-        }
         console.log('b"h, ' + res);
         if (photo != '') {
           e$('.eo-account-img').css("background-image", "url(" + new_photo + ")");
@@ -10583,6 +10577,7 @@ window.upgrade = function () {
 };
 e$.when(document.resources_promise, document.loaded_promise).done(function () {
   //event to get messageses from englishon backend
+
   window.addEventListener("message", receiveMessage, false);
   //register the handler for backspace/forward
   window.onpopstate = function (e) {
@@ -10609,6 +10604,7 @@ e$.when(document.resources_promise, document.loaded_promise).done(function () {
   document.eoDialogs = new EnglishOnDialogs();
   if (document.englishonConfig.isUser) {
     document.overlay.fetchLinkStates(document.englishonBackend).then(document.overlay.markLinks.bind(document.overlay));
+
     document.overlay.fetchQuestions().then(function (questions) {
       document.menu = new EnglishOnMenu();
       document.menu.bindEvents();
@@ -10683,10 +10679,6 @@ function receiveMessage(event) {
     }
     configStorage.set({ email: email, token: django_token, siteLanguage: language_map[lang], 'eo-user-name': user_name }).then(function () {
       document.englishonBackend.token = django_token;
-      if (document.returnToRecordings) {
-        //window.history.back();
-        window.location.pathname = 'record/recordtemplate/' + document.englishonConfig.token + '/' + document.recordTemplateWord + '/hebrew';
-      }
       document.menu.uiLoginActions('logged');
       document.menu.displayMenuMessages();
       e$('#eo-account-name').data('elementToShowOnClick', 'eo-dlg-options-logged');

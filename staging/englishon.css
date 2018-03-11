@@ -1425,6 +1425,9 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+body.www-israelhayom-co-il #eo-dlg-options #eo-profile .initials {
+  line-height: 98px;
+}
 body.www-israelhayom-co-il #eo-menu.hebrew #eo-help {
   flex: 0 1 51%;
 }
@@ -1478,7 +1481,7 @@ body.www-israelhayom-co-il #eo-live.eo-live-maximize {
 body.localhost-8080 #eo-help,
 body.englishon-staging-herokuapp-com #eo-help,
 body.englishon-herokuapp-com #eo-help {
-  padding-right: 1%;
+  flex: 0 1 51%;
 }
 body.localhost-8080 #eo-dlg-options #eo-profile .initials,
 body.englishon-staging-herokuapp-com #eo-dlg-options #eo-profile .initials,
