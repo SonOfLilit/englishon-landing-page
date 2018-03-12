@@ -1016,6 +1016,8 @@ div.eo-question.highlighted {
 }
 .eo-record:focus {
   outline: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
 }
 
 /* in open questions, when you have the wrong keyboard language */

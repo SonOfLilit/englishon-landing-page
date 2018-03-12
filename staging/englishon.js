@@ -5763,8 +5763,7 @@ HerokuBackend.prototype.ajax = function (method, url, data) {
           }
           return cookieValue;
         }
-        //if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-        if (true) {
+        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
           // Only send the token to relative URLs i.e. locally.
           xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         }
@@ -8608,8 +8607,8 @@ ishFrontOverlay = function (parts, url) {
     document.englishonBackend.indicateEditedArticles(urls).then(function (res) {
       console.log('res: ' + res);
       e$.each(document.overlay.parts, function (url, part) {
-        //if (res.urls[url]) {
-        if (true) {
+        if (res.urls[url]) {
+          //if (true) {
           if (!e$(part).find('.category-icon').length) {
             //do we want to indicate edited articles in the דעות? 
             //if yes, add it to e$('.author') 
@@ -9227,14 +9226,23 @@ var ishFrontScraper = function () {
   this.scrape = function () {
     var parts = {};
     e$('article, .content-second').each(function (i, para) {
-      //if (!e$(para).find('.media-heading').length){return;}
-      if (e$(para).find('a').length) {
-        var url = e$(para).find('a')[0].href;
+      var p = para;
+      var url = '';
+      if (e$(para).find('article').length) {
+        if (!e$(para).is('.content-second') || !e$(para).children('a').length) {
+          return;
+        }
+        p = e$(para).children('a')[0];
+        url = e$(para).find('a').first()[0].href;
+      }
+      if (e$(para).find('a').length && url == '') {
+        url = e$(para).find('a').last()[0].href;
+        //urls = e$.map(e$(para).find('a'), function(e) {return e$(e)[0].href});
       }
       if (parts[url]) {
-        parts[url].push(para);
+        parts[url].push(p);
       } else {
-        parts[url] = [para];
+        parts[url] = [p];
       }
     });
     var category_url = window.location.pathname;
@@ -10021,6 +10029,7 @@ var EnglishOnDialogs = function () {
   };
   this.toggleDialogTrigger = function (e) {
     e.preventDefault();
+    e.stopPropagation();
     var element = e$(e.target).data('elementToShowOnClick');
     if (e$('#' + element).hasClass('hidden')) {
       this.toggleDialog(element, 'show');
@@ -10057,6 +10066,7 @@ var EnglishOnMenu = function () {
       });
     });
     e$('#options-button').data('elementToShowOnClick', 'eo-dlg-options-main');
+    e$('#options-button').find('*').data('elementToShowOnClick', 'eo-dlg-options-main');
     e$('#eo-choose-lang').data('elementToShowOnClick', 'eo-site-languages');
     e$('#option-dlg-signin').data('elementToShowOnClick', 'login-main');
     e$('.eo-site-option').data('elementToShowOnClick', 'eo-dlg-options-main');
@@ -10141,6 +10151,9 @@ var EnglishOnMenu = function () {
       e$(".upload2-btn").on('click', function () {
         e$(".eo-upload2").click();
       });
+      e$('#options-button').find('*').data('elementToShowOnClick', 'eo-dlg-options-main');
+      e$('#options-button').find('*').off('click');
+      e$('#options-button').find('*').on('click', document.eoDialogs.toggleDialogTrigger);
     }, 1000, 5);
     e$('#eo-first-name, #eo-last-name').on('keyup', function (e) {
       e = e$(e.target);
@@ -10349,8 +10362,8 @@ var EnglishOnMenu = function () {
   // ****
   document.overlay.insertContent(e$(document.MENU_HTML));
   document.overlay.insertContent(e$(document.LOGIN_DLG));
-  document.overlay.insertContent(e$(document.live_actions));
   document.overlay.insertContent(e$(document.OPTIONS_DLG));
+  document.overlay.insertContent(e$(document.live_actions));
   e$('#demo_video').find('source').attr('src', staticUrl('videos/demo_v2.mp4'));
   e$('.eo-area, #eo-live').addClass(document.englishonConfig.siteLanguage);
   if (document.englishonBackend.base == 'https://englishon-staging.herokuapp.com') {
