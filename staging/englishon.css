@@ -1072,6 +1072,14 @@ body.shturem-net .category-icon {
   /*background-size: 30px;*/
 }
 
+.eo-logo {
+  cursor: pointer;
+  overflow: visible;
+  background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
+  background-repeat: no-repeat;
+  height: 22px;
+}
+
 .eo-button {
   cursor: pointer;
   overflow: visible;
@@ -1084,11 +1092,7 @@ body.shturem-net .category-icon {
   left: 22%;
   width: 60.60%;
   height: 63.88%;
-  cursor: pointer;
-  overflow: visible;
-  background-image: url(http://www.englishon.org/v1/img/menu-logotype.svg);
   background-size: 90%;
-  background-repeat: no-repeat;
 }
 .eo-button .registered_symbol {
   position: absolute;
@@ -2764,6 +2768,11 @@ source: https://codepen.io/designcouch/pen/Atyop*/
 #eo-dlg-login .eo-logo {
   height: 25px;
   width: 95px;
+}
+#eo-dlg-login .registered_symbol {
+  font-size: 14px;
+  color: #b1b4b6;
+  margin: 5px 0px 0px 3px;
 }
 
 #eo-menu,
