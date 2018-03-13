@@ -8577,6 +8577,7 @@ ishFrontOverlay = function (parts, url) {
   });
   this.showButtons = function () {
     this.settings.pin_button_category().append(EnglishOnButton.element());
+    e$('.pane-social-header-menu').find('ul').prepend(e$('<li>').addClass('leaf').append(e$('<a>').addClass('menu_icon eo-icon').text('englishon')));
     if (document.englishonConfig.isUser) {
       e$('.eo-button').on('click', EnglishOnButton.showMainMenu);
     } else {
@@ -8618,6 +8619,17 @@ ishFrontOverlay = function (parts, url) {
       });
     });
     document.questions_promise.resolve();
+  };
+  this.testIndicateArticles = function () {
+    e$.each(document.overlay.parts, function (url, part) {
+      if (true) {
+        if (!e$(part).find('.category-icon').length) {
+          //do we want to indicate edited articles in the דעות? 
+          //if yes, add it to e$('.author') 
+          e$(part).find('.content_bottom, .content-bottom').append(e$('<div>').addClass('category-icon'));
+        }
+      }
+    });
   };
   this.powerOff = function () {
     if (!document.englishonConfig.email) {

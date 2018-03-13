@@ -1431,6 +1431,23 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 }
 
 /* Site specific */
+body.www-israelhayom-co-il .pane-social-header-menu a.eo-icon {
+  position: relative;
+  background-image: url(http://www.englishon.org/v1/img/button-logo-ish.png);
+  background-size: 27px;
+  padding-left: 26px;
+  background-repeat: no-repeat;
+  background-position: left;
+  height: 26px;
+}
+body.www-israelhayom-co-il .pane-social-header-menu .eo-button {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+body.www-israelhayom-co-il .pane-social-header-menu .eo-button .eo-logo, body.www-israelhayom-co-il .pane-social-header-menu .eo-button .registered_symbol {
+  display: none;
+}
 body.www-israelhayom-co-il #eo-dlg-options #eo-profile .initials {
   line-height: 98px;
 }
@@ -1455,9 +1472,18 @@ body.www-israelhayom-co-il #eo-banner video {
   object-fit: cover;
 }
 body.www-israelhayom-co-il .category-icon {
-  dispaly: inline-block;
-  float: left;
-  margin-left: 20px;
+  position: absolute;
+  display: inline-block;
+  height: 20px;
+  margin: 0px 10px;
+  padding: 0px;
+  background-image: url(http://www.englishon.org/v1/img/grey_logo.png);
+  background-position: bottom;
+}
+body.www-israelhayom-co-il .wrapper-bottom .category-icon {
+  background-image: url(http://www.englishon.org/v1/img/grey_logo_light.png);
+  background-position: center;
+  background-size: 14px;
 }
 body.www-israelhayom-co-il .eo-button {
   position: absolute;
