@@ -1491,6 +1491,9 @@ body.www-israelhayom-co-il .eo-button {
   height: 27px;
   z-index: 1000;
 }
+body.www-israelhayom-co-il .eo-button .eo-icon {
+  background-image: url(http://www.englishon.org/v1/img/grey_logo_light.png);
+}
 body.www-israelhayom-co-il .eo-editor-question {
   display: inline;
 }
