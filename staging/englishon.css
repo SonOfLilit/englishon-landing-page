@@ -1434,7 +1434,7 @@ body.eo-tutorial.eo-tutorial-2 .eo-question.eo-first_question::before {
 body.www-israelhayom-co-il .pane-social-header-menu a.eo-icon {
   position: relative;
   background-image: url(http://www.englishon.org/v1/img/button-logo-ish.png);
-  background-size: 27px;
+  background-size: 26px;
   padding-left: 26px;
   background-repeat: no-repeat;
   background-position: left;
@@ -1480,8 +1480,11 @@ body.www-israelhayom-co-il .category-icon {
   background-image: url(http://www.englishon.org/v1/img/grey_logo.png);
   background-position: bottom;
 }
+body.www-israelhayom-co-il .pane-ih-topstory .pane-content .view-topstory.item-3 .node-article .content_bottom .category-icon {
+  background-position: top;
+}
 body.www-israelhayom-co-il .wrapper-bottom .category-icon {
-  background-image: url(http://www.englishon.org/v1/img/grey_logo_light.png);
+  background-image: url(http://www.englishon.org/v1/img/grey_logo_light2.png);
   background-position: center;
   background-size: 14px;
 }
@@ -2259,7 +2262,7 @@ eo-signout-layout .signout {
   text-align: left;
 }
 
-.header {
+.eo-area > .header {
   background-color: #4b5a66;
   font-family: Roboto, sans-serif;
   color: white;

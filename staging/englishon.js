@@ -6538,12 +6538,12 @@ UserInfo = function () {
     clearInterval(document.vocabulary_interval);
     document.overlay.settings.placeLiveActions();
     //SHOW USER LEVEL JUST FOR TEAM
-    if (e$('#developement-only-version').length) {
-      if (!e$('#level').length) {
-        e$('#sr-cell').after(e$('<div>').addClass('Grid-cell').append(e$('<div id="level">').addClass('live-part v-align h-align')));
-      }
-      this.getLevel();
-    }
+    /*    if (e$('#developement-only-version').length) {
+          if (!e$('#level').length) {
+            e$('#sr-cell').after(e$('<div>').addClass('Grid-cell').append(e$('<div id="level">').addClass('live-part v-align h-align')));
+          }
+          this.getLevel();
+        }*/
     $('#eo-live').removeClass('hidden vocabulary-open');
     clearInterval(document.vocabulary_interval);
     if (document.englishonConfig.media == 'desktop') {
