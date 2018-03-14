@@ -8265,7 +8265,7 @@ PageOverlay.prototype.TermsDialog = function (token) {
   e$('#tos').html(messages.AGREE_TO_TOS);
   e$('#tos_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
   e$('#privacy_link').attr('href', document.englishonBackend.base + '/tokens/terms_of_use');
-  e$('#eo-recaptcha').attr('src', document.englishonBackend.base + '/tokens/googlecaptcha/' + token + '/' + document.englishonConfig.siteLanguage + '/' + window.location.host + '/');
+  e$('#eo-recaptcha').attr('src', document.englishonBackend.base + '/tokens/googlecaptcha/' + token + '/' + document.englishonConfig.siteLanguage + '/' + window.location.host + '/' + window.location.protocol + '/');
   e$('.terms-close').off('click');
   e$('.terms-close').on('click', this.rejectTerms);
 };
