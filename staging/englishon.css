@@ -683,6 +683,9 @@ div.eo-question {
 div.eo-question.eo-answered, div.eo-question.eo-expired {
   border: none;
 }
+div.eo-question.bold {
+  font-weight: 700;
+}
 div.eo-question .data_context {
   display: none;
 }

@@ -7261,7 +7261,11 @@ AbstractQuestion.prototype.touch = function (event) {
   }
 };
 AbstractQuestion.prototype.guess = function (answer, target) {
-  e$(target).parents('.eo-option').find('.feedback').removeClass('hidden');
+  //font awsome using svg, and jquery removeClass doesn't work with svgs
+  //e$(target).parents('.eo-option').find('.feedback').removeClass('hidden');
+  if (target) {
+    e$(target).parents('.eo-option').find('.feedback').get(0).classList.remove('hidden');
+  }
   this.element.addClass('eo-show_solution');
   //this.element.find('.eo-correct_option').find('.feedback').removeClass('hidden');
   var isAnswerInTargetLanguage = this.practicedWord !== this.data.hint;
@@ -7435,15 +7439,16 @@ MultipleChoice.prototype.createElement = function () {
   var element = AbstractQuestion.prototype.createElement.call(this);
   element.addClass('eo-multiple_choice');
   //var answers = this.data.wrong_answers;
+  //var answers = [{translation: 'מילהארוכהארוכהמאד',answer:'short'}]
   var answers = this.data.personal_distractions;
   shuffle(answers);
   option_elements = answers.map(function (answer) {
     var li = e$('<li>').addClass('eo-option')
     //replacing '_' with none breakable HTML ENTITY, so the word will not displayed in two lines
-    .append(e$('<span>').html(answer.answer.replaceAll('_', '&nbsp;')).data('translate', answer.translation).data('word', answer.answer)).append(e$('<i aria-hidden="true">').addClass('fa fa-thumbs-o-down feedback hidden'));
+    .append(e$('<span>').html(answer.answer.replaceAll('_', '&nbsp;')).data('translate', answer.translation).data('word', answer.answer)).append(e$('<i>').addClass('far fa-thumbs-down feedback hidden'));
     return li;
   }.bind(this));
-  option_elements.push(e$('<li>').addClass('eo-option eo-correct_option').append(e$('<span>').html(this.correct[0].replaceAll('_', '&nbsp;')).data('word', this.correct[0])).append(e$('<i aria-hidden="true">').addClass('fa fa-thumbs-o-up feedback hidden')));
+  option_elements.push(e$('<li>').addClass('eo-option eo-correct_option').append(e$('<span>').html(this.correct[0].replaceAll('_', '&nbsp;')).data('word', this.correct[0])).append(e$('<i>').addClass('far fa-thumbs-up feedback hidden')));
   shuffle(option_elements);
   this.options = e$('<ul>').addClass('eo-options').append(option_elements);
   element.find('.eo-hint').after(this.options);
@@ -7486,6 +7491,7 @@ MultipleChoice.prototype.optionOnClick = function (e) {
 MultipleChoice.prototype.open = function () {
   e$('.eo-question').removeClass('next');
   document.overlay.questionShortcut();
+  this.element.addClass('bold');
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
     e$(option).find('span').toggleHtml(e$(option).find('span').data('word').replaceAll('_', '&nbsp;'), e$(option).find('span').data('translate'));
   });
@@ -7493,6 +7499,7 @@ MultipleChoice.prototype.open = function () {
   this.options.find('.eo-option:not(.eo-correct_option)').each(function (i, option) {
     e$(option).find('span').toggleHtml(e$(option).find('span').data('word').replaceAll('_', '&nbsp;'), e$(option).find('span').data('translate'));
   });
+  this.element.removeClass('bold');
   var width = Math.max(this.element.outerWidth(), this.options.outerWidth(), options_width_when_show_translations);
   //var width = Math.max(this.element.outerWidth(), this.options.outerWidth());
   // // see super() for explanation of +1
