@@ -9281,9 +9281,23 @@ language_map = {
   'hebrew': 'hebrew'
 };
 document.playMovie = function () {
+  if (!e$('#eo-movie').length) {
+    var movie = e$('<div id="eo-movie">').append(e$('<video/>', {
+      src: staticUrl('videos/demo_v2.mp4'),
+      id: 'demo_video',
+      type: 'video/mp4',
+      autoplay: false,
+      muted: true,
+      loop: true,
+      controls: true,
+      controlsList: 'nodownload'
+    })).append(e$('<div>').addClass('eo-close close-movie').on('click', window.stopMovie));
+    e$('body').prepend(movie);
+  }
   e$('#eo-movie').removeClass('hidden');
   document.getElementById('demo_video').play();
 };
+
 document.firstTimeUser = function () {
   configStorage.set({ 'isUser': true, 'isActive': true }).then(function () {
     window.localStorage.setItem('show_quiz_tutorial', true);
@@ -9736,39 +9750,18 @@ window.stopMovie = function (e) {
   document.getElementById('demo_video').pause();
 };
 window.pinBanner = function () {
+
   if (location.pathname != '/' || location.host == 'www.kolhazman.co.il') {
     englishon_banner = new function () {
       var video = e$('<div id="eo-banner">').append(e$('<video/>', {
         src: staticUrl('videos/banner_' + scraper.getHost() + '.mp4'),
-        //type: 'video/mp4',
-        //autoplay: true,
-        muted: true,
-        loop: true,
-        preload: 'auto'
-      }));
-      var movie = e$('<div id="eo-movie">').append(e$('<video/>', {
-        src: staticUrl('videos/demo_v2.mp4'),
-        id: 'demo_video',
         type: 'video/mp4',
-        autoplay: false,
+        autoplay: true,
         muted: true,
-        loop: true,
-        controls: true,
-        controlsList: 'nodownload'
-      })).append(e$('<div>').addClass('eo-close close-movie').on('click', window.stopMovie));
-      if (window.location.pathname.indexOf('241200') != -1) {
-        e$('body').append(e$('<button>').text('englishon test banner').on('click', function () {
-          e$('#eo-banner').find('video').get(0).play();
-        }));
-        e$('body').append(video);
-      } else {
-        e$('#sidebar').prepend(video);
-      }
-      e$('body').prepend(movie);
-      e$('#eo-movie').addClass('hidden');
-      //on mobile autoPlay is not working
-      e$('#eo-banner').find('video').get(0).play();
-
+        loop: true
+      }));
+      //document.overlay.settings['pin_banner']().prepend(video);
+      e$('#sidebar').prepend(video);
       e$('#eo-banner').on('click', function () {
         if (document.englishonConfig.isUser) {
           document.playMovie();
